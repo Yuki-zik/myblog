@@ -98,6 +98,7 @@ Important:
 
 ### 5.1 Local checks (passed in this session)
 
+
 - `pnpm test`
 - `pnpm test:e2e`
 - `pnpm build`

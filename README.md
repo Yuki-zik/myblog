@@ -1,3 +1,13 @@
+<!--
+ * @Author: Yuki-zik 226004241@nbu.edu.cn
+ * @Date: 2026-02-20 23:09:42
+ * @LastEditors: Yuki-zik 226004241@nbu.edu.cn
+ * @LastEditTime: 2026-02-21 01:08:50
+ * @FilePath: \myblog\README.md
+ * @Description: 
+ * 
+ * Copyright (c) 2026 by ${git_name_email}, All Rights Reserved. 
+-->
 # MyBlog v1
 
 Astro + React + Supabase 的主题化博客首版，实现：
