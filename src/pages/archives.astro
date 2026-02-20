@@ -1,0 +1,55 @@
+﻿---
+import { getCollection } from "astro:content";
+import ArchivePostTile from "../components/post/ArchivePostTile.astro";
+import { buildArchiveGroups, getPostAuthor, getPostDateISO } from "../lib/posts/archive";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await getCollection("posts", ({ data }) => !data.draft);
+const archiveGroups = buildArchiveGroups(posts);
+---
+
+<BaseLayout title="Archives | MyBlog">
+  <div class="archives-page">
+    <section class="archives-hero">
+      <h1>Archives</h1>
+      <p>Browse all posts by year and month on a visual timeline.</p>
+    </section>
+
+    {
+      archiveGroups.length === 0 ? (
+        <section class="content-section">
+          <p class="subtle">No published posts in archive yet.</p>
+        </section>
+      ) : (
+        archiveGroups.map((yearGroup) => (
+          <section class="archive-year-section" data-archive-year={yearGroup.year}>
+            <div class="archive-year-tile">
+              <span>{yearGroup.year}</span>
+            </div>
+
+            <div class="archive-year-content">
+              {yearGroup.months.map((month) => (
+                <section class="archive-month-group">
+                  <div class="archive-month-node" data-archive-month={month.monthKey}>
+                    <span class="archive-month-label">{month.monthLabel}</span>
+                    <span class="archive-month-line" aria-hidden="true"></span>
+                  </div>
+
+                  <div class="archive-grid">
+                    {month.posts.map((post) => (
+                      <ArchivePostTile
+                        post={post}
+                        author={getPostAuthor(post)}
+                        dateLabel={getPostDateISO(post.data.date)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </section>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>

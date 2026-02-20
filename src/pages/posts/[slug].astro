@@ -1,7 +1,8 @@
----
+﻿---
 import { getCollection, type CollectionEntry } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
 import ParagraphComments from "../../components/comments/ParagraphComments";
+import PostCover from "../../components/post/PostCover.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/comments.css";
 
 interface Props {
@@ -22,7 +23,8 @@ const { Content } = await post.render();
 
 <BaseLayout title={`${post.data.title} | 文章`}>
   <article>
-    <header class="content-section">
+    <header class="content-section post-header">
+      <PostCover post={post} variant="hero" />
       <h1>{post.data.title}</h1>
       <p class="subtle">
         发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}

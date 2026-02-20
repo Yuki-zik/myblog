@@ -6,6 +6,9 @@ topics:
 concepts:
   - anchor-id
 summary: 讨论从时间流转向主题地图的收益，并给出可执行落地方式。
+cover:
+  src: ./covers/why-topic-first.svg
+  alt: 主题网络与时间轴对比的抽象封面图
 ---
 
 博客如果只按时间排序，读者很快会迷失在时间轴里。

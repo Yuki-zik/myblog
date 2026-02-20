@@ -8,6 +8,9 @@ concepts:
   - anchor-id
   - optimistic-ui
 summary: 用 rehype 注入稳定锚点并连接 Supabase，实现可扩展段落短评。
+cover:
+  src: ./covers/paragraph-anchor-design.svg
+  alt: 段落锚点与评论节点连接的抽象封面图
 ---
 
 段落级短评的关键不是 UI，而是可长期稳定的定位协议。

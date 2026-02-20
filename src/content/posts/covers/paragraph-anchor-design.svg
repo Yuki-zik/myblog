@@ -1,0 +1,44 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="150" y1="80" x2="1450" y2="820" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E244D" />
+      <stop offset="0.55" stop-color="#12597B" />
+      <stop offset="1" stop-color="#18A48B" />
+    </linearGradient>
+    <linearGradient id="accent" x1="360" y1="140" x2="1260" y2="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F2FDFF" stop-opacity="0.84" />
+      <stop offset="1" stop-color="#8AE4D5" stop-opacity="0" />
+    </linearGradient>
+    <pattern id="dash" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M0 16H32" stroke="#A8D0DF" stroke-opacity="0.16" stroke-dasharray="4 6" />
+      <path d="M16 0V32" stroke="#A8D0DF" stroke-opacity="0.12" stroke-dasharray="4 6" />
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <rect width="1600" height="900" fill="url(#dash)" />
+
+  <rect x="220" y="150" width="1160" height="600" rx="28" fill="#081A2C" fill-opacity="0.33" stroke="#D7F9FF" stroke-opacity="0.36" />
+
+  <path d="M300 280H1310" stroke="#D3F6FF" stroke-opacity="0.33" stroke-width="2" />
+  <path d="M300 440H1310" stroke="#D3F6FF" stroke-opacity="0.24" stroke-width="2" />
+  <path d="M300 600H1310" stroke="#D3F6FF" stroke-opacity="0.18" stroke-width="2" />
+
+  <path d="M420 280V600" stroke="#BFEAF8" stroke-opacity="0.35" stroke-width="2" />
+  <path d="M760 280V600" stroke="#BFEAF8" stroke-opacity="0.24" stroke-width="2" />
+  <path d="M1060 280V600" stroke="#BFEAF8" stroke-opacity="0.2" stroke-width="2" />
+
+  <circle cx="420" cy="440" r="20" fill="#F2FDFF" />
+  <circle cx="760" cy="440" r="20" fill="#B8F0E4" />
+  <circle cx="1060" cy="440" r="20" fill="#F2FDFF" />
+  <path d="M420 440H760H1060" stroke="#E5FAFF" stroke-opacity="0.45" stroke-width="5" />
+
+  <path d="M280 170L1280 760" stroke="url(#accent)" stroke-width="110" stroke-opacity="0.25" />
+
+  <text x="300" y="706" fill="#EAFDFF" font-family="IBM Plex Sans, Noto Sans SC, sans-serif" font-size="52" font-weight="620">
+    Paragraph Anchor Design
+  </text>
+  <text x="300" y="770" fill="#BFE8F2" font-family="IBM Plex Sans, Noto Sans SC, sans-serif" font-size="28" font-weight="500" letter-spacing="2">
+    STABLE IDS FOR DURABLE DISCUSSION
+  </text>
+</svg>

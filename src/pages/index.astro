@@ -1,5 +1,6 @@
----
+﻿---
 import { getCollection } from "astro:content";
+import PostCard from "../components/post/PostCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const [topics, posts] = await Promise.all([
@@ -15,6 +16,10 @@ const sortedTopics = topics.sort((a, b) => {
   }
   return a.data.title.localeCompare(b.data.title, "zh-CN");
 });
+
+const latestPosts = [...posts]
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 6);
 
 const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
   post.data.topics.forEach((topicSlug) => {
@@ -44,5 +49,26 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
         </article>
       ))
     }
+  </section>
+
+  <section class="content-section" data-latest-posts>
+    <h2>最新文章</h2>
+    <p class="subtle">每篇文章都提供封面图，帮助你更快定位主题和上下文。</p>
+
+    {
+      latestPosts.length === 0 ? (
+        <p class="subtle">暂时还没有可展示的文章。</p>
+      ) : (
+        <div class="grid post-card-grid">
+          {latestPosts.map((post) => <PostCard post={post} />)}
+        </div>
+      )
+    }
+  </section>
+
+  <section class="content-section home-archive-entry" data-home-archive-entry>
+    <h2>时间归档</h2>
+    <p class="subtle">按年与月份浏览全部文章，快速定位你错过的内容。</p>
+    <a class="archive-entry-button" href="/archives">进入归档时间轴</a>
   </section>
 </BaseLayout>

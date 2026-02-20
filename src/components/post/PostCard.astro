@@ -1,0 +1,33 @@
+﻿---
+import type { CollectionEntry } from "astro:content";
+import PostCover from "./PostCover.astro";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="post-card" data-post-card>
+  <a href={`/posts/${post.slug}`} class="post-card-cover-link" aria-label={`阅读文章：${post.data.title}`}>
+    <PostCover post={post} variant="card" />
+  </a>
+
+  <div class="post-card-body">
+    <p class="post-card-date subtle">
+      发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
+      {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
+    </p>
+
+    <h3 class="post-card-title">
+      <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+    </h3>
+
+    {post.data.summary ? <p class="post-card-summary">{post.data.summary}</p> : null}
+
+    <ul class="pill-list post-card-topics">
+      {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+    </ul>
+  </div>
+</article>

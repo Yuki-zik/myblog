@@ -1,5 +1,6 @@
----
+﻿---
 import { getCollection, type CollectionEntry } from "astro:content";
+import PostCard from "../../components/post/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 interface Props {
@@ -51,15 +52,15 @@ const referencedTopics = allTopics.filter((topic) =>
     ) : null
   }
 
-  <section class="content-section">
+  <section class="content-section" data-concept-posts>
     <h2>引用它的文章</h2>
     {
       referencedPosts.length === 0 ? (
         <p class="subtle">暂无文章引用该概念。</p>
       ) : (
-        <ul class="meta-list">
-          {referencedPosts.map((post) => <li><a href={`/posts/${post.slug}`}>{post.data.title}</a></li>)}
-        </ul>
+        <div class="grid post-card-grid">
+          {referencedPosts.map((post) => <PostCard post={post} />)}
+        </div>
       )
     }
   </section>

@@ -4,17 +4,26 @@ const isoDate = z.string().datetime({ offset: true });
 
 const posts = defineCollection({
   type: "content",
-  schema: z.object({
-    title: z.string(),
-    date: isoDate,
-    updated: isoDate.optional(),
-    draft: z.boolean().optional().default(false),
-    topics: z.array(z.string()).min(1),
-    concepts: z.array(z.string()).optional(),
-    summary: z.string().optional(),
-    canonical: z.string().url().optional(),
-    readingTime: z.number().positive().optional()
-  })
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: isoDate,
+      updated: isoDate.optional(),
+      draft: z.boolean().optional().default(false),
+      topics: z.array(z.string()).min(1),
+      concepts: z.array(z.string()).optional(),
+      summary: z.string().optional(),
+      author: z.string().min(1).optional(),
+      cover: z
+        .object({
+          src: image(),
+          alt: z.string().min(1),
+          credit: z.string().optional()
+        })
+        .optional(),
+      canonical: z.string().url().optional(),
+      readingTime: z.number().positive().optional()
+    })
 });
 
 const topics = defineCollection({

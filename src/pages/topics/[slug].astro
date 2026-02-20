@@ -1,5 +1,6 @@
----
+﻿---
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import PostCard from "../../components/post/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 interface Props {
@@ -26,9 +27,7 @@ const entryPosts = (
   await Promise.all((topic.data.entryPosts ?? []).map((slug) => getEntry("posts", slug)))
 ).filter((entry): entry is CollectionEntry<"posts"> => Boolean(entry && !entry.data.draft));
 
-const relatedConceptSlugs = Array.from(
-  new Set(topicPosts.flatMap((post) => post.data.concepts ?? []))
-);
+const relatedConceptSlugs = Array.from(new Set(topicPosts.flatMap((post) => post.data.concepts ?? [])));
 const relatedConcepts = (
   await Promise.all(relatedConceptSlugs.map((slug) => getEntry("concepts", slug)))
 ).filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
@@ -62,22 +61,15 @@ const relatedTopics = (
     }
   </section>
 
-  <section class="content-section">
+  <section class="content-section" data-topic-posts>
     <h2>相关文章</h2>
     {
       topicPosts.length === 0 ? (
         <p class="subtle">该主题下暂无文章。</p>
       ) : (
-        <ul class="meta-list">
-          {
-            topicPosts.map((post) => (
-              <li>
-                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
-                <span class="subtle"> · {new Date(post.data.date).toLocaleDateString("zh-CN")}</span>
-              </li>
-            ))
-          }
-        </ul>
+        <div class="grid post-card-grid">
+          {topicPosts.map((post) => <PostCard post={post} />)}
+        </div>
       )
     }
   </section>

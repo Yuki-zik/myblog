@@ -1,0 +1,31 @@
+﻿---
+import type { CollectionEntry } from "astro:content";
+import PostCover from "./PostCover.astro";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  author: string;
+  dateLabel: string;
+}
+
+const { post, author, dateLabel } = Astro.props;
+---
+
+<article class="archive-post-tile" data-archive-card>
+  <a
+    href={`/posts/${post.slug}`}
+    class="archive-post-link"
+    aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
+  >
+    <PostCover post={post} variant="archive-square" />
+
+    <div class="archive-post-overlay">
+      <h3>{post.data.title}</h3>
+    </div>
+
+    <p class="archive-post-meta">
+      <span data-archive-date>{dateLabel}</span>
+      <span data-archive-author>By {author}</span>
+    </p>
+  </a>
+</article>
