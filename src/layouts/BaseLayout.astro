@@ -69,11 +69,15 @@ const themeInitScript = `(function () {
         }
 
         function applyPreference(preference) {
+          root.classList.add("theme-transitioning");
           root.dataset.theme = preference;
           root.style.colorScheme =
             preference === "system" ? (media.matches ? "dark" : "light") : preference;
           toggle.textContent = labels[preference];
           toggle.setAttribute("aria-label", "Current " + labels[preference]);
+          window.setTimeout(function () {
+            root.classList.remove("theme-transitioning");
+          }, 420);
         }
 
         function cyclePreference() {
