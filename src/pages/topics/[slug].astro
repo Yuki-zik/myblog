@@ -1,0 +1,110 @@
+---
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+interface Props {
+  topic: CollectionEntry<"topics">;
+}
+
+export async function getStaticPaths() {
+  const topics = await getCollection("topics");
+  return topics.map((topic) => ({
+    params: { slug: topic.slug },
+    props: { topic }
+  }));
+}
+
+const { topic } = Astro.props;
+const { Content } = await topic.render();
+
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const topicPosts = allPosts
+  .filter((post) => post.data.topics.includes(topic.slug))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const entryPosts = (
+  await Promise.all((topic.data.entryPosts ?? []).map((slug) => getEntry("posts", slug)))
+).filter((entry): entry is CollectionEntry<"posts"> => Boolean(entry && !entry.data.draft));
+
+const relatedConceptSlugs = Array.from(
+  new Set(topicPosts.flatMap((post) => post.data.concepts ?? []))
+);
+const relatedConcepts = (
+  await Promise.all(relatedConceptSlugs.map((slug) => getEntry("concepts", slug)))
+).filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
+
+const relatedTopics = (
+  await Promise.all((topic.data.relatedTopics ?? []).map((slug) => getEntry("topics", slug)))
+).filter((entry): entry is CollectionEntry<"topics"> => Boolean(entry));
+---
+
+<BaseLayout title={`${topic.data.title} | 主题地图`}>
+  <section class="content-section">
+    <h1>{topic.data.title}</h1>
+    <p class="subtle">{topic.data.summary}</p>
+    <p>{topic.data.why}</p>
+  </section>
+
+  <section class="content-section">
+    <Content />
+  </section>
+
+  <section class="content-section">
+    <h2>入门路径</h2>
+    {
+      entryPosts.length === 0 ? (
+        <p class="subtle">暂无指定入门文章。</p>
+      ) : (
+        <ol class="meta-list">
+          {entryPosts.map((post) => <li><a href={`/posts/${post.slug}`}>{post.data.title}</a></li>)}
+        </ol>
+      )
+    }
+  </section>
+
+  <section class="content-section">
+    <h2>相关文章</h2>
+    {
+      topicPosts.length === 0 ? (
+        <p class="subtle">该主题下暂无文章。</p>
+      ) : (
+        <ul class="meta-list">
+          {
+            topicPosts.map((post) => (
+              <li>
+                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+                <span class="subtle"> · {new Date(post.data.date).toLocaleDateString("zh-CN")}</span>
+              </li>
+            ))
+          }
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="content-section">
+    <h2>相关概念</h2>
+    {
+      relatedConcepts.length === 0 ? (
+        <p class="subtle">该主题文章尚未标注相关概念。</p>
+      ) : (
+        <ul class="pill-list">
+          {relatedConcepts.map((concept) => <li><a href={`/concepts/${concept.slug}`}>{concept.data.title}</a></li>)}
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="content-section">
+    <h2>相关主题</h2>
+    {
+      relatedTopics.length === 0 ? (
+        <p class="subtle">暂无显式关联主题。</p>
+      ) : (
+        <ul class="pill-list">
+          {relatedTopics.map((entry) => <li><a href={`/topics/${entry.slug}`}>{entry.data.title}</a></li>)}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

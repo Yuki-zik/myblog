@@ -1,0 +1,45 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ParagraphComments from "../../components/comments/ParagraphComments";
+import "../../styles/comments.css";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} | 文章`}>
+  <article>
+    <header class="content-section">
+      <h1>{post.data.title}</h1>
+      <p class="subtle">
+        发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
+        {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
+      </p>
+      {post.data.summary ? <p>{post.data.summary}</p> : null}
+      {post.data.topics.length > 0 ? (
+        <ul class="pill-list">
+          {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+        </ul>
+      ) : null}
+    </header>
+
+    <section class="post-body" data-post-body>
+      <Content />
+    </section>
+  </article>
+
+  <ParagraphComments client:load postSlug={post.slug} />
+</BaseLayout>

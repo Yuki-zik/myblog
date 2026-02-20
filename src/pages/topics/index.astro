@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const topics = await getCollection("topics");
+const sortedTopics = topics.sort((a, b) => {
+  const orderA = a.data.order ?? Number.POSITIVE_INFINITY;
+  const orderB = b.data.order ?? Number.POSITIVE_INFINITY;
+  if (orderA !== orderB) {
+    return orderA - orderB;
+  }
+  return a.data.title.localeCompare(b.data.title, "zh-CN");
+});
+---
+
+<BaseLayout title="主题列表 | MyBlog">
+  <section class="content-section">
+    <h1>主题列表</h1>
+    <p class="subtle">每个主题都是知识网络入口，而不是时间流末端。</p>
+  </section>
+
+  <section class="grid topic-grid">
+    {
+      sortedTopics.map((topic) => (
+        <article class="card">
+          <h3>
+            <a href={`/topics/${topic.slug}`}>{topic.data.title}</a>
+          </h3>
+          <p>{topic.data.summary}</p>
+          <p class="subtle" style="margin-top: 0.6rem;">{topic.data.why}</p>
+        </article>
+      ))
+    }
+  </section>
+</BaseLayout>

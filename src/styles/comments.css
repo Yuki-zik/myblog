@@ -1,0 +1,174 @@
+.comment-bubble-host {
+  display: inline-flex;
+  margin-left: 0.65rem;
+  vertical-align: middle;
+}
+
+.comment-bubble {
+  border: 1px solid #bfd4cc;
+  background: #f0f9f6;
+  color: #0e6356;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
+
+.comment-bubble:hover {
+  background: #e5f3ef;
+}
+
+.comment-thread-host {
+  margin: 0 0 1rem;
+}
+
+.comment-thread-panel {
+  border: 1px solid #d8e0db;
+  border-radius: 12px;
+  background: #fcfefd;
+  padding: 0.85rem;
+  margin-top: 0.45rem;
+}
+
+.comment-thread-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  color: #3b4844;
+  font-size: 0.92rem;
+}
+
+.comment-list {
+  margin: 0 0 0.85rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.comment-item {
+  border: 1px solid #e2e8e4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.55rem 0.6rem;
+}
+
+.comment-item p {
+  margin: 0;
+  padding: 0;
+}
+
+.comment-item.optimistic {
+  opacity: 0.72;
+}
+
+.comment-empty {
+  color: #61706a;
+  font-size: 0.92rem;
+}
+
+.comment-meta {
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  color: #6b7772;
+  font-size: 0.75rem;
+}
+
+.comment-tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.tag {
+  border: 1px solid #c7d6d0;
+  background: #f7faf8;
+  color: #3b4a45;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.tag.active {
+  background: #d5efe8;
+  border-color: #8ac7b6;
+  color: #0c5f52;
+}
+
+.comment-input-wrap textarea {
+  width: 100%;
+  border: 1px solid #cfd9d4;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  resize: vertical;
+  font: inherit;
+}
+
+.comment-input-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.counter {
+  color: #5f6d68;
+  font-size: 0.82rem;
+}
+
+.submit {
+  border: 1px solid #1e8675;
+  background: #0b7767;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.comment-error {
+  color: #b02e2e;
+  margin: 0.5rem 0 0;
+  font-size: 0.86rem;
+}
+
+.comment-info {
+  color: #1d5f95;
+  margin: 0.5rem 0 0;
+  font-size: 0.86rem;
+}
+
+.comments-global-error {
+  border: 1px solid #f1c1c1;
+  background: #fff4f4;
+  color: #9f2222;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .comment-bubble-host {
+    display: block;
+    margin-left: 0;
+    margin-top: 0.35rem;
+  }
+}

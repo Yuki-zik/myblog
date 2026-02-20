@@ -1,0 +1,35 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "主题化知识网络与段落短评博客" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell">
+        <a href="/" class="brand">MyBlog</a>
+        <nav>
+          <a href="/">首页</a>
+          <a href="/topics">主题</a>
+        </nav>
+      </div>
+    </header>
+    <main class="shell">
+      <slot />
+    </main>
+  </body>
+</html>

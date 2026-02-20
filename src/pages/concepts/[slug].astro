@@ -1,0 +1,79 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+interface Props {
+  concept: CollectionEntry<"concepts">;
+}
+
+export async function getStaticPaths() {
+  const concepts = await getCollection("concepts");
+  return concepts.map((concept) => ({
+    params: { slug: concept.slug },
+    props: { concept }
+  }));
+}
+
+const { concept } = Astro.props;
+const { Content } = await concept.render();
+
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const referencedPosts = allPosts
+  .filter((post) => (post.data.concepts ?? []).includes(concept.slug))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const postSlugSet = new Set(referencedPosts.map((post) => post.slug));
+
+const allTopics = await getCollection("topics");
+const referencedTopics = allTopics.filter((topic) =>
+  (topic.data.entryPosts ?? []).some((postSlug) => postSlugSet.has(postSlug))
+);
+---
+
+<BaseLayout title={`${concept.data.title} | 概念`}>
+  <section class="content-section">
+    <h1>{concept.data.title}</h1>
+    <p class="subtle">{concept.data.summary}</p>
+  </section>
+
+  <section class="content-section">
+    <Content />
+  </section>
+
+  {
+    (concept.data.tags?.length ?? 0) > 0 ? (
+      <section class="content-section">
+        <h2>标签</h2>
+        <ul class="pill-list">
+          {concept.data.tags?.map((tag) => <li>{tag}</li>)}
+        </ul>
+      </section>
+    ) : null
+  }
+
+  <section class="content-section">
+    <h2>引用它的文章</h2>
+    {
+      referencedPosts.length === 0 ? (
+        <p class="subtle">暂无文章引用该概念。</p>
+      ) : (
+        <ul class="meta-list">
+          {referencedPosts.map((post) => <li><a href={`/posts/${post.slug}`}>{post.data.title}</a></li>)}
+        </ul>
+      )
+    }
+  </section>
+
+  <section class="content-section">
+    <h2>引用它的主题（通过 entryPosts 间接推导）</h2>
+    {
+      referencedTopics.length === 0 ? (
+        <p class="subtle">暂无主题通过入门路径引用该概念。</p>
+      ) : (
+        <ul class="meta-list">
+          {referencedTopics.map((topic) => <li><a href={`/topics/${topic.slug}`}>{topic.data.title}</a></li>)}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

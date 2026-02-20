@@ -1,0 +1,151 @@
+:root {
+  --bg: #f9fbf8;
+  --surface: #ffffff;
+  --text: #1c2422;
+  --subtle: #55605d;
+  --line: #d6ddd9;
+  --accent: #0b7767;
+  --accent-soft: #d7efe9;
+  --danger: #b02e2e;
+  --info: #185ea4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: radial-gradient(circle at top right, #ecf8f1 0%, var(--bg) 42%);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+a {
+  color: var(--accent);
+}
+
+.shell {
+  width: min(980px, calc(100vw - 2rem));
+  margin: 0 auto;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 95%, #e7f4ef 5%);
+  margin-bottom: 2rem;
+}
+
+.site-header .shell {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--subtle);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.topic-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 1rem 1.1rem;
+}
+
+.card h3 {
+  margin: 0 0 0.5rem;
+}
+
+.card p {
+  margin: 0;
+  color: var(--subtle);
+}
+
+.meta-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.meta-list a {
+  text-decoration: none;
+}
+
+.content-section {
+  margin: 2rem 0;
+}
+
+.post-body {
+  position: relative;
+}
+
+.post-body p {
+  position: relative;
+  padding-right: 4.5rem;
+  margin: 1rem 0;
+}
+
+.subtle {
+  color: var(--subtle);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.pill-list a {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #115247;
+  text-decoration: none;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 768px) {
+  .post-body p {
+    padding-right: 0;
+    padding-bottom: 0.25rem;
+  }
+}
