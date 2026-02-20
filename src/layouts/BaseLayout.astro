@@ -1,4 +1,4 @@
----
+﻿---
 import "../styles/global.css";
 
 interface Props {
@@ -7,29 +7,94 @@ interface Props {
 }
 
 const { title, description = "主题化知识网络与段落短评博客" } = Astro.props;
+
+const themeInitScript = `(function () {
+  var root = document.documentElement;
+  var storageKey = "theme-preference";
+  var valid = { system: true, light: true, dark: true };
+  var media = window.matchMedia("(prefers-color-scheme: dark)");
+  var stored = localStorage.getItem(storageKey);
+  var preference = stored && valid[stored] ? stored : "system";
+  root.dataset.theme = preference;
+  root.style.colorScheme =
+    preference === "system" ? (media.matches ? "dark" : "light") : preference;
+})();`;
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="system">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline set:html={themeInitScript} />
   </head>
   <body>
     <header class="site-header">
       <div class="shell">
         <a href="/" class="brand">MyBlog</a>
-        <nav>
+        <nav class="site-nav">
           <a href="/">首页</a>
           <a href="/topics">主题</a>
+          <button id="theme-toggle" type="button" class="theme-toggle" aria-live="polite">
+            Theme: System
+          </button>
         </nav>
       </div>
     </header>
     <main class="shell">
       <slot />
     </main>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var toggle = document.getElementById("theme-toggle");
+        if (!toggle) return;
+
+        var storageKey = "theme-preference";
+        var order = ["system", "light", "dark"];
+        var labels = {
+          system: "Theme: System",
+          light: "Theme: Light",
+          dark: "Theme: Dark"
+        };
+        var media = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function getPreference() {
+          var stored = localStorage.getItem(storageKey);
+          return order.indexOf(stored || "") > -1 ? stored : "system";
+        }
+
+        function applyPreference(preference) {
+          root.dataset.theme = preference;
+          root.style.colorScheme =
+            preference === "system" ? (media.matches ? "dark" : "light") : preference;
+          toggle.textContent = labels[preference];
+          toggle.setAttribute("aria-label", "Current " + labels[preference]);
+        }
+
+        function cyclePreference() {
+          var current = getPreference();
+          var currentIndex = order.indexOf(current);
+          var next = order[(currentIndex + 1) % order.length];
+          localStorage.setItem(storageKey, next);
+          applyPreference(next);
+        }
+
+        applyPreference(getPreference());
+        toggle.addEventListener("click", cyclePreference);
+
+        function handleSystemThemeChange() {
+          if (getPreference() === "system") {
+            applyPreference("system");
+          }
+        }
+
+        media.addEventListener("change", handleSystemThemeChange);
+      })();
+    </script>
   </body>
 </html>
