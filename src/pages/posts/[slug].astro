@@ -1,11 +1,13 @@
 ﻿---
 import { getCollection, type CollectionEntry } from "astro:content";
+import ArticleComments from "../../components/comments/ArticleComments";
 import ParagraphComments from "../../components/comments/ParagraphComments";
 import PostCover from "../../components/post/PostCover.astro";
 import PostToc from "../../components/post/PostToc.astro";
 import { resolvePostAuthor } from "../../lib/posts/author";
 import { buildPostToc } from "../../lib/posts/toc";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/article-comments.css";
 import "../../styles/comments.css";
 
 interface Props {
@@ -53,6 +55,7 @@ const tocItems = buildPostToc(headings ?? []);
       </article>
 
       <ParagraphComments client:load postSlug={post.slug} />
+      <ArticleComments client:load postSlug={post.slug} />
     </div>
 
     {tocItems.length > 0 ? (

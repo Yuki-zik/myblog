@@ -27,4 +27,11 @@
 - Added static search index endpoint (/search-index.json) and header instant search UI for posts/topics/concepts.
 - Added post TOC generation from Astro headings (H2/H3) and a sticky/collapsible TOC component with active-section highlighting.
 - Added /author page showing author profile summary and authored post list.
-- Expanded test coverage for search indexing and TOC generation; validated build and existing E2E flows.
+- Expanded test coverage for search indexing and TOC generation; validated build and existing E2E flows.- Added a second comment system for article-level discussions (bottom comment box) with separate Supabase schema/table (rticle_comments) to coexist with paragraph comments.
+- Added markdown-rendered article comments with safe sanitization (eact-markdown, emark-gfm, ehype-sanitize).
+- Added screenshot-inspired warm-tone comment UI and e2e coverage for article comment submit + coexistence with paragraph comments.
+## Article Comments Addendum (ASCII-safe correction)
+
+- Added a second comment system for article-level discussions (bottom comment box) with a separate Supabase table named article_comments, coexisting with paragraph comments.
+- Added markdown-rendered article comments with safe sanitization using react-markdown, remark-gfm, and rehype-sanitize.
+- Added screenshot-inspired warm-tone UI and E2E coverage for article comment submit + coexistence with paragraph comments.
