@@ -1,12 +1,19 @@
-﻿---
+---
 import "../styles/global.css";
+import HeaderSearch from "../components/search/HeaderSearch.astro";
+import { SITE_AUTHOR_PROFILE } from "../lib/site";
 
 interface Props {
   title: string;
   description?: string;
+  authorMeta?: string;
 }
 
-const { title, description = "主题化知识网络与段落短评博客" } = Astro.props;
+const {
+  title,
+  description = "\u4e3b\u9898\u5316\u77e5\u8bc6\u7f51\u7edc\u4e0e\u6bb5\u843d\u77ed\u8bc4\u535a\u5ba2",
+  authorMeta = SITE_AUTHOR_PROFILE.name
+} = Astro.props;
 
 const themeInitScript = `(function () {
   var root = document.documentElement;
@@ -28,6 +35,7 @@ const themeInitScript = `(function () {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline set:html={themeInitScript} />
   </head>
@@ -35,10 +43,12 @@ const themeInitScript = `(function () {
     <header class="site-header">
       <div class="shell">
         <a href="/" class="brand">MyBlog</a>
+        <HeaderSearch />
         <nav class="site-nav">
-          <a href="/">首页</a>
-          <a href="/topics">主题</a>
-          <a href="/archives">归档</a>
+          <a href="/">&#x9996;&#x9875;</a>
+          <a href="/topics">&#x4e3b;&#x9898;</a>
+          <a href="/archives">&#x5f52;&#x6863;</a>
+          <a href="/author">&#x4f5c;&#x8005;</a>
           <button id="theme-toggle" type="button" class="theme-toggle" aria-live="polite">
             Theme: System
           </button>

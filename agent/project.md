@@ -19,3 +19,12 @@
   - 单元/集成测试: `vitest`
   - E2E测试: `@playwright/test`
   - GitHub Slugger, Hast/Unist 工具集(Markdown AST)
+
+## Recent Architecture Updates (2026-02-22)
+
+- Added site-level author profile config and post author resolver (src/lib/site.ts, src/lib/posts/author.ts).
+- Post detail pages now render author metadata and expose <meta name=\"author\">.
+- Added static search index endpoint (/search-index.json) and header instant search UI for posts/topics/concepts.
+- Added post TOC generation from Astro headings (H2/H3) and a sticky/collapsible TOC component with active-section highlighting.
+- Added /author page showing author profile summary and authored post list.
+- Expanded test coverage for search indexing and TOC generation; validated build and existing E2E flows.

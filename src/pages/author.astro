@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { resolvePostAuthor } from "../lib/posts/author";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await getCollection("posts", ({ data }) => !data.draft);
+const authorPosts = [...posts]
+  .filter((post) => resolvePostAuthor(post).name === SITE_AUTHOR_PROFILE.name)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size;
+---
+
+<BaseLayout title={`${SITE_AUTHOR_PROFILE.name} | 作者`} authorMeta={SITE_AUTHOR_PROFILE.name}>
+  <section class="author-page">
+    <section class="author-hero">
+      <div class="author-hero-copy">
+        <p class="author-kicker">Author</p>
+        <h1>{SITE_AUTHOR_PROFILE.name}</h1>
+        {
+          SITE_AUTHOR_PROFILE.bioShort ? (
+            <p>{SITE_AUTHOR_PROFILE.bioShort}</p>
+          ) : (
+            <p class="subtle">作者简介尚未填写。你可以在 `src/lib/site.ts` 的 `SITE_AUTHOR_PROFILE` 中补充。</p>
+          )
+        }
+
+        <ul class="author-stat-list">
+          <li>
+            <span class="author-stat-value">{authorPosts.length}</span>
+            <span class="author-stat-label">篇文章</span>
+          </li>
+          <li>
+            <span class="author-stat-value">{topicCount}</span>
+            <span class="author-stat-label">个主题</span>
+          </li>
+        </ul>
+
+        {
+          SITE_AUTHOR_PROFILE.homepage || SITE_AUTHOR_PROFILE.socials ? (
+            <div class="author-links">
+              {SITE_AUTHOR_PROFILE.homepage ? <a href={SITE_AUTHOR_PROFILE.homepage}>主页</a> : null}
+              {SITE_AUTHOR_PROFILE.socials?.github ? <a href={SITE_AUTHOR_PROFILE.socials.github}>GitHub</a> : null}
+              {SITE_AUTHOR_PROFILE.socials?.x ? <a href={SITE_AUTHOR_PROFILE.socials.x}>X</a> : null}
+            </div>
+          ) : null
+        }
+      </div>
+    </section>
+
+    <section class="content-section author-posts">
+      <h2>作者文章</h2>
+      {
+        authorPosts.length === 0 ? (
+          <p class="subtle">暂时还没有可展示的文章。</p>
+        ) : (
+          <ul class="author-post-list">
+            {authorPosts.map((post) => (
+              <li class="author-post-item">
+                <a href={`/posts/${post.slug}`} class="author-post-title">
+                  {post.data.title}
+                </a>
+                <p class="author-post-meta subtle">
+                  发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
+                  {post.data.updated
+                    ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}`
+                    : ""}
+                </p>
+                {post.data.summary ? <p class="author-post-summary">{post.data.summary}</p> : null}
+                <ul class="pill-list author-post-topics">
+                  {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </section>
+  </section>
+</BaseLayout>

@@ -1,5 +1,6 @@
-﻿import type { CollectionEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import { DEFAULT_POST_AUTHOR } from "../site";
+import { resolvePostAuthor } from "./author";
 
 export interface ArchiveMonthGroup {
   monthKey: string;
@@ -34,8 +35,8 @@ export function getPostAuthor(
   post: CollectionEntry<"posts">,
   defaultAuthor = DEFAULT_POST_AUTHOR
 ): string {
-  const author = post.data.author?.trim();
-  return author && author.length > 0 ? author : defaultAuthor;
+  const resolvedAuthor = resolvePostAuthor(post);
+  return resolvedAuthor.source === "site" ? defaultAuthor : resolvedAuthor.name;
 }
 
 export function buildArchiveGroups(posts: CollectionEntry<"posts">[]): ArchiveYearGroup[] {

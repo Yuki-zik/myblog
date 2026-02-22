@@ -1,0 +1,278 @@
+---
+---
+
+<div class="header-search" data-header-search>
+  <label class="header-search-sr-only" for="site-search-input">
+    &#x641c;&#x7d22;&#x7ad9;&#x5185;&#x5185;&#x5bb9;
+  </label>
+  <input
+    id="site-search-input"
+    class="header-search-input"
+    type="search"
+    placeholder="&#x641c;&#x7d22;&#x6587;&#x7ae0; / &#x4e3b;&#x9898; / &#x6982;&#x5ff5;"
+    autocomplete="off"
+    enterkeyhint="search"
+    data-search-input
+    aria-autocomplete="list"
+    aria-expanded="false"
+    aria-controls="site-search-results"
+  />
+  <div class="header-search-panel" data-search-panel hidden>
+    <p class="header-search-status subtle" data-search-status></p>
+    <ul class="header-search-results" id="site-search-results" data-search-results></ul>
+  </div>
+</div>
+
+<script>
+  import { searchIndexItems, type SearchIndexItem } from "../../lib/search/index";
+
+  const SEARCH_TYPE_LABELS: Record<SearchIndexItem["type"], string> = {
+    post: "\u6587\u7ae0",
+    topic: "\u4e3b\u9898",
+    concept: "\u6982\u5ff5"
+  };
+
+  const MESSAGES = {
+    loading: "\u6b63\u5728\u641c\u7d22\u2026",
+    none: "\u672a\u627e\u5230\u7ed3\u679c",
+    loadError: "\u641c\u7d22\u7d22\u5f15\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",
+    keywords: "\u5173\u952e\u8bcd\uff1a",
+    resultCount: (count: number) => `\u627e\u5230 ${count} \u6761\u7ed3\u679c`
+  };
+
+  const searchCache: {
+    items: SearchIndexItem[] | null;
+    promise: Promise<SearchIndexItem[]> | null;
+  } = {
+    items: null,
+    promise: null
+  };
+
+  function truncateText(value: string, maxLength: number): string {
+    if (!value || value.length <= maxLength) {
+      return value;
+    }
+
+    return value.slice(0, maxLength - 1).trimEnd() + "...";
+  }
+
+  async function ensureSearchIndexLoaded(): Promise<SearchIndexItem[]> {
+    if (Array.isArray(searchCache.items)) {
+      return searchCache.items;
+    }
+
+    if (!searchCache.promise) {
+      searchCache.promise = fetch("/search-index.json", {
+        headers: {
+          Accept: "application/json"
+        }
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error("Failed to load search index");
+          }
+
+          const payload = (await response.json()) as unknown;
+          return Array.isArray(payload) ? (payload as SearchIndexItem[]) : [];
+        })
+        .then((payload) => {
+          searchCache.items = payload;
+          return payload;
+        })
+        .catch((error) => {
+          searchCache.promise = null;
+          throw error;
+        });
+    }
+
+    return searchCache.promise;
+  }
+
+  function initHeaderSearch(root: Element): void {
+    if (!(root instanceof HTMLElement) || root.dataset.ready === "true") {
+      return;
+    }
+    root.dataset.ready = "true";
+
+    const input = root.querySelector<HTMLInputElement>("[data-search-input]");
+    const panel = root.querySelector<HTMLElement>("[data-search-panel]");
+    const status = root.querySelector<HTMLElement>("[data-search-status]");
+    const list = root.querySelector<HTMLElement>("[data-search-results]");
+
+    if (!input || !panel || !status || !list) {
+      return;
+    }
+
+    const inputEl = input;
+    const panelEl = panel;
+    const statusEl = status;
+    const listEl = list;
+    const rootEl = root;
+    let renderToken = 0;
+
+    function setExpanded(expanded: boolean): void {
+      inputEl.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+
+    function closePanel(): void {
+      panelEl.hidden = true;
+      setExpanded(false);
+    }
+
+    function openPanel(): void {
+      panelEl.hidden = false;
+      setExpanded(true);
+    }
+
+    function clearResults(): void {
+      listEl.replaceChildren();
+    }
+
+    function renderStatus(message: string): void {
+      statusEl.textContent = message;
+      statusEl.hidden = message.length === 0;
+    }
+
+    function renderResults(results: SearchIndexItem[]): void {
+      clearResults();
+
+      if (results.length === 0) {
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      results.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "header-search-result-item";
+
+        const link = document.createElement("a");
+        link.className = "header-search-result-link";
+        link.href = item.url;
+        if (index === 0) {
+          link.dataset.searchFirst = "true";
+        }
+
+        const topRow = document.createElement("div");
+        topRow.className = "header-search-result-top";
+
+        const title = document.createElement("span");
+        title.className = "header-search-result-title";
+        title.textContent = item.title;
+
+        const badge = document.createElement("span");
+        badge.className = `header-search-result-type header-search-result-type--${item.type}`;
+        badge.textContent = SEARCH_TYPE_LABELS[item.type] ?? item.type;
+
+        topRow.append(title, badge);
+        link.append(topRow);
+
+        const summaryText =
+          truncateText(item.summary ?? "", 60) ||
+          (item.keywords.length > 0
+            ? `${MESSAGES.keywords}${item.keywords.slice(0, 3).join(" / ")}`
+            : "");
+
+        if (summaryText) {
+          const summary = document.createElement("p");
+          summary.className = "header-search-result-summary";
+          summary.textContent = summaryText;
+          link.append(summary);
+        }
+
+        li.append(link);
+        fragment.append(li);
+      });
+
+      listEl.append(fragment);
+    }
+
+    async function updateSearchResults(): Promise<void> {
+      const token = ++renderToken;
+      const query = inputEl.value.trim();
+
+      if (!query) {
+        renderStatus("");
+        clearResults();
+        closePanel();
+        return;
+      }
+
+      openPanel();
+      renderStatus(MESSAGES.loading);
+
+      try {
+        const items = await ensureSearchIndexLoaded();
+        if (token !== renderToken) {
+          return;
+        }
+
+        const results = searchIndexItems(items, query, 8);
+        renderResults(results);
+
+        if (results.length === 0) {
+          renderStatus(MESSAGES.none);
+        } else {
+          renderStatus(MESSAGES.resultCount(results.length));
+        }
+      } catch {
+        if (token !== renderToken) {
+          return;
+        }
+
+        renderStatus(MESSAGES.loadError);
+        clearResults();
+      }
+    }
+
+    inputEl.addEventListener("focus", () => {
+      void ensureSearchIndexLoaded().catch(() => undefined);
+      if (inputEl.value.trim()) {
+        void updateSearchResults();
+      }
+    });
+
+    inputEl.addEventListener("input", () => {
+      void updateSearchResults();
+    });
+
+    inputEl.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closePanel();
+        return;
+      }
+
+      if (event.key === "Enter" && inputEl.value.trim()) {
+        const firstResult = panelEl.querySelector("[data-search-first='true']");
+        if (firstResult instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          window.location.href = firstResult.href;
+        }
+      }
+    });
+
+    document.addEventListener("pointerdown", (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && !rootEl.contains(target)) {
+        closePanel();
+      }
+    });
+
+    rootEl.addEventListener("click", (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const link = target.closest("a");
+      if (link instanceof HTMLAnchorElement && rootEl.contains(link)) {
+        closePanel();
+      }
+    });
+
+    renderStatus("");
+    closePanel();
+  }
+
+  document.querySelectorAll("[data-header-search]").forEach((root) => initHeaderSearch(root));
+</script>

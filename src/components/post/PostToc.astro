@@ -1,0 +1,144 @@
+---
+import type { PostTocItem } from "../../lib/posts/toc";
+
+interface Props {
+  items: PostTocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="post-toc" data-post-toc>
+  <section class="post-toc-card post-toc-card--desktop" aria-label="文章目录">
+    <h2 class="post-toc-title">目录</h2>
+    <ol class="post-toc-list">
+      {
+        items.map((item) => (
+          <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+            <a
+              href={`#${item.slug}`}
+              class="post-toc-link"
+              data-toc-link
+              data-target-id={item.slug}
+              data-toc-depth={item.depth}
+            >
+              <span class="post-toc-number">{item.numberLabel}</span>
+              <span class="post-toc-text">{item.text}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <details class="post-toc-mobile" data-post-toc-mobile>
+    <summary class="post-toc-mobile-summary">目录</summary>
+    <ol class="post-toc-list post-toc-list--mobile">
+      {
+        items.map((item) => (
+          <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+            <a
+              href={`#${item.slug}`}
+              class="post-toc-link"
+              data-toc-link
+              data-target-id={item.slug}
+              data-toc-depth={item.depth}
+            >
+              <span class="post-toc-number">{item.numberLabel}</span>
+              <span class="post-toc-text">{item.text}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </details>
+</div>
+
+<script>
+  function initPostToc(root: Element): void {
+    if (!(root instanceof HTMLElement) || root.dataset.ready === "true") {
+      return;
+    }
+    root.dataset.ready = "true";
+
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
+    const uniqueIds = Array.from(
+      new Set(
+        links.map((link) => link.dataset.targetId).filter((id): id is string => Boolean(id))
+      )
+    );
+
+    const headings = uniqueIds
+      .map((id) => document.getElementById(id))
+      .filter((node): node is HTMLElement => node instanceof HTMLElement);
+
+    if (headings.length === 0) {
+      return;
+    }
+
+    const mobileDetails = root.querySelector<HTMLDetailsElement>("[data-post-toc-mobile]");
+    const activeClass = "is-active";
+
+    function setActive(id: string): void {
+      links.forEach((link) => {
+        const active = link.dataset.targetId === id;
+        link.classList.toggle(activeClass, active);
+        if (active) {
+          link.setAttribute("aria-current", "true");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    function computeActiveHeading() {
+      const headerOffset = 108;
+      let current: HTMLElement = headings[0];
+
+      headings.forEach((heading) => {
+        if (heading.getBoundingClientRect().top - headerOffset <= 0) {
+          current = heading;
+        }
+      });
+
+      setActive(current.id);
+    }
+
+    const observer = new IntersectionObserver(
+      () => {
+        window.requestAnimationFrame(computeActiveHeading);
+      },
+      {
+        rootMargin: "-110px 0px -58% 0px",
+        threshold: [0, 0.2, 0.8, 1]
+      }
+    );
+
+    headings.forEach((heading) => {
+      observer.observe(heading);
+    });
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        const targetId = link.dataset.targetId;
+        if (targetId) {
+          setActive(targetId);
+        }
+
+        if (
+          mobileDetails instanceof HTMLDetailsElement &&
+          window.matchMedia("(max-width: 900px)").matches
+        ) {
+          window.setTimeout(() => {
+            mobileDetails.open = false;
+          }, 40);
+        }
+      });
+    });
+
+    window.addEventListener("hashchange", computeActiveHeading);
+    window.requestAnimationFrame(computeActiveHeading);
+  }
+
+  document.querySelectorAll("[data-post-toc]").forEach((root) => initPostToc(root));
+</script>

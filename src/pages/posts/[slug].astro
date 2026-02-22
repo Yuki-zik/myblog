@@ -2,6 +2,9 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import ParagraphComments from "../../components/comments/ParagraphComments";
 import PostCover from "../../components/post/PostCover.astro";
+import PostToc from "../../components/post/PostToc.astro";
+import { resolvePostAuthor } from "../../lib/posts/author";
+import { buildPostToc } from "../../lib/posts/toc";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/comments.css";
 
@@ -18,30 +21,44 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const resolvedAuthor = resolvePostAuthor(post);
+const { Content, headings } = await post.render();
+const tocItems = buildPostToc(headings ?? []);
 ---
 
-<BaseLayout title={`${post.data.title} | 文章`}>
-  <article>
-    <header class="content-section post-header">
-      <PostCover post={post} variant="hero" />
-      <h1>{post.data.title}</h1>
-      <p class="subtle">
-        发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
-        {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
-      </p>
-      {post.data.summary ? <p>{post.data.summary}</p> : null}
-      {post.data.topics.length > 0 ? (
-        <ul class="pill-list">
-          {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
-        </ul>
-      ) : null}
-    </header>
+<BaseLayout title={`${post.data.title} | 文章`} authorMeta={resolvedAuthor.name}>
+  <div class="post-reading-layout">
+    <div class="post-reading-main">
+      <article>
+        <header class="content-section post-header">
+          <PostCover post={post} variant="hero" />
+          <h1>{post.data.title}</h1>
+          <p class="subtle">
+            发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
+            {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
+            {" · 作者 "}
+            {resolvedAuthor.name}
+          </p>
+          {post.data.summary ? <p>{post.data.summary}</p> : null}
+          {post.data.topics.length > 0 ? (
+            <ul class="pill-list">
+              {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+            </ul>
+          ) : null}
+        </header>
 
-    <section class="post-body" data-post-body>
-      <Content />
-    </section>
-  </article>
+        <section class="post-body" data-post-body>
+          <Content />
+        </section>
+      </article>
 
-  <ParagraphComments client:load postSlug={post.slug} />
+      <ParagraphComments client:load postSlug={post.slug} />
+    </div>
+
+    {tocItems.length > 0 ? (
+      <aside class="post-toc-column" aria-label="文章目录">
+        <PostToc items={tocItems} />
+      </aside>
+    ) : null}
+  </div>
 </BaseLayout>
