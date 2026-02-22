@@ -11,8 +11,25 @@ const archiveGroups = buildArchiveGroups(posts);
 <BaseLayout title="Archives | MyBlog">
   <div class="archives-page">
     <section class="archives-hero">
-      <h1>Archives</h1>
-      <p>Browse all posts by year and month on a visual timeline.</p>
+      <div class="archives-hero-content">
+        <svg
+          class="hero-atom-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+          <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" />
+          <path d="M12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12C10 13.1046 10.8954 14 12 14Z" />
+          <path d="M4.93 4.93L19.07 19.07" />
+          <path d="M4.93 19.07L19.07 4.93" />
+        </svg>
+        <p class="hero-subtitle">天才少女螺莉莉的</p>
+        <h1>数据中心</h1>
+      </div>
     </section>
 
     {
@@ -21,34 +38,22 @@ const archiveGroups = buildArchiveGroups(posts);
           <p class="subtle">No published posts in archive yet.</p>
         </section>
       ) : (
-        archiveGroups.map((yearGroup) => (
-          <section class="archive-year-section" data-archive-year={yearGroup.year}>
-            <div class="archive-year-tile">
-              <span>{yearGroup.year}</span>
-            </div>
-
-            <div class="archive-year-content">
-              {yearGroup.months.map((month) => (
-                <section class="archive-month-group">
-                  <div class="archive-month-node" data-archive-month={month.monthKey}>
-                    <span class="archive-month-label">{month.monthLabel}</span>
-                    <span class="archive-month-line" aria-hidden="true"></span>
-                  </div>
-
-                  <div class="archive-grid">
-                    {month.posts.map((post) => (
-                      <ArchivePostTile
-                        post={post}
-                        author={getPostAuthor(post)}
-                        dateLabel={getPostDateISO(post.data.date)}
-                      />
-                    ))}
-                  </div>
-                </section>
+        <div class="archive-unified-grid">
+          {archiveGroups.map((yearGroup) => (
+            <>
+              <div class="archive-year-tile" data-archive-year={yearGroup.year}>
+                <span>{yearGroup.year}</span>
+              </div>
+              {yearGroup.months.flatMap(month => month.posts).map((post) => (
+                <ArchivePostTile
+                  post={post}
+                  author={getPostAuthor(post)}
+                  dateLabel={getPostDateISO(post.data.date)}
+                />
               ))}
-            </div>
-          </section>
-        ))
+            </>
+          ))}
+        </div>
       )
     }
   </div>
