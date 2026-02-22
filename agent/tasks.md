@@ -6,5 +6,5 @@
 | 高 | 把 `AGENT_CONTEXT.md` 的内容迁移或对应到标准规范 | ⏳ | AI Assistant | 2026-02-21 |
 | 中 | 分析现有代码与文档是否一致 | ✅ | AI Assistant | 2026-02-22 |
 | 中 | 根据 README.md 和需求总结界面设计并更新 README文档 | ✅ | AI Assistant | 2026-02-22 |
-| 中 | 根据样图重构时间归档页面 (合并卡片网格与视觉语言) | ✅ | AI Assistant | 2026-02-22 |
+| 中 | 为归档页（/archives）添加海报横幅 | ✅ | AI Assistant | 2026-02-22 |
 | 低 | 添加管理员审核工作流 | ⏳ | AI Assistant | - |
