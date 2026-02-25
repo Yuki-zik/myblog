@@ -2,12 +2,33 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  /* starts invisible, JS adds .is-scrolled */
   background: var(--header-bg);
   margin-bottom: 2rem;
-  transition: background-color 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Transform for hide/show on scroll-up/down */
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Border appears after scroll */
+.site-header.is-scrolled {
+  border-bottom-color: var(--line);
+}
+
+/* Slide up + fade out on scroll-down */
+.site-header.is-hidden {
+  transform: translateY(-110%);
+  opacity: 0;
+  /* Still occupies sticky space; content doesn't jump */
+  pointer-events: none;
 }
 
 .site-header .shell {
@@ -42,4 +63,3 @@
   color: var(--subtle);
   font-weight: 540;
 }
-

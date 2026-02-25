@@ -203,6 +203,53 @@ const themeInitScript = `(function () {
             window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
           });
         })();
+
+        // Navbar hide-on-scroll-down / show-on-scroll-up
+        (function () {
+          var header = document.querySelector(".site-header");
+          if (!header) return;
+
+          var lastY = window.scrollY;
+          var ticking = false;
+          var SCROLL_THRESHOLD = 20;   // px before border appears
+          var HIDE_THRESHOLD   = 80;   // px scrolled down before hide triggers
+          var SHOW_DELTA       = 12;   // px scrolled up before show triggers
+
+          function update() {
+            var y = window.scrollY;
+            var delta = y - lastY;
+
+            // Border fade-in after first scroll past threshold
+            header.classList.toggle("is-scrolled", y > SCROLL_THRESHOLD);
+
+            // Only hide/show after enough initial scroll
+            if (y > HIDE_THRESHOLD) {
+              if (delta > 6) {
+                // Scrolling DOWN — hide header
+                header.classList.add("is-hidden");
+              } else if (delta < -SHOW_DELTA) {
+                // Scrolling UP — show header
+                header.classList.remove("is-hidden");
+              }
+            } else {
+              // Near top — always show
+              header.classList.remove("is-hidden");
+            }
+
+            lastY = y;
+            ticking = false;
+          }
+
+          window.addEventListener("scroll", function () {
+            if (!ticking) {
+              window.requestAnimationFrame(update);
+              ticking = true;
+            }
+          }, { passive: true });
+
+          // Init state
+          header.classList.toggle("is-scrolled", window.scrollY > SCROLL_THRESHOLD);
+        })();
       })();
     </script>
   </body>

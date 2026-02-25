@@ -168,30 +168,49 @@ html.theme-transitioning body::before {
   color: color-mix(in srgb, var(--reading-ink) 94%, var(--reading-ink-subtle) 6%);
 }
 
+/* === Neutralize global toc.css active color in SCH reading left rail ===
+   toc.css line 88 sets .post-toc-link.is-active { color: #cf6d42; font-weight: 700 }
+   which overrides the warm-ink styles we want here. Reset to our values. === */
 .post-reading-toc-rail .post-toc-link.is-active {
-  background: transparent;
   color: var(--reading-ink);
+  font-weight: 550;
+  /* depth-specific rules below will override for depth-2 */
+  background: transparent;
 }
 
-.post-reading-toc-rail .post-toc-link.is-active::before {
-  background: color-mix(in srgb, var(--reading-ink-subtle) 72%, var(--reading-ink) 28%);
+/* Depth-2 active: warm accent bar + bold */
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link.is-active {
+  color: var(--reading-ink);
+  font-weight: 680;
 }
 
-.post-reading-toc-rail .post-toc-number {
-  min-width: 2ch;
-  font-size: 0.74rem;
-  font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--reading-ink-subtle) 92%, transparent 8%);
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link.is-active::before {
+  background: var(--reading-accent);
 }
 
-.post-reading-toc-rail .post-toc-text {
-  font-size: 0.77rem;
-  line-height: 1.28;
+/* Depth-3 active: slimmer tint bar + slight color */
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link.is-active {
+  color: color-mix(in srgb, var(--reading-ink) 82%, var(--reading-ink-subtle) 18%);
+  font-weight: 480;
 }
 
-.post-reading-toc-rail .post-toc-item--depth-3 .post-toc-link {
-  padding-left: 1rem;
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link.is-active::before {
+  background: color-mix(in srgb, var(--reading-accent) 48%, transparent 52%);
 }
+
+/* Depth-2 items: base */
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link {
+  font-weight: 520;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 70%, var(--reading-ink) 30%);
+}
+
+/* Depth-3 items: more indented */
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link {
+  padding-left: 1.6rem;
+  font-size: 0.76rem;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 88%, var(--reading-ink) 12%);
+}
+
 
 /* CJK/Latin typography tuning for center and right columns */
 .post-reading-layout--scholarly .post-body--scholarly,
