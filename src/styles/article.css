@@ -501,15 +501,35 @@ html.theme-transitioning body::before {
 }
 
 .post-body--scholarly h2 {
-  margin-top: 2.25rem;
-  padding-top: 0.55rem;
-  border-top: 1px solid color-mix(in srgb, var(--reading-rule) 84%, transparent 16%);
-  font-size: clamp(1.38rem, 1.2rem + 0.5vw, 1.72rem);
+  font-size: clamp(1.5rem, 1.2rem + 0.7vw, 1.95rem);
+  font-weight: 680;
+  margin-top: 2.8rem;
+  margin-bottom: 0.2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.1rem;
+  border-top: 1.5px solid color-mix(in srgb, var(--reading-rule) 90%, var(--reading-ink) 10%);
+  letter-spacing: -0.022em;
+  line-height: 1.22;
+  /* Faint left-side label decoration for strong section landmark feel */
+  position: relative;
+}
+
+.post-body--scholarly h2::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 2px;
+  background: color-mix(in srgb, var(--reading-accent) 52%, transparent 48%);
+  margin-bottom: 0.55rem;
+  margin-top: 0.15rem;
+  border-radius: 1px;
 }
 
 .post-body--scholarly h3 {
-  margin-top: 1.65rem;
-  font-size: clamp(1.14rem, 1.06rem + 0.22vw, 1.28rem);
+  font-size: clamp(1.15rem, 1.0rem + 0.32vw, 1.38rem);
+  font-weight: 600;
+  margin-top: 1.8rem;
+  color: color-mix(in srgb, var(--reading-ink) 92%, var(--reading-ink-subtle) 8%);
 }
 
 .post-body--scholarly p[data-anchor] {
@@ -642,41 +662,68 @@ html.theme-transitioning body::before {
 
 .post-scholar-rail .post-toc-list,
 .post-scholar-rail .post-toc-list--rail {
-  gap: 0.52rem;
+  gap: 0.46rem;
 }
 
-.post-scholar-rail .post-toc-link {
+/* Depth-2 items: bold text, full ink color when active */
+.post-scholar-rail .post-toc-item--depth-2>.post-toc-link {
   position: relative;
-  padding: 0.03rem 0 0.03rem 0.72rem;
+  padding: 0.06rem 0 0.06rem 0.85rem;
   gap: 0.42rem;
   border-radius: 0;
   background: transparent;
-  color: color-mix(in srgb, var(--reading-ink-subtle) 84%, var(--reading-ink) 16%);
+  color: color-mix(in srgb, var(--reading-ink-subtle) 72%, var(--reading-ink) 28%);
+  font-weight: 520;
+  transition: color 160ms ease;
 }
 
-.post-scholar-rail .post-toc-link::before {
-  content: "";
+/* Depth-3 items: more indented, lighter */
+.post-scholar-rail .post-toc-item--depth-3>.post-toc-link {
+  position: relative;
+  padding: 0.03rem 0 0.03rem 1.6rem;
+  gap: 0.36rem;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 90%, var(--reading-ink) 10%);
+  font-size: 0.77rem;
+}
+
+/* Left accent bar on all depths */
+.post-scholar-rail .post-toc-item--depth-2>.post-toc-link::before,
+.post-scholar-rail .post-toc-item--depth-3>.post-toc-link::before {
+  content: '';
   position: absolute;
   left: 0;
-  top: 0.18rem;
-  bottom: 0.18rem;
-  width: 1px;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 2px;
   background: transparent;
-  transition: background-color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 1px;
+  transition: background-color 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.post-scholar-rail .post-toc-link:hover {
+/* Active depth-2: bold, warm accent bar */
+.post-scholar-rail .post-toc-item--depth-2>.post-toc-link.is-active {
+  color: var(--reading-ink);
+  font-weight: 660;
+}
+
+.post-scholar-rail .post-toc-item--depth-2>.post-toc-link.is-active::before {
+  background: var(--reading-accent);
+}
+
+/* Active depth-3: just color shift, slimmer accent bar */
+.post-scholar-rail .post-toc-item--depth-3>.post-toc-link.is-active {
+  color: color-mix(in srgb, var(--reading-ink) 88%, var(--reading-ink-subtle) 12%);
+}
+
+.post-scholar-rail .post-toc-item--depth-3>.post-toc-link.is-active::before {
+  background: color-mix(in srgb, var(--reading-accent) 55%, transparent 45%);
+}
+
+/* Hover */
+.post-scholar-rail .post-toc-item--depth-2>.post-toc-link:hover,
+.post-scholar-rail .post-toc-item--depth-3>.post-toc-link:hover {
   background: transparent;
   color: var(--reading-ink);
-}
-
-.post-scholar-rail .post-toc-link.is-active {
-  background: transparent;
-  color: var(--reading-ink);
-}
-
-.post-scholar-rail .post-toc-link.is-active::before {
-  background: color-mix(in srgb, var(--reading-ink-subtle) 72%, var(--reading-ink) 28%);
 }
 
 .post-scholar-rail .post-toc-number {
@@ -1970,5 +2017,212 @@ body:has(.shell--article-reading) .reading-progress-bar {
   .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre {
     font-size: 0.81rem;
     padding: 0.8rem 0.9rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Phase 9 — Article cover design + TOC left rail polish
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Article cover hero ──────────────────────────────────────── */
+.post-cover--hero {
+  position: relative;
+  margin-bottom: 2.2rem;
+  overflow: hidden;
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--reading-paper-surface) 60%, #c8b890 40%);
+}
+
+.post-cover-img {
+  display: block;
+  width: 100%;
+  /* max height cap so very tall images don't overwhelm the layout */
+  max-height: 480px;
+  object-fit: cover;
+  object-position: center 40%;
+  border-radius: 4px 4px 0 0;
+  /* Subtle entrance fade */
+  animation: cover-reveal 0.55s cubic-bezier(0.2, 0.8, 0.5, 1) both;
+}
+
+@keyframes cover-reveal {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Warm paper gradient overlay at bottom of cover for title bleed */
+.post-cover--hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(to bottom,
+      transparent,
+      color-mix(in srgb, var(--reading-paper-bg) 84%, transparent 16%));
+  pointer-events: none;
+}
+
+.post-cover-credit {
+  position: absolute;
+  bottom: 0.42rem;
+  right: 0.65rem;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 78%, transparent 22%);
+  font-style: italic;
+  letter-spacing: 0.01em;
+  /* Back-shadow for legibility */
+  text-shadow: 0 1px 3px rgba(236, 231, 222, 0.9);
+}
+
+/* Dark mode cover gradient */
+:root[data-theme="dark"] .post-cover--hero::after {
+  background: linear-gradient(to bottom,
+      transparent,
+      color-mix(in srgb, #17140f 82%, transparent 18%));
+}
+
+/* ── 2. Left TOC rail: scroll behavior + visual hierarchy ─────────── */
+.post-reading-toc-rail {
+  position: sticky;
+  top: 2.5rem;
+  align-self: start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  /* Fade out at bottom to hint overflow */
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  padding-bottom: 1.5rem;
+}
+
+/* Left TOC rail heading "目录" */
+.post-reading-toc-summary {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 80%, var(--reading-ink) 20%);
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  cursor: default;
+  list-style: none;
+  padding: 0;
+}
+
+.post-reading-toc-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Overall TOC item group spacing */
+.post-reading-toc-body .post-toc-list {
+  gap: 0;
+}
+
+/* Depth-2 items in the left rail */
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.28rem 0 0.28rem 0.9rem;
+  font-size: 0.84rem;
+  font-weight: 550;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 68%, var(--reading-ink) 32%);
+  text-decoration: none;
+  transition: color 140ms ease, font-weight 120ms ease;
+}
+
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background-color 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link.is-active {
+  color: var(--reading-ink);
+  font-weight: 680;
+}
+
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link.is-active::before {
+  background: var(--reading-accent);
+}
+
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link:hover {
+  color: var(--reading-ink);
+}
+
+/* Depth-3 items: more indented, smaller, lighter */
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.18rem 0 0.18rem 1.9rem;
+  font-size: 0.77rem;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 88%, var(--reading-ink) 12%);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link::before {
+  content: '';
+  position: absolute;
+  left: 0.9rem;
+  top: 0.22rem;
+  bottom: 0.22rem;
+  width: 1.5px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background-color 200ms ease;
+}
+
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link.is-active {
+  color: color-mix(in srgb, var(--reading-ink) 85%, var(--reading-ink-subtle) 15%);
+}
+
+.post-reading-toc-rail .post-toc-item--depth-3>.post-toc-link.is-active::before {
+  background: color-mix(in srgb, var(--reading-accent) 50%, transparent 50%);
+}
+
+/* Number in left TOC */
+.post-reading-toc-rail .post-toc-number {
+  flex-shrink: 0;
+  font-size: 0.78em;
+  min-width: 1.6ch;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 75%, transparent 25%);
+}
+
+.post-reading-toc-rail .post-toc-item--depth-2>.post-toc-link.is-active .post-toc-number {
+  color: color-mix(in srgb, var(--reading-accent) 60%, var(--reading-ink-subtle) 40%);
+}
+
+/* ── 3. Responsive cover ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .post-cover-img {
+    max-height: 260px;
+  }
+
+  .post-reading-toc-rail {
+    max-height: unset;
+    position: static;
+    overflow: visible;
   }
 }

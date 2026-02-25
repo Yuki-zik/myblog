@@ -1,5 +1,6 @@
 ﻿---
 import { getCollection, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
 import ArticleComments from "../../components/comments/ArticleComments";
 import PostToc from "../../components/post/PostToc.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
@@ -68,6 +69,25 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
       updateProgress();
     })();
   </script>
+  <script is:inline>
+    // TOC smooth-scroll follow: scroll active item into view in left rail
+    (() => {
+      const FLAG = '__tocScrollBound';
+      if (window[FLAG]) return;
+      window[FLAG] = true;
+      const tocRail = document.querySelector('.post-reading-toc-rail');
+      if (!tocRail) return;
+      const observer = new MutationObserver(() => {
+        const active = tocRail.querySelector('.post-toc-link.is-active');
+        if (!active) return;
+        active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+      // Observe class changes on all toc links
+      tocRail.querySelectorAll('.post-toc-link').forEach(el => {
+        observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+      });
+    })();
+  </script>
 
   <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
     {tocItems.length > 0 ? (
@@ -83,6 +103,22 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
 
     <div class="post-reading-main">
       <article class="post-reading-article">
+        {post.data.cover ? (
+          <div class="post-cover post-cover--hero">
+            <Image
+              src={post.data.cover.src}
+              alt={post.data.cover.alt}
+              class="post-cover-img"
+              loading="eager"
+              decoding="async"
+              widths={[640, 960, 1280]}
+              sizes="(max-width: 900px) 100vw, 900px"
+            />
+            {post.data.cover.credit ? (
+              <p class="post-cover-credit">{post.data.cover.credit}</p>
+            ) : null}
+          </div>
+        ) : null}
         <header class="content-section post-header post-header--scholarly">
           <h1>{post.data.title}</h1>
           <p class="subtle post-header-meta">
