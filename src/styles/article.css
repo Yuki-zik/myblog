@@ -145,9 +145,9 @@ html.theme-transitioning body::before {
 
 .post-reading-toc-rail .post-toc-link {
   position: relative;
-  padding: 0.03rem 0 0.03rem 0.6rem;
+  padding: 0.18rem 0.5rem 0.18rem 0.6rem;
   gap: 0.36rem;
-  border-radius: 0;
+  border-radius: 8px;
   background: transparent;
   color: color-mix(in srgb, var(--reading-ink-subtle) 88%, var(--reading-ink) 12%);
 }
@@ -174,8 +174,7 @@ html.theme-transitioning body::before {
 .post-reading-toc-rail .post-toc-link.is-active {
   color: var(--reading-ink);
   font-weight: 550;
-  /* depth-specific rules below will override for depth-2 */
-  background: transparent;
+  background: color-mix(in srgb, var(--reading-paper-surface, #f5f1ea) 85%, transparent 15%);
 }
 
 /* Depth-2 active: warm accent bar + bold */

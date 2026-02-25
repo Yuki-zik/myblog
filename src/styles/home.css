@@ -10,7 +10,7 @@
   gap: 2rem;
   padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem);
   margin-top: 0.5rem;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: var(--surface);
   box-shadow: var(--shadow);

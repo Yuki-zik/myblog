@@ -12,7 +12,7 @@
   --archive-meta-bg: rgba(18, 12, 6, 0.38);
 
   margin-top: -0.3rem;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   padding: 0.8rem 0.8rem 1.35rem;
   background: var(--archive-canvas);
   border: 1px solid var(--line);
@@ -22,7 +22,7 @@
 .archives-hero {
   position: relative;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   padding: clamp(1.3rem, 2.8vw, 2rem) clamp(1rem, 2vw, 1.6rem);
   margin-bottom: 1.15rem;
   color: #f4f0e8;
