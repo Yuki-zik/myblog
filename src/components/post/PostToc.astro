@@ -105,9 +105,38 @@ const { items, variant = "standalone" } = Astro.props;
     const mobileDetails = root.querySelector<HTMLDetailsElement>("[data-post-toc-mobile]");
     const activeClass = "is-active";
 
-    function setActive(id: string): void {
+    // Build a map: heading id → depth from data-toc-depth on its link
+    const depthMap = new Map<string, number>();
+    links.forEach((link) => {
+      const id = link.dataset.targetId;
+      const depth = Number(link.dataset.tocDepth ?? 2);
+      if (id) depthMap.set(id, depth);
+    });
+
+    // Track which headings are currently visible in viewport
+    const visibleSet = new Set<string>();
+
+    function syncActive(): void {
+      // Build set of active IDs: visible headings + the last heading above fold
+      const headerOffset = 108;
+      const activeIds = new Set<string>(visibleSet);
+
+      // Always include the heading that's scrolled past (last above viewport top)
+      let lastAbove: HTMLElement | null = null;
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top - headerOffset <= 0) {
+          lastAbove = h;
+        } else {
+          break;
+        }
+      }
+      if (lastAbove) {
+        activeIds.add(lastAbove.id);
+      }
+
       links.forEach((link) => {
-        const active = link.dataset.targetId === id;
+        const id = link.dataset.targetId ?? "";
+        const active = activeIds.has(id);
         link.classList.toggle(activeClass, active);
         if (active) {
           link.setAttribute("aria-current", "true");
@@ -117,26 +146,23 @@ const { items, variant = "standalone" } = Astro.props;
       });
     }
 
-    function computeActiveHeading() {
-      const headerOffset = 108;
-      let current: HTMLElement = headings[0];
-
-      headings.forEach((heading) => {
-        if (heading.getBoundingClientRect().top - headerOffset <= 0) {
-          current = heading;
-        }
-      });
-
-      setActive(current.id);
-    }
-
+    // Use IntersectionObserver to track which headings are in view
     const observer = new IntersectionObserver(
-      () => {
-        window.requestAnimationFrame(computeActiveHeading);
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = (entry.target as HTMLElement).id;
+          if (entry.isIntersecting) {
+            visibleSet.add(id);
+          } else {
+            visibleSet.delete(id);
+          }
+        });
+        window.requestAnimationFrame(syncActive);
       },
       {
-        rootMargin: "-110px 0px -58% 0px",
-        threshold: [0, 0.2, 0.8, 1]
+        // Track headings that are in the upper 80% of the viewport
+        rootMargin: "-108px 0px -20% 0px",
+        threshold: 0
       }
     );
 
@@ -148,7 +174,9 @@ const { items, variant = "standalone" } = Astro.props;
       link.addEventListener("click", () => {
         const targetId = link.dataset.targetId;
         if (targetId) {
-          setActive(targetId);
+          // Immediately show as active on click
+          links.forEach((l) => l.classList.remove(activeClass));
+          link.classList.add(activeClass);
         }
 
         if (
@@ -162,8 +190,10 @@ const { items, variant = "standalone" } = Astro.props;
       });
     });
 
-    window.addEventListener("hashchange", computeActiveHeading);
-    window.requestAnimationFrame(computeActiveHeading);
+    window.addEventListener("hashchange", () => {
+      window.requestAnimationFrame(syncActive);
+    });
+    window.requestAnimationFrame(syncActive);
   }
 
   document.querySelectorAll("[data-post-toc]").forEach((root) => initPostToc(root));
