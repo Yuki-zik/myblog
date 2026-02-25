@@ -1,16 +1,14 @@
-import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+﻿import React from "react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import ParagraphComments from "./ParagraphComments";
 import type { Comment } from "../../lib/comments/types";
 
-vi.mock("../../lib/comments/api", () => {
-  return {
-    fetchVisibleComments: vi.fn(),
-    ensureAnonymousSession: vi.fn(),
-    createComment: vi.fn()
-  };
-});
+vi.mock("../../lib/comments/api", () => ({
+  fetchVisibleComments: vi.fn(),
+  ensureAnonymousSession: vi.fn(),
+  createComment: vi.fn()
+}));
 
 import {
   createComment,
@@ -25,8 +23,8 @@ const mockedCreateComment = vi.mocked(createComment);
 function mountPostHtml() {
   document.body.innerHTML = `
     <article data-post-body>
-      <p id="c-root::p1" data-anchor="root::p1">第一段内容</p>
-      <p id="c-root::p2" data-anchor="root::p2">第二段内容</p>
+      <p id="c-root::p1" data-anchor="root::p1">First paragraph.</p>
+      <p id="c-root::p2" data-anchor="root::p2">Second paragraph.</p>
     </article>
     <div id="test-root"></div>
   `;
@@ -45,6 +43,28 @@ function makeComment(anchorId: string, body: string, id = 1): Comment {
   };
 }
 
+async function getBubble(anchorId = "root::p1") {
+  return await waitFor(() => {
+    const bubble = document.querySelector(`p[data-anchor="${anchorId}"] .comment-bubble`);
+    expect(bubble).toBeTruthy();
+    return bubble as HTMLButtonElement;
+  });
+}
+
+async function getPanelTextarea(container?: ParentNode) {
+  return await waitFor(() => {
+    const textarea = (container ?? document).querySelector("textarea");
+    expect(textarea).toBeTruthy();
+    return textarea as HTMLTextAreaElement;
+  });
+}
+
+function clickPanelSubmit(container?: ParentNode) {
+  const submit = (container ?? document).querySelector("button.submit") as HTMLButtonElement | null;
+  expect(submit).toBeTruthy();
+  fireEvent.click(submit as HTMLButtonElement);
+}
+
 describe("ParagraphComments", () => {
   beforeEach(() => {
     mountPostHtml();
@@ -55,89 +75,140 @@ describe("ParagraphComments", () => {
     mockedEnsureAnonymousSession.mockResolvedValue({ userId: "anon-uid" });
   });
 
-  it("初始渲染每段显示 💬 0", async () => {
+  it("renders inline bubbles with zero counts initially", async () => {
     render(<ParagraphComments postSlug="test-post" />, {
       container: document.querySelector("#test-root") as HTMLElement
     });
 
     await waitFor(() => {
-      expect(screen.getAllByRole("button", { name: /查看本段评论/ })).toHaveLength(2);
+      expect(document.querySelectorAll(".comment-bubble")).toHaveLength(2);
     });
 
-    const bubbles = screen.getAllByRole("button", { name: /查看本段评论/ });
-    expect(bubbles[0]).toHaveTextContent("💬 0");
-    expect(bubbles[1]).toHaveTextContent("💬 0");
+    const bubbles = Array.from(document.querySelectorAll(".comment-bubble"));
+    expect(bubbles[0]?.textContent ?? "").toContain("0");
+    expect(bubbles[1]?.textContent ?? "").toContain("0");
+    expect(document.querySelectorAll(".comment-thread-host")).toHaveLength(2);
   });
 
-  it("拉取评论后按段落显示计数，并可展开 thread", async () => {
+  it("shows grouped counts after fetch and expands inline thread", async () => {
     mockedFetchVisibleComments.mockResolvedValue([
-      makeComment("root::p1", "第一条", 1),
-      makeComment("root::p1", "第二条", 2)
+      makeComment("root::p1", "first", 1),
+      makeComment("root::p1", "second", 2)
     ]);
 
     render(<ParagraphComments postSlug="test-post" />, {
       container: document.querySelector("#test-root") as HTMLElement
     });
 
+    const bubble = await getBubble("root::p1");
     await waitFor(() => {
-      const firstBubble = document.querySelector(
-        'p[data-anchor="root::p1"] .comment-bubble'
-      ) as HTMLButtonElement;
-      expect(firstBubble).toHaveTextContent("💬 2");
+      expect(bubble.textContent ?? "").toContain("2");
     });
 
-    const firstBubble = document.querySelector(
-      'p[data-anchor="root::p1"] .comment-bubble'
-    ) as HTMLButtonElement;
-    fireEvent.click(firstBubble);
+    fireEvent.click(bubble);
 
     await waitFor(() => {
-      expect(screen.getByText("第一条")).toBeInTheDocument();
-      expect(screen.getByText("第二条")).toBeInTheDocument();
+      expect(document.querySelector(".comment-thread-panel")).toBeInTheDocument();
+      expect(document.body.textContent).toContain("first");
+      expect(document.body.textContent).toContain("second");
     });
   });
 
-  it("提交短评：乐观更新成功后保留评论", async () => {
-    mockedCreateComment.mockResolvedValue(makeComment("root::p1", "提交成功", 100));
+  it("keeps created comment after optimistic submit succeeds in inline mode", async () => {
+    mockedCreateComment.mockResolvedValue(makeComment("root::p1", "submit ok", 100));
 
     render(<ParagraphComments postSlug="test-post" />, {
       container: document.querySelector("#test-root") as HTMLElement
     });
 
-    const firstBubble = await waitFor(() =>
-      document.querySelector('p[data-anchor="root::p1"] .comment-bubble')
-    );
-    fireEvent.click(firstBubble as Element);
+    const bubble = await getBubble("root::p1");
+    fireEvent.click(bubble);
 
-    const textarea = await screen.findByPlaceholderText("写下你的短评（最多 200 字）");
-    fireEvent.change(textarea, { target: { value: "提交成功" } });
-    fireEvent.click(screen.getByRole("button", { name: "提交短评" }));
+    const textarea = await getPanelTextarea();
+    fireEvent.change(textarea, { target: { value: "submit ok" } });
+    clickPanelSubmit();
 
     await waitFor(() => {
       expect(mockedCreateComment).toHaveBeenCalledTimes(1);
-      expect(screen.getByText("提交成功")).toBeInTheDocument();
+      expect(document.body.textContent).toContain("submit ok");
     });
   });
 
-  it("提交失败时回滚乐观更新并显示错误", async () => {
-    mockedCreateComment.mockRejectedValue(new Error("提交评论失败：network"));
+  it("rolls back optimistic comment and shows error in inline mode", async () => {
+    mockedCreateComment.mockRejectedValue(new Error("submit failed: network"));
 
     render(<ParagraphComments postSlug="test-post" />, {
       container: document.querySelector("#test-root") as HTMLElement
     });
 
-    const firstBubble = await waitFor(() =>
-      document.querySelector('p[data-anchor="root::p1"] .comment-bubble')
-    );
-    fireEvent.click(firstBubble as Element);
+    const bubble = await getBubble("root::p1");
+    fireEvent.click(bubble);
 
-    const textarea = await screen.findByPlaceholderText("写下你的短评（最多 200 字）");
-    fireEvent.change(textarea, { target: { value: "会失败的评论" } });
-    fireEvent.click(screen.getByRole("button", { name: "提交短评" }));
+    const textarea = await getPanelTextarea();
+    fireEvent.change(textarea, { target: { value: "will fail" } });
+    clickPanelSubmit();
 
     await waitFor(() => {
-      expect(screen.getByText("提交评论失败：network")).toBeInTheDocument();
-      expect(screen.queryAllByText("会失败的评论", { selector: ".comment-item p" })).toHaveLength(0);
+      expect(document.body.textContent).toContain("submit failed: network");
     });
+
+    expect(document.querySelectorAll(".comment-item p")).toHaveLength(0);
+  });
+
+  it("renders rail mode thread inside component container instead of inline panel host", async () => {
+    mockedFetchVisibleComments.mockResolvedValue([makeComment("root::p1", "rail visible", 11)]);
+
+    const container = document.querySelector("#test-root") as HTMLElement;
+    render(<ParagraphComments postSlug="test-post" mode="rail" />, { container });
+
+    const bubble = await getBubble("root::p1");
+    fireEvent.click(bubble);
+
+    await waitFor(() => {
+      expect(container.querySelector(".comment-thread-panel--rail")).toBeInTheDocument();
+      expect(container.querySelector(".comment-thread-anchor")?.textContent ?? "").toContain("root / p1");
+      expect(container.textContent).toContain("rail visible");
+    });
+
+    expect(document.querySelectorAll(".comment-thread-host")).toHaveLength(0);
+  });
+
+  it("supports submit success in rail mode", async () => {
+    mockedCreateComment.mockResolvedValue(makeComment("root::p1", "rail success", 120));
+
+    const container = document.querySelector("#test-root") as HTMLElement;
+    render(<ParagraphComments postSlug="test-post" mode="rail" />, { container });
+
+    const bubble = await getBubble("root::p1");
+    fireEvent.click(bubble);
+
+    const textarea = await getPanelTextarea(container);
+    fireEvent.change(textarea, { target: { value: "rail success" } });
+    clickPanelSubmit(container);
+
+    await waitFor(() => {
+      expect(mockedCreateComment).toHaveBeenCalledTimes(1);
+      expect(container.textContent).toContain("rail success");
+    });
+  });
+
+  it("supports submit rollback and error in rail mode", async () => {
+    mockedCreateComment.mockRejectedValue(new Error("network fail"));
+
+    const container = document.querySelector("#test-root") as HTMLElement;
+    render(<ParagraphComments postSlug="test-post" mode="rail" />, { container });
+
+    const bubble = await getBubble("root::p1");
+    fireEvent.click(bubble);
+
+    const textarea = await getPanelTextarea(container);
+    fireEvent.change(textarea, { target: { value: "will fail in rail" } });
+    clickPanelSubmit(container);
+
+    await waitFor(() => {
+      expect(container.textContent).toContain("network fail");
+    });
+
+    expect(container.querySelectorAll(".comment-item p")).toHaveLength(0);
   });
 });

@@ -14,15 +14,18 @@ import {
   validateCommentBody
 } from "../../lib/comments/validation";
 
+type ParagraphCommentsMode = "inline" | "rail";
+
 interface ParagraphCommentsProps {
   postSlug: string;
   rootSelector?: string;
+  mode?: ParagraphCommentsMode;
 }
 
 interface AnchorTarget {
   anchorId: string;
   bubbleHost: HTMLSpanElement;
-  panelHost: HTMLDivElement;
+  panelHost: HTMLDivElement | null;
 }
 
 interface OptimisticComment extends Comment {
@@ -92,9 +95,18 @@ function formatTime(iso: string): string {
   }).format(date);
 }
 
+function formatAnchorDisplay(anchorId: string): string {
+  const [section, paragraphIndex] = anchorId.split("::");
+  if (!paragraphIndex) {
+    return anchorId;
+  }
+  return `${section} / ${paragraphIndex}`;
+}
+
 export default function ParagraphComments({
   postSlug,
-  rootSelector = "[data-post-body]"
+  rootSelector = "[data-post-body]",
+  mode = "inline"
 }: ParagraphCommentsProps) {
   const [anchors, setAnchors] = useState<AnchorTarget[]>([]);
   const [commentsByAnchor, setCommentsByAnchor] = useState<CommentsByAnchor>({});
@@ -128,14 +140,18 @@ export default function ParagraphComments({
       }
 
       const bubbleHost = document.createElement("span");
-      bubbleHost.className = "comment-bubble-host";
+      bubbleHost.className =
+        mode === "rail" ? "comment-bubble-host comment-bubble-host--rail" : "comment-bubble-host";
       bubbleHost.dataset.anchorHost = anchorId;
       paragraph.appendChild(bubbleHost);
 
-      const panelHost = document.createElement("div");
-      panelHost.className = "comment-thread-host";
-      panelHost.dataset.anchorThread = anchorId;
-      paragraph.insertAdjacentElement("afterend", panelHost);
+      let panelHost: HTMLDivElement | null = null;
+      if (mode === "inline") {
+        panelHost = document.createElement("div");
+        panelHost.className = "comment-thread-host";
+        panelHost.dataset.anchorThread = anchorId;
+        paragraph.insertAdjacentElement("afterend", panelHost);
+      }
 
       targets.push({
         anchorId,
@@ -149,10 +165,10 @@ export default function ParagraphComments({
     return () => {
       targets.forEach(({ bubbleHost, panelHost }) => {
         bubbleHost.remove();
-        panelHost.remove();
+        panelHost?.remove();
       });
     };
-  }, [rootSelector]);
+  }, [rootSelector, mode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -281,111 +297,156 @@ export default function ParagraphComments({
     }
   }
 
+  function renderThreadPanel(anchorId: string | null, panelMode: ParagraphCommentsMode) {
+    if (!anchorId) {
+      if (panelMode !== "rail") {
+        return null;
+      }
+
+      return (
+        <section className="comment-thread-panel comment-thread-panel--rail" aria-label="读者边注">
+          <div className="comment-thread-rail-empty">
+            <p className="comment-empty">点击正文边注标记查看或添加评论。</p>
+          </div>
+        </section>
+      );
+    }
+
+    const comments = commentsByAnchor[anchorId] ?? [];
+    const visibleComments = comments.filter((item) => item.status === "visible");
+    const count = getCommentCount(comments);
+    const draft = draftByAnchor[anchorId] ?? "";
+    const selectedTag = tagByAnchor[anchorId] ?? "none";
+    const currentError = errorByAnchor[anchorId] ?? "";
+    const currentInfo = infoByAnchor[anchorId] ?? "";
+    const isSubmitting = submittingAnchorIds.has(anchorId);
+    const panelClassName =
+      panelMode === "rail"
+        ? "comment-thread-panel comment-thread-panel--rail"
+        : "comment-thread-panel";
+
+    return (
+      <section
+        id={panelMode === "rail" ? "comment-thread-rail-panel" : `comment-thread-inline-${anchorId}`}
+        className={panelClassName}
+        aria-label="段落短评"
+      >
+        <div className="comment-thread-header">
+          <strong>{panelMode === "rail" ? "读者边注" : "段落短评"}</strong>
+          <span>{count} 条</span>
+        </div>
+
+        {panelMode === "rail" ? (
+          <p className="comment-thread-anchor">当前段落：{formatAnchorDisplay(anchorId)}</p>
+        ) : null}
+
+        <ul className="comment-list">
+          {visibleComments.length === 0 ? (
+            <li className="comment-empty">暂无短评，欢迎补充。</li>
+          ) : (
+            visibleComments.map((comment) => (
+              <li key={comment.id} className={comment.__optimistic ? "comment-item optimistic" : "comment-item"}>
+                <p>{comment.body}</p>
+                <div className="comment-meta">
+                  <span>{COMMENT_TAG_LABELS[comment.tag]}</span>
+                  <time dateTime={comment.created_at}>{formatTime(comment.created_at)}</time>
+                </div>
+              </li>
+            ))
+          )}
+        </ul>
+
+        <div className="comment-tag-group" role="radiogroup" aria-label="评论标签">
+          <button
+            type="button"
+            className={selectedTag === "none" ? "tag active" : "tag"}
+            onClick={() => setTag(anchorId, "none")}
+          >
+            无标签
+          </button>
+          {QUICK_TAGS.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              className={selectedTag === tag ? "tag active" : "tag"}
+              onClick={() => setTag(anchorId, tag)}
+            >
+              {COMMENT_TAG_LABELS[tag]}
+            </button>
+          ))}
+        </div>
+
+        <label className="comment-input-wrap">
+          <span className="sr-only">短评输入框</span>
+          <textarea
+            value={draft}
+            onChange={(event) => setDraft(anchorId, event.currentTarget.value)}
+            maxLength={maxLen}
+            rows={panelMode === "rail" ? 4 : 3}
+            placeholder={`写下你的短评（最多 ${maxLen} 字）`}
+          />
+        </label>
+
+        <div className="comment-input-footer">
+          <span className="counter">
+            {draft.trim().length}/{maxLen}
+          </span>
+          <button
+            type="button"
+            className="submit"
+            onClick={() => submitComment(anchorId)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "提交中..." : "提交短评"}
+          </button>
+        </div>
+
+        {currentInfo ? <p className="comment-info">{currentInfo}</p> : null}
+        {currentError ? <p className="comment-error">{currentError}</p> : null}
+      </section>
+    );
+  }
+
   return (
     <>
       {loadingError ? <p className="comments-global-error">{loadingError}</p> : null}
       {anchors.map((anchor) => {
         const comments = commentsByAnchor[anchor.anchorId] ?? [];
-        const visibleComments = comments.filter((item) => item.status === "visible");
         const count = getCommentCount(comments);
         const expanded = expandedAnchorId === anchor.anchorId;
-        const draft = draftByAnchor[anchor.anchorId] ?? "";
-        const selectedTag = tagByAnchor[anchor.anchorId] ?? "none";
-        const currentError = errorByAnchor[anchor.anchorId] ?? "";
-        const currentInfo = infoByAnchor[anchor.anchorId] ?? "";
-        const isSubmitting = submittingAnchorIds.has(anchor.anchorId);
+        const bubbleClassName = [
+          "comment-bubble",
+          mode === "rail" ? "comment-bubble--rail" : "",
+          expanded ? "is-active" : ""
+        ]
+          .filter(Boolean)
+          .join(" ");
 
         const bubble = (
           <button
             type="button"
-            className="comment-bubble"
+            className={bubbleClassName}
             aria-label={`查看本段评论（${count} 条）`}
+            aria-pressed={expanded}
+            aria-controls={mode === "rail" ? "comment-thread-rail-panel" : `comment-thread-inline-${anchor.anchorId}`}
             onClick={() => toggleThread(anchor.anchorId)}
           >
-            <span aria-hidden="true">💬 {count}</span>
+            <span aria-hidden="true">{mode === "rail" ? `注 ${count}` : `💬 ${count}`}</span>
           </button>
         );
 
-        const panel = expanded ? (
-          <section className="comment-thread-panel" aria-label="段落短评">
-            <div className="comment-thread-header">
-              <strong>段落短评</strong>
-              <span>{count} 条</span>
-            </div>
-
-            <ul className="comment-list">
-              {visibleComments.length === 0 ? (
-                <li className="comment-empty">暂无短评，欢迎补充。</li>
-              ) : (
-                visibleComments.map((comment) => (
-                  <li key={comment.id} className={comment.__optimistic ? "comment-item optimistic" : "comment-item"}>
-                    <p>{comment.body}</p>
-                    <div className="comment-meta">
-                      <span>{COMMENT_TAG_LABELS[comment.tag]}</span>
-                      <time dateTime={comment.created_at}>{formatTime(comment.created_at)}</time>
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
-
-            <div className="comment-tag-group" role="radiogroup" aria-label="评论标签">
-              <button
-                type="button"
-                className={selectedTag === "none" ? "tag active" : "tag"}
-                onClick={() => setTag(anchor.anchorId, "none")}
-              >
-                无标签
-              </button>
-              {QUICK_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  className={selectedTag === tag ? "tag active" : "tag"}
-                  onClick={() => setTag(anchor.anchorId, tag)}
-                >
-                  {COMMENT_TAG_LABELS[tag]}
-                </button>
-              ))}
-            </div>
-
-            <label className="comment-input-wrap">
-              <span className="sr-only">短评输入框</span>
-              <textarea
-                value={draft}
-                onChange={(event) => setDraft(anchor.anchorId, event.currentTarget.value)}
-                maxLength={maxLen}
-                rows={3}
-                placeholder="写下你的短评（最多 200 字）"
-              />
-            </label>
-
-            <div className="comment-input-footer">
-              <span className="counter">
-                {draft.trim().length}/{maxLen}
-              </span>
-              <button
-                type="button"
-                className="submit"
-                onClick={() => submitComment(anchor.anchorId)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "提交中..." : "提交短评"}
-              </button>
-            </div>
-
-            {currentInfo ? <p className="comment-info">{currentInfo}</p> : null}
-            {currentError ? <p className="comment-error">{currentError}</p> : null}
-          </section>
-        ) : null;
+        const inlinePanel =
+          mode === "inline" && expanded ? renderThreadPanel(anchor.anchorId, "inline") : null;
 
         return (
           <div key={anchor.anchorId}>
             {createPortal(bubble, anchor.bubbleHost)}
-            {createPortal(panel, anchor.panelHost)}
+            {mode === "inline" && anchor.panelHost ? createPortal(inlinePanel, anchor.panelHost) : null}
           </div>
         );
       })}
+
+      {mode === "rail" ? renderThreadPanel(expandedAnchorId, "rail") : null}
     </>
   );
 }

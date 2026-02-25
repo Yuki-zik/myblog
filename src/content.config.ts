@@ -22,7 +22,47 @@ const posts = defineCollection({
         })
         .optional(),
       canonical: z.string().url().optional(),
-      readingTime: z.number().positive().optional()
+      readingTime: z.number().positive().optional(),
+      annotations: z
+        .array(
+          z.object({
+            id: z.string().min(1),
+            anchorId: z.string().min(1),
+            title: z.string().min(1).optional(),
+            body: z.string().min(1)
+          })
+        )
+        .optional(),
+      references: z
+        .array(
+          z.object({
+            id: z.string().min(1),
+            label: z.string().min(1).optional(),
+            citation: z.string().min(1),
+            url: z.string().url().optional(),
+            note: z.string().optional()
+          })
+        )
+        .optional(),
+      figures: z
+        .array(
+          z.object({
+            id: z.string().min(1),
+            anchorId: z.string().optional(),
+            title: z.string().min(1),
+            kind: z.enum(["image", "table"]),
+            caption: z.string().optional(),
+            summary: z.string().optional(),
+            sourceRefIds: z.array(z.string()).optional(),
+            image: z
+              .object({
+                src: image(),
+                alt: z.string().min(1)
+              })
+              .optional()
+          })
+        )
+        .optional()
     })
 });
 

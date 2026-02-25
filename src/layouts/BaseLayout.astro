@@ -1,5 +1,20 @@
 ---
-import "../styles/global.css";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/animations.css";
+import "../styles/layout.css";
+import "../styles/search.css";
+import "../styles/theme-toggle.css";
+import "../styles/cards.css";
+import "../styles/home.css";
+import "../styles/toc.css";
+import "../styles/author.css";
+import "../styles/archives.css";
+import "../styles/back-to-top.css";
+import "../styles/article.css";
+import "../styles/comments.css";
+import "../styles/article-comments.css";
+import SiteFooter from "../components/SiteFooter.astro";
 import HeaderSearch from "../components/search/HeaderSearch.astro";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
 
@@ -7,12 +22,14 @@ interface Props {
   title: string;
   description?: string;
   authorMeta?: string;
+  mainClass?: string;
 }
 
 const {
   title,
   description = "\u4e3b\u9898\u5316\u77e5\u8bc6\u7f51\u7edc\u4e0e\u6bb5\u843d\u77ed\u8bc4\u535a\u5ba2",
-  authorMeta = SITE_AUTHOR_PROFILE.name
+  authorMeta = SITE_AUTHOR_PROFILE.name,
+  mainClass
 } = Astro.props;
 
 const themeInitScript = `(function () {
@@ -37,6 +54,23 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Google Fonts: Lora (scholarly reading serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" />
+
     <script is:inline set:html={themeInitScript} />
   </head>
   <body>
@@ -49,15 +83,38 @@ const themeInitScript = `(function () {
           <a href="/topics">&#x4e3b;&#x9898;</a>
           <a href="/archives">&#x5f52;&#x6863;</a>
           <a href="/author">&#x4f5c;&#x8005;</a>
-          <button id="theme-toggle" type="button" class="theme-toggle" aria-live="polite">
-            Theme: System
+          <button
+            id="theme-toggle"
+            type="button"
+            class="theme-toggle"
+            aria-label="切换主题（当前：跟随系统）"
+            aria-live="polite"
+            title="切换主题"
+          >
+            <!-- icons injected by inline script below -->
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-label">系统</span>
           </button>
         </nav>
       </div>
     </header>
-    <main class="shell">
+    <main class:list={["shell", mainClass]}>
       <slot />
     </main>
+    <SiteFooter />
+
+    <!-- Back to Top -->
+    <button
+      id="back-to-top"
+      type="button"
+      class="back-to-top"
+      aria-label="回到顶部"
+      title="回到顶部"
+    >
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
 
     <script is:inline>
       (function () {
@@ -67,11 +124,25 @@ const themeInitScript = `(function () {
 
         var storageKey = "theme-preference";
         var order = ["system", "light", "dark"];
-        var labels = {
-          system: "Theme: System",
-          light: "Theme: Light",
-          dark: "Theme: Dark"
+
+        var icons = {
+          system: "☀︎",
+          light:  "☀",
+          dark:   "☽"
         };
+        var labels = {
+          system: "系统",
+          light:  "亮色",
+          dark:   "深色"
+        };
+        var ariaLabels = {
+          system: "切换主题（当前：跟随系统）",
+          light:  "切换主题（当前：亮色）",
+          dark:   "切换主题（当前：深色）"
+        };
+
+        var iconEl  = toggle.querySelector(".theme-toggle-icon");
+        var labelEl = toggle.querySelector(".theme-toggle-label");
         var media = window.matchMedia("(prefers-color-scheme: dark)");
 
         function getPreference() {
@@ -84,8 +155,9 @@ const themeInitScript = `(function () {
           root.dataset.theme = preference;
           root.style.colorScheme =
             preference === "system" ? (media.matches ? "dark" : "light") : preference;
-          toggle.textContent = labels[preference];
-          toggle.setAttribute("aria-label", "Current " + labels[preference]);
+          if (iconEl)  iconEl.textContent  = icons[preference];
+          if (labelEl) labelEl.textContent = labels[preference];
+          toggle.setAttribute("aria-label", ariaLabels[preference]);
           window.setTimeout(function () {
             root.classList.remove("theme-transitioning");
           }, 1750);
@@ -102,13 +174,35 @@ const themeInitScript = `(function () {
         applyPreference(getPreference());
         toggle.addEventListener("click", cyclePreference);
 
-        function handleSystemThemeChange() {
+        media.addEventListener("change", function () {
           if (getPreference() === "system") {
             applyPreference("system");
           }
-        }
+        });
 
-        media.addEventListener("change", handleSystemThemeChange);
+        // Back to Top
+        (function () {
+          var btn = document.getElementById("back-to-top");
+          if (!btn) return;
+          var THRESHOLD = 300;
+          var visible = false;
+
+          function updateVisibility() {
+            var shouldShow = window.scrollY > THRESHOLD;
+            if (shouldShow !== visible) {
+              visible = shouldShow;
+              btn.classList.toggle("is-visible", visible);
+            }
+          }
+
+          window.addEventListener("scroll", updateVisibility, { passive: true });
+          updateVisibility();
+
+          btn.addEventListener("click", function () {
+            var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
+          });
+        })();
       })();
     </script>
   </body>

@@ -1,0 +1,688 @@
+---
+import { Image } from "astro:assets";
+import ParagraphComments from "../comments/ParagraphComments";
+import PostToc from "./PostToc.astro";
+import type { PostTocItem } from "../../lib/posts/toc";
+import {
+  TUFTE_RAIL_FOOTNOTE_ID_PREFIX,
+  type TufteRailFootnote
+} from "../../lib/markdown/rehypeTufteFootnotes";
+
+interface PostAnnotation {
+  id: string;
+  anchorId: string;
+  title?: string;
+  body: string;
+}
+
+interface PostReference {
+  id: string;
+  label?: string;
+  citation: string;
+  url?: string;
+  note?: string;
+}
+
+interface PostFigureImage {
+  src: any;
+  alt: string;
+}
+
+interface PostFigure {
+  id: string;
+  anchorId?: string;
+  title: string;
+  kind: "image" | "table";
+  caption?: string;
+  summary?: string;
+  sourceRefIds?: string[];
+  image?: PostFigureImage;
+}
+
+interface Props {
+  tocItems: PostTocItem[];
+  annotations?: PostAnnotation[];
+  references?: PostReference[];
+  figures?: PostFigure[];
+  markdownFootnotes?: TufteRailFootnote[];
+  postSlug: string;
+  showToc?: boolean;
+}
+
+type TocRailEntry = { kind: "toc" };
+type AnnotationRailEntry = {
+  kind: "annotation";
+  annotation: PostAnnotation;
+  number?: string;
+  noteKey?: string;
+  bubbleId?: string;
+};
+type ReferenceRailEntry = {
+  kind: "reference";
+  reference: PostReference;
+  number?: string;
+  noteKey?: string;
+  bubbleId?: string;
+};
+type FigureRailEntry = {
+  kind: "figure";
+  figure: PostFigure;
+  number?: string;
+  noteKey?: string;
+  bubbleId?: string;
+};
+type FootnoteRailEntry = {
+  kind: "footnote";
+  footnote: TufteRailFootnote;
+  number?: string;
+  noteKey?: string;
+  bubbleId?: string;
+};
+type InfoRailEntry = AnnotationRailEntry | ReferenceRailEntry | FigureRailEntry | FootnoteRailEntry;
+type RailEntry = TocRailEntry | InfoRailEntry;
+type AnchoredRailEntry = AnnotationRailEntry | FigureRailEntry | FootnoteRailEntry;
+
+const {
+  tocItems,
+  annotations = [],
+  references = [],
+  figures = [],
+  markdownFootnotes = [],
+  postSlug,
+  showToc = true
+} = Astro.props;
+
+const referenceLabelById = new Map<string, string>(
+  references.map((reference, index) => [reference.id, reference.label?.trim() || `[${index + 1}]`])
+);
+const sectionOrderBySlug = new Map<string, number>(tocItems.map((item, index) => [item.slug, index]));
+
+function formatReferenceLabel(refId: string): string {
+  return referenceLabelById.get(refId) ?? refId;
+}
+
+function getAnchorId(entry: AnchoredRailEntry): string | undefined {
+  if (entry.kind === "annotation") return entry.annotation.anchorId;
+  if (entry.kind === "figure") return entry.figure.anchorId;
+  return entry.footnote.anchorId;
+}
+
+function getAnchoredEntryOrder(entry: AnchoredRailEntry): number {
+  if (entry.kind === "footnote") {
+    return entry.footnote.referenceOrder ?? Number.POSITIVE_INFINITY;
+  }
+  return Number.POSITIVE_INFINITY;
+}
+
+function parseAnchorLocation(anchorId?: string | null) {
+  if (!anchorId) return null;
+  const [sectionSlugRaw, paragraphRaw] = anchorId.split("::");
+  const sectionSlug = sectionSlugRaw?.trim();
+  const paragraphIndex = Number(paragraphRaw?.replace(/^p/i, ""));
+
+  if (!sectionSlug || !Number.isFinite(paragraphIndex)) return null;
+
+  return {
+    sectionSlug,
+    sectionOrder:
+      sectionSlug === "root" ? -1 : (sectionOrderBySlug.get(sectionSlug) ?? Number.POSITIVE_INFINITY),
+    paragraphIndex
+  };
+}
+
+function buildFigureInlineText(figure: PostFigure): string {
+  const parts = [`${figure.kind === "image" ? "图" : "表"}：${figure.title}`];
+  if (figure.summary) parts.push(figure.summary);
+  if (figure.caption) parts.push(figure.caption);
+  return parts.join("。");
+}
+
+const anchoredEntries: AnchoredRailEntry[] = [
+  ...annotations.map((annotation) => ({ kind: "annotation" as const, annotation })),
+  ...figures.map((figure) => ({ kind: "figure" as const, figure })),
+  ...markdownFootnotes
+    .filter((footnote) => Boolean(footnote.anchorId))
+    .map((footnote) => ({ kind: "footnote" as const, footnote }))
+].sort((a, b) => {
+  const aAnchor = parseAnchorLocation(getAnchorId(a));
+  const bAnchor = parseAnchorLocation(getAnchorId(b));
+
+  const aSection = aAnchor?.sectionOrder ?? Number.POSITIVE_INFINITY;
+  const bSection = bAnchor?.sectionOrder ?? Number.POSITIVE_INFINITY;
+  if (aSection !== bSection) return aSection - bSection;
+
+  const aParagraph = aAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
+  const bParagraph = bAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
+  if (aParagraph !== bParagraph) return aParagraph - bParagraph;
+
+  const aOrder = getAnchoredEntryOrder(a);
+  const bOrder = getAnchoredEntryOrder(b);
+  if (aOrder !== bOrder) return aOrder - bOrder;
+
+  return 0;
+});
+
+const unanchoredFootnotes: FootnoteRailEntry[] = markdownFootnotes
+  .filter((footnote) => !footnote.anchorId)
+  .map((footnote) => ({ kind: "footnote" as const, footnote }));
+
+const referenceEntries: ReferenceRailEntry[] = references.map((reference) => ({
+  kind: "reference" as const,
+  reference
+}));
+
+const railEntriesBase: RailEntry[] = [
+  ...(showToc && tocItems.length > 0 ? [{ kind: "toc" as const }] : []),
+  ...anchoredEntries,
+  ...unanchoredFootnotes,
+  ...referenceEntries
+];
+
+let infoNumber = 0;
+const railEntries: RailEntry[] = railEntriesBase.map((entry) => {
+  if (entry.kind === "toc") {
+    return entry;
+  }
+
+  infoNumber += 1;
+  if (entry.kind === "annotation") {
+    return {
+      ...entry,
+      number: String(infoNumber),
+      noteKey: `annotation:${entry.annotation.id}`,
+      bubbleId: `marginalia-annotation-${entry.annotation.id}`
+    };
+  }
+  if (entry.kind === "figure") {
+    return {
+      ...entry,
+      number: String(infoNumber),
+      noteKey: `figure:${entry.figure.id}`,
+      bubbleId: `marginalia-figure-${entry.figure.id}`
+    };
+  }
+  if (entry.kind === "reference") {
+    return {
+      ...entry,
+      number: String(infoNumber),
+      noteKey: `reference:${entry.reference.id}`,
+      bubbleId: `ref-${entry.reference.id}`
+    };
+  }
+  return {
+    ...entry,
+    number: String(infoNumber),
+    noteKey: `footnote:${entry.footnote.id}`,
+    bubbleId: `${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}${entry.footnote.id}`
+  };
+});
+
+const infoEntries = railEntries.filter((entry): entry is InfoRailEntry => entry.kind !== "toc");
+const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind === "toc");
+---
+
+<div class="post-scholar-rail" data-post-scholar-rail>
+  <div class="post-scholar-flow">
+    {
+      tocEntry ? (
+        <article class="post-scholar-item post-scholar-item--toc" data-kind="toc">
+          <div class="post-scholar-item-content">
+            <PostToc items={tocItems} variant="rail" />
+          </div>
+          <div class="post-scholar-item-footer">
+            <p class="post-scholar-item-type">目录</p>
+          </div>
+        </article>
+      ) : null
+    }
+
+    <div class="post-scholar-floating-layer" data-post-scholar-floating-layer>
+      <div class="post-scholar-floating-spacer" data-post-scholar-floating-spacer aria-hidden="true"></div>
+
+      {
+        infoEntries.map((entry) => {
+          if (entry.kind === "annotation") {
+            return (
+              <article
+                class="post-scholar-item post-scholar-item--annotation post-scholar-item--simple-note post-scholar-item--bubble"
+                data-kind="annotation"
+                data-marginalia-bubble
+                data-anchor-id={entry.annotation.anchorId}
+                data-note-key={entry.noteKey}
+                id={entry.bubbleId}
+              >
+                <div class="post-scholar-item-content">
+                  <div class="post-scholar-footnote-row">
+                    <button
+                      type="button"
+                      class="post-scholar-footnote-number post-scholar-footnote-number-button"
+                      data-linked-note-key-source={entry.noteKey}
+                      data-linked-note-anchor-id={entry.annotation.anchorId}
+                      aria-label={`定位到正文注释 ${entry.number ?? ""}`}
+                    >
+                      {entry.number ?? ""}
+                    </button>
+                    <div class="post-scholar-footnote-body">
+                      <p>{entry.annotation.body}</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          }
+
+          if (entry.kind === "figure") {
+            const { figure } = entry;
+            return (
+              <article
+                class={`post-scholar-item post-scholar-item--figure post-scholar-item--figure-${figure.kind} post-scholar-item--simple-note post-scholar-item--bubble`}
+                data-kind={figure.kind}
+                data-marginalia-bubble
+                data-anchor-id={figure.anchorId}
+                data-note-key={entry.noteKey}
+                id={entry.bubbleId}
+              >
+                <div class="post-scholar-item-content">
+                  <div class="post-scholar-footnote-row">
+                    <button
+                      type="button"
+                      class="post-scholar-footnote-number post-scholar-footnote-number-button"
+                      data-linked-note-key-source={entry.noteKey}
+                      data-linked-note-anchor-id={figure.anchorId}
+                      aria-label={`定位到正文图表注释 ${entry.number ?? ""}`}
+                    >
+                      {entry.number ?? ""}
+                    </button>
+                    <div class="post-scholar-footnote-body">
+                      <p>
+                        {buildFigureInlineText(figure)}
+                        {figure.sourceRefIds && figure.sourceRefIds.length > 0 ? (
+                          <>
+                            {" "}
+                            来源{" "}
+                            {figure.sourceRefIds.map((refId, index) => (
+                              <>
+                                {index > 0 ? "、" : ""}
+                                <a href={`#ref-${refId}`}>{formatReferenceLabel(refId)}</a>
+                              </>
+                            ))}
+                          </>
+                        ) : null}
+                      </p>
+
+                      {figure.kind === "image" && figure.image ? (
+                        <figure class="post-scholar-figure-preview">
+                          <Image src={figure.image.src} alt={figure.image.alt} loading="lazy" decoding="async" />
+                        </figure>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          }
+
+          if (entry.kind === "reference") {
+            const { reference } = entry;
+            return (
+              <article
+                class="post-scholar-item post-scholar-item--reference post-scholar-item--simple-note post-scholar-item--bubble"
+                data-kind="reference"
+                data-marginalia-bubble
+                data-note-key={entry.noteKey}
+                id={entry.bubbleId}
+              >
+                <div class="post-scholar-item-content">
+                  <div class="post-scholar-footnote-row">
+                    <button
+                      type="button"
+                      class="post-scholar-footnote-number post-scholar-footnote-number-button"
+                      data-linked-note-key-source={entry.noteKey}
+                      aria-label={`定位到右侧参考文献 ${entry.number ?? ""}`}
+                    >
+                      {entry.number ?? ""}
+                    </button>
+                    <div class="post-scholar-footnote-body">
+                      <p>
+                        {reference.citation}
+                        {reference.note ? ` ${reference.note}` : ""}
+                        {reference.url ? (
+                          <>
+                            {" "}
+                            <a href={reference.url} target="_blank" rel="noopener noreferrer nofollow">
+                              {reference.url}
+                            </a>
+                          </>
+                        ) : null}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          }
+
+          return (
+            <article
+              class="post-scholar-item post-scholar-item--footnote post-scholar-item--simple-note post-scholar-item--bubble"
+              data-kind="footnote"
+              data-marginalia-bubble
+              data-anchor-id={entry.footnote.anchorId}
+              data-note-key={entry.noteKey}
+              data-footnote-rail-item={entry.footnote.id}
+              id={entry.bubbleId}
+            >
+              <div class="post-scholar-item-content">
+                <div class="post-scholar-footnote-row">
+                  <button
+                    type="button"
+                    class="post-scholar-footnote-number post-scholar-footnote-number-button"
+                    data-footnote-rail-source={entry.footnote.id}
+                    data-footnote-display-number={entry.number ?? entry.footnote.label}
+                    data-linked-note-key-source={entry.noteKey}
+                    data-linked-note-anchor-id={entry.footnote.anchorId}
+                    aria-label={`定位到正文脚注 ${entry.number ?? entry.footnote.label}`}
+                  >
+                    {entry.number ?? entry.footnote.label}
+                  </button>
+                  <div class="post-scholar-footnote-body" set:html={entry.footnote.html} />
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <article class="post-scholar-item post-scholar-item--reader-notes" data-kind="reader-notes">
+      <div class="post-scholar-item-content">
+        <ParagraphComments client:load postSlug={postSlug} mode="rail" />
+      </div>
+    </article>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const FLAG = "__tufteRailFootnoteFlashBound";
+    if (window[FLAG]) return;
+    window[FLAG] = true;
+
+    const DESKTOP_MEDIA = "(min-width: 1101px)";
+    let flashTimer = 0;
+    let linkedHoverNoteKey = "";
+    let layoutRaf = 0;
+
+    function escapeSelectorValue(value) {
+      if (window.CSS && typeof window.CSS.escape === "function") {
+        return window.CSS.escape(value);
+      }
+      return value.replace(/["\\]/g, "\\$&");
+    }
+
+    function getBodyFootnoteRefsById(id) {
+      const safeId = escapeSelectorValue(id);
+      return Array.from(document.querySelectorAll(`a.tufte-footnote-ref[data-footnote-rail-target="${safeId}"]`));
+    }
+
+    function getBodyLinkedRefsByNoteKey(noteKey) {
+      const safeKey = escapeSelectorValue(noteKey);
+      return Array.from(document.querySelectorAll(`[data-linked-note-key-ref="${safeKey}"]`));
+    }
+
+    function getBubbleItemByNoteKey(noteKey) {
+      const safeKey = escapeSelectorValue(noteKey);
+      return document.querySelector(`[data-note-key="${safeKey}"]`);
+    }
+
+    function clearLinkedHover() {
+      if (!linkedHoverNoteKey) return;
+      const currentKey = linkedHoverNoteKey;
+      linkedHoverNoteKey = "";
+
+      const bubble = getBubbleItemByNoteKey(currentKey);
+      if (bubble instanceof HTMLElement) bubble.classList.remove("is-linked-hover");
+
+      const safeKey = escapeSelectorValue(currentKey);
+      for (const el of document.querySelectorAll(`[data-linked-note-key-source="${safeKey}"]`)) {
+        if (el instanceof HTMLElement) el.classList.remove("is-linked-hover");
+      }
+      for (const el of getBodyLinkedRefsByNoteKey(currentKey)) {
+        if (el instanceof HTMLElement) el.classList.remove("is-linked-hover");
+      }
+    }
+
+    function setLinkedHover(noteKey) {
+      const nextKey = typeof noteKey === "string" ? noteKey.trim() : "";
+      if (!nextKey) {
+        clearLinkedHover();
+        return;
+      }
+      if (linkedHoverNoteKey === nextKey) return;
+      clearLinkedHover();
+      linkedHoverNoteKey = nextKey;
+
+      const bubble = getBubbleItemByNoteKey(nextKey);
+      if (bubble instanceof HTMLElement) bubble.classList.add("is-linked-hover");
+
+      const safeKey = escapeSelectorValue(nextKey);
+      for (const el of document.querySelectorAll(`[data-linked-note-key-source="${safeKey}"]`)) {
+        if (el instanceof HTMLElement) el.classList.add("is-linked-hover");
+      }
+      for (const el of getBodyLinkedRefsByNoteKey(nextKey)) {
+        if (el instanceof HTMLElement) el.classList.add("is-linked-hover");
+      }
+    }
+
+    function getAnchorParagraph(anchorId) {
+      if (!anchorId) return null;
+      const id = `c-${anchorId}`;
+      const safeId = escapeSelectorValue(id);
+      const el = document.querySelector(`#${safeId}`);
+      return el instanceof HTMLElement ? el : null;
+    }
+
+    function ensureInlineRef(anchorParagraph, noteKey, bubbleId, displayNumber) {
+      if (!(anchorParagraph instanceof HTMLElement) || !noteKey || !bubbleId || !displayNumber) return;
+
+      const existing = anchorParagraph.querySelector(`[data-linked-note-key-ref="${escapeSelectorValue(noteKey)}"]`);
+      if (existing instanceof HTMLElement) {
+        existing.textContent = displayNumber;
+        return;
+      }
+
+      const sup = document.createElement("sup");
+      sup.className = "tufte-footnote-sup marginalia-inline-sup";
+
+      const link = document.createElement("a");
+      link.className = "tufte-footnote-ref marginalia-inline-ref";
+      link.href = `#${bubbleId}`;
+      link.textContent = displayNumber;
+      link.dataset.linkedNoteKeyRef = noteKey;
+      link.dataset.marginaliaTargetId = bubbleId;
+
+      sup.append(link);
+      anchorParagraph.append(" ");
+      anchorParagraph.append(sup);
+    }
+
+    function syncBodyRefsForFloatingNotes() {
+      const bubbles = Array.from(document.querySelectorAll("[data-marginalia-bubble]"));
+      for (const bubble of bubbles) {
+        if (!(bubble instanceof HTMLElement)) continue;
+
+        const noteKey = bubble.dataset.noteKey || "";
+        const bubbleId = bubble.id || "";
+        const numberEl = bubble.querySelector(".post-scholar-footnote-number-button");
+        const displayNumber = numberEl instanceof HTMLElement ? (numberEl.textContent || "").trim() : "";
+        if (!noteKey || !bubbleId || !displayNumber) continue;
+
+        if (noteKey.startsWith("footnote:")) {
+          const footnoteId = noteKey.slice("footnote:".length);
+          for (const ref of getBodyFootnoteRefsById(footnoteId)) {
+            if (ref instanceof HTMLElement) {
+              ref.textContent = displayNumber;
+              ref.dataset.linkedNoteKeyRef = noteKey;
+              ref.dataset.marginaliaTargetId = bubbleId;
+            }
+          }
+          continue;
+        }
+
+        const anchorId = bubble.dataset.anchorId || "";
+        const paragraph = getAnchorParagraph(anchorId);
+        ensureInlineRef(paragraph, noteKey, bubbleId, displayNumber);
+      }
+    }
+
+    function flashMarginaliaTargetFromHash() {
+      const hash = window.location.hash || "";
+      if (!hash) return;
+
+      const target = document.querySelector(hash);
+      if (!(target instanceof HTMLElement) || !target.matches("[data-marginalia-bubble]")) return;
+
+      target.classList.remove("is-flash");
+      void target.offsetWidth;
+      target.classList.add("is-flash");
+
+      window.clearTimeout(flashTimer);
+      flashTimer = window.setTimeout(() => {
+        target.classList.remove("is-flash");
+      }, 1300);
+    }
+
+    function bindLinkedHoverHandlers() {
+      const bodyRefs = Array.from(document.querySelectorAll("[data-linked-note-key-ref]"));
+      for (const ref of bodyRefs) {
+        if (!(ref instanceof HTMLElement) || ref.dataset.linkHoverBound === "true") continue;
+        const noteKey = (ref.dataset.linkedNoteKeyRef || "").trim();
+        if (!noteKey) continue;
+        ref.dataset.linkHoverBound = "true";
+        ref.addEventListener("mouseenter", () => setLinkedHover(noteKey));
+        ref.addEventListener("mouseleave", clearLinkedHover);
+        ref.addEventListener("focus", () => setLinkedHover(noteKey));
+        ref.addEventListener("blur", clearLinkedHover);
+      }
+
+      const sourceButtons = Array.from(document.querySelectorAll("[data-linked-note-key-source]"));
+      for (const source of sourceButtons) {
+        if (!(source instanceof HTMLElement) || source.dataset.linkHoverBound === "true") continue;
+        const noteKey = (source.dataset.linkedNoteKeySource || "").trim();
+        source.dataset.linkHoverBound = "true";
+        if (noteKey) {
+          source.addEventListener("mouseenter", () => setLinkedHover(noteKey));
+          source.addEventListener("mouseleave", clearLinkedHover);
+          source.addEventListener("focus", () => setLinkedHover(noteKey));
+          source.addEventListener("blur", clearLinkedHover);
+        }
+
+        source.addEventListener("click", () => {
+          const refs = noteKey ? getBodyLinkedRefsByNoteKey(noteKey) : [];
+          const firstRef = refs.find((item) => item instanceof HTMLElement);
+          if (firstRef instanceof HTMLElement) {
+            firstRef.scrollIntoView({ block: "center", behavior: "smooth" });
+            firstRef.focus({ preventScroll: true });
+            return;
+          }
+
+          const anchorId = (source.dataset.linkedNoteAnchorId || "").trim();
+          const paragraph = getAnchorParagraph(anchorId);
+          if (paragraph) {
+            paragraph.scrollIntoView({ block: "center", behavior: "smooth" });
+          }
+        });
+      }
+    }
+
+    function layoutFloatingMarginalia() {
+      window.cancelAnimationFrame(layoutRaf);
+      layoutRaf = window.requestAnimationFrame(() => {
+        const desktop = window.matchMedia(DESKTOP_MEDIA).matches;
+        const layout = document.querySelector(".post-reading-layout--scholarly.post-reading-layout--tri");
+        const main = document.querySelector(".post-reading-main");
+        const layer = document.querySelector("[data-post-scholar-floating-layer]");
+        const spacer = document.querySelector("[data-post-scholar-floating-spacer]");
+        const bubbles = Array.from(document.querySelectorAll("[data-marginalia-bubble]"));
+        if (
+          !(layout instanceof HTMLElement) ||
+          !(main instanceof HTMLElement) ||
+          !(layer instanceof HTMLElement) ||
+          !(spacer instanceof HTMLElement)
+        ) {
+          return;
+        }
+
+        if (!desktop) {
+          spacer.style.height = "";
+          for (const bubble of bubbles) {
+            if (bubble instanceof HTMLElement) {
+              bubble.style.top = "";
+            }
+          }
+          return;
+        }
+
+        const layoutTop = layout.getBoundingClientRect().top + window.scrollY;
+        const mainHeight = main.offsetHeight;
+        let nextTop = 0;
+        const gap = 16;
+        const topPad = 4;
+
+        for (const bubble of bubbles) {
+          if (!(bubble instanceof HTMLElement)) continue;
+          const anchorId = (bubble.dataset.anchorId || "").trim();
+          let targetTop = nextTop;
+
+          if (anchorId) {
+            const paragraph = getAnchorParagraph(anchorId);
+            if (paragraph) {
+              targetTop = paragraph.getBoundingClientRect().top + window.scrollY - layoutTop - topPad;
+            }
+          }
+
+          const bubbleHeight = bubble.offsetHeight || 0;
+          const placedTop = Math.max(targetTop, nextTop);
+          bubble.style.top = `${Math.max(0, placedTop)}px`;
+          nextTop = placedTop + bubbleHeight + gap;
+        }
+
+        spacer.style.height = `${Math.max(mainHeight, nextTop + 12)}px`;
+      });
+    }
+
+    function initialize() {
+      syncBodyRefsForFloatingNotes();
+      bindLinkedHoverHandlers();
+      layoutFloatingMarginalia();
+      if (window.location.hash) {
+        window.requestAnimationFrame(flashMarginaliaTargetFromHash);
+      }
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest("a[href^='#']");
+      if (!(link instanceof HTMLAnchorElement)) return;
+
+      const href = link.getAttribute("href") || "";
+      if (!href.startsWith("#")) return;
+      window.requestAnimationFrame(flashMarginaliaTargetFromHash);
+    });
+
+    window.addEventListener("hashchange", flashMarginaliaTargetFromHash);
+    window.addEventListener("resize", layoutFloatingMarginalia);
+    window.addEventListener("load", layoutFloatingMarginalia);
+
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver(() => layoutFloatingMarginalia());
+      const body = document.querySelector("[data-post-body]");
+      const rail = document.querySelector("[data-post-scholar-rail]");
+      if (body instanceof HTMLElement) ro.observe(body);
+      if (rail instanceof HTMLElement) ro.observe(rail);
+    }
+
+    initialize();
+  })();
+</script>

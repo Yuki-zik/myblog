@@ -95,9 +95,10 @@ test("concept page related posts renders card covers", async ({ page }) => {
   expect(await covers.count()).toBeGreaterThan(0);
 });
 
-test("post detail renders hero cover", async ({ page }) => {
+test("post detail uses minimal reading header without hero cover", async ({ page }) => {
   await page.goto("/posts/paragraph-anchor-design");
 
   const heroCover = page.locator('[data-post-cover="hero"]');
-  await expect(heroCover).toBeVisible();
+  await expect(heroCover).toHaveCount(0);
+  await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });

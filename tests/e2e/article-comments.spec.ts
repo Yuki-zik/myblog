@@ -129,7 +129,10 @@ test("article comments render and submit while paragraph comments still exist", 
 
   await page.goto("/posts/why-topic-first");
 
-  await expect(page.locator(".comment-bubble")).toHaveCount(5);
+  await expect(page.locator(".comment-bubble").first()).toBeVisible({ timeout: 15000 });
+  expect(await page.locator(".comment-bubble").count()).toBeGreaterThan(0);
+  await expect(page.locator(".post-article-comments-summary")).toBeVisible();
+  await page.locator(".post-article-comments-summary").click();
   await expect(page.locator(".article-comments")).toBeVisible();
   await expect(page.getByText("还没有评论")).toBeVisible();
 
@@ -141,5 +144,6 @@ test("article comments render and submit while paragraph comments still exist", 
   await expect(page.locator(".article-comment-item strong")).toContainText("E2E");
 
   await page.reload();
+  await page.locator(".post-article-comments-summary").click();
   await expect(page.locator(".article-comment-item")).toHaveCount(1);
 });

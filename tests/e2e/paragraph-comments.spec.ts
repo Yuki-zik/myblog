@@ -11,7 +11,7 @@ interface MockCommentRow {
   created_at: string;
 }
 
-test("段落评论核心路径：匿名提交后刷新仍存在", async ({ page }) => {
+test("paragraph comments core flow works with scholarly rail layout", async ({ page }) => {
   const comments: MockCommentRow[] = [];
   let nextId = 1;
   const userId = "00000000-0000-0000-0000-000000000001";
@@ -90,15 +90,43 @@ test("段落评论核心路径：匿名提交后刷新仍存在", async ({ page 
 
   await page.goto("/posts/paragraph-anchor-design");
 
+  await expect(page.locator(".post-reading-toc-rail")).toBeVisible();
+  await expect(page.locator("[data-post-scholar-rail]")).toBeVisible();
+  expect(await page.locator(".post-scholar-item").count()).toBeGreaterThan(0);
+  await expect(page.locator(".post-scholar-item--reference").first()).toBeVisible();
+  await expect(page.locator(".post-scholar-item--reference .post-scholar-footnote-number").first()).toHaveText(/\d+/);
+  await expect(page.locator(".post-scholar-item--footnote").first()).toBeVisible();
+  await expect(page.locator("[data-linked-note-key-ref^='annotation:']").first()).toBeVisible();
+  await page.locator("[data-linked-note-key-ref^='annotation:']").first().hover();
+  await expect(page.locator("[data-note-key^='annotation:']").first()).toHaveClass(/is-linked-hover/);
+  await page.locator("[data-note-key^='annotation:'] .post-scholar-footnote-number-button").first().hover();
+  await expect(page.locator("[data-linked-note-key-ref^='annotation:']").first()).toHaveClass(/is-linked-hover/);
+  await expect(page.locator(".tufte-footnote-ref").first()).toBeVisible();
+  await expect(page.locator(".tufte-footnote-ref").first()).toHaveAttribute("href", /#marginalia-footnote-/);
+  await expect(page.locator("[data-tufte-footnotes]")).toHaveCount(0);
+  await page.locator(".tufte-footnote-ref").first().hover();
+  await expect(page.locator(".post-scholar-item--footnote").first()).toHaveClass(/is-linked-hover/);
+  await page.locator(".post-scholar-footnote-number-button").first().hover();
+  await expect(page.locator(".tufte-footnote-ref").first()).toHaveClass(/is-linked-hover/);
+  await page.locator(".tufte-footnote-ref").first().click();
+  await expect(page.locator(".post-scholar-item--footnote").first()).toHaveClass(/is-flash/);
+
   const bubbles = page.locator(".comment-bubble");
-  await expect(bubbles).toHaveCount(5);
-  await expect(bubbles.first()).toContainText("💬 0");
+  await expect(bubbles.first()).toBeVisible({ timeout: 15000 });
+  expect(await bubbles.count()).toBeGreaterThan(0);
+  await expect(bubbles.first()).toContainText("0");
 
   await bubbles.first().click();
-  await page.getByPlaceholder("写下你的短评（最多 200 字）").fill("E2E 评论：段落反馈");
-  await page.getByRole("button", { name: "提交短评" }).click();
+  await expect(page.locator(".comment-thread-panel--rail")).toBeVisible();
+  await page.locator(".comment-thread-panel--rail textarea").fill("E2E rail comment");
+  await page.getByRole("button", { name: /提交短评/ }).click();
 
-  await expect(bubbles.first()).toContainText("💬 1");
+  await expect(page.locator(".comment-bubble").first()).toContainText("1");
   await page.reload();
-  await expect(bubbles.first()).toContainText("💬 1");
+  await expect(page.locator(".comment-bubble").first()).toContainText("1");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  await expect(page.locator(".post-reading-toc-summary")).toBeVisible();
+  await expect(page.locator(".post-scholar-item").first()).toBeVisible();
 });

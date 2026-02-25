@@ -1,9 +1,10 @@
 ﻿---
 import { getCollection, type CollectionEntry } from "astro:content";
 import ArticleComments from "../../components/comments/ArticleComments";
-import ParagraphComments from "../../components/comments/ParagraphComments";
-import PostCover from "../../components/post/PostCover.astro";
 import PostToc from "../../components/post/PostToc.astro";
+import PostScholarRail from "../../components/post/PostScholarRail.astro";
+import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
+import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFootnotes";
 import { resolvePostAuthor } from "../../lib/posts/author";
 import { buildPostToc } from "../../lib/posts/toc";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -24,44 +25,76 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const resolvedAuthor = resolvePostAuthor(post);
-const { Content, headings } = await post.render();
+const { Content, headings, remarkPluginFrontmatter } = await post.render();
 const tocItems = buildPostToc(headings ?? []);
+const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY])
+  ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
+  : [];
 ---
 
-<BaseLayout title={`${post.data.title} | 文章`} authorMeta={resolvedAuthor.name}>
-  <div class="post-reading-layout">
+<BaseLayout
+  title={`${post.data.title} | 文章`}
+  authorMeta={resolvedAuthor.name}
+  mainClass="shell--article-reading"
+>
+  <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
+    {tocItems.length > 0 ? (
+      <aside class="post-reading-toc-rail" aria-label="文章目录">
+        <details class="post-reading-toc-panel" open>
+          <summary class="post-reading-toc-summary">目录</summary>
+          <div class="post-reading-toc-body">
+            <PostToc items={tocItems} variant="rail" />
+          </div>
+        </details>
+      </aside>
+    ) : null}
+
     <div class="post-reading-main">
-      <article>
-        <header class="content-section post-header">
-          <PostCover post={post} variant="hero" />
+      <article class="post-reading-article">
+        <header class="content-section post-header post-header--scholarly">
           <h1>{post.data.title}</h1>
-          <p class="subtle">
+          <p class="subtle post-header-meta">
             发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
             {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
             {" · 作者 "}
             {resolvedAuthor.name}
           </p>
-          {post.data.summary ? <p>{post.data.summary}</p> : null}
+          {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
           {post.data.topics.length > 0 ? (
-            <ul class="pill-list">
-              {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
-            </ul>
+            <p class="post-header-topics" aria-label="文章主题标签">
+              <span class="post-header-topics-label">主题：</span>
+              {post.data.topics.map((topicSlug) => (
+                <span class="post-header-topic-item">
+                  <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
+                </span>
+              ))}
+            </p>
           ) : null}
         </header>
 
-        <section class="post-body" data-post-body>
+        <section class="post-body post-body--scholarly" data-post-body>
           <Content />
         </section>
       </article>
 
-      <ParagraphComments client:load postSlug={post.slug} />
-      <ArticleComments client:load postSlug={post.slug} />
+      <details class="post-article-comments-collapsible">
+        <summary class="post-article-comments-summary">全文评论（展开）</summary>
+        <div class="post-article-comments-panel">
+          <ArticleComments client:load postSlug={post.slug} />
+        </div>
+      </details>
     </div>
 
-    {tocItems.length > 0 ? (
-      <aside class="post-toc-column" aria-label="文章目录">
-        <PostToc items={tocItems} />
-      </aside>
-    ) : null}
+    <aside class="post-reading-rail" aria-label="阅读侧栏">
+      <PostScholarRail
+        tocItems={tocItems}
+        annotations={post.data.annotations ?? []}
+        references={post.data.references ?? []}
+        figures={post.data.figures ?? []}
+        markdownFootnotes={markdownFootnotes}
+        postSlug={post.slug}
+        showToc={false}
+      />
+    </aside>
   </div>
 </BaseLayout>

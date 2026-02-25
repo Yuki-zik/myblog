@@ -30,12 +30,33 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 ---
 
 <BaseLayout title="MyBlog | 主题化知识网络">
-  <section class="content-section">
-    <h1>主题化知识网络</h1>
-    <p class="subtle">从主题进入，再落到文章与段落短评。</p>
+  <!-- Hero Banner -->
+  <section class="home-hero content-section" aria-label="博客简介">
+    <div class="home-hero-copy">
+      <p class="home-hero-kicker">✦ 知识网络 · 段落短评</p>
+      <h1 class="home-hero-title">主题化<br />知识网络</h1>
+      <p class="home-hero-sub">
+        从主题进入，深入文章，留下段落短评。<br />
+        这里是阅读与思考交织的地方。
+      </p>
+      <div class="home-hero-actions">
+        <a href="/topics" class="home-hero-btn home-hero-btn--primary">浏览主题</a>
+        <a href="/archives" class="home-hero-btn home-hero-btn--ghost">进入归档</a>
+      </div>
+    </div>
+    <div class="home-hero-stats" aria-label="博客统计">
+      <div class="home-hero-stat">
+        <span class="home-hero-stat-value">{posts.length}</span>
+        <span class="home-hero-stat-label">篇文章</span>
+      </div>
+      <div class="home-hero-stat">
+        <span class="home-hero-stat-value">{topics.length}</span>
+        <span class="home-hero-stat-label">个主题</span>
+      </div>
+    </div>
   </section>
 
-  <section class="grid topic-grid">
+  <section class="grid topic-grid content-section">
     {
       sortedTopics.map((topic) => (
         <article class="card">

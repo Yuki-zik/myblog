@@ -1,0 +1,154 @@
+﻿.author-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.author-hero {
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--line) 84%, transparent 16%);
+  background:
+    radial-gradient(circle at 10% 14%, color-mix(in srgb, var(--accent-soft) 58%, transparent 42%) 0%, transparent 44%),
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--surface-soft) 65%, transparent 35%) 0%, transparent 38%),
+    color-mix(in srgb, var(--surface) 95%, transparent 5%);
+  box-shadow: var(--shadow);
+  padding: clamp(1rem, 2.3vw, 1.4rem);
+}
+
+.author-hero-copy h1 {
+  margin: 0;
+}
+
+.author-hero-copy p {
+  margin: 0.55rem 0 0;
+}
+
+.author-kicker {
+  margin: 0 0 0.4rem;
+  color: color-mix(in srgb, var(--accent-strong) 70%, var(--text) 30%);
+  font-size: 0.8rem;
+  font-weight: 720;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.author-stat-list {
+  margin: 0.95rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.author-stat-list li {
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--line) 90%, transparent 10%);
+  background: color-mix(in srgb, var(--surface) 86%, transparent 14%);
+  padding: 0.7rem 0.85rem;
+  display: grid;
+  gap: 0.12rem;
+}
+
+.author-stat-value {
+  font-size: 1.3rem;
+  font-weight: 760;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.author-stat-label {
+  color: var(--subtle);
+  font-size: 0.82rem;
+}
+
+.author-links {
+  margin-top: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.author-links a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent 30%);
+  padding: 0.35rem 0.7rem;
+  background: color-mix(in srgb, var(--surface) 90%, transparent 10%);
+}
+
+.author-posts {
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent 12%);
+  background: color-mix(in srgb, var(--surface) 93%, transparent 7%);
+  box-shadow: var(--shadow);
+  padding: 1rem 1rem 0.35rem;
+}
+
+.author-posts h2 {
+  margin-top: 0;
+}
+
+.author-post-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.95rem;
+}
+
+.author-post-item {
+  border-top: 1px solid color-mix(in srgb, var(--line) 88%, transparent 12%);
+  padding-top: 0.95rem;
+}
+
+.author-post-item:first-child {
+  border-top: 0;
+  padding-top: 0.1rem;
+}
+
+.author-post-title {
+  font-size: 1.08rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.author-post-meta {
+  margin: 0.28rem 0 0;
+  font-size: 0.86rem;
+}
+
+.author-post-summary {
+  margin: 0.38rem 0 0;
+}
+
+.author-post-topics {
+  margin: 0.55rem 0 0;
+}
+
+.home-archive-entry {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.1rem 1.15rem 1.3rem;
+  background: color-mix(in srgb, var(--surface) 94%, transparent 6%);
+  box-shadow: var(--shadow);
+}
+
+.archive-entry-button {
+  display: inline-block;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  padding: 0.48rem 0.92rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 54%, var(--line) 46%);
+  background: color-mix(in srgb, var(--accent-soft) 76%, var(--surface) 24%);
+  text-decoration: none;
+  font-weight: 560;
+  color: color-mix(in srgb, var(--accent-strong) 74%, var(--text) 26%);
+}
+
+.archive-entry-button:hover {
+  transform: translateY(-1px);
+}
+
+.archives-page {

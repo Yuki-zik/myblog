@@ -43,3 +43,9 @@ on public.article_comments
 for insert
 to authenticated
 with check (auth.uid() = author_id);
+
+
+PUBLIC_SUPABASE_URL=https://ppuyncbnhjgeljhabneg.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=sb_publishable_zp_31ZeJOLPUrPJat_3-jA_UnBjqgFS
+PUBLIC_COMMENTS_REQUIRE_APPROVAL=false
+PUBLIC_ARTICLE_COMMENTS_MAX_LEN=5000
