@@ -1,33 +1,32 @@
 ﻿.archives-page {
-  --archive-canvas: #d7d8da;
-  --archive-hero-text: #f2f6ff;
-  --archive-year-bg: #4457b7;
-  --archive-year-text: #f7f9ff;
-  --archive-month-text: #4a4e56;
-  --archive-month-line: #8a909b;
-  --archive-tile-shadow: 0 10px 24px rgba(36, 42, 58, 0.24);
+  --archive-canvas: var(--surface);
+  --archive-hero-text: var(--text);
+  --archive-year-text: color-mix(in srgb, var(--line) 60%, var(--surface-soft) 40%);
+  --archive-month-text: var(--subtle);
+  --archive-month-line: var(--line);
+  --archive-tile-shadow: var(--shadow);
   --archive-overlay-bg: linear-gradient(180deg,
-      rgba(10, 14, 20, 0) 0%,
-      rgba(10, 14, 20, 0.38) 42%,
-      rgba(10, 14, 20, 0.64) 100%);
-  --archive-meta-bg: rgba(10, 14, 20, 0.45);
+      rgba(0, 0, 0, 0) 0%,
+      rgba(10, 6, 2, 0.28) 60%,
+      rgba(10, 6, 2, 0.54) 100%);
+  --archive-meta-bg: rgba(18, 12, 6, 0.38);
 
   margin-top: -0.3rem;
-  border-radius: 20px;
+  border-radius: 4px;
   padding: 0.8rem 0.8rem 1.35rem;
   background: var(--archive-canvas);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
 }
 
 .archives-hero {
   position: relative;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: 3px;
   padding: clamp(1.3rem, 2.8vw, 2rem) clamp(1rem, 2vw, 1.6rem);
   margin-bottom: 1.15rem;
-  color: var(--archive-hero-text);
-  /* The Image and overlay will provide the background instead of CSS */
-  background: #111720;
+  color: #f4f0e8;
+  background: color-mix(in srgb, var(--text) 82%, var(--accent-strong) 18%);
   min-height: 180px;
   display: flex;
   flex-direction: column;
@@ -48,11 +47,9 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(165deg, rgba(8, 12, 18, 0.72), rgba(16, 22, 32, 0.45)),
-    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 100% 100%, 48px 48px, 48px 48px;
+  background: linear-gradient(165deg,
+      rgba(16, 10, 4, 0.66),
+      rgba(24, 16, 8, 0.36));
   pointer-events: none;
 }
 
@@ -63,14 +60,14 @@
 
 .archives-hero-content h1 {
   margin: 0 0 0.3rem;
-  color: #f4f8ff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  color: #f4f0e8;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .archives-hero-content p {
   margin: 0;
-  color: rgba(235, 242, 255, 0.95);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  color: rgba(238, 232, 222, 0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .archive-year-section {
@@ -81,23 +78,24 @@
   margin-bottom: 1.15rem;
 }
 
+/* Year shown as large muted watermark — no color block */
 .archive-year-tile {
   position: sticky;
   top: 94px;
   display: grid;
   place-items: center;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
-  box-shadow: var(--archive-tile-shadow);
-  background: linear-gradient(160deg, #4f64d4 0%, var(--archive-year-bg) 100%);
+  background: transparent;
 }
 
 .archive-year-tile span {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(3rem, 7vw, 5.5rem);
   font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--archive-year-text);
-  text-shadow: 0 3px 8px rgba(10, 14, 24, 0.35);
+  letter-spacing: -0.03em;
+  color: color-mix(in srgb, var(--line) 80%, var(--surface-soft) 20%);
+  text-align: center;
+  line-height: 1;
+  user-select: none;
 }
 
 .archive-year-content {
@@ -141,13 +139,14 @@
 .archive-post-tile {
   margin: 0;
   overflow: hidden;
-  border-radius: 0;
+  border-radius: 3px;
+  border: 1px solid var(--line);
   box-shadow: var(--archive-tile-shadow);
-  background: #10131a;
+  background: var(--surface);
 }
 
 .archive-post-link {
-  color: #f5f8ff;
+  color: var(--text);
   text-decoration: none;
   display: block;
   position: relative;
@@ -156,7 +155,7 @@
   overflow: hidden;
 }
 
-.archive-post-link > .post-cover--archive-square {
+.archive-post-link>.post-cover--archive-square {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -206,18 +205,17 @@
   flex-wrap: wrap;
   font-size: 0.76rem;
   font-weight: 620;
-  color: #f0f4ff;
+  color: rgba(240, 232, 220, 0.95);
   letter-spacing: 0.01em;
   background: var(--archive-meta-bg);
 }
 
 :root[data-theme="dark"] .archives-page {
-  --archive-canvas: #252a31;
-  --archive-year-bg: #5e74df;
-  --archive-month-text: #bec3cc;
-  --archive-month-line: #707781;
-  --archive-tile-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
-  --archive-meta-bg: rgba(4, 7, 12, 0.58);
+  --archive-canvas: var(--surface);
+  --archive-month-text: var(--subtle);
+  --archive-month-line: var(--line);
+  --archive-tile-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --archive-meta-bg: rgba(0, 0, 0, 0.42);
 }
 
 @media (max-width: 1060px) {
@@ -334,3 +332,13 @@
 }
 
 @keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
