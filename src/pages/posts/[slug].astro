@@ -30,6 +30,13 @@ const tocItems = buildPostToc(headings ?? []);
 const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY])
   ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
   : [];
+
+// Reading time estimate: ~220 Chinese char/min, ~250 English words/min hybrid
+const rawBody = post.body ?? "";
+const chineseChars = (rawBody.match(/[\u4e00-\u9fff]/g) ?? []).length;
+const latinWords = (rawBody.replace(/[\u4e00-\u9fff]/g, " ").match(/\b\w+\b/g) ?? []).length;
+const readingMinutes = Math.max(1, Math.round(chineseChars / 220 + latinWords / 250));
+const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMinutes} 分钟`;
 ---
 
 <BaseLayout
@@ -37,6 +44,31 @@ const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN
   authorMeta={resolvedAuthor.name}
   mainClass="shell--article-reading"
 >
+  <!-- Reading progress bar -->
+  <div class="reading-progress-bar" id="reading-progress-bar" role="progressbar" aria-label="阅读进度" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
+  <script is:inline>
+    (() => {
+      const bar = document.getElementById('reading-progress-bar');
+      if (!bar) return;
+      let ticking = false;
+      function updateProgress() {
+        const article = document.querySelector('[data-post-body]');
+        if (!article) return;
+        const rect = article.getBoundingClientRect();
+        const total = article.offsetHeight - window.innerHeight;
+        const scrolled = Math.max(0, -rect.top);
+        const pct = total > 0 ? Math.min(100, Math.round((scrolled / total) * 100)) : 0;
+        bar.style.setProperty('--progress', pct + '%');
+        bar.setAttribute('aria-valuenow', String(pct));
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }
+      }, { passive: true });
+      updateProgress();
+    })();
+  </script>
+
   <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
     {tocItems.length > 0 ? (
       <aside class="post-reading-toc-rail" aria-label="文章目录">
@@ -58,6 +90,8 @@ const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN
             {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
             {" · 作者 "}
             {resolvedAuthor.name}
+            {" · "}
+            <span class="post-header-reading-time" aria-label={`预计阅读时间${readingTimeLabel}`}>{readingTimeLabel}阅读</span>
           </p>
           {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
           {post.data.topics.length > 0 ? (

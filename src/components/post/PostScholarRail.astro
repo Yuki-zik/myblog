@@ -1,6 +1,5 @@
 ---
 import { Image } from "astro:assets";
-import ParagraphComments from "../comments/ParagraphComments";
 import PostToc from "./PostToc.astro";
 import type { PostTocItem } from "../../lib/posts/toc";
 import {
@@ -393,12 +392,6 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
         })
       }
     </div>
-
-    <article class="post-scholar-item post-scholar-item--reader-notes" data-kind="reader-notes">
-      <div class="post-scholar-item-content">
-        <ParagraphComments client:load postSlug={postSlug} mode="rail" />
-      </div>
-    </article>
   </div>
 </div>
 

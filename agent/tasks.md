@@ -36,3 +36,4 @@
 | Medium | Unify right-rail annotations and references to compact `number + text` rows and re-verify footnote flash highlight behavior | Done | AI Assistant | 2026-02-25 |
 | High | Simplify right marginalia to cleaner note rows (sample reduced to four info items), add bidirectional footnote hover highlight, and retune right-rail type/image spacing | Done | AI Assistant | 2026-02-25 |
 | High | Convert right marginalia to floating note bubbles aligned to body anchors, unify annotation markers as in-body superscripts, and fix archive thumbnail crop ratio | Done | AI Assistant | 2026-02-25 |
+| High | Implement Tufte-style typographic sidenotes (Phase 7): replace floating bubble cards with plain number+text rows, thin-rule separators, Lora serif font, warm paper background, body:has() bg fix | Done | AI Assistant | 2026-02-25 |
