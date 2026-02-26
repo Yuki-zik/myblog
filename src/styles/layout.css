@@ -1,52 +1,49 @@
-﻿/* ── Header: base (full-width, transparent start) ─────── */
+﻿/* ── Header outer: sticky positioning only ─────────────── */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 20;
-  /* Full-width by default, will shrink on scroll */
-  padding-top: 0;
-  padding-bottom: 0;
-  /* transitions cover ALL morphing properties */
+  /* reserve the collapsed visual height so content doesn't jump */
   transition:
-    padding 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    padding 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
     transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
-  /* background is on the inner .site-header-inner */
 }
 
-/* Inner wrapper that morphs */
+/* ── Inner wrapper: the visible bar that scales ─────────── */
 .site-header-inner {
   background: var(--header-bg);
   border-bottom: 1px solid transparent;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  /* Scale transform — starts at 1 */
+  transform: scale(1);
+  transform-origin: top center;
+
+  /* border-radius and shadow are 0 at top */
+  border-radius: 0;
+  box-shadow: none;
+
   transition:
-    max-width 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    margin-inline 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    border-radius 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-radius 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 360ms cubic-bezier(0.22, 1, 0.36, 1);
-  /* Full width at top */
-  max-width: 100%;
-  margin-inline: 0;
-  border-radius: 0;
-  box-shadow: none;
 }
 
-/* After scroll: narrow floating card */
+/* After scroll: scale down to ~82%, rounded pill, shadow */
 .site-header.is-scrolled .site-header-inner {
-  max-width: min(860px, calc(100vw - 2.5rem));
-  margin-inline: auto;
-  border-radius: 14px;
+  transform: scale(0.82);
+  border-radius: 16px;
   border-color: var(--line);
-  box-shadow: 0 4px 20px rgba(20, 14, 6, 0.10), 0 1px 4px rgba(20, 14, 6, 0.06);
+  box-shadow: 0 6px 24px rgba(20, 14, 6, 0.12), 0 1px 4px rgba(20, 14, 6, 0.06);
 }
 
-/* Add top padding so floating card has breathing room */
+/* Lift the outer header slightly when scrolled so pill floats */
 .site-header.is-scrolled {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.35rem;
 }
 
 /* Slide up + fade out on scroll-down */
@@ -56,18 +53,18 @@
   pointer-events: none;
 }
 
-/* ── Shell inside the header ───────────────────────────── */
+/* ── Shell inside the bar ─────────────────────────────────── */
 .site-header .shell {
-  min-height: 60px;
+  min-height: 62px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
-  padding-block: 0.45rem;
+  padding-block: 0.5rem;
 }
 
-/* ── Brand ─────────────────────────────────────────────── */
+/* ── Brand ─────────────────────────────────────────────────── */
 .brand {
   font-size: 1.15rem;
   font-weight: 760;
@@ -76,7 +73,7 @@
   color: var(--text);
 }
 
-/* ── Nav ───────────────────────────────────────────────── */
+/* ── Nav ────────────────────────────────────────────────────── */
 .site-nav {
   display: flex;
   align-items: center;
