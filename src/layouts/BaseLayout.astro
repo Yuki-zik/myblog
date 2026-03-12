@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/animations.css";
@@ -47,7 +46,7 @@ const themeInitScript = `(function () {
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="system">
+<html lang="zh-CN" class="no-js" data-theme="system">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -55,7 +54,6 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <ClientRouter />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -122,6 +120,35 @@ const themeInitScript = `(function () {
 
     <script is:inline>
       (function () {
+        document.documentElement.classList.remove('no-js');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var STAGGER_MS = 60;
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            var delay = parseInt(el.dataset.uxDelay || '0', 10);
+            el.style.animationDelay = delay + 'ms';
+            el.classList.add('ux-revealed');
+            observer.unobserve(el);
+          });
+        }, {
+          threshold: 0.08,
+          rootMargin: '0px 0px -40px 0px'
+        });
+        document.querySelectorAll('[data-ux-reveal]').forEach(function (el) {
+          observer.observe(el);
+        });
+        document.querySelectorAll('[data-ux-stagger]').forEach(function (parent) {
+          var children = parent.querySelectorAll('[data-ux-reveal]');
+          children.forEach(function (child, i) {
+            child.dataset.uxDelay = String(i * STAGGER_MS);
+          });
+        });
+      })();
+    </script>
+    <script is:inline>
+      (function () {
         var root = document.documentElement;
         var toggle = document.getElementById("theme-toggle");
         if (!toggle) return;
@@ -160,6 +187,11 @@ const themeInitScript = `(function () {
           root.style.colorScheme =
             preference === "system" ? (media.matches ? "dark" : "light") : preference;
           if (iconEl)  iconEl.textContent  = icons[preference];
+          if (iconEl) {
+            iconEl.style.animation = 'none';
+            iconEl.offsetHeight;
+            iconEl.style.animation = 'ux-icon-rotate 500ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+          }
           if (labelEl) labelEl.textContent = labels[preference];
           toggle.setAttribute("aria-label", ariaLabels[preference]);
           window.setTimeout(function () {

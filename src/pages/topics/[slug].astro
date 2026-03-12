@@ -38,7 +38,7 @@ const relatedTopics = (
 ---
 
 <BaseLayout title={`${topic.data.title} | 主题地图`}>
-  <section class="content-section">
+  <section class="content-section" data-ux-reveal="fade-up">
     <h1>{topic.data.title}</h1>
     <p class="subtle">{topic.data.summary}</p>
     <p>{topic.data.why}</p>
@@ -67,7 +67,7 @@ const relatedTopics = (
       topicPosts.length === 0 ? (
         <p class="subtle">该主题下暂无文章。</p>
       ) : (
-        <div class="grid post-card-grid">
+        <div class="grid post-card-grid" data-ux-stagger>
           {topicPosts.map((post) => <PostCard post={post} />)}
         </div>
       )
@@ -80,7 +80,7 @@ const relatedTopics = (
       relatedConcepts.length === 0 ? (
         <p class="subtle">该主题文章尚未标注相关概念。</p>
       ) : (
-        <ul class="pill-list">
+        <ul class="pill-list" data-ux-stagger>
           {relatedConcepts.map((concept) => <li><a href={`/concepts/${concept.slug}`}>{concept.data.title}</a></li>)}
         </ul>
       )
@@ -93,7 +93,7 @@ const relatedTopics = (
       relatedTopics.length === 0 ? (
         <p class="subtle">暂无显式关联主题。</p>
       ) : (
-        <ul class="pill-list">
+        <ul class="pill-list" data-ux-stagger>
           {relatedTopics.map((entry) => <li><a href={`/topics/${entry.slug}`}>{entry.data.title}</a></li>)}
         </ul>
       )

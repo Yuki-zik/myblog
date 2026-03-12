@@ -139,3 +139,36 @@
 }
 
 /* ── End Home Hero ──────────────────────────────────────────── */
+
+/* ── UX: Hero parallax optimization ───────────────────── */
+.home-hero {
+  will-change: transform;
+}
+
+/* ── UX: Stat counter entrance ────────────────────────── */
+.home-hero-stat-value {
+  animation: ux-count-rise 800ms var(--ease-out) both;
+}
+
+.home-hero-stat:nth-child(1) .home-hero-stat-value {
+  animation-delay: 200ms;
+}
+
+.home-hero-stat:nth-child(2) .home-hero-stat-value {
+  animation-delay: 360ms;
+}
+
+/* ── UX: CTA button shimmer ───────────────────────────── */
+.home-hero-btn--primary {
+  background-size: 200% auto;
+  background-image: linear-gradient(
+    105deg,
+    var(--accent) 0%,
+    var(--accent) 40%,
+    color-mix(in srgb, var(--accent-strong) 70%, #fff 30%) 50%,
+    var(--accent) 60%,
+    var(--accent) 100%
+  );
+  animation: ux-shimmer 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+}

@@ -32,7 +32,7 @@ const referencedTopics = allTopics.filter((topic) =>
 ---
 
 <BaseLayout title={`${concept.data.title} | 概念`}>
-  <section class="content-section">
+  <section class="content-section" data-ux-reveal="fade-up">
     <h1>{concept.data.title}</h1>
     <p class="subtle">{concept.data.summary}</p>
   </section>
@@ -58,7 +58,7 @@ const referencedTopics = allTopics.filter((topic) =>
       referencedPosts.length === 0 ? (
         <p class="subtle">暂无文章引用该概念。</p>
       ) : (
-        <div class="grid post-card-grid">
+        <div class="grid post-card-grid" data-ux-stagger>
           {referencedPosts.map((post) => <PostCard post={post} />)}
         </div>
       )

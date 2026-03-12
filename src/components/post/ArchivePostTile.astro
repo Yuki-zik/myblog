@@ -11,7 +11,7 @@ interface Props {
 const { post, author, dateLabel } = Astro.props;
 ---
 
-<article class="archive-post-tile" data-archive-card>
+<article class="archive-post-tile" data-archive-card data-ux-reveal="fade-up">
   <a
     href={`/posts/${post.slug}`}
     class="archive-post-link"

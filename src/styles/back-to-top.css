@@ -1,4 +1,4 @@
-.back-to-top {
+﻿.back-to-top {
   position: fixed;
   bottom: 1.75rem;
   right: 1.75rem;
@@ -28,6 +28,7 @@
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+  animation: ux-spring-up 500ms var(--ease-spring) both;
 }
 
 .back-to-top:hover {
@@ -51,3 +52,7 @@
 }
 
 /* ── End Back-to-Top ────────────────────────────────────────── */
+
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {

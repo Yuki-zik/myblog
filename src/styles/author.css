@@ -147,3 +147,16 @@
 .archive-entry-button:hover {
   transform: translateY(-1px);
 }
+
+/* ── UX: Stat counter entrance ────────────────────────── */
+.author-stat-value {
+  animation: ux-count-rise 700ms var(--ease-out) both;
+}
+
+.author-stat-list li:nth-child(1) .author-stat-value {
+  animation-delay: 300ms;
+}
+
+.author-stat-list li:nth-child(2) .author-stat-value {
+  animation-delay: 460ms;
+}

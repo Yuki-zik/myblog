@@ -1,4 +1,4 @@
-html.theme-transitioning *::after {
+﻿html.theme-transitioning *::after {
   transition-duration: 1300ms !important;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
@@ -428,14 +428,14 @@ html.theme-transitioning body::before {
 }
 
 .post-reading-layout--scholarly {
-  --reading-paper-bg: var(--bg);
-  --reading-paper-surface: var(--surface);
-  --reading-ink: var(--text);
-  --reading-ink-subtle: var(--subtle);
-  --reading-rail-bg: var(--bg-layer);
-  --reading-rule: var(--line);
-  --reading-rule-strong: var(--line-strong);
-  --reading-accent: var(--accent);
+  --reading-paper-bg: #ece9e1;
+  --reading-paper-surface: #f1eee7;
+  --reading-ink: #22201d;
+  --reading-ink-subtle: #6b665f;
+  --reading-rail-bg: #ece9e1;
+  --reading-rule: #d4cec2;
+  --reading-rule-strong: #c4bcad;
+  --reading-accent: #5b4a39;
   --reading-shadow: none;
 
   grid-template-columns: minmax(0, 740px) minmax(320px, 390px);
@@ -1918,7 +1918,11 @@ body:has(.shell--article-reading)::before {
   width: var(--progress);
   background: linear-gradient(90deg,
       color-mix(in srgb, var(--accent) 66%, #a07050 34%) 0%,
-      color-mix(in srgb, var(--accent) 44%, #c4956a 56%) 100%);
+      color-mix(in srgb, var(--accent) 44%, #c4956a 56%) 33%,
+      color-mix(in srgb, var(--accent-strong) 70%, #d4a878 30%) 66%,
+      color-mix(in srgb, var(--accent) 66%, #a07050 34%) 100%);
+  background-size: 200% 100%;
+  animation: ux-progress-flow 4s linear infinite;
   transition: width 80ms linear;
   pointer-events: none;
 }
@@ -2066,6 +2070,7 @@ body:has(.shell--article-reading) .reading-progress-bar {
   border-radius: 4px 4px 0 0;
   /* Subtle entrance fade */
   animation: cover-reveal 0.55s cubic-bezier(0.2, 0.8, 0.5, 1) both;
+  will-change: transform;
 }
 
 @keyframes cover-reveal {

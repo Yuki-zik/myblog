@@ -14,15 +14,15 @@ const sortedTopics = topics.sort((a, b) => {
 ---
 
 <BaseLayout title="主题列表 | MyBlog">
-  <section class="content-section">
+  <section class="content-section" data-ux-reveal="slide-left">
     <h1>主题列表</h1>
     <p class="subtle">每个主题都是知识网络入口，而不是时间流末端。</p>
   </section>
 
-  <section class="grid topic-grid">
+  <section class="grid topic-grid" data-ux-stagger>
     {
       sortedTopics.map((topic) => (
-        <article class="card">
+        <article class="card" data-ux-reveal="fade-up">
           <h3>
             <a href={`/topics/${topic.slug}`}>{topic.data.title}</a>
           </h3>

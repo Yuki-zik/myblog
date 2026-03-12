@@ -37,7 +37,7 @@ const archiveGroups = buildArchiveGroups(posts);
         </section>
       ) : (
         archiveGroups.map((yearGroup) => (
-          <section class="archive-year-section" data-archive-year={yearGroup.year}>
+          <section class="archive-year-section" data-archive-year={yearGroup.year} data-ux-reveal="fade-up">
             <div class="archive-year-tile">
               <span>{yearGroup.year}</span>
             </div>
@@ -50,7 +50,7 @@ const archiveGroups = buildArchiveGroups(posts);
                     <span class="archive-month-line" aria-hidden="true"></span>
                   </div>
 
-                  <div class="archive-grid">
+                  <div class="archive-grid" data-ux-stagger>
                     {month.posts.map((post) => (
                       <ArchivePostTile
                         post={post}

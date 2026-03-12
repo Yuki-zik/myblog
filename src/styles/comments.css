@@ -174,8 +174,9 @@
 
 .comment-input-wrap textarea:focus-visible {
   outline: none;
-  border-color: color-mix(in srgb, var(--accent) 48%, var(--comment-input-border) 52%);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 42%, transparent 58%);
+  border-color: color-mix(in srgb, var(--accent) 54%, var(--comment-input-border) 46%);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 42%, transparent 58%),
+    0 4px 14px color-mix(in srgb, var(--accent-soft) 18%, transparent 82%);
 }
 
 .comment-input-footer {

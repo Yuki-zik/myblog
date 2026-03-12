@@ -9,7 +9,7 @@ interface Props {
 const { post } = Astro.props;
 ---
 
-<article class="post-card" data-post-card>
+<article class="post-card" data-post-card data-ux-reveal="fade-up">
   <a href={`/posts/${post.slug}`} class="post-card-cover-link" aria-label={`阅读文章：${post.data.title}`}>
     <PostCover post={post} variant="card" />
   </a>

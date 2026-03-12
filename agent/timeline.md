@@ -1,10 +1,8 @@
-# 项目时间轴
+﻿# 项目时间轴
 
 | 日期时间 | 任务/变更 | 修改文件 | 实现逻辑 | 修改动机 | 结果/备注 |
 |---|---|---|---|---|---|
-| 2026-03-12 22:38 | 落地系统性 UX/UI 优化（Glassmorphism + Apple风） | `astro.config.mjs`, `tokens.css`, `cards.css`, `article.css`, `layout.css` | 1. 引入 Tailwind CSS 并配置 Vite 插件。2. 更新全局设计变量至开发者美学，实现毛玻璃效果和更饱满的圆角约束。3. 为文章和卡片添加高级微动效，将评论输入框改为无表单外框的 Notion 伸缩风格，移动端目录抽屉化， `<pre>` 代码块改造为类似 macOS 视窗的深色结构。并在全局应用 Astro ClientRouter。4. 修复 Tailwind 错误和测试用例丢失组件的 bug。 | 执行已获批准的《UX/UI Redesign Proposal》，提升整个站点的现代化与产品级体验。 | `pnpm build` 和 `pnpm test:e2e` 全部通过。基础样式、微交互及各大核心组件改写完毕。 |
-| 2026-03-12 22:21 | 【设计】系统性 UX/UI 体验升级方案输出 | `agent/tasks.md`, `agent/timeline.md` | 基于开发者审美、苹果风质感，针对颜色、排版、微交互、结构提出了针对 Astro+React 的完整实施大纲与示例，以 Artifact 形式交付。 | 响应用户“让博客具备现代化、具有产品感”的需求，在代码改动前对焦设计思路与技术选型（引入 Tailwind / View Transitions 等）。 | 已输出实施计划，待用户审核确认后进行代码层面的落地实施。 |
-| 2026-03-12 21:05 | 设计系统性 UX/UI 优化方案 | `agent/tasks.md`, `agent/timeline.md` | 整理基于“开发者美学”与“Glassmorphism”的视觉规范，规划 Astro 视差/过渡动画、重构组件树至 shadcn/ui 颗粒度、排版间距等详细准则，输出《UX/UI Redesign Proposal》与初步 CSS/Astro 变更准备。 | 用户主动要求从“用户体验 + 工程实现”的角度进行深度页面升级。 | 方案已通过用户审核并进入落地实施阶段。 |
+| 2026-03-12 23:56 | 使用下载目录同步仓库源码并修复文章页段落评论回归 | `agent/tasks.md`, `agent/timeline.md`, `package.json`, `astro.config.mjs`, `src/pages/*`, `src/styles/*`, `src/pages/posts/[slug].astro` | 以 `/Users/a-znk/Downloads/myblog-main` 为源码快照，通过保留 `.git` 的 rsync 同步恢复本地仓库；清理异常副本目录并重装依赖；在校验中发现下载代码删掉了文章页 `ParagraphComments` 挂载，最小修复为重新导入并恢复 `mode="rail"` 渲染，然后重新执行测试 | 用户说明实际使用中的代码位于下载目录，需要让本地 Git 仓库和 GitHub 远端都与该目录对齐，同时不能把已知行为回归直接推到主分支 | 已完成源码同步；`pnpm test`、`pnpm build`、`pnpm test:e2e` 全部通过，仓库已处于可提交状态 |
 | 2026-02-26 22:35 | 【文档】根据源码审计并输出设计规范文档 | `docs/design-style-guide.md`, `agent/tasks.md` | 1. 读取基础布局、主题Token与各类组件CSS代码<br>2. 提炼Token映射、响应式规则、组件集合。<br>3. 提供P0-P2一致性升级和梳理建议，含精确文件行引证 | 满足需求，将无序的按页样式化经验提炼为可复用前端设计规范 | 规范落盘并在 checklist 核实，通过证据驱动 |
 | 2026-02-22 17:42 | 【重构】基于样图重写归档页面视觉与网格流 | `src/pages/archives.astro` <br> `src/components/post/ArchivePostTile.astro` <br> `src/styles/global.css` | 1. 移除月份树状列表。<br>2. 统一纯 Grid 混合排布 (YearTile 和 PostTile)。<br>3. 提取样图原子图标放入深色 Hero。<br>4. 悬浮覆盖式卡片设计取代分层背景。 | 满足用户采用自定义暗黑机甲风的视觉对齐要求，统一页面体验并严格按 "Project Maintenance" 准则同步日志 | 正在重构代码架构... |
 | 2026-02-22 17:28 | 分析博客界面设计与文档更新 | `README.md`, `agent/tasks.md` | 对比 `src/pages` 下的 Astro 路由页面布局与 React 段落评论组件的实现，在 `README.md` 中新增界面与交互特色总结模块。 | 用户要求了解博客最新设计理念和界面，并在自述文件中明确化，提升项目可维护可读性。 | 已同步并完善 README.md 中的业务设计清单 |

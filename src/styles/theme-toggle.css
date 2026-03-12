@@ -20,6 +20,7 @@
   font-size: 0.96rem;
   line-height: 1;
   display: inline-block;
+  transition: transform var(--duration-slow) var(--ease-spring);
 }
 
 .theme-toggle:hover {

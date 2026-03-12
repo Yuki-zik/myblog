@@ -1,4 +1,4 @@
-.grid {
+﻿.grid {
   display: grid;
   gap: 1rem;
 }
@@ -14,26 +14,22 @@
 
 .card {
   border: 1px solid var(--line);
-  border-radius: var(--radius-xl);
-  background: color-mix(in srgb, var(--surface) 80%, transparent 20%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface) 92%, transparent 8%);
   box-shadow: var(--shadow);
-  padding: 1.5rem 1.7rem;
-  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 1.05rem 1.1rem;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--line) 70%);
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
-}
-
-.card:active {
-  transform: scale(0.98);
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--line) 58%);
+  box-shadow: var(--shadow-lg),
+    0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent 88%);
+  background: color-mix(in srgb, var(--surface) 96%, var(--accent-soft) 4%);
 }
 
 .card h3 {
@@ -142,37 +138,19 @@
   }
 
   .post-body pre {
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    background: #09090b !important;
-    color: #fafafa !important;
-    padding: 2.5rem 1.25rem 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--line) 84%, transparent 16%);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--surface-soft) 92%, transparent 8%);
+    padding: 0.85rem 0.95rem;
     overflow: auto;
-    box-shadow: 0 12px 24px rgba(0,0,0,0.3) !important;
-  }
-
-  .post-body pre::before {
-    content: "";
-    position: absolute;
-    top: 0.9rem;
-    left: 1rem;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: #ff5f56;
-    box-shadow: 1.2rem 0 0 #ffbd2e, 2.4rem 0 0 #27c93f;
-    opacity: 0.9;
   }
 
   .post-body pre code {
     border: 0;
     border-radius: 0;
-    background: transparent !important;
+    background: transparent;
     padding: 0;
-    font-size: 0.9em;
-    font-family: "Geist Mono", "JetBrains Mono", monospace;
-    text-shadow: none;
+    font-size: inherit;
   }
 
   .post-body table {
@@ -239,50 +217,42 @@
   .pill-list a,
   .pill-list li {
     display: inline-block;
-    padding: 0.25rem 0.8rem;
-    border-radius: var(--radius-full);
-    border: 1px solid color-mix(in srgb, var(--line) 60%, var(--accent) 40%);
-    background: color-mix(in srgb, var(--surface-soft) 40%, var(--accent-soft) 60%);
-    color: var(--accent-strong);
+    padding: 0.22rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--line) 80%, var(--accent) 20%);
+    background: color-mix(in srgb, var(--surface-soft) 70%, var(--accent-soft) 30%);
+    color: color-mix(in srgb, var(--text) 72%, var(--accent) 28%);
     text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    font-size: 0.84rem;
+    transition: background-color 280ms var(--ease-out),
+      color 260ms var(--ease-out),
+      transform 200ms var(--ease-spring);
   }
 
-  .pill-list a:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  .pill-list a:active {
-    transform: scale(0.96);
+  .pill-list a:hover,
+  .pill-list li:hover {
+    background: color-mix(in srgb, var(--accent-soft) 50%, var(--surface-soft) 50%);
+    color: color-mix(in srgb, var(--accent-strong) 78%, var(--text) 22%);
+    transform: scale(1.04);
   }
 
   .post-card {
     border: 1px solid var(--line);
-    border-radius: var(--radius-xl);
-    background: color-mix(in srgb, var(--surface) 85%, transparent 15%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--surface) 94%, transparent 6%);
     box-shadow: var(--shadow);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 340ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 280ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .post-card:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--accent) 40%, var(--line) 60%);
-    box-shadow: 0 22px 50px -12px rgba(0,0,0,0.15);
-  }
-
-  .post-card:active {
-    transform: scale(0.98);
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--accent) 48%, var(--line) 52%);
+    box-shadow: var(--shadow-xl);
   }
 
   .post-card-cover-link,
@@ -348,6 +318,15 @@
     display: block;
     object-fit: cover;
     transform: scale(1.001);
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .post-card:hover .post-cover-image {
+    transform: scale(1.04);
+  }
+
+  .archive-post-link:hover .post-cover-image {
+    transform: scale(1.06);
   }
 
   .post-cover-fallback {
@@ -455,4 +434,3 @@
   .post-header>.subtle {
     margin-top: 0;
   }
-}

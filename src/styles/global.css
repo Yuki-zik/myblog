@@ -1,7 +1,4 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-
-/*
+﻿/*
  * global.css — INDEX FILE (P3 refactor)
  *
  * All styles have been split into focused modules.

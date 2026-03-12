@@ -31,7 +31,7 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 
 <BaseLayout title="MyBlog | 主题化知识网络">
   <!-- Hero Banner -->
-  <section class="home-hero content-section" aria-label="博客简介">
+  <section class="home-hero content-section" data-ux-reveal="fade-up" aria-label="博客简介">
     <div class="home-hero-copy">
       <p class="home-hero-kicker">✦ 知识网络 · 段落短评</p>
       <h1 class="home-hero-title">主题化<br />知识网络</h1>
@@ -56,10 +56,10 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
     </div>
   </section>
 
-  <section class="grid topic-grid content-section">
+  <section class="grid topic-grid content-section" data-ux-stagger>
     {
       sortedTopics.map((topic) => (
-        <article class="card">
+        <article class="card" data-ux-reveal="fade-up">
           <h3>
             <a href={`/topics/${topic.slug}`}>{topic.data.title}</a>
           </h3>
@@ -72,7 +72,7 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
     }
   </section>
 
-  <section class="content-section" data-latest-posts>
+  <section class="content-section" data-latest-posts data-ux-reveal="fade-up">
     <h2>最新文章</h2>
     <p class="subtle">每篇文章都提供封面图，帮助你更快定位主题和上下文。</p>
 
@@ -80,16 +80,34 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
       latestPosts.length === 0 ? (
         <p class="subtle">暂时还没有可展示的文章。</p>
       ) : (
-        <div class="grid post-card-grid">
+        <div class="grid post-card-grid" data-ux-stagger>
           {latestPosts.map((post) => <PostCard post={post} />)}
         </div>
       )
     }
   </section>
 
-  <section class="content-section home-archive-entry" data-home-archive-entry>
+  <section class="content-section home-archive-entry" data-home-archive-entry data-ux-reveal="fade-up">
     <h2>时间归档</h2>
     <p class="subtle">按年与月份浏览全部文章，快速定位你错过的内容。</p>
     <a class="archive-entry-button" href="/archives">进入归档时间轴</a>
   </section>
+
+  <script is:inline>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var hero = document.querySelector('.home-hero');
+      if (!hero) return;
+      var ticking = false;
+      function onScroll() {
+        var y = window.scrollY;
+        var offset = Math.round(y * 0.12);
+        hero.style.transform = 'translateY(' + offset + 'px)';
+        ticking = false;
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+      }, { passive: true });
+    })();
+  </script>
 </BaseLayout>

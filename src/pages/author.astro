@@ -14,7 +14,7 @@ const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size
 
 <BaseLayout title={`${SITE_AUTHOR_PROFILE.name} | 作者`} authorMeta={SITE_AUTHOR_PROFILE.name}>
   <section class="author-page">
-    <section class="author-hero">
+    <section class="author-hero" data-ux-reveal="scale-pop">
       <div class="author-hero-copy">
         <p class="author-kicker">Author</p>
         <h1>{SITE_AUTHOR_PROFILE.name}</h1>
@@ -49,7 +49,7 @@ const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size
       </div>
     </section>
 
-    <section class="content-section author-posts">
+    <section class="content-section author-posts" data-ux-reveal="fade-up">
       <h2>作者文章</h2>
       {
         authorPosts.length === 0 ? (
