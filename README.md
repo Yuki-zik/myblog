@@ -10,7 +10,7 @@
 -->
 # MyBlog v1
 
-# XXX 记得阅读 `AGENT_CONTEXT.md` 以了解项目背景、设计决策和未来计划。
+> 📖 AI 代理请先阅读 [`Agents.md`](./Agents.md) 以了解项目背景、设计决策、当前架构状态和开发规范。
 Astro + React + Supabase 的主题化博客首版，实现：
 
 - Topic 优先入口（文章作为知识节点）
