@@ -18,6 +18,7 @@
 | High | Add post TOC (H2/H3) with sticky desktop and collapsible mobile UI | Done | AI Assistant | 2026-02-22 |
 | High | Add /author page and header navigation entry | Done | AI Assistant | 2026-02-22 |
 | Medium | Add E2E tests for new search / TOC / author page flows | Todo | AI Assistant | - |
+| High | Audit and generate docs/design-style-guide.md with evidence | [x] | AI Assistant | 2026-02-26 |
 
 | High | Add article-level bottom comments (screenshot-style UI, markdown, GitHub login entry, separate Supabase table) | Done | AI Assistant | 2026-02-22 |
 | Medium | Telegram real login bridge for article comments | Todo | AI Assistant | - |
