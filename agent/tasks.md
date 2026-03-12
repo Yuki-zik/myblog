@@ -13,8 +13,18 @@
 | 中 | 根据 README.md 和需求总结界面设计并更新 README 文档 | ✅ | AI Assistant | 2026-02-22 |
 | 中 | 为归档页（/archives）添加海报横幅 | ✅ | AI Assistant | 2026-02-22 |
 | 中 | 修复 agent/ 文档结构问题（timeline 格式、codex 重写、README 死链等） | ✅ | AI Assistant | 2026-03-03 |
+| 中 | 制定 Figma 先行的 UI/UX 设计到代码落地工作流 | ✅ | AI Assistant | 2026-03-09 |
+| 中 | 将现有博客全站 UI（desktop/mobile + light/dark）复现到 Figma 文件 | ✅ | AI Assistant | 2026-03-09 |
+| 中 | 向现有 Figma 文件追加 `00 Foundations` / `01 Components` / `02~05` 结构页 | ✅ | AI Assistant | 2026-03-09 |
+| 中 | 在 Figma 内手工重命名现有页面、归组并抽取真实可复用组件实例 | ⏳ | AI Assistant | - |
 | 中 | 为搜索 / TOC / author 页面补充 E2E 测试 | ⏳ | AI Assistant | - |
 | 低 | 添加管理员内容审核工作流（评论默认 pending + DB 策略） | ⏳ | AI Assistant | - |
 | 低 | 添加服务端限流 / 反垃圾基础防护 | ⏳ | AI Assistant | - |
 | 低 | Telegram 真实登录桥接（文章评论 GitHub/Telegram 入口） | 📋 Backlog | - | - |
 | 低 | 添加 CI workflow（PR 时自动运行 pnpm test + pnpm build） | 📋 Backlog | - | - |
+
+## 本次反思
+
+- 通过本地 Astro dev server + 临时代理注入 `capture.js`，在不修改仓库代码的前提下完成了整站页面采集，验证了“代码为真相、Figma 为镜像”的工作流可行。
+- 基于临时 organizer 页又向同一文件补入了 `00 Foundations`、`01 Components` 和 `02~05` 结构页，后续手工整理时不必从空白文件开始。
+- Figma MCP 适合批量捕获真实页面，但不提供完善的页面重命名、归类和组件抽取能力；现有 page 归组和真实组件实例抽取仍需要在 Figma 文件内手动完成。
