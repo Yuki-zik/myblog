@@ -1,4 +1,4 @@
-﻿html.theme-transitioning *::after {
+html.theme-transitioning *::after {
   transition-duration: 1300ms !important;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
@@ -428,14 +428,14 @@ html.theme-transitioning body::before {
 }
 
 .post-reading-layout--scholarly {
-  --reading-paper-bg: #ece9e1;
-  --reading-paper-surface: #f1eee7;
-  --reading-ink: #22201d;
-  --reading-ink-subtle: #6b665f;
-  --reading-rail-bg: #ece9e1;
-  --reading-rule: #d4cec2;
-  --reading-rule-strong: #c4bcad;
-  --reading-accent: #5b4a39;
+  --reading-paper-bg: var(--bg);
+  --reading-paper-surface: var(--surface);
+  --reading-ink: var(--text);
+  --reading-ink-subtle: var(--subtle);
+  --reading-rail-bg: var(--bg-layer);
+  --reading-rule: var(--line);
+  --reading-rule-strong: var(--line-strong);
+  --reading-accent: var(--accent);
   --reading-shadow: none;
 
   grid-template-columns: minmax(0, 740px) minmax(320px, 390px);

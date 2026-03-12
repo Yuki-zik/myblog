@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/animations.css";
@@ -54,6 +55,7 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />

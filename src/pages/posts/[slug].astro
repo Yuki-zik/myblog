@@ -1,7 +1,8 @@
-﻿---
+---
 import { getCollection, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import ArticleComments from "../../components/comments/ArticleComments";
+import ParagraphComments from "../../components/comments/ParagraphComments";
 import PostToc from "../../components/post/PostToc.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
 import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
@@ -165,6 +166,8 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
         postSlug={post.slug}
         showToc={false}
       />
+      
+      <ParagraphComments client:load postSlug={post.slug} mode="rail" />
     </aside>
   </div>
 </BaseLayout>

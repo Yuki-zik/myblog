@@ -1,4 +1,4 @@
-﻿*,
+*,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -11,7 +11,7 @@ body {
 
 body {
   margin: 0;
-  font-family: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: "Inter", "Outfit", "PingFang SC", "Microsoft YaHei", sans-serif;
   background: var(--bg-layer);
   color: var(--text);
   line-height: 1.68;

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
  * @Author: Yuki-zik 226004241@nbu.edu.cn
  * @Date: 2026-02-21 18:48:54
  * @LastEditors: Yuki-zik 226004241@nbu.edu.cn
@@ -28,6 +28,7 @@
 | 中        | 向现有 Figma 文件追加 `00 Foundations` / `01 Components` / `02~05` 结构页 | ✅         | AI Assistant | 2026-03-09 |
 | 中        | 在 Figma 内手工重命名现有页面、归组并抽取真实可复用组件实例               | ⏳         | AI Assistant | -          |
 | 中        | 为搜索 / TOC / author 页面补充 E2E 测试                                   | ⏳         | AI Assistant | -          |
+| 中        | 输出博客系统性 UX/UI 优化方案 (UX/UI Redesign Proposal)                   | ⏳         | AI Assistant | 2026-03-12 |
 | 低        | 添加管理员内容审核工作流（评论默认 pending + DB 策略）                    | ⏳         | AI Assistant | -          |
 | 低        | 添加服务端限流 / 反垃圾基础防护                                           | ⏳         | AI Assistant | -          |
 | 低        | Telegram 真实登录桥接（文章评论 GitHub/Telegram 入口）                    | 📋 Backlog | -            | -          |
@@ -61,5 +62,8 @@
 | High | Simplify right marginalia to cleaner note rows (sample reduced to four info items), add bidirectional footnote hover highlight, and retune right-rail type/image spacing | Done | AI Assistant | 2026-02-25 |
 | High | Convert right marginalia to floating note bubbles aligned to body anchors, unify annotation markers as in-body superscripts, and fix archive thumbnail crop ratio | Done | AI Assistant | 2026-02-25 |
 | High | Resolve git merge conflicts and push main to origin | ✅ | AI Assistant | 2026-03-12 |
+| P1 | 落地系统性 UX/UI 体验优化 (Glassmorphism / Apple风) | ✅ | AI Assistant | 2026-03-12 |
 
 - Session review (2026-03-12): resolved merge conflicts in `agent/*` and completed the push flow with audit updates.
+
+### Backlog & Technical Debt

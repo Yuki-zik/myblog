@@ -1,4 +1,4 @@
-﻿/* ── Header outer: sticky positioning only ─────────────── */
+/* ── Header outer: sticky positioning only ─────────────── */
 .site-header {
   position: sticky;
   top: 0;
@@ -14,8 +14,8 @@
 .site-header-inner {
   background: var(--header-bg);
   border-bottom: 1px solid transparent;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 
   /* Scale transform — starts at 1 */
   transform: scale(1);
@@ -33,12 +33,12 @@
     background-color 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* After scroll: scale down to ~82%, rounded pill, shadow */
+/* After scroll: scale down slightly, retain pill shape, shadow */
 .site-header.is-scrolled .site-header-inner {
-  transform: scale(0.82);
-  border-radius: 16px;
+  transform: scale(0.98);
+  border-radius: var(--radius-xl);
   border-color: var(--line);
-  box-shadow: 0 6px 24px rgba(20, 14, 6, 0.12), 0 1px 4px rgba(20, 14, 6, 0.06);
+  box-shadow: var(--shadow);
 }
 
 /* Lift the outer header slightly when scrolled so pill floats */

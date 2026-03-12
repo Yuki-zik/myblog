@@ -251,7 +251,17 @@
 
 .article-comments-form {
   display: grid;
-  gap: 0.95rem;
+  gap: 0;
+  border: 1px solid color-mix(in srgb, var(--ac-border) 60%, transparent 40%);
+  border-radius: var(--radius-lg);
+  background: var(--ac-panel);
+  padding: 0.5rem;
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.article-comments-form:focus-within {
+  border-color: color-mix(in srgb, var(--ac-accent) 50%, transparent 50%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .article-comments-grid {
@@ -284,10 +294,18 @@
 }
 
 .article-comments-textarea-field textarea {
-  min-height: 160px;
+  min-height: 60px;
   resize: vertical;
-  border-radius: 16px;
-  padding-top: 0.9rem;
+  border-radius: 8px;
+  padding: 0.5rem;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: min-height 300ms ease;
+}
+
+.article-comments-textarea-field textarea:focus {
+  min-height: 140px;
 }
 
 .article-comments-field input::placeholder,
@@ -295,12 +313,15 @@
   color: var(--ac-placeholder);
 }
 
-.article-comments-field input:focus,
-.article-comments-textarea-field textarea:focus {
+.article-comments-field input:focus {
   outline: none;
   border-color: color-mix(in srgb, var(--ac-accent) 52%, transparent 48%);
   background: var(--ac-input-focus);
-  box-shadow: 0 0 0 4px rgba(234, 143, 99, 0.12);
+  box-shadow: 0 0 0 3px rgba(234, 143, 99, 0.12);
+}
+
+.article-comments-textarea-field textarea:focus {
+  outline: none;
 }
 
 .article-comments-field input[aria-invalid="true"],
@@ -319,6 +340,18 @@
   align-items: center;
   gap: 0.9rem;
   flex-wrap: wrap;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 300ms ease, opacity 300ms ease, margin-top 300ms ease;
+}
+
+.article-comments-form:focus-within .article-comments-toolbar,
+.article-comments-textarea-field textarea:not(:placeholder-shown) ~ .article-comments-toolbar {
+  max-height: 120px;
+  opacity: 1;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
 }
 
 .article-comments-toolbar-left {

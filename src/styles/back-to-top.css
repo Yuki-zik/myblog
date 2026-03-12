@@ -1,4 +1,4 @@
-﻿.back-to-top {
+.back-to-top {
   position: fixed;
   bottom: 1.75rem;
   right: 1.75rem;
@@ -51,7 +51,3 @@
 }
 
 /* ── End Back-to-Top ────────────────────────────────────────── */
-
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
