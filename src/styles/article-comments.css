@@ -24,11 +24,12 @@
   --ac-card: #ffffff;
 
   margin-top: 2.2rem;
-  border-radius: 22px;
-  background: var(--ac-bg);
+  border-radius: 24px;
+  border: 1px solid var(--edge-soft);
+  background: color-mix(in srgb, var(--ac-bg) 90%, var(--surface-panel) 10%);
   color: var(--ac-text);
-  box-shadow: 0 18px 44px rgba(33, 23, 16, 0.07);
-  padding: 1.4rem 1.4rem 1.1rem;
+  box-shadow: var(--shadow-soft);
+  padding: 1.35rem 1.35rem 1.08rem;
 }
 
 :root[data-theme="dark"] .article-comments {
@@ -117,7 +118,7 @@
   min-height: 300px;
   border-radius: 18px;
   background: color-mix(in srgb, var(--ac-panel) 92%, transparent 8%);
-  border: 1px solid color-mix(in srgb, var(--ac-border) 72%, transparent 28%);
+  border: 1px solid color-mix(in srgb, var(--ac-border) 64%, transparent 36%);
   padding: 0.85rem;
 }
 
@@ -163,9 +164,10 @@
 
 .article-comment-item {
   border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--ac-border) 76%, transparent 24%);
+  border: 1px solid color-mix(in srgb, var(--ac-border) 60%, transparent 40%);
   background: color-mix(in srgb, var(--ac-card) 72%, var(--ac-panel) 28%);
   padding: 0.8rem 0.9rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .article-comment-meta {

@@ -1,0 +1,83 @@
+.site-footer {
+  margin-top: clamp(4rem, 7vw, 6rem);
+  padding: 1.4rem clamp(0.8rem, 1.6vw, 1.4rem) 1.35rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 86%, var(--color-navy) 14%) 0%, var(--chrome-bg) 100%);
+  color: var(--chrome-text);
+}
+
+.site-footer-inner {
+  width: min(1320px, 100%);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) auto auto;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  padding: 1.15rem 0 0;
+  border-top: 1px solid var(--chrome-line);
+}
+
+.site-footer-brand {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.site-footer-mark {
+  color: var(--chrome-text);
+  font-family: var(--font-display);
+  font-size: 1.04rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.site-footer-note {
+  color: var(--chrome-text-muted);
+  font-size: 0.82rem;
+}
+
+.site-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.site-footer-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.3rem 0.58rem;
+  border-radius: var(--radius-full);
+  color: var(--chrome-text-muted);
+  font-size: 0.84rem;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.site-footer-nav a:hover {
+  color: var(--chrome-text);
+  background: var(--chrome-hover);
+}
+
+.site-footer-copy {
+  margin: 0;
+  color: var(--chrome-text-muted);
+  font-size: 0.78rem;
+  justify-self: end;
+}
+
+@media (max-width: 900px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.75rem;
+    padding-inline: 0.2rem;
+  }
+
+  .site-footer-nav,
+  .site-footer-copy {
+    justify-self: start;
+  }
+}

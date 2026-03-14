@@ -1,220 +1,428 @@
-﻿:root {
-  /* Warm paper background - no green/blue tint */
-  --bg: #f2f0eb;
-  --bg-layer: linear-gradient(160deg, #f4f2ed 0%, #f0ede7 100%);
-  --surface: #f9f7f2;
-  --surface-soft: #f4f1ea;
-  --text: #1e1c1a;
-  --subtle: #6a5f55;
-  --line: #d8d0c4;
-  --line-strong: #c4b9ab;
 
-  /* Warm brown accent — aligned with article reading accent */
-  --accent: #6b5143;
-  --accent-strong: #54392c;
-  --accent-soft: #e8ddd4;
+:root {
+  /* Foundations */
+  --color-midnight: #182540;
+  --color-navy: #344973;
+  --color-lace: #e6ecfb;
+  --color-ivory: #eacbb0;
+  --color-moonlight: #ff7a5b;
 
-  --danger: #a83030;
-  --info: #3d5e8a;
-  --shadow: 0 4px 18px rgba(30, 22, 16, 0.07), 0 1px 4px rgba(30, 22, 16, 0.05);
-  --header-bg: rgba(242, 240, 235, 0.88);
+  /* Global Surfaces (Light) */
+  /* Lace is extremely light blue-ish white, bringing a calm, clean background */
+  --background: color-mix(in srgb, var(--color-lace) 70%, white 30%);
+  --background-soft: color-mix(in srgb, var(--color-lace) 40%, white 60%);
+  
+  --foreground: color-mix(in srgb, var(--color-midnight) 90%, var(--color-navy) 10%);
+  --foreground-strong: var(--color-midnight);
+  
+  --primary: var(--color-midnight);
+  --secondary: var(--color-navy);
+  
+  --accent: var(--color-moonlight);
+  --accent-strong: color-mix(in srgb, var(--color-moonlight) 90%, black 10%);
+  --accent-soft: color-mix(in srgb, var(--color-moonlight) 12%, var(--color-lace) 88%);
+  
+  --muted: color-mix(in srgb, var(--color-navy) 60%, var(--color-lace) 40%);
+  --muted-strong: color-mix(in srgb, var(--color-navy) 80%, var(--color-lace) 20%);
+  
+  --border: color-mix(in srgb, var(--color-navy) 15%, var(--color-lace) 85%);
+  --border-strong: color-mix(in srgb, var(--color-navy) 30%, var(--color-lace) 70%);
+  
+  --card: color-mix(in srgb, white 85%, var(--color-lace) 15%);
+  --card-strong: white;
+  --card-soft: color-mix(in srgb, white 70%, var(--color-ivory) 15%, var(--color-lace) 15%);
+  
+  --input: color-mix(in srgb, white 80%, var(--color-lace) 20%);
+  --link: color-mix(in srgb, var(--color-moonlight) 90%, var(--color-midnight) 10%);
+  
+  --selection-bg: color-mix(in srgb, var(--color-moonlight) 25%, var(--color-lace) 75%);
+  --selection-text: var(--color-midnight);
+  
+  --ring: color-mix(in srgb, var(--color-moonlight) 60%, transparent 40%);
+  
+  --code-bg: color-mix(in srgb, var(--color-midnight) 4%, white 96%);
+  --code-border: color-mix(in srgb, var(--color-navy) 15%, var(--color-lace) 85%);
+  --code-foreground: color-mix(in srgb, var(--color-midnight) 85%, var(--color-navy) 15%);
+  
+  --danger: #d9534f;
+  --info: #4b78c4;
 
-  --comment-bubble-border: #c9bdb4;
-  --comment-bubble-bg: #f0e9e2;
-  --comment-bubble-text: #5c3c2e;
-  --comment-bubble-hover: #ebe0d8;
-  --comment-panel-border: #d8d0c4;
-  --comment-panel-bg: #f9f7f2;
-  --comment-panel-text: #3d3530;
-  --comment-item-border: #e4dcd4;
-  --comment-item-bg: #faf8f4;
-  --comment-empty: #7a6e66;
-  --comment-meta: #7a6e66;
-  --comment-tag-border: #d0c4b8;
-  --comment-tag-bg: #f2ede7;
-  --comment-tag-text: #4d3d34;
-  --comment-tag-active-bg: #e4d4c8;
-  --comment-tag-active-border: #b89484;
-  --comment-tag-active-text: #4a2e22;
-  --comment-input-border: #ccc0b4;
-  --comment-counter: #7a6e66;
-  --comment-submit-border: #7a5545;
-  --comment-submit-bg: #6b5143;
-  --comment-submit-text: #faf7f2;
-  --comment-error-border: #e0c0c0;
-  --comment-error-bg: #fdf5f5;
-  --comment-error-text: #8a2424;
-  --comment-info-text: #3d5e8a;
+  /* Legacy aliases */
+  --bg: var(--background);
+  --bg-layer:
+    radial-gradient(circle at top, color-mix(in srgb, var(--color-lace) 50%, white 50%) 0%, transparent 50%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-lace) 40%, white 60%) 0%, color-mix(in srgb, white 85%, var(--color-ivory) 15%) 100%);
+  --surface: var(--card);
+  --surface-soft: var(--card-soft);
+  --text: var(--foreground);
+  --subtle: var(--muted);
+  --line: var(--border);
+  --line-strong: var(--border-strong);
+  --shadow: 0 16px 32px rgba(24, 37, 64, 0.06), 0 2px 8px rgba(24, 37, 64, 0.04);
+  --header-bg: color-mix(in srgb, var(--color-midnight) 96%, transparent 4%);
 
-  --toc-bg: #faf7f2;
-  --toc-title: #5a4b41;
-  --toc-text: #5a4b41;
-  --toc-num: #b5afa6;
-  --toc-active: #e27a5f;
+  /* Comments */
+  --comment-bubble-border: color-mix(in srgb, var(--color-navy) 15%, var(--color-lace) 85%);
+  --comment-bubble-bg: color-mix(in srgb, white 80%, var(--color-lace) 20%);
+  --comment-bubble-text: color-mix(in srgb, var(--color-midnight) 80%, var(--color-navy) 20%);
+  --comment-bubble-hover: color-mix(in srgb, white 60%, var(--color-lace) 40%);
+  
+  --comment-panel-border: var(--border);
+  --comment-panel-bg: color-mix(in srgb, white 80%, var(--color-lace) 20%);
+  --comment-panel-text: var(--foreground);
+  
+  --comment-item-border: color-mix(in srgb, var(--color-navy) 8%, var(--color-lace) 92%);
+  --comment-item-bg: color-mix(in srgb, white 90%, var(--color-lace) 10%);
+  
+  --comment-empty: var(--muted);
+  --comment-meta: var(--muted);
+  
+  --comment-tag-border: color-mix(in srgb, var(--color-ivory) 60%, var(--border) 40%);
+  --comment-tag-bg: color-mix(in srgb, var(--color-ivory) 20%, white 80%);
+  --comment-tag-text: color-mix(in srgb, var(--color-midnight) 60%, var(--color-navy) 40%);
+  
+  --comment-tag-active-bg: color-mix(in srgb, var(--color-ivory) 30%, var(--color-moonlight) 15%, white 55%);
+  --comment-tag-active-border: color-mix(in srgb, var(--color-moonlight) 40%, var(--border) 60%);
+  --comment-tag-active-text: var(--foreground-strong);
+  
+  --comment-input-border: var(--border-strong);
+  --comment-counter: var(--muted);
+  
+  --comment-submit-border: var(--accent-strong);
+  --comment-submit-bg: var(--accent);
+  --comment-submit-text: white;
+  
+  --comment-error-border: color-mix(in srgb, var(--danger) 30%, white 70%);
+  --comment-error-bg: color-mix(in srgb, var(--danger) 10%, white 90%);
+  --comment-error-text: color-mix(in srgb, var(--danger) 80%, black 20%);
+  --comment-info-text: var(--info);
 
-  /* ── Spacing scale ──────────────────────────────── */
-  --space-xs: 0.35rem;
-  --space-sm: 0.65rem;
+  /* TOC */
+  --toc-bg: transparent;
+  --toc-title: var(--foreground-strong);
+  --toc-text: var(--muted-strong);
+  --toc-num: color-mix(in srgb, var(--color-ivory) 80%, var(--color-navy) 20%);
+  --toc-active: var(--accent);
+
+  /* Spacing */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
   --space-2xl: 3rem;
+  --space-3xl: 4rem;
 
-  /* ── Radius scale — modern minimal ──────────────── */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 999px;
-  /* kept for actual pills like back-to-top only */
 
-  /* ── Motion tokens ──────────────────────────────── */
-  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+  --duration-enter: 520ms;
+  --stagger-step: 50ms;
 
-  --duration-fast:   160ms;
-  --duration-base:   260ms;
-  --duration-slow:   420ms;
-  --duration-enter:  620ms;
-  --stagger-step: 60ms;
+  /* Shadows */
+  --shadow-sm: 0 8px 20px rgba(24, 37, 64, 0.04), 0 1px 3px rgba(24, 37, 64, 0.04);
+  --shadow-md: 0 14px 28px rgba(24, 37, 64, 0.06), 0 2px 6px rgba(24, 37, 64, 0.05);
+  --shadow-lg: 0 20px 40px rgba(24, 37, 64, 0.08), 0 3px 10px rgba(24, 37, 64, 0.06);
+  --shadow-xl: 0 30px 60px rgba(24, 37, 64, 0.1), 0 4px 16px rgba(24, 37, 64, 0.08);
+  --shadow-glow: 0 0 0 4px color-mix(in srgb, var(--ring) 30%, transparent 70%);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-panel: var(--shadow-lg);
 
-  /* ── Shadow scale ──────────────────────────────── */
-  --shadow-sm:   0 2px 8px rgba(30, 22, 16, 0.05);
-  --shadow-md:   0 4px 18px rgba(30, 22, 16, 0.07), 0 1px 4px rgba(30, 22, 16, 0.05);
-  --shadow-lg:   0 12px 36px rgba(30, 22, 16, 0.10), 0 2px 6px rgba(30, 22, 16, 0.06);
-  --shadow-xl:   0 22px 50px rgba(30, 22, 16, 0.14), 0 4px 10px rgba(30, 22, 16, 0.08);
-  --shadow-glow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 48%, transparent 52%);
+  /* Typography */
+  --font-ui: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-reading: "Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  --type-display: clamp(2.9rem, 6vw, 5.2rem);
+  --type-h1: clamp(2.4rem, 4vw, 3.8rem);
+  --type-h2: clamp(1.7rem, 2vw, 2.25rem);
+  --type-h3: clamp(1.2rem, 1.2vw, 1.45rem);
+  --type-body: 1rem;
+  --type-body-lg: 1.12rem;
+  --type-meta: 0.88rem;
+  --type-label: 0.76rem;
 
-  /* ── Gradient tokens ───────────────────────────── */
-  --surface-shimmer: linear-gradient(135deg,
-    color-mix(in srgb, var(--surface) 100%, transparent 0%) 0%,
-    color-mix(in srgb, var(--accent-soft) 8%, var(--surface) 92%) 50%,
-    color-mix(in srgb, var(--surface) 100%, transparent 0%) 100%);
+  /* Shared derived surfaces */
+  --surface-base: color-mix(in srgb, white 75%, var(--color-lace) 25%);
+  --surface-panel: var(--card);
+  --surface-panel-strong: var(--card-strong);
+  --surface-inset: color-mix(in srgb, var(--color-lace) 40%, white 60%);
+  --edge-soft: color-mix(in srgb, var(--border) 70%, transparent 30%);
+  --edge-muted: color-mix(in srgb, var(--border-strong) 70%, transparent 30%);
+  
+  --chrome-bg: var(--color-midnight);
+  --chrome-bg-strong: color-mix(in srgb, var(--color-midnight) 85%, black 15%);
+  --chrome-hover: color-mix(in srgb, var(--color-navy) 80%, var(--color-midnight) 20%);
+  --chrome-line: color-mix(in srgb, var(--color-lace) 15%, transparent 85%);
+  --chrome-text: var(--color-lace);
+  --chrome-text-muted: color-mix(in srgb, var(--color-lace) 65%, var(--color-navy) 35%);
+  --header-glass: color-mix(in srgb, var(--color-midnight) 94%, transparent 6%);
+
+  /* Reading */
+  --reading-bg: color-mix(in srgb, white 80%, var(--color-lace) 20%);
+  --reading-surface: color-mix(in srgb, white 90%, var(--color-lace) 10%);
+  --reading-ink: color-mix(in srgb, var(--color-midnight) 90%, var(--color-navy) 10%);
+  --reading-ink-subtle: color-mix(in srgb, var(--color-navy) 75%, var(--color-lace) 25%);
+  
+  --reading-rule: color-mix(in srgb, var(--color-ivory) 60%, var(--color-lace) 40%);
+  --reading-rule-strong: color-mix(in srgb, var(--color-navy) 20%, var(--color-lace) 80%);
+  
+  --reading-accent: var(--accent);
+  --reading-code-bg: var(--code-bg);
+  --reading-link: var(--link);
+  --reading-shadow: 0 20px 48px rgba(24, 37, 64, 0.06), 0 4px 12px rgba(24, 37, 64, 0.04);
+  --reading-serif: var(--font-reading);
+  --reading-paper-bg: var(--reading-bg);
+  --reading-paper-surface: var(--reading-surface);
+  --reading-rail-bg: transparent;
+}
+
+:root[data-theme="dark"], @media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    --background: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --background-soft: color-mix(in srgb, var(--color-midnight) 70%, black 30%);
+    
+    --foreground: color-mix(in srgb, var(--color-lace) 90%, var(--color-navy) 10%);
+    --foreground-strong: white;
+    
+    --primary: var(--color-lace);
+    --secondary: var(--color-ivory);
+    
+    --accent: var(--color-moonlight);
+    --accent-strong: color-mix(in srgb, var(--color-moonlight) 80%, white 20%);
+    --accent-soft: color-mix(in srgb, var(--color-moonlight) 20%, transparent 80%);
+    
+    --muted: color-mix(in srgb, var(--color-navy) 80%, var(--color-lace) 20%);
+    --muted-strong: color-mix(in srgb, var(--color-lace) 60%, var(--color-navy) 40%);
+    
+    --border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --border-strong: color-mix(in srgb, var(--color-navy) 70%, transparent 30%);
+    
+    --card: color-mix(in srgb, var(--color-midnight) 70%, transparent 30%);
+    --card-strong: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --card-soft: color-mix(in srgb, var(--color-midnight) 50%, transparent 50%);
+    
+    --input: color-mix(in srgb, var(--color-midnight) 60%, transparent 40%);
+    --link: color-mix(in srgb, var(--accent) 90%, var(--color-lace) 10%);
+    
+    --selection-bg: color-mix(in srgb, var(--color-moonlight) 30%, transparent 70%);
+    --selection-text: white;
+    
+    --ring: color-mix(in srgb, var(--color-moonlight) 70%, transparent 30%);
+    
+    --code-bg: color-mix(in srgb, var(--color-midnight) 95%, black 5%);
+    --code-border: color-mix(in srgb, var(--color-navy) 50%, transparent 50%);
+    --code-foreground: color-mix(in srgb, var(--color-lace) 90%, white 10%);
+    
+    --danger: #ff6b6b;
+    --info: #749dff;
+
+    --bg: var(--background);
+    --bg-layer:
+      radial-gradient(circle at top, color-mix(in srgb, var(--color-navy) 30%, transparent 70%) 0%, transparent 50%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-midnight) 90%, black 10%) 0%, black 100%);
+    --surface: var(--card);
+    --surface-soft: var(--card-soft);
+    --text: var(--foreground);
+    --subtle: var(--muted);
+    --line: var(--border);
+    --line-strong: var(--border-strong);
+    --shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+    --header-bg: color-mix(in srgb, var(--color-midnight) 96%, transparent 4%);
+
+    --comment-bubble-border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --comment-bubble-bg: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --comment-bubble-text: var(--foreground);
+    --comment-bubble-hover: color-mix(in srgb, var(--color-midnight) 95%, transparent 5%);
+    
+    --comment-panel-border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --comment-panel-bg: color-mix(in srgb, var(--color-midnight) 75%, transparent 25%);
+    --comment-panel-text: var(--foreground);
+    
+    --comment-item-border: color-mix(in srgb, var(--color-navy) 30%, transparent 70%);
+    --comment-item-bg: color-mix(in srgb, var(--color-midnight) 60%, transparent 40%);
+    
+    --comment-empty: var(--muted);
+    --comment-meta: var(--muted);
+    
+    --comment-tag-border: color-mix(in srgb, var(--color-ivory) 25%, transparent 75%);
+    --comment-tag-bg: color-mix(in srgb, var(--color-ivory) 10%, transparent 90%);
+    --comment-tag-text: color-mix(in srgb, var(--color-lace) 90%, var(--color-navy) 10%);
+    
+    --comment-tag-active-bg: color-mix(in srgb, var(--color-moonlight) 20%, transparent 80%);
+    --comment-tag-active-border: color-mix(in srgb, var(--color-moonlight) 40%, transparent 60%);
+    --comment-tag-active-text: white;
+    
+    --comment-input-border: var(--border-strong);
+    --comment-counter: var(--muted);
+    
+    --comment-submit-border: color-mix(in srgb, var(--color-moonlight) 50%, transparent 50%);
+    --comment-submit-bg: var(--accent);
+    --comment-submit-text: black;
+    
+    --comment-error-border: color-mix(in srgb, var(--danger) 40%, transparent 60%);
+    --comment-error-bg: color-mix(in srgb, var(--danger) 15%, transparent 85%);
+    --comment-error-text: color-mix(in srgb, var(--danger) 90%, white 10%);
+    --comment-info-text: var(--info);
+
+    --toc-bg: transparent;
+    --toc-title: var(--foreground-strong);
+    --toc-text: var(--muted);
+    --toc-num: color-mix(in srgb, var(--color-ivory) 60%, var(--color-navy) 40%);
+    --toc-active: var(--accent);
+
+    --shadow-sm: 0 10px 20px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.35), 0 3px 8px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 22px 44px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 0 4px color-mix(in srgb, var(--ring) 30%, transparent 70%);
+    --shadow-soft: var(--shadow-sm);
+    --shadow-panel: var(--shadow-lg);
+
+    --surface-base: color-mix(in srgb, var(--color-midnight) 70%, black 30%);
+    --surface-panel: var(--card);
+    --surface-panel-strong: var(--card-strong);
+    --surface-inset: color-mix(in srgb, var(--color-midnight) 80%, black 20%);
+    --edge-soft: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --edge-muted: color-mix(in srgb, var(--color-navy) 60%, transparent 40%);
+    
+    --chrome-bg: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --chrome-bg-strong: color-mix(in srgb, var(--color-midnight) 80%, black 20%);
+    --chrome-hover: color-mix(in srgb, var(--color-navy) 70%, black 30%);
+    --chrome-line: color-mix(in srgb, var(--color-lace) 15%, transparent 85%);
+    --chrome-text: var(--color-lace);
+    --chrome-text-muted: color-mix(in srgb, var(--color-lace) 70%, var(--color-navy) 30%);
+    --header-glass: color-mix(in srgb, var(--color-midnight) 94%, transparent 6%);
+
+    --reading-bg: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --reading-surface: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --reading-ink: color-mix(in srgb, var(--color-lace) 95%, white 5%);
+    --reading-ink-subtle: color-mix(in srgb, var(--color-lace) 70%, var(--color-navy) 30%);
+    
+    --reading-rule: color-mix(in srgb, var(--color-navy) 30%, transparent 70%);
+    --reading-rule-strong: color-mix(in srgb, var(--color-navy) 50%, transparent 50%);
+    
+    --reading-accent: var(--accent);
+    --reading-code-bg: color-mix(in srgb, var(--color-midnight) 96%, black 4%);
+    --reading-link: var(--link);
+    --reading-shadow: none;
+    --reading-paper-bg: var(--reading-bg);
+    --reading-paper-surface: var(--reading-surface);
+    --reading-rail-bg: transparent;
+  }
 }
 
 :root[data-theme="dark"] {
-  --bg: #19160f;
-  --bg-layer: linear-gradient(160deg, #1c1810 0%, #171410 100%);
-  --surface: #221e16;
-  --surface-soft: #2a2419;
-  --text: #e8e4dc;
-  --subtle: #a09080;
-  --line: #3a3228;
-  --line-strong: #4c4238;
-  --accent: #c4956e;
-  --accent-strong: #d9aa84;
-  --accent-soft: #352b20;
-  --danger: #e07272;
-  --info: #80a8d8;
-  --shadow: 0 4px 18px rgba(0, 0, 0, 0.38), 0 1px 4px rgba(0, 0, 0, 0.24);
-  --header-bg: rgba(22, 19, 12, 0.88);
-
-  --comment-bubble-border: #4a3d35;
-  --comment-bubble-bg: #2a2018;
-  --comment-bubble-text: #c8a488;
-  --comment-bubble-hover: #322618;
-  --comment-panel-border: #3a3228;
-  --comment-panel-bg: #221e16;
-  --comment-panel-text: #c0b0a0;
-  --comment-item-border: #40352a;
-  --comment-item-bg: #1e1a12;
-  --comment-empty: #8a7870;
-  --comment-meta: #8a7870;
-  --comment-tag-border: #4a3e34;
-  --comment-tag-bg: #2e261c;
-  --comment-tag-text: #b8a898;
-  --comment-tag-active-bg: #3e2e24;
-  --comment-tag-active-border: #7a5a4a;
-  --comment-tag-active-text: #d8b8a0;
-  --comment-input-border: #4a3c30;
-  --comment-counter: #8a7870;
-  --comment-submit-border: #c4956e;
-  --comment-submit-bg: #a87850;
-  --comment-submit-text: #1a1208;
-  --comment-error-border: #5a2e2e;
-  --comment-error-bg: #2a1818;
-  --comment-error-text: #e8a0a0;
-  --comment-info-text: #80a8d8;
-
-  --toc-bg: #1e1b19;
-  --toc-title: #d4cfcc;
-  --toc-text: #a8a29e;
-  --toc-num: #615a55;
-  --toc-active: #e27a5f;
-
-  --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.18);
-  --shadow-md:   0 4px 18px rgba(0, 0, 0, 0.38), 0 1px 4px rgba(0, 0, 0, 0.24);
-  --shadow-lg:   0 12px 36px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.28);
-  --shadow-xl:   0 22px 50px rgba(0, 0, 0, 0.48), 0 4px 10px rgba(0, 0, 0, 0.32);
-  --shadow-glow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 48%, transparent 52%);
-
-  --surface-shimmer: linear-gradient(135deg,
-    color-mix(in srgb, var(--surface) 100%, transparent 0%) 0%,
-    color-mix(in srgb, var(--accent-soft) 6%, var(--surface) 94%) 50%,
-    color-mix(in srgb, var(--surface) 100%, transparent 0%) 100%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] {
-    --bg: #19160f;
-    --bg-layer: linear-gradient(160deg, #1c1810 0%, #171410 100%);
-    --surface: #221e16;
-    --surface-soft: #2a2419;
-    --text: #e8e4dc;
-    --subtle: #a09080;
-    --line: #3a3228;
-    --line-strong: #4c4238;
-    --accent: #c4956e;
-    --accent-strong: #d9aa84;
-    --accent-soft: #352b20;
-    --danger: #e07272;
-    --info: #80a8d8;
-    --shadow: 0 4px 18px rgba(0, 0, 0, 0.38), 0 1px 4px rgba(0, 0, 0, 0.24);
-    --header-bg: rgba(22, 19, 12, 0.88);
-
-    --comment-bubble-border: #4a3d35;
-    --comment-bubble-bg: #2a2018;
-    --comment-bubble-text: #c8a488;
-    --comment-bubble-hover: #322618;
-    --comment-panel-border: #3a3228;
-    --comment-panel-bg: #221e16;
-    --comment-panel-text: #c0b0a0;
-    --comment-item-border: #40352a;
-    --comment-item-bg: #1e1a12;
-    --comment-empty: #8a7870;
-    --comment-meta: #8a7870;
-    --comment-tag-border: #4a3e34;
-    --comment-tag-bg: #2e261c;
-    --comment-tag-text: #b8a898;
-    --comment-tag-active-bg: #3e2e24;
-    --comment-tag-active-border: #7a5a4a;
-    --comment-tag-active-text: #d8b8a0;
-    --comment-input-border: #4a3c30;
-    --comment-counter: #8a7870;
-    --comment-submit-border: #c4956e;
-    --comment-submit-bg: #a87850;
-    --comment-submit-text: #1a1208;
-    --comment-error-border: #5a2e2e;
-    --comment-error-bg: #2a1818;
-    --comment-error-text: #e8a0a0;
-    --comment-info-text: #80a8d8;
-
-    --toc-bg: #1e1b19;
-    --toc-title: #d4cfcc;
-    --toc-text: #a8a29e;
-    --toc-num: #615a55;
-    --toc-active: #e27a5f;
-
-    --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.18);
-    --shadow-md:   0 4px 18px rgba(0, 0, 0, 0.38), 0 1px 4px rgba(0, 0, 0, 0.24);
-    --shadow-lg:   0 12px 36px rgba(0, 0, 0, 0.42), 0 2px 6px rgba(0, 0, 0, 0.28);
-    --shadow-xl:   0 22px 50px rgba(0, 0, 0, 0.48), 0 4px 10px rgba(0, 0, 0, 0.32);
-    --shadow-glow: 0 0 0 3px color-mix(in srgb, var(--accent-soft) 48%, transparent 52%);
-
-    --surface-shimmer: linear-gradient(135deg,
-      color-mix(in srgb, var(--surface) 100%, transparent 0%) 0%,
-      color-mix(in srgb, var(--accent-soft) 6%, var(--surface) 94%) 50%,
-      color-mix(in srgb, var(--surface) 100%, transparent 0%) 100%);
-  }
+    --background: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --background-soft: color-mix(in srgb, var(--color-midnight) 70%, black 30%);
+    --foreground: color-mix(in srgb, var(--color-lace) 90%, var(--color-navy) 10%);
+    --foreground-strong: white;
+    --primary: var(--color-lace);
+    --secondary: var(--color-ivory);
+    --accent: var(--color-moonlight);
+    --accent-strong: color-mix(in srgb, var(--color-moonlight) 80%, white 20%);
+    --accent-soft: color-mix(in srgb, var(--color-moonlight) 20%, transparent 80%);
+    --muted: color-mix(in srgb, var(--color-navy) 80%, var(--color-lace) 20%);
+    --muted-strong: color-mix(in srgb, var(--color-lace) 60%, var(--color-navy) 40%);
+    --border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --border-strong: color-mix(in srgb, var(--color-navy) 70%, transparent 30%);
+    --card: color-mix(in srgb, var(--color-midnight) 70%, transparent 30%);
+    --card-strong: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --card-soft: color-mix(in srgb, var(--color-midnight) 50%, transparent 50%);
+    --input: color-mix(in srgb, var(--color-midnight) 60%, transparent 40%);
+    --link: color-mix(in srgb, var(--accent) 90%, var(--color-lace) 10%);
+    --selection-bg: color-mix(in srgb, var(--color-moonlight) 30%, transparent 70%);
+    --selection-text: white;
+    --ring: color-mix(in srgb, var(--color-moonlight) 70%, transparent 30%);
+    --code-bg: color-mix(in srgb, var(--color-midnight) 95%, black 5%);
+    --code-border: color-mix(in srgb, var(--color-navy) 50%, transparent 50%);
+    --code-foreground: color-mix(in srgb, var(--color-lace) 90%, white 10%);
+    --danger: #ff6b6b;
+    --info: #749dff;
+    --bg: var(--background);
+    --bg-layer: radial-gradient(circle at top, color-mix(in srgb, var(--color-navy) 30%, transparent 70%) 0%, transparent 50%), linear-gradient(180deg, color-mix(in srgb, var(--color-midnight) 90%, black 10%) 0%, black 100%);
+    --surface: var(--card);
+    --surface-soft: var(--card-soft);
+    --text: var(--foreground);
+    --subtle: var(--muted);
+    --line: var(--border);
+    --line-strong: var(--border-strong);
+    --shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+    --header-bg: color-mix(in srgb, var(--color-midnight) 96%, transparent 4%);
+    --comment-bubble-border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --comment-bubble-bg: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --comment-bubble-text: var(--foreground);
+    --comment-bubble-hover: color-mix(in srgb, var(--color-midnight) 95%, transparent 5%);
+    --comment-panel-border: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --comment-panel-bg: color-mix(in srgb, var(--color-midnight) 75%, transparent 25%);
+    --comment-panel-text: var(--foreground);
+    --comment-item-border: color-mix(in srgb, var(--color-navy) 30%, transparent 70%);
+    --comment-item-bg: color-mix(in srgb, var(--color-midnight) 60%, transparent 40%);
+    --comment-empty: var(--muted);
+    --comment-meta: var(--muted);
+    --comment-tag-border: color-mix(in srgb, var(--color-ivory) 25%, transparent 75%);
+    --comment-tag-bg: color-mix(in srgb, var(--color-ivory) 10%, transparent 90%);
+    --comment-tag-text: color-mix(in srgb, var(--color-lace) 90%, var(--color-navy) 10%);
+    --comment-tag-active-bg: color-mix(in srgb, var(--color-moonlight) 20%, transparent 80%);
+    --comment-tag-active-border: color-mix(in srgb, var(--color-moonlight) 40%, transparent 60%);
+    --comment-tag-active-text: white;
+    --comment-input-border: var(--border-strong);
+    --comment-counter: var(--muted);
+    --comment-submit-border: color-mix(in srgb, var(--color-moonlight) 50%, transparent 50%);
+    --comment-submit-bg: var(--accent);
+    --comment-submit-text: black;
+    --comment-error-border: color-mix(in srgb, var(--danger) 40%, transparent 60%);
+    --comment-error-bg: color-mix(in srgb, var(--danger) 15%, transparent 85%);
+    --comment-error-text: color-mix(in srgb, var(--danger) 90%, white 10%);
+    --comment-info-text: var(--info);
+    --toc-bg: transparent;
+    --toc-title: var(--foreground-strong);
+    --toc-text: var(--muted);
+    --toc-num: color-mix(in srgb, var(--color-ivory) 60%, var(--color-navy) 40%);
+    --toc-active: var(--accent);
+    --shadow-sm: 0 10px 20px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.35), 0 3px 8px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 22px 44px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 0 4px color-mix(in srgb, var(--ring) 30%, transparent 70%);
+    --shadow-soft: var(--shadow-sm);
+    --shadow-panel: var(--shadow-lg);
+    --surface-base: color-mix(in srgb, var(--color-midnight) 70%, black 30%);
+    --surface-panel: var(--card);
+    --surface-panel-strong: var(--card-strong);
+    --surface-inset: color-mix(in srgb, var(--color-midnight) 80%, black 20%);
+    --edge-soft: color-mix(in srgb, var(--color-navy) 40%, transparent 60%);
+    --edge-muted: color-mix(in srgb, var(--color-navy) 60%, transparent 40%);
+    --chrome-bg: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --chrome-bg-strong: color-mix(in srgb, var(--color-midnight) 80%, black 20%);
+    --chrome-hover: color-mix(in srgb, var(--color-navy) 70%, black 30%);
+    --chrome-line: color-mix(in srgb, var(--color-lace) 15%, transparent 85%);
+    --chrome-text: var(--color-lace);
+    --chrome-text-muted: color-mix(in srgb, var(--color-lace) 70%, var(--color-navy) 30%);
+    --header-glass: color-mix(in srgb, var(--color-midnight) 94%, transparent 6%);
+    --reading-bg: color-mix(in srgb, var(--color-midnight) 90%, black 10%);
+    --reading-surface: color-mix(in srgb, var(--color-midnight) 85%, transparent 15%);
+    --reading-ink: color-mix(in srgb, var(--color-lace) 95%, white 5%);
+    --reading-ink-subtle: color-mix(in srgb, var(--color-lace) 70%, var(--color-navy) 30%);
+    --reading-rule: color-mix(in srgb, var(--color-navy) 30%, transparent 70%);
+    --reading-rule-strong: color-mix(in srgb, var(--color-navy) 50%, transparent 50%);
+    --reading-accent: var(--accent);
+    --reading-code-bg: color-mix(in srgb, var(--color-midnight) 96%, black 4%);
+    --reading-link: var(--link);
+    --reading-shadow: none;
+    --reading-paper-bg: var(--reading-bg);
+    --reading-paper-surface: var(--reading-surface);
+    --reading-rail-bg: transparent;
 }

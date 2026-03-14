@@ -1,4 +1,4 @@
-﻿.post-reading-layout {
+.post-reading-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
   gap: 1.2rem;
@@ -81,13 +81,30 @@
   font-size: 1.05rem;
 }
 
+.post-toc-item--depth-1 .post-toc-link {
+  padding-left: 0.3rem;
+}
+
+.post-toc-item--depth-2 .post-toc-link {
+  padding-left: 1rem;
+}
+
 .post-toc-item--depth-3 .post-toc-link {
-  padding-left: 1.5rem;
+  padding-left: 1.8rem;
   color: color-mix(in srgb, var(--toc-text) 80%, transparent 20%);
 }
 
 .post-toc-item--depth-3 .post-toc-number {
   color: color-mix(in srgb, var(--toc-num) 80%, transparent 20%);
+}
+
+.post-toc-item--depth-4 .post-toc-link {
+  padding-left: 2.6rem;
+  color: color-mix(in srgb, var(--toc-text) 60%, transparent 40%);
+}
+
+.post-toc-item--depth-4 .post-toc-number {
+  color: color-mix(in srgb, var(--toc-num) 60%, transparent 40%);
 }
 
 .post-toc-link.is-active {
@@ -432,4 +449,32 @@
   .post-scholar-section>.post-scholar-section-summary {
     display: none;
   }
+}
+
+/* 2026-03-14 theme refresh */
+.post-toc-link {
+  border-radius: 12px;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.post-toc-link:hover {
+  background: color-mix(in srgb, var(--accent-soft) 54%, white 46%);
+  transform: translateX(1px);
+}
+
+.post-toc-link.is-active {
+  background: color-mix(in srgb, var(--accent-soft) 62%, white 38%);
+  color: var(--toc-title);
+  box-shadow: none;
+}
+
+.post-toc-link.is-active .post-toc-number {
+  color: var(--toc-active);
+}
+
+.post-toc-number {
+  font-variant-numeric: tabular-nums;
 }
