@@ -2,25 +2,24 @@
 
 ## 1. 目标与定位
 
-这是一个基于 **Astro + React + Supabase** 的主题化知识博客（Theme-first knowledge blog）。核心特色是提供知识节点式的 Topic 优先入口，以及支持针对段落级别的短评系统。它允许通过 Supabase RLS 保障安全的数据读写，并原生支持匿名访客评论。
+这是一个基于 **Astro + React + Waline** 的主题化知识博客（Theme-first knowledge blog）。核心定位是 Topic 优先的知识组织与沉浸式长文阅读；评论系统已从站内 Supabase 方案切换为 Waline，段落锚点则保留为阅读侧栏、脚注与旁注定位的基础设施。
 
 ## 2. 架构图及核心模块
 
 - **前端生成与聚合层**: `Astro (@astrojs/react, astro@5.17.3)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
-- **交互组件层**: `React (react@19)` — 专门负责评论系统面板、评论发布等强交互逻辑。
-- **内容处理层**: `src/lib/markdown/rehypeParagraphAnchors.ts` — 自定义 Rehype 插件，在 Markdown 解析阶段为有效段落生成并注入唯一锚点 ID（格式：`sectionSlug::p0`）。
-- **评论与后端通信层**: `src/lib/comments/` — 封装 Supabase 客户端 API 和类型验证（`createComment`, `fetchVisibleComments`, `ensureAnonymousSession`）。
-- **文章级评论层**: `src/lib/articleComments/` — 独立的文章底部评论模块，对应独立的 Supabase 表 `article_comments`，与段落评论并行存在。
+- **交互组件层**: `React (react@19)` — 承担 Waline 挂载、局部交互组件和测试友好的客户端封装。
+- **内容处理层**: `src/lib/markdown/rehypeParagraphAnchors.ts` — 在 Markdown 解析阶段为有效段落生成唯一锚点 ID（格式：`sectionSlug::p0`），供阅读侧栏和脚注关联使用。
+- **评论集成层**: `src/components/comments/WalineComments.tsx` — 统一封装 Waline `init()` 调用、主题切换适配和缺省配置提示。
 - **搜索与导航层**: `src/lib/search/index.ts`, `src/components/search/HeaderSearch.astro` — 静态搜索索引端点（`/search-index.json`）+ 客户端即时搜索 UI。
 - **目录组件层**: `src/lib/posts/toc.ts`, `src/components/post/PostToc.astro` — 从 Astro headings 提取 H2/H3，渲染带当前章节高亮的固定/折叠 TOC。
-- **数据库层**: `Supabase` — 使用 PostgreSQL 存储评论数据，采用 RLS 策略（读 `visible`，只创建专属作者）。
+- **主题系统层**: `src/styles/tokens.css` + `src/styles/*.css` — 基于 five-color foundation 的 semantic token contract，并在现有 Astro + React 架构内吸收 Astro Theme Pure 的阅读优先视觉语言；页面、结构区、阅读区和 Waline 集成样式都通过同一套 light/dark 语义 token 驱动。
 
 ## 3. 技术栈和依赖
 
 - **框架**: Astro 5.x, React 19
-- **持久化**: `@supabase/supabase-js`, PostgreSQL（云托管 Supabase）
-- **样式**: 原生 CSS（`src/styles/global.css`），无 CSS 框架
-- **Markdown 渲染**: `react-markdown`, `remark-gfm`, `rehype-sanitize`（文章评论）
+- **评论系统**: `@waline/client`
+- **样式**: 原生 CSS 模块化体系（`src/styles/tokens.css` + `base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`），无 CSS 框架
+- **Markdown 渲染**: `remark-gfm` + 自定义 rehype 插件（脚注与段落锚点）
 - **工程化与测试**:
   - 包管理：`pnpm`
   - 单元/集成测试：`vitest`
@@ -37,15 +36,14 @@
 - `src/content.config.ts`
 - `src/content/posts/*`, `src/content/topics/*`, `src/content/concepts/*`
 
-### 段落评论域
-- `src/lib/supabaseClient.ts`
-- `src/lib/comments/types.ts`, `constants.ts`, `validation.ts`, `api.ts`
-- `src/components/comments/ParagraphComments.tsx`
+### 评论集成
+- `src/components/comments/WalineComments.tsx`
+- `src/styles/waline.css`
 
-### 文章级评论域
-- `src/lib/articleComments/*`
-- `src/components/comments/ArticleComments.tsx`
-- `src/styles/article-comments.css`
+### 主题与样式系统
+- `src/styles/tokens.css`
+- `src/styles/base.css`, `layout.css`, `home.css`, `cards.css`, `search.css`, `theme-toggle.css`, `footer.css`, `archives.css`, `toc.css`, `article.css`, `waline.css`
+- `src/styles/themeContract.test.ts`
 
 ### 搜索
 - `src/lib/search/index.ts`
@@ -62,29 +60,22 @@
 
 ### Markdown 锚点插件
 - `src/lib/markdown/rehypeParagraphAnchors.ts`
-
-### DB Migrations
-- `supabase/migrations/20260220_000001_comments.sql` — 段落评论表
-- `supabase/migrations/20260222_000002_article_comments.sql` — 文章评论表
+- `src/lib/markdown/rehypeTufteFootnotes.ts`
 
 ### 测试
 - `src/lib/markdown/rehypeParagraphAnchors.test.ts`
-- `src/lib/comments/validation.test.ts`
-- `src/components/comments/ParagraphComments.test.tsx`
+- `src/lib/markdown/rehypeTufteFootnotes.test.ts`
+- `src/components/comments/WalineComments.test.tsx`
 - `tests/e2e/paragraph-comments.spec.ts`
-- `tests/e2e/article-comments.spec.ts`
 
 ## 5. 环境变量
 
 | 变量名 | 必填 | 说明 |
 |---|---|---|
-| `PUBLIC_SUPABASE_URL` | ✅ | Supabase 项目 URL |
-| `PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase 可发布 anon key（不得使用 service_role key） |
-| `PUBLIC_COMMENTS_REQUIRE_APPROVAL` | 可选 | `true`/`false`，评论是否需要审核 |
-| `PUBLIC_COMMENTS_MAX_LEN` | 可选 | 默认 200，评论最大字符数 |
+| `PUBLIC_WALINE_SERVER_URL` | ✅ | Waline 服务端地址 |
 
 ## 6. 部署状态
 
 - GitHub 仓库：`https://github.com/Yuki-zik/myblog`（分支 `main`）
 - 托管平台：Vercel（已连接 GitHub，自动部署）
-- Supabase：已开启 Anonymous Sign-Ins；RLS 已配置
+- 评论后端：需单独部署 Waline 服务，并将地址注入 `PUBLIC_WALINE_SERVER_URL`

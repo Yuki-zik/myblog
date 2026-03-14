@@ -6,9 +6,9 @@
 .author-hero,
 .author-posts,
 .home-archive-entry {
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, color-mix(in srgb, white 76%, var(--color-lace) 24%) 0%, color-mix(in srgb, white 86%, var(--color-ivory) 8%, var(--color-lace) 6%) 100%);
+  background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-elevated) 100%);
   box-shadow: var(--shadow-sm);
 }
 
@@ -18,7 +18,7 @@
 
 .author-kicker {
   margin: 0 0 0.45rem;
-  color: color-mix(in srgb, var(--secondary) 56%, var(--foreground) 44%);
+  color: var(--text-meta);
   font-size: var(--type-label);
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -43,9 +43,9 @@
   display: grid;
   gap: 0.12rem;
   padding: 0.86rem 0.92rem;
-  border: 1px solid color-mix(in srgb, var(--color-navy) 14%, var(--color-lace) 86%);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, white 64%, var(--color-lace) 36%);
+  background: var(--surface-subtle);
 }
 
 .author-stat-value {
@@ -76,9 +76,9 @@
   min-height: 2.65rem;
   padding: 0.55rem 0.92rem;
   border-radius: var(--radius-full);
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 48%, var(--border) 52%);
-  background: color-mix(in srgb, white 68%, var(--accent-soft) 32%);
-  color: color-mix(in srgb, var(--foreground) 86%, var(--muted) 14%);
+  border: 1px solid var(--button-secondary-border);
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
   font-weight: 600;
 }
 
@@ -96,7 +96,7 @@
 
 .author-post-item {
   padding-top: 1rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-navy) 12%, var(--color-lace) 88%);
+  border-top: 1px solid var(--divider);
 }
 
 .author-post-item:first-child {
@@ -132,4 +132,52 @@
   .author-stat-list {
     grid-template-columns: 1fr;
   }
+}
+
+/* 2026-03-15: align author page with lighter list language */
+.author-page {
+  gap: 1.2rem;
+}
+
+.author-hero,
+.author-posts,
+.home-archive-entry {
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--surface-primary) 94%, var(--surface-elevated) 6%);
+  box-shadow: none;
+}
+
+.author-hero {
+  padding: clamp(1.05rem, 2vw, 1.4rem);
+}
+
+.author-hero-copy p,
+.author-post-summary {
+  color: var(--text-secondary);
+}
+
+.author-stat-list {
+  gap: 0.62rem;
+}
+
+.author-stat-list li {
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent 16%);
+}
+
+.author-links a,
+.archive-entry-button {
+  min-height: 2.35rem;
+  padding: 0.48rem 0.82rem;
+  font-size: 0.84rem;
+  font-weight: 560;
+}
+
+.author-posts,
+.home-archive-entry {
+  padding: 1rem 1rem 1.08rem;
+}
+
+.author-post-item {
+  padding-top: 0.88rem;
 }

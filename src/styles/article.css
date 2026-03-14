@@ -889,30 +889,6 @@ html.theme-transitioning body::before {
   border-radius: 4px;
 }
 
-:root[data-theme="dark"] .post-reading-layout--scholarly {
-  --reading-paper-bg: #141311;
-  --reading-paper-surface: #171512;
-  --reading-ink: #e3ddd4;
-  --reading-ink-subtle: #aaa295;
-  --reading-rail-bg: #141311;
-  --reading-rule: #3a342b;
-  --reading-rule-strong: #51493d;
-  --reading-accent: #c3ab93;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] .post-reading-layout--scholarly {
-    --reading-paper-bg: #141311;
-    --reading-paper-surface: #171512;
-    --reading-ink: #e3ddd4;
-    --reading-ink-subtle: #aaa295;
-    --reading-rail-bg: #141311;
-    --reading-rule: #3a342b;
-    --reading-rule-strong: #51493d;
-    --reading-accent: #c3ab93;
-  }
-}
-
 @media (min-width: 1101px) {
   .post-scholar-section>.post-scholar-section-summary {
     display: block;
@@ -1593,40 +1569,6 @@ html.theme-transitioning body::before {
   }
 }
 
-/* ── 3. Paper surface — replace layout background with warm off-white */
-.post-reading-layout--scholarly {
-  --reading-paper-bg: #f8f5ef;
-  --reading-paper-surface: #faf8f3;
-  --reading-ink: #1e1c18;
-  --reading-ink-subtle: #6b6258;
-  --reading-rule: #d8d0c4;
-  --reading-rule-strong: #c4baad;
-  --reading-accent: #5d4b39;
-  --reading-serif: 'Lora', Georgia, 'Times New Roman', serif;
-}
-
-:root[data-theme="dark"] .post-reading-layout--scholarly {
-  --reading-paper-bg: #17140f;
-  --reading-paper-surface: #1c1912;
-  --reading-ink: #e8e2d8;
-  --reading-ink-subtle: #a89f93;
-  --reading-rule: #3d352a;
-  --reading-rule-strong: #554b3e;
-  --reading-accent: #c9b49a;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] .post-reading-layout--scholarly {
-    --reading-paper-bg: #17140f;
-    --reading-paper-surface: #1c1912;
-    --reading-ink: #e8e2d8;
-    --reading-ink-subtle: #a89f93;
-    --reading-rule: #3d352a;
-    --reading-rule-strong: #554b3e;
-    --reading-accent: #c9b49a;
-  }
-}
-
 /* ── 4. Body typography — apply reading serif ──────────────────── */
 .post-body--scholarly,
 .post-reading-layout--scholarly .post-header--scholarly {
@@ -1959,11 +1901,8 @@ body:has(.shell--article-reading)::before {
   z-index: 10000;
   height: 3px;
   width: var(--progress);
-  background: linear-gradient(90deg,
-      color-mix(in srgb, var(--accent) 66%, #a07050 34%) 0%,
-      color-mix(in srgb, var(--accent) 44%, #c4956a 56%) 33%,
-      color-mix(in srgb, var(--accent-strong) 70%, #d4a878 30%) 66%,
-      color-mix(in srgb, var(--accent) 66%, #a07050 34%) 100%);
+  background-color: rgba(255, 122, 91, 0.12);
+  background-image: var(--progress-fill);
   background-size: 200% 100%;
   animation: ux-progress-flow 4s linear infinite;
   transition: width 80ms linear;
@@ -1972,7 +1911,8 @@ body:has(.shell--article-reading)::before {
 
 :root[data-theme="dark"] .reading-progress-bar,
 body:has(.shell--article-reading) .reading-progress-bar {
-  background: linear-gradient(90deg, #b8a08a 0%, #9a7e66 100%);
+  background-color: rgba(255, 122, 91, 0.14);
+  background-image: var(--progress-fill);
 }
 
 /* ── 2. Reading time label ──────────────────────────────────────── */
@@ -1986,10 +1926,9 @@ body:has(.shell--article-reading) .reading-progress-bar {
 .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre {
   margin: 1.5rem 0;
   padding: 1.1rem 1.3rem;
-  background: var(--surface-strong);
-  border: 1px solid color-mix(in srgb, var(--c-ivory) 40%, transparent 60%);
-  border-left: 3px solid var(--c-ivory);
-  color: var(--text-on-dark);
+  background: color-mix(in srgb, var(--reading-paper-surface) 68%, #c8b89044 32%);
+  border: 1px solid color-mix(in srgb, var(--reading-rule) 78%, transparent 22%);
+  border-left: 3px solid color-mix(in srgb, var(--reading-accent) 56%, transparent 44%);
   border-radius: 2px;
   overflow-x: auto;
   font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
@@ -2341,8 +2280,8 @@ body:has(.shell--article-reading) {
 .post-cover--hero {
   margin-bottom: 2rem;
   border-radius: 22px;
-  border: 1px solid color-mix(in srgb, var(--edge-soft) 88%, transparent 12%);
-  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .post-cover-img {
@@ -2502,7 +2441,7 @@ body:has(.shell--article-reading) {
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item,
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble {
   border: 0;
-  border-left: 1px solid color-mix(in srgb, var(--edge-soft) 82%, transparent 18%);
+  border-left: 1px solid color-mix(in srgb, var(--divider) 82%, transparent 18%);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -2535,16 +2474,16 @@ body:has(.shell--article-reading) {
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link:hover {
-  background: color-mix(in srgb, rgba(78, 157, 248, 0.08) 70%, transparent 30%);
+  background: color-mix(in srgb, var(--state-hover) 72%, transparent 28%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link.is-active {
-  background: color-mix(in srgb, rgba(78, 157, 248, 0.14) 74%, transparent 26%);
+  background: color-mix(in srgb, var(--selected-bg) 74%, transparent 26%);
   color: var(--reading-ink);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link.is-active::before {
-  background: color-mix(in srgb, var(--accent) 76%, #4e9df8 24%);
+  background: var(--selected-border);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link:hover {
@@ -2552,20 +2491,20 @@ body:has(.shell--article-reading) {
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link.is-active {
-  background: color-mix(in srgb, rgba(78, 157, 248, 0.09) 72%, transparent 28%);
+  background: color-mix(in srgb, var(--selected-bg) 60%, transparent 40%);
   color: color-mix(in srgb, var(--reading-ink) 86%, var(--reading-ink-subtle) 14%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link.is-active::before {
-  background: color-mix(in srgb, #4e9df8 52%, transparent 48%);
+  background: color-mix(in srgb, var(--selected-border) 52%, transparent 48%);
 }
 
 .post-article-comments-collapsible {
   margin-top: 1.55rem;
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: 22px;
   background: color-mix(in srgb, var(--surface-panel) 90%, transparent 10%);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -2597,12 +2536,8 @@ body:has(.shell--article-reading) .reading-progress-bar,
   border-radius: var(--progress-radius);
   border: 0;
   animation: none;
-  background: linear-gradient(
-    90deg,
-    rgba(78, 157, 248, 0.12) 0%,
-    rgba(78, 157, 248, 0.22) 48%,
-    rgba(78, 157, 248, 0.12) 100%
-  );
+  background-color: rgba(255, 122, 91, 0.12);
+  background-image: var(--progress-track);
   overflow: hidden;
   pointer-events: none;
   transition:
@@ -2623,13 +2558,9 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
   width: 0%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    rgba(56, 131, 244, 0.54) 0%,
-    rgba(78, 157, 248, 0.98) 52%,
-    rgba(115, 195, 255, 0.64) 100%
-  );
-  box-shadow: 0 0 16px rgba(78, 157, 248, 0.22);
+  background-color: var(--brand-accent);
+  background-image: var(--progress-fill);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--brand-accent) 22%, transparent 78%);
   opacity: 0.88;
   transition: width 90ms linear, opacity 220ms var(--ease-out);
 }
@@ -2752,8 +2683,8 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
 /* 2026-03-14: midnight editorial refresh */
 body:has(.shell--article-reading) {
   background:
-    radial-gradient(circle at top, color-mix(in srgb, var(--color-lace) 22%, transparent 78%) 0%, transparent 42%),
-    linear-gradient(180deg, color-mix(in srgb, white 68%, var(--color-lace) 24%, var(--color-ivory) 8%) 0%, color-mix(in srgb, white 84%, var(--color-lace) 10%, var(--color-ivory) 6%) 100%);
+    radial-gradient(circle at top, color-mix(in srgb, var(--surface-elevated) 46%, transparent 54%) 0%, transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--page-bg) 86%, var(--surface-elevated) 14%) 0%, color-mix(in srgb, var(--page-bg) 94%, var(--surface-primary) 6%) 100%);
 }
 
 .shell--article-reading {
@@ -2776,7 +2707,7 @@ body:has(.shell--article-reading) {
   border-radius: 30px;
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 28%, transparent 72%) 0%, transparent 32%),
-    linear-gradient(180deg, color-mix(in srgb, white 86%, var(--color-lace) 14%) 0%, color-mix(in srgb, white 94%, var(--color-ivory) 6%) 100%);
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 88%, var(--surface-elevated) 12%) 0%, color-mix(in srgb, var(--surface-primary) 94%, var(--tag-bg) 6%) 100%);
   box-shadow: var(--reading-shadow);
 }
 
@@ -2824,8 +2755,8 @@ body:has(.shell--article-reading) {
   min-height: 1.9rem;
   padding: 0.18rem 0.62rem;
   border-radius: var(--radius-full);
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 50%, var(--reading-rule) 50%);
-  background: color-mix(in srgb, white 74%, var(--accent-soft) 26%);
+  border: 1px solid var(--tag-border);
+  background: color-mix(in srgb, var(--surface-primary) 74%, var(--accent-soft) 26%);
   color: color-mix(in srgb, var(--reading-ink) 82%, var(--reading-accent) 18%);
   font-size: 0.8rem;
 }
@@ -2904,7 +2835,7 @@ body:has(.shell--article-reading) {
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel {
   border: 1px solid color-mix(in srgb, var(--reading-rule) 92%, transparent 8%);
   border-radius: 24px;
-  background: color-mix(in srgb, white 70%, var(--color-lace) 30%);
+  background: color-mix(in srgb, var(--surface-primary) 70%, var(--surface-elevated) 30%);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
@@ -2972,7 +2903,7 @@ body:has(.shell--article-reading) {
   padding: 0.95rem 1rem 1rem;
   border: 1px solid color-mix(in srgb, var(--reading-rule) 92%, transparent 8%);
   border-radius: 24px;
-  background: color-mix(in srgb, white 72%, var(--color-lace) 18%, var(--color-ivory) 10%);
+  background: color-mix(in srgb, var(--surface-primary) 72%, var(--surface-elevated) 28%);
   box-shadow: var(--shadow-sm);
 }
 
@@ -2985,7 +2916,7 @@ body:has(.shell--article-reading) {
   margin-top: 1.5rem;
   border: 1px solid color-mix(in srgb, var(--reading-rule) 92%, transparent 8%);
   border-radius: 24px;
-  background: color-mix(in srgb, white 74%, var(--color-lace) 18%, var(--color-ivory) 8%);
+  background: color-mix(in srgb, var(--surface-primary) 74%, var(--surface-elevated) 26%);
   box-shadow: var(--shadow-sm);
 }
 
@@ -3062,23 +2993,15 @@ body:has(.shell--article-reading) {
 body:has(.shell--article-reading) .reading-progress-bar,
 :root[data-theme="dark"] .reading-progress-bar,
 .reading-progress-bar {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent) 18%, transparent 82%) 0%,
-    color-mix(in srgb, var(--accent) 28%, transparent 72%) 48%,
-    color-mix(in srgb, var(--accent) 18%, transparent 82%) 100%
-  );
+  background-color: rgba(255, 122, 91, 0.12);
+  background-image: var(--progress-track);
 }
 
 body:has(.shell--article-reading) .reading-progress-bar__fill,
 .reading-progress-bar__fill {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent-strong) 70%, white 30%) 0%,
-    var(--accent) 55%,
-    color-mix(in srgb, var(--accent) 72%, white 28%) 100%
-  );
-  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 28%, transparent 72%);
+  background-color: var(--brand-accent);
+  background-image: var(--progress-fill);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--brand-accent) 28%, transparent 72%);
 }
 
 @media (max-width: 1360px) {
@@ -3205,12 +3128,12 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
    and reopen the reading layout with less framing */
 body:has(.shell--article-reading) {
   background:
-    radial-gradient(circle at 14% 6%, color-mix(in srgb, var(--color-lace) 34%, transparent 66%) 0%, transparent 34%),
-    radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--color-ivory) 24%, transparent 76%) 0%, transparent 28%),
+    radial-gradient(circle at 14% 6%, color-mix(in srgb, var(--surface-elevated) 34%, transparent 66%) 0%, transparent 34%),
+    radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--tag-bg) 24%, transparent 76%) 0%, transparent 28%),
     linear-gradient(
       180deg,
-      color-mix(in srgb, color-mix(in srgb, white 80%, var(--color-lace) 20%) 90%, var(--color-ivory) 10%) 0%,
-      color-mix(in srgb, color-mix(in srgb, white 92%, var(--color-lace) 8%) 96%, var(--color-ivory) 4%) 100%
+      color-mix(in srgb, color-mix(in srgb, var(--page-bg) 80%, var(--surface-elevated) 20%) 90%, var(--tag-bg) 10%) 0%,
+      color-mix(in srgb, color-mix(in srgb, var(--page-bg) 92%, var(--surface-primary) 8%) 96%, var(--tag-bg) 4%) 100%
     );
 }
 
@@ -3259,8 +3182,8 @@ body:has(.shell--article-reading) {
 }
 
 .post-header-topic-item a {
-  border-color: color-mix(in srgb, var(--color-ivory) 62%, var(--reading-rule) 38%);
-  background: color-mix(in srgb, var(--color-ivory) 32%, white 68%);
+  border-color: var(--tag-border);
+  background: var(--tag-bg);
   color: color-mix(in srgb, var(--reading-ink) 82%, var(--reading-accent) 18%);
 }
 
@@ -3273,7 +3196,7 @@ body:has(.shell--article-reading) {
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h2 {
-  border-top-color: color-mix(in srgb, var(--color-ivory) 48%, var(--reading-rule) 52%);
+  border-top-color: color-mix(in srgb, var(--tag-border) 48%, var(--reading-rule) 52%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
@@ -3314,11 +3237,11 @@ body:has(.shell--article-reading) {
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link:hover {
-  background: color-mix(in srgb, var(--color-lace) 82%, var(--color-ivory) 18%);
+  background: color-mix(in srgb, var(--surface-subtle) 82%, var(--tag-bg) 18%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link.is-active {
-  background: color-mix(in srgb, var(--color-lace) 74%, var(--color-ivory) 26%);
+  background: color-mix(in srgb, var(--selected-bg) 74%, var(--surface-primary) 26%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link.is-active::before {
@@ -3331,7 +3254,7 @@ body:has(.shell--article-reading) {
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link.is-active {
-  background: color-mix(in srgb, var(--color-lace) 84%, white 16%);
+  background: color-mix(in srgb, var(--selected-bg) 52%, var(--surface-primary) 48%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link.is-active::before {
@@ -3348,13 +3271,13 @@ body:has(.shell--article-reading) {
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item,
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble {
-  border-left: 1px solid color-mix(in srgb, var(--color-ivory) 46%, var(--reading-rule) 54%);
+  border-left: 1px solid color-mix(in srgb, var(--tag-border) 46%, var(--reading-rule) 54%);
   padding-left: 0.9rem;
 }
 
 .post-article-comments-collapsible {
   margin-top: 1.6rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-ivory) 44%, var(--reading-rule) 56%);
+  border-top: 1px solid color-mix(in srgb, var(--tag-border) 44%, var(--reading-rule) 56%);
 }
 
 .post-article-comments-summary {
@@ -3371,9 +3294,9 @@ body:has(.shell--article-reading) {
 }
 
 .post-pager-link {
-  border-color: color-mix(in srgb, var(--color-ivory) 38%, var(--reading-rule) 62%);
+  border-color: color-mix(in srgb, var(--tag-border) 38%, var(--reading-rule) 62%);
   border-radius: 18px;
-  background: color-mix(in srgb, color-mix(in srgb, white 78%, var(--color-lace) 22%) 88%, var(--color-ivory) 12%);
+  background: color-mix(in srgb, color-mix(in srgb, var(--surface-primary) 78%, var(--surface-elevated) 22%) 88%, var(--tag-bg) 12%);
   box-shadow: none;
 }
 
@@ -3392,12 +3315,8 @@ body:has(.shell--article-reading) .reading-progress-bar,
   z-index: 160;
   border-radius: 0;
   box-shadow: 0 1px 0 rgba(24, 37, 64, 0.08);
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent) 28%, var(--color-lace) 72%) 0%,
-    color-mix(in srgb, var(--accent) 40%, var(--color-lace) 60%) 48%,
-    color-mix(in srgb, var(--accent) 28%, var(--color-lace) 72%) 100%
-  );
+  background-color: rgba(255, 122, 91, 0.12);
+  background-image: var(--progress-track);
   transition: none;
 }
 
@@ -3407,13 +3326,9 @@ body:has(.shell--article-reading) .reading-progress-bar,
 
 body:has(.shell--article-reading) .reading-progress-bar__fill,
 .reading-progress-bar__fill {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent-strong) 88%, white 12%) 0%,
-    var(--accent) 54%,
-    color-mix(in srgb, var(--accent) 86%, white 14%) 100%
-  );
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent 58%);
+  background-color: var(--brand-accent);
+  background-image: var(--progress-fill);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--brand-accent) 42%, transparent 58%);
 }
 
 @media (max-width: 1360px) {
@@ -3460,5 +3375,326 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary {
     padding-bottom: 0.56rem;
+  }
+}
+
+/* 2026-03-15: final Pure-inspired reading layer */
+body:has(.shell--article-reading) {
+  background:
+    radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--surface-subtle) 28%, transparent 72%) 0%, transparent 28%),
+    radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--accent-soft) 22%, transparent 78%) 0%, transparent 24%),
+    linear-gradient(180deg, color-mix(in srgb, var(--page-bg) 96%, var(--surface-primary) 4%) 0%, var(--page-bg) 100%);
+}
+
+.shell--article-reading {
+  width: min(1520px, calc(100vw - 1.8rem));
+  margin-inline: auto;
+  padding-top: clamp(1.3rem, 2.2vw, 1.85rem);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri {
+  grid-template-columns: minmax(176px, 222px) minmax(0, 760px) minmax(216px, 250px);
+  gap: clamp(1rem, 1.6vw, 1.5rem);
+  justify-content: center;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail,
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail {
+  top: 5.8rem;
+}
+
+.post-reading-article,
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero {
+  margin-bottom: 1.55rem;
+  border: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-cover-img {
+  border-radius: 21px;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly {
+  display: grid;
+  gap: 0.72rem;
+  margin-bottom: 1.35rem;
+}
+
+.post-header-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly > .post-header-meta-row .post-header-meta {
+  margin: 0;
+  color: var(--reading-ink-subtle);
+  font-size: 0.78rem;
+  font-weight: 560;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-size: clamp(2.4rem, 4.6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly > .post-header-dek {
+  max-width: 48ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--reading-ink) 78%, var(--reading-ink-subtle) 22%);
+  font-family: var(--reading-serif);
+  font-size: clamp(1.08rem, 0.35vw + 1rem, 1.18rem);
+  font-style: italic;
+  line-height: 1.72;
+}
+
+.post-header-topics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.42rem;
+  margin: 0;
+}
+
+.post-header-topics-label {
+  color: var(--reading-ink-subtle);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-header-topic-item a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.14rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--tag-border) 84%, transparent 16%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tag-bg) 82%, var(--surface-primary) 18%);
+  color: color-mix(in srgb, var(--reading-ink) 82%, var(--reading-accent) 18%);
+  font-size: 0.76rem;
+  font-weight: 560;
+}
+
+.post-header-topic-item a:hover {
+  background: color-mix(in srgb, var(--selected-bg) 70%, var(--surface-primary) 30%);
+}
+
+.post-header-divider {
+  height: 1px;
+  margin-top: 0.1rem;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--reading-rule-strong) 52%, transparent 48%) 0%, transparent 90%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly {
+  color: var(--reading-ink);
+  font-size: clamp(1.03rem, 0.95rem + 0.22vw, 1.1rem);
+  line-height: 1.9;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly > * {
+  max-width: 45rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly p[data-anchor] {
+  padding-right: 2rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h2 {
+  margin-top: 2.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--reading-rule-strong) 44%, transparent 56%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h3 {
+  margin-top: 1.75rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary {
+  padding: 0 0 0.72rem;
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.16em;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-body {
+  padding: 0;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link {
+  padding-right: 0.42rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail .post-scholar-rail {
+  gap: 0.8rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item,
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble {
+  border-left: 1px solid color-mix(in srgb, var(--reading-rule-strong) 36%, transparent 64%);
+  padding-left: 0.8rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-section {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-section-summary {
+  padding: 0 0 0.55rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.post-waline-comments-section {
+  margin-top: 2.4rem;
+  padding-top: 1.15rem;
+}
+
+.post-pager {
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+
+.post-pager-link {
+  padding: 0.92rem 1rem;
+  border-color: color-mix(in srgb, var(--reading-rule) 74%, transparent 26%);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
+  box-shadow: none;
+}
+
+.post-pager-link:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--selected-border) 72%, transparent 28%);
+  box-shadow: var(--shadow-sm);
+}
+
+.post-pager-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+}
+
+.post-pager-title {
+  font-size: 1rem;
+  font-weight: 620;
+}
+
+body:has(.shell--article-reading) .reading-progress-bar,
+:root[data-theme="dark"] .reading-progress-bar,
+.reading-progress-bar {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 3px;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent 90%);
+}
+
+body:has(.shell--article-reading) .reading-progress-bar__fill,
+.reading-progress-bar__fill {
+  box-shadow: none;
+}
+
+@media (max-width: 1280px) {
+  .shell--article-reading {
+    width: min(100%, calc(100vw - 1rem));
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri {
+    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr) minmax(204px, 236px);
+  }
+}
+
+@media (max-width: 1180px) {
+  .post-reading-layout--scholarly.post-reading-layout--tri {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel {
+    border: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary {
+    padding: 0.78rem 0.92rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel[open] .post-reading-toc-body {
+    padding: 0 0.72rem 0.82rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly > * {
+    max-width: 100%;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly p[data-anchor] {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell--article-reading {
+    width: min(100%, calc(100vw - 0.72rem));
+    padding-top: 0.65rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero {
+    margin-bottom: 1.1rem;
+    border-radius: 18px;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly {
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly h1 {
+    font-size: clamp(2.1rem, 12vw, 3rem);
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly > .post-header-meta-row .post-header-meta {
+    font-size: 0.74rem;
+    line-height: 1.6;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly > .post-header-dek {
+    font-size: 1rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly {
+    font-size: 1rem;
+    line-height: 1.84;
+  }
+
+  .post-pager {
+    grid-template-columns: 1fr;
   }
 }

@@ -17,16 +17,17 @@ const { post, author, dateLabel } = Astro.props;
     class="archive-post-link"
     aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
   >
-    <PostCover post={post} variant="archive-square" />
-
-    <div class="archive-post-overlay">
-      <p class="archive-post-kicker">{author}</p>
-      <h3>{post.data.title}</h3>
+    <div class="archive-post-media">
+      <PostCover post={post} variant="archive-square" />
     </div>
-
-    <p class="archive-post-meta">
-      <span data-archive-date>{dateLabel}</span>
-      <span data-archive-author>By {author}</span>
-    </p>
+    <div class="archive-post-content">
+      <p class="archive-post-meta">
+        <span data-archive-date>{dateLabel}</span>
+        <span data-archive-author>By {author}</span>
+      </p>
+      <h3>{post.data.title}</h3>
+      {post.data.summary ? <p class="archive-post-summary">{post.data.summary}</p> : null}
+      <p class="archive-post-kicker">阅读文章</p>
+    </div>
   </a>
 </article>

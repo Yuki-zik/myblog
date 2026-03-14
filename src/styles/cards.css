@@ -20,7 +20,7 @@
   padding: 1.28rem;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: var(--surface-elevated);
+  background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-elevated) 100%);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -34,12 +34,12 @@
   inset-inline: 1.28rem;
   top: 0.95rem;
   height: 1px;
-  background: linear-gradient(90deg, var(--accent-soft) 0%, transparent 86%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 26%, transparent 74%), transparent 86%);
 }
 
 .card:hover {
   transform: translateY(-4px);
-  border-color: var(--border-strong);
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--border) 76%);
   box-shadow: var(--shadow-lg);
 }
 
@@ -85,9 +85,9 @@
   min-height: 1.95rem;
   padding: 0.22rem 0.62rem;
   border-radius: var(--radius-full);
-  border: 1px solid var(--border-soft_ivory);
-  background: var(--notice-bg);
-  color: var(--notice-text);
+  border: 1px solid var(--tag-border);
+  background: var(--tag-bg);
+  color: var(--tag-text);
   font-size: 0.8rem;
   line-height: 1.25;
   transition:
@@ -100,9 +100,9 @@
 .pill-list a:hover,
 .pill-list li:hover {
   transform: translateY(-1px);
-  border-color: var(--accent-brand);
-  background: var(--accent-soft);
-  color: var(--text-primary);
+  border-color: var(--tag-selected-border);
+  background: var(--tag-selected-bg);
+  color: var(--tag-selected-text);
 }
 
 .post-card {
@@ -112,7 +112,7 @@
   overflow: hidden;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: var(--surface-elevated);
+  background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-elevated) 100%);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -122,7 +122,7 @@
 
 .post-card:hover {
   transform: translateY(-5px);
-  border-color: var(--border-strong);
+  border-color: color-mix(in srgb, var(--accent) 26%, var(--border) 74%);
   box-shadow: var(--shadow-lg);
 }
 
@@ -153,7 +153,6 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -161,7 +160,6 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  line-clamp: 3;
   overflow: hidden;
   color: color-mix(in srgb, var(--foreground) 74%, var(--muted) 26%);
   line-height: 1.7;
@@ -190,12 +188,12 @@
   margin: 0;
   position: relative;
   overflow: hidden;
-  background: color-mix(in srgb, var(--surface-soft) 88%, transparent 12%);
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent 12%);
 }
 
 .post-cover--hero {
   aspect-ratio: 16 / 9;
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: calc(var(--radius-lg) + 2px);
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.4rem;
@@ -235,7 +233,7 @@
   justify-content: flex-end;
   gap: 0.4rem;
   padding: 1.1rem;
-  color: color-mix(in srgb, white 92%, var(--color-lace) 8%);
+  color: color-mix(in srgb, white 92%, var(--chrome-text) 8%);
   background: linear-gradient(138deg, var(--cover-c1) 0%, var(--cover-c2) 58%, var(--cover-c3) 100%);
 }
 
@@ -258,6 +256,143 @@
 .post-cover-fallback[data-pattern="beams"] .post-cover-grid {
   background-image: linear-gradient(108deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(255, 255, 255, 0) 64%);
   background-size: auto;
+}
+
+/* 2026-03-15: calmer card language */
+.grid {
+  gap: 1rem;
+}
+
+.post-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  gap: 0.72rem;
+  padding: 1.1rem 1.12rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-primary) 92%, var(--surface-subtle) 8%);
+  box-shadow: none;
+}
+
+.card::before {
+  display: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--selected-border) 72%, transparent 28%);
+  box-shadow: var(--shadow-sm);
+}
+
+.card h3 {
+  margin-top: 0;
+  font-size: 1.06rem;
+}
+
+.card p {
+  color: var(--text-secondary);
+}
+
+.pill-list {
+  gap: 0.42rem;
+}
+
+.pill-list a,
+.pill-list li {
+  min-height: 1.75rem;
+  padding: 0.16rem 0.52rem;
+  border-color: color-mix(in srgb, var(--tag-border) 86%, transparent 14%);
+  background: color-mix(in srgb, var(--tag-bg) 82%, var(--surface-primary) 18%);
+  font-size: 0.74rem;
+}
+
+.post-card {
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface-primary) 94%, var(--surface-elevated) 6%);
+  box-shadow: none;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--selected-border) 76%, transparent 24%);
+  box-shadow: var(--shadow-md);
+}
+
+.post-card-body {
+  gap: 0.72rem;
+  padding: 1rem 1.05rem 1.08rem;
+}
+
+.post-card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.post-card-date {
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.post-card-kind {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.4rem;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--tag-border) 78%, transparent 22%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent 16%);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-card-title {
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.post-card-summary {
+  color: color-mix(in srgb, var(--text-primary) 78%, var(--text-secondary) 22%);
+  line-height: 1.72;
+}
+
+.post-card-footer {
+  align-items: center;
+  padding-top: 0.08rem;
+}
+
+.post-card-more {
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.post-card-more::after {
+  content: "->";
+  margin-left: 0.28rem;
+  color: var(--text-secondary);
+}
+
+.post-cover {
+  background: color-mix(in srgb, var(--surface-subtle) 82%, transparent 18%);
+}
+
+.post-cover--hero {
+  border-color: color-mix(in srgb, var(--border-default) 82%, transparent 18%);
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+.post-cover-fallback {
+  gap: 0.3rem;
 }
 
 .post-cover-shape {

@@ -11,12 +11,12 @@
 # MyBlog v1
 
 > 📖 AI 代理请先阅读 [`Agents.md`](./Agents.md) 以了解项目背景、设计决策、当前架构状态和开发规范。
-Astro + React + Supabase 的主题化博客首版，实现：
+Astro + React + Waline 的主题化博客首版，实现：
 
 - Topic 优先入口（文章作为知识节点）
-- 段落级短评（`post_slug + anchor_id`）
-- Supabase 自有评论数据与 RLS
-- 匿名身份评论（Anonymous Sign-In）
+- 文章页 Waline 评论
+- 段落锚点与右侧旁注/脚注联动
+- 轻量可替换的外部评论服务接入
 
 ## 🎨 博客界面与交互设计核心
 
@@ -37,14 +37,9 @@ Astro + React + Supabase 的主题化博客首版，实现：
 * **文章阅读页 (`/posts/[slug]`)**：
   * 顶部全宽或大版型的封面图（Hero Variant），展示发布及更新时间、标签（Topics）。
   * 正文区通过自定义 Markdown 插件解析，自动分离 `<p>` 标签并注入锚点。
+  * 文末评论由 Waline 挂载，正文段落锚点继续服务目录/脚注/旁注定位。
 * **时间归档页 (`/archives`)**：
   * 提供传统的、按年/月垂直组织的时间轴视图，方便快速追溯错过的文章。
-
-### 3. 创新交互组件：段落短评 (Paragraph Comments)
-* **按需浮动图标**：在文章的每一个独立段落边缘，计算挂载点并以 React Portal 的方式注入一个交互聊天泡泡（Bubble），展示该段落当前的评论数。
-* **内联抽屉面板**：点击气泡后，会在当前段落下展开局部的评论阅读与发布面板（不会跳转页面）。
-* **快速标签与限制**：支持选中短评预设标签（如“补充说明”、“不同看法”），提供严格的字数限制与错误反馈 UI。
-
 
 ## 本地运行
 
@@ -57,15 +52,13 @@ pnpm dev
 
 复制 `.env.example` 为 `.env` 并填写：
 
-- `PUBLIC_SUPABASE_URL`
-- `PUBLIC_SUPABASE_ANON_KEY`
-- `PUBLIC_COMMENTS_REQUIRE_APPROVAL`（可选）
-- `PUBLIC_COMMENTS_MAX_LEN`（可选，默认 200）
+- `PUBLIC_WALINE_SERVER_URL`
 
-## Supabase 初始化
+## Waline 初始化
 
-1. 在 Supabase SQL Editor 执行：`supabase/migrations/20260220_000001_comments.sql`
-2. 在 Auth 设置中开启 **Anonymous Sign-Ins**
+1. 自行部署或准备可用的 Waline 服务端。
+2. 将服务端地址写入 `PUBLIC_WALINE_SERVER_URL`。
+3. 启动站点后，文章页会在文末自动挂载 Waline 评论区。
 
 ## 测试
 

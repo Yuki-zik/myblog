@@ -1,6 +1,7 @@
 # design-style-guide
 
 > 状态更新（2026-02-23）：本文件中的“P0 问题”是审计快照；代码已在后续补丁中修复（键盘焦点可见性与主文章 Markdown 基础排版）。
+> 状态更新（2026-03-14）：评论系统已迁移到 Waline，本文中所有 `ParagraphComments` / `ArticleComments` / `comments.css` / `article-comments.css` 相关条目均属于历史快照，需以 `src/components/comments/WalineComments.tsx` 与 `src/styles/waline.css` 为准。
 
 ## 风格定位
 

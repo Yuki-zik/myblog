@@ -1,91 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-interface MockCommentRow {
-  id: number;
-  post_slug: string;
-  anchor_id: string;
-  body: string;
-  tag: "none" | "correction" | "question" | "addition" | "counterexample" | "agree";
-  status: "visible" | "hidden" | "pending";
-  author_id: string;
-  created_at: string;
-}
-
-test("paragraph comments core flow works with scholarly rail layout", async ({ page }) => {
-  const comments: MockCommentRow[] = [];
-  let nextId = 1;
-  const userId = "00000000-0000-0000-0000-000000000001";
-
-  await page.route("https://example.supabase.co/**", async (route) => {
-    const request = route.request();
-    const method = request.method();
-    const url = new URL(request.url());
-
-    if (method === "OPTIONS") {
-      return route.fulfill({ status: 204 });
-    }
-
-    if (url.pathname.startsWith("/auth/v1/")) {
-      const now = Math.floor(Date.now() / 1000);
-      const authPayload = {
-        access_token: "mock-access-token",
-        token_type: "bearer",
-        expires_in: 3600,
-        expires_at: now + 3600,
-        refresh_token: "mock-refresh-token",
-        user: {
-          id: userId,
-          aud: "authenticated",
-          role: "authenticated",
-          app_metadata: { provider: "anonymous", providers: ["anonymous"] },
-          user_metadata: { is_anonymous: true },
-          created_at: new Date().toISOString()
-        }
-      };
-
-      return route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(authPayload)
-      });
-    }
-
-    if (url.pathname === "/rest/v1/comments" && method === "GET") {
-      const postSlugFilter = url.searchParams.get("post_slug") ?? "";
-      const statusFilter = url.searchParams.get("status") ?? "";
-      const postSlug = postSlugFilter.replace("eq.", "");
-      const status = statusFilter.replace("eq.", "");
-
-      const rows = comments.filter((item) => {
-        const postMatches = postSlug ? item.post_slug === postSlug : true;
-        const statusMatches = status ? item.status === status : true;
-        return postMatches && statusMatches;
-      });
-
-      return route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(rows)
-      });
-    }
-
-    if (url.pathname === "/rest/v1/comments" && method === "POST") {
-      const payload = JSON.parse(request.postData() ?? "{}") as Omit<MockCommentRow, "id" | "created_at">;
-      const row: MockCommentRow = {
-        ...payload,
-        id: nextId++,
-        created_at: new Date().toISOString()
-      };
-      comments.push(row);
-
-      return route.fulfill({
-        status: 201,
-        contentType: "application/json",
-        body: JSON.stringify(row)
-      });
-    }
-
-    return route.fulfill({ status: 404, body: "Not Found" });
+test("scholarly reading page keeps rail interactions and mounts waline comments", async ({ page }) => {
+  await page.route("https://waline.example/api/comment**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        data: {
+          count: 0,
+          data: [],
+          pageSize: 10,
+          currentPage: 1,
+        },
+      }),
+    });
   });
 
   await page.goto("/posts/paragraph-anchor-design");
@@ -110,23 +38,14 @@ test("paragraph comments core flow works with scholarly rail layout", async ({ p
   await expect(page.locator(".tufte-footnote-ref").first()).toHaveClass(/is-linked-hover/);
   await page.locator(".tufte-footnote-ref").first().click();
   await expect(page.locator(".post-scholar-item--footnote").first()).toHaveClass(/is-flash/);
-
-  const bubbles = page.locator(".comment-bubble");
-  await expect(bubbles.first()).toBeVisible({ timeout: 15000 });
-  expect(await bubbles.count()).toBeGreaterThan(0);
-  await expect(bubbles.first()).toContainText("0");
-
-  await bubbles.first().click();
-  await expect(page.locator(".comment-thread-panel--rail")).toBeVisible();
-  await page.locator(".comment-thread-panel--rail textarea").fill("E2E rail comment");
-  await page.getByRole("button", { name: /提交短评/ }).click();
-
-  await expect(page.locator(".comment-bubble").first()).toContainText("1");
-  await page.reload();
-  await expect(page.locator(".comment-bubble").first()).toContainText("1");
+  await expect(page.locator(".waline-comments")).toBeVisible();
+  await expect(page.locator("[data-waline-mount] .wl-editor")).toBeVisible({ timeout: 15000 });
+  await expect(page.locator(".comment-bubble")).toHaveCount(0);
+  await expect(page.locator(".article-comments")).toHaveCount(0);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
   await expect(page.locator(".post-reading-toc-summary")).toBeVisible();
   await expect(page.locator(".post-scholar-item").first()).toBeVisible();
+  await expect(page.locator(".waline-comments")).toBeVisible();
 });

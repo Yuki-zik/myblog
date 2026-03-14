@@ -12,34 +12,35 @@
 - **保持双向沟通**: 重大修改前必须经过用户的显式批准。
 
 ### 🟡 Ask (必须询问)
-- **架构变更**: 引进新的核心库、重构核心 Astro 配置或改变 Supabase RLS 策略前，必须先生成计划请求复查。
+- **架构变更**: 引进新的核心库、重构核心 Astro 配置或切换评论服务提供方前，必须先生成计划请求复查。
 - **不可恢复操作**: 删除大型遗留代码块或清空旧有数据结构。
 - **重大设计不明确**: 例如某个边界条件（Comment 太长、并发冲突等）尚未明确。
 
 ### 🔴 Never (禁止行为)
 - **隐式造轮子**: 不要写已存在相同功能的实用函数，优先复用 `src/lib/`。
 - **隐瞒未通过的测试**: 运行测试如果失败，绝对不能直接提交，必须先 debug 或告知用户。
-- **跨模块污染**: 禁止直接在纯展示 Astro 组件里写数据库原生 API，全部走 `src/lib/comments/api.ts`。
+- **跨模块污染**: 禁止直接在纯展示 Astro 组件里写第三方评论服务初始化逻辑；Waline 只允许通过 `src/components/comments/WalineComments.tsx` 这类专门封装组件接入。
 
 ## 2. 代码风格示例
 
-### 2.1 React (评论系统组件)
+### 2.1 React（评论系统组件）
 ```tsx
-// Always extract business logic from pure UI functions
-// Never write raw Supabase calls here
-import { createComment } from '@/lib/comments/api';
+// Always keep third-party comment bootstrapping in a dedicated wrapper
+import { init } from "@waline/client";
 
-export function CommentNode({ anchorId }: { anchorId: string }) {
-  // Use optimistic UI logic
+export function WalineComments({ path }: { path: string }) {
+  // Mount/destroy Waline inside a React island
 }
 ```
 
 ### 2.2 测试要求
 - **单元测试**: 对每个 `src/lib/` 下的函数使用 `vitest`。
-- **E2E测试**: 涉及匿名登录流的操作必须过 Playwright E2E。
+- **主题样式测试**: 任何涉及 `src/styles/` 的主题/配色重构，必须至少运行 `pnpm test src/styles/themeContract.test.ts`，确保 semantic token contract、legacy 变量禁用和 foundation 颜色边界不被破坏。
+- **E2E测试**: 涉及文章页评论接入或阅读布局联动的改动必须过 Playwright E2E。
 
 ## 3. 常用运行命令
 - 启动本地开发: `pnpm dev`
 - 运行单元测试: `pnpm test`
+- 运行主题契约测试: `pnpm test src/styles/themeContract.test.ts`
 - 运行E2E测试: `pnpm test:e2e`
 - 全局打包检查: `pnpm build`

@@ -15,10 +15,13 @@ const { post } = Astro.props;
   </a>
 
   <div class="post-card-body">
-    <p class="post-card-date subtle">
-      发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
-      {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
-    </p>
+    <div class="post-card-meta-row">
+      <p class="post-card-date subtle">
+        发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
+        {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
+      </p>
+      <span class="post-card-kind">文章</span>
+    </div>
 
     <h3 class="post-card-title">
       <a href={`/posts/${post.slug}`}>{post.data.title}</a>

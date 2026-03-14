@@ -2,7 +2,7 @@
   margin-top: clamp(4rem, 7vw, 6rem);
   padding: 1.4rem clamp(0.8rem, 1.6vw, 1.4rem) 1.35rem;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 86%, var(--color-navy) 14%) 0%, var(--chrome-bg) 100%);
+    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 86%, var(--chrome-bg-strong) 14%) 0%, var(--chrome-bg) 100%);
   color: var(--chrome-text);
 }
 
@@ -80,4 +80,48 @@
   .site-footer-copy {
     justify-self: start;
   }
+}
+
+/* 2026-03-15: lighter Pure-like footer */
+.site-footer {
+  margin-top: clamp(4.4rem, 8vw, 7rem);
+  padding: 0 clamp(0.8rem, 1.8vw, 1.4rem) 1.6rem;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.site-footer-inner {
+  width: min(1180px, 100%);
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.8rem 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--divider-strong) 62%, transparent 38%);
+}
+
+.site-footer-mark {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.site-footer-note,
+.site-footer-copy {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.site-footer-nav {
+  gap: 0.2rem 0.3rem;
+}
+
+.site-footer-nav a {
+  min-height: 1.9rem;
+  padding: 0.22rem 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.site-footer-nav a:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--state-hover) 74%, transparent 26%);
 }

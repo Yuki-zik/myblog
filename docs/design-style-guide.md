@@ -1,5 +1,7 @@
 # MyBlog Design & Style Guide
 
+> Note (2026-03-14): comment-related entries that mention `ParagraphComments`, `ArticleComments`, `comments.css`, or `article-comments.css` are historical snapshots. The live implementation now uses `src/components/comments/WalineComments.tsx` and `src/styles/waline.css`.
+
 ## 1. 风格定位 (Style Positioning)
 
 **一句话定位**：提供一种充满阅读温度的、具有学术 Tufte 风格与现代响应式特性的沉浸式内容阅读体验。

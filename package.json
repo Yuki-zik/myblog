@@ -14,14 +14,12 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
-    "@supabase/supabase-js": "^2.57.4",
+    "@waline/client": "^3.13.0",
     "astro": "^5.17.3",
     "github-slugger": "^2.0.0",
     "hast-util-to-string": "^3.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-markdown": "^10.1.0",
-    "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "unist-util-visit-parents": "^6.0.2"
   },

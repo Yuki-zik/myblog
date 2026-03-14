@@ -13,11 +13,7 @@ export default defineConfig({
     url: "http://127.0.0.1:4173",
     reuseExistingServer: true,
     env: {
-      PUBLIC_SUPABASE_URL: "https://example.supabase.co",
-      PUBLIC_SUPABASE_ANON_KEY:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.example",
-      PUBLIC_COMMENTS_REQUIRE_APPROVAL: "false",
-      PUBLIC_COMMENTS_MAX_LEN: "200"
+      PUBLIC_WALINE_SERVER_URL: "https://waline.example"
     }
   }
 });

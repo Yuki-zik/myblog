@@ -11,10 +11,10 @@
   min-height: 220px;
   padding: clamp(1.3rem, 3vw, 2rem);
   border-radius: var(--radius-xl);
-  border: 1px solid var(--chrome-line);
-  background: linear-gradient(160deg, var(--chrome-bg-strong) 0%, var(--chrome-bg) 100%);
+  border: 1px solid rgba(230, 236, 251, 0.12);
+  background: linear-gradient(160deg, rgba(24, 37, 64, 0.96) 0%, rgba(52, 73, 115, 0.92) 100%);
   box-shadow: var(--shadow-lg);
-  color: white;
+  color: #f5f8ff;
 }
 
 .archives-hero-image {
@@ -31,8 +31,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg-strong) 24%, transparent 76%) 0%, color-mix(in srgb, var(--chrome-bg-strong) 74%, transparent 26%) 100%),
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 22%, transparent 78%) 0%, transparent 34%);
+    linear-gradient(180deg, rgba(24, 37, 64, 0.24) 0%, rgba(24, 37, 64, 0.74) 100%),
+    radial-gradient(circle at top right, rgba(255, 122, 91, 0.22) 0%, transparent 34%);
 }
 
 .archives-hero-content {
@@ -47,7 +47,7 @@
 }
 
 .archives-hero-content p {
-  color: var(--chrome-text-muted);
+  color: rgba(230, 236, 251, 0.8);
   line-height: 1.7;
 }
 
@@ -69,9 +69,9 @@
   min-height: 2.2rem;
   padding: 0.3rem 0.8rem;
   border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--surface-panel-strong) 80%, var(--surface-base) 20%);
-  border: 1px solid color-mix(in srgb, var(--color-navy) 20%, transparent 80%);
-  color: color-mix(in srgb, var(--secondary) 72%, var(--foreground) 28%);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  color: color-mix(in srgb, var(--text-secondary) 72%, var(--text-primary) 28%);
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
@@ -124,7 +124,7 @@
 .archive-post-tile {
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   background: var(--surface-panel);
   box-shadow: var(--shadow-sm);
@@ -148,7 +148,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 5%, transparent 95%) 10%, color-mix(in srgb, var(--chrome-bg) 82%, transparent 18%) 100%);
+  background: linear-gradient(180deg, rgba(24, 37, 64, 0.02) 10%, rgba(24, 37, 64, 0.82) 100%);
 }
 
 .archive-post-overlay {
@@ -161,7 +161,7 @@
 
 .archive-post-kicker {
   margin: 0 0 0.32rem;
-  color: var(--chrome-text-muted);
+  color: rgba(230, 236, 251, 0.74);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -175,7 +175,6 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -189,9 +188,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.2rem 0.48rem;
-  color: var(--chrome-text-muted);
+  color: rgba(230, 236, 251, 0.86);
   font-size: 0.75rem;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 12%, transparent 88%) 0%, color-mix(in srgb, var(--chrome-bg) 82%, transparent 18%) 100%);
+  background: linear-gradient(180deg, rgba(24, 37, 64, 0.12) 0%, rgba(24, 37, 64, 0.82) 100%);
 }
 
 @media (max-width: 1060px) {
@@ -212,5 +211,159 @@
 
   .archive-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 2026-03-15: shift archives from poster wall to ledger */
+.archives-page {
+  gap: 1.1rem;
+}
+
+.archives-hero {
+  min-height: 184px;
+  padding: clamp(1.1rem, 2.6vw, 1.55rem);
+  border-radius: 22px;
+  border-color: color-mix(in srgb, var(--border-default) 72%, transparent 28%);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 94%, transparent 6%) 0%, color-mix(in srgb, var(--surface-elevated) 92%, transparent 8%) 100%);
+  box-shadow: none;
+  color: var(--text-primary);
+}
+
+.archives-hero-image {
+  opacity: 0.12;
+}
+
+.archives-hero::after {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 10%, transparent 90%) 0%, color-mix(in srgb, var(--surface-elevated) 28%, transparent 72%) 100%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 36%, transparent 64%) 0%, transparent 38%);
+}
+
+.archives-hero-content h1 {
+  color: var(--text-primary);
+}
+
+.archives-hero-content p {
+  color: var(--text-secondary);
+}
+
+.archive-year-section {
+  grid-template-columns: minmax(96px, 124px) minmax(0, 1fr);
+  gap: 0.9rem 1.1rem;
+}
+
+.archive-year-tile span {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--text-primary) 12%, var(--page-bg) 88%);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.08em;
+}
+
+.archive-year-content,
+.archive-month-group {
+  gap: 0.72rem;
+}
+
+.archive-month-node {
+  gap: 0.62rem;
+}
+
+.archive-month-label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.archive-grid {
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+.archive-post-tile {
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
+  box-shadow: none;
+}
+
+.archive-post-link {
+  display: grid;
+  grid-template-columns: 136px minmax(0, 1fr);
+  gap: 0.9rem;
+  aspect-ratio: auto;
+  align-items: stretch;
+  padding: 0.78rem;
+}
+
+.archive-post-media {
+  position: relative;
+}
+
+.archive-post-media > .post-cover--archive-square {
+  position: static;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.archive-post-link::after,
+.archive-post-overlay {
+  display: none;
+}
+
+.archive-post-content {
+  display: grid;
+  align-content: center;
+  gap: 0.34rem;
+  min-width: 0;
+}
+
+.archive-post-meta {
+  position: static;
+  padding: 0;
+  gap: 0.3rem 0.56rem;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  background: transparent;
+}
+
+.archive-post-content h3 {
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.archive-post-summary {
+  margin: 0;
+  color: color-mix(in srgb, var(--text-primary) 74%, var(--text-secondary) 26%);
+  line-height: 1.65;
+}
+
+.archive-post-kicker {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+@media (max-width: 760px) {
+  .archive-year-tile span {
+    font-size: clamp(1.8rem, 10vw, 2.8rem);
+  }
+
+  .archive-post-link {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 0.72rem;
+    padding: 0.65rem;
   }
 }

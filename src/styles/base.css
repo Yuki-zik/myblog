@@ -17,9 +17,9 @@ body {
   margin: 0;
   font-family: var(--font-ui);
   font-size: var(--type-body);
-  line-height: 1.72;
-  color: var(--text);
-  background: var(--bg-layer);
+  line-height: 1.68;
+  color: var(--text-primary);
+  background: var(--page-bg);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   animation: ux-page-enter 360ms var(--ease-out) both;
@@ -38,19 +38,17 @@ body::after {
 }
 
 body::before {
-  background:
-    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--color-ivory) 28%, transparent 72%) 0%, transparent 34%),
-    radial-gradient(circle at 86% 0%, color-mix(in srgb, var(--color-lace) 36%, transparent 64%) 0%, transparent 42%);
-  opacity: 0.9;
+  background: var(--page-bg-ambient);
+  opacity: 0.62;
 }
 
 body::after {
   background-image:
-    linear-gradient(rgba(52, 73, 115, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(52, 73, 115, 0.035) 1px, transparent 1px);
-  background-size: 36px 36px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.14), transparent 60%);
-  opacity: 0.32;
+    linear-gradient(rgba(52, 73, 115, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 73, 115, 0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent 56%);
+  opacity: 0.18;
 }
 
 ::selection {
@@ -82,9 +80,10 @@ pre {
 
 a {
   color: var(--link);
-  text-decoration: none;
+  text-decoration: underline;
   text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--link) 28%, transparent 72%);
+  text-underline-offset: 0.16em;
   transition:
     color var(--duration-base) var(--ease-out),
     text-decoration-color var(--duration-base) var(--ease-out);
@@ -92,7 +91,6 @@ a {
 
 a:hover {
   color: var(--accent-strong);
-  text-decoration-line: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 74%, transparent 26%);
 }
 
@@ -122,9 +120,9 @@ h6 {
   margin: 0 0 0.5rem;
   color: var(--foreground-strong);
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
 }
 
 h1 {
@@ -149,17 +147,17 @@ figure {
 }
 
 .subtle {
-  color: var(--subtle);
+  color: var(--text-secondary);
 }
 
 .shell {
-  width: min(1240px, calc(100vw - 2.4rem));
+  width: min(1180px, calc(100vw - 3rem));
   margin: 0 auto;
 }
 
 main.shell {
-  padding-top: clamp(1.1rem, 2vw, 1.8rem);
-  padding-bottom: clamp(3.6rem, 6vw, 5.4rem);
+  padding-top: clamp(1.25rem, 2vw, 1.9rem);
+  padding-bottom: clamp(3.8rem, 6vw, 5.6rem);
 }
 
 [data-ux-reveal] {
@@ -208,7 +206,7 @@ main.shell {
 
 @media (max-width: 900px) {
   .shell {
-    width: min(100%, calc(100vw - 1.2rem));
+    width: min(100%, calc(100vw - 1.4rem));
   }
 
   main.shell {
