@@ -3,10 +3,15 @@ import { SITE_AUTHOR_PROFILE } from "../lib/site";
 
 const year = new Date().getFullYear();
 const github = SITE_AUTHOR_PROFILE.socials?.github;
+const footerNote = SITE_AUTHOR_PROFILE.bioShort ?? "AI / 技术 / 知识网络";
 ---
 
 <footer class="site-footer">
   <div class="shell site-footer-inner">
+    <div class="site-footer-brand">
+      <a href="/" class="site-footer-mark">MyBlog</a>
+      <p class="site-footer-note">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
+    </div>
     <nav class="site-footer-nav" aria-label="页脚导航">
       <a href="/">首页</a>
       <a href="/topics">主题</a>
@@ -38,81 +43,3 @@ const github = SITE_AUTHOR_PROFILE.socials?.github;
     </p>
   </div>
 </footer>
-
-<style>
-  .site-footer {
-    border-top: none;
-    position: relative;
-    background: color-mix(in srgb, var(--surface-soft) 80%, transparent 20%);
-    margin-top: 4rem;
-  }
-
-  .site-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      var(--line) 20%,
-      color-mix(in srgb, var(--accent) 30%, var(--line) 70%) 50%,
-      var(--line) 80%,
-      transparent 100%);
-  }
-
-  .site-footer-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    padding-block: 1.25rem;
-  }
-
-  .site-footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.2rem 1rem;
-  }
-
-  .site-footer-nav a {
-    color: var(--subtle);
-    text-decoration: none;
-    font-size: 0.88rem;
-    transition: color 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .site-footer-nav a:hover {
-    color: var(--text);
-  }
-
-  .site-footer-nav a:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--accent) 54%, var(--line-strong) 46%);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .site-footer-github {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-
-  .site-footer-copy {
-    margin: 0;
-    color: var(--subtle);
-    font-size: 0.84rem;
-  }
-
-  @media (max-width: 600px) {
-    .site-footer-inner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.55rem;
-      padding-block: 1rem;
-    }
-  }
-</style>

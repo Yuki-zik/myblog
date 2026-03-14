@@ -3,6 +3,7 @@ import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/animations.css";
 import "../styles/layout.css";
+import "../styles/footer.css";
 import "../styles/search.css";
 import "../styles/theme-toggle.css";
 import "../styles/cards.css";
@@ -31,6 +32,24 @@ const {
   authorMeta = SITE_AUTHOR_PROFILE.name,
   mainClass
 } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const currentSection = pathname === "/"
+  ? "home"
+  : pathname.startsWith("/topics") || pathname.startsWith("/posts") || pathname.startsWith("/concepts")
+    ? "topics"
+    : pathname.startsWith("/archives")
+      ? "archives"
+      : pathname.startsWith("/author")
+        ? "author"
+        : "";
+
+const navItems = [
+  { href: "/", label: "\u9996\u9875", section: "home" },
+  { href: "/topics", label: "\u4e3b\u9898", section: "topics" },
+  { href: "/archives", label: "\u5f52\u6863", section: "archives" },
+  { href: "/author", label: "\u4f5c\u8005", section: "author" }
+];
 
 const themeInitScript = `(function () {
   var root = document.documentElement;
@@ -66,10 +85,10 @@ const themeInitScript = `(function () {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    <!-- Google Fonts: Lora (scholarly reading serif) -->
+    <!-- Google Fonts: Space Grotesk (UI chrome) + Source Serif 4 (reading) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@500;600;700&display=swap" />
 
     <script is:inline set:html={themeInitScript} />
   </head>
@@ -78,24 +97,42 @@ const themeInitScript = `(function () {
       <div class="site-header-inner">
         <div class="shell">
           <a href="/" class="brand">MyBlog</a>
-          <HeaderSearch />
+          <div class="site-header-search-slot" data-header-search-slot>
+            <HeaderSearch />
+          </div>
           <nav class="site-nav">
-            <a href="/">&#x9996;&#x9875;</a>
-            <a href="/topics">&#x4e3b;&#x9898;</a>
-            <a href="/archives">&#x5f52;&#x6863;</a>
-            <a href="/author">&#x4f5c;&#x8005;</a>
-            <button
-              id="theme-toggle"
-              type="button"
-              class="theme-toggle"
-              aria-label="切换主题（当前：跟随系统）"
-              aria-live="polite"
-              title="切换主题"
-            >
-              <!-- icons injected by inline script below -->
-              <span class="theme-toggle-icon" aria-hidden="true"></span>
-              <span class="theme-toggle-label">系统</span>
-            </button>
+            <div class="site-nav-links">
+              {navItems.map((item) => (
+                <a href={item.href} aria-current={currentSection === item.section ? "page" : undefined}>
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            <div class="site-nav-tools">
+              <button
+                id="theme-toggle"
+                type="button"
+                class="theme-toggle"
+                aria-label="切换主题（当前：跟随系统）"
+                aria-live="polite"
+                title="切换主题"
+              >
+                <span class="theme-toggle-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4.1"></circle>
+                    <path d="M12 2.8v2.3"></path>
+                    <path d="M12 18.9v2.3"></path>
+                    <path d="M4.8 4.8l1.6 1.6"></path>
+                    <path d="M17.6 17.6l1.6 1.6"></path>
+                    <path d="M2.8 12h2.3"></path>
+                    <path d="M18.9 12h2.3"></path>
+                    <path d="M4.8 19.2l1.6-1.6"></path>
+                    <path d="M17.6 6.4l1.6-1.6"></path>
+                  </svg>
+                </span>
+                <span class="theme-toggle-label">系统</span>
+              </button>
+            </div>
           </nav>
         </div>
       </div>
@@ -157,9 +194,9 @@ const themeInitScript = `(function () {
         var order = ["system", "light", "dark"];
 
         var icons = {
-          system: "☀︎",
-          light:  "☀",
-          dark:   "☽"
+          system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.1"></circle><path d="M12 2.8v2.3"></path><path d="M12 18.9v2.3"></path><path d="M4.8 4.8l1.6 1.6"></path><path d="M17.6 17.6l1.6 1.6"></path><path d="M2.8 12h2.3"></path><path d="M18.9 12h2.3"></path><path d="M4.8 19.2l1.6-1.6"></path><path d="M17.6 6.4l1.6-1.6"></path></svg>',
+          light:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.3v2.8"></path><path d="M12 18.9v2.8"></path><path d="M5.2 5.2l2 2"></path><path d="M16.8 16.8l2 2"></path><path d="M2.3 12h2.8"></path><path d="M18.9 12h2.8"></path><path d="M5.2 18.8l2-2"></path><path d="M16.8 7.2l2-2"></path></svg>',
+          dark:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.7A8.4 8.4 0 1 1 9.3 3.8a6.9 6.9 0 1 0 10.9 10.9Z"></path></svg>'
         };
         var labels = {
           system: "系统",
@@ -186,7 +223,7 @@ const themeInitScript = `(function () {
           root.dataset.theme = preference;
           root.style.colorScheme =
             preference === "system" ? (media.matches ? "dark" : "light") : preference;
-          if (iconEl)  iconEl.textContent  = icons[preference];
+          if (iconEl)  iconEl.innerHTML  = icons[preference];
           if (iconEl) {
             iconEl.style.animation = 'none';
             iconEl.offsetHeight;
@@ -244,6 +281,10 @@ const themeInitScript = `(function () {
         (function () {
           var header = document.querySelector(".site-header");
           if (!header) return;
+          var isArticleReading = Boolean(document.querySelector(".shell--article-reading"));
+          function notifyHeaderFrameChange() {
+            window.dispatchEvent(new CustomEvent("site-header-framechange"));
+          }
 
           var lastY = window.scrollY;
           var ticking = false;
@@ -257,6 +298,14 @@ const themeInitScript = `(function () {
 
             // Border fade-in after first scroll past threshold
             header.classList.toggle("is-scrolled", y > SCROLL_THRESHOLD);
+
+            if (isArticleReading) {
+              header.classList.remove("is-hidden");
+              notifyHeaderFrameChange();
+              lastY = y;
+              ticking = false;
+              return;
+            }
 
             // Only hide/show after enough initial scroll
             if (y > HIDE_THRESHOLD) {
@@ -273,6 +322,7 @@ const themeInitScript = `(function () {
             }
 
             lastY = y;
+            notifyHeaderFrameChange();
             ticking = false;
           }
 
@@ -285,6 +335,7 @@ const themeInitScript = `(function () {
 
           // Init state
           header.classList.toggle("is-scrolled", window.scrollY > SCROLL_THRESHOLD);
+          notifyHeaderFrameChange();
         })();
       })();
     </script>

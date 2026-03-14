@@ -9,11 +9,11 @@ export interface CoverTokens {
 }
 
 const PALETTES: Array<[string, string, string]> = [
-  ["#0f2e4b", "#13627a", "#2ca488"],
-  ["#1c1f4d", "#1f4f78", "#17938f"],
-  ["#1f2f5c", "#145f70", "#24a87b"],
-  ["#17304a", "#0f5b82", "#31a191"],
-  ["#1f2a56", "#156380", "#2db297"]
+  ["#182540", "#344973", "#6e84ab"],
+  ["#15233c", "#31476d", "#c46e58"],
+  ["#142238", "#33476d", "#d4b29a"],
+  ["#1a2945", "#405785", "#8fa5cb"],
+  ["#111d33", "#2c4165", "#b88372"]
 ];
 
 const PATTERNS: CoverPattern[] = ["grid", "stripes", "beams"];

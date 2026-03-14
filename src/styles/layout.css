@@ -13,11 +13,10 @@
   width: 100%;
   margin-inline: auto;
   border: 0;
-  border-bottom: 1px solid var(--chrome-line);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent 90%);
   border-radius: 0;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg-strong) 88%, var(--color-navy) 12%) 0%, var(--chrome-bg) 100%);
-  color: var(--chrome-text);
+  background: var(--surface-strong);
+  color: var(--text-on-dark);
   box-shadow: 0 12px 28px rgba(8, 14, 28, 0.14);
   transition:
     width var(--duration-base) var(--ease-out),
@@ -33,7 +32,7 @@
 
 .site-header.is-scrolled .site-header-inner {
   width: min(1120px, calc(100vw - 1rem));
-  border: 1px solid var(--chrome-line);
+  border: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent 90%);
   border-radius: 22px;
   box-shadow: 0 20px 42px rgba(8, 14, 28, 0.22), 0 6px 16px rgba(8, 14, 28, 0.14);
 }
@@ -68,7 +67,7 @@
 
 .brand {
   justify-self: start;
-  color: var(--chrome-text);
+  color: var(--text-on-dark);
   font-family: var(--font-display);
   font-size: clamp(1.22rem, 0.7vw + 0.95rem, 1.52rem);
   font-weight: 700;
@@ -113,7 +112,7 @@
   min-height: 2.1rem;
   padding: 0.44rem 0.82rem;
   border-radius: var(--radius-full);
-  color: var(--chrome-text-muted);
+  color: color-mix(in srgb, var(--text-on-dark) 70%, transparent 30%);
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -125,13 +124,13 @@
 
 .site-nav a:hover {
   color: white;
-  background: var(--chrome-hover);
+  background: var(--action-hover);
 }
 
 .site-nav a[aria-current="page"] {
   color: white;
-  background: color-mix(in srgb, var(--chrome-hover) 88%, var(--color-midnight) 12%);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-lace) 10%, transparent 90%);
+  background: var(--action-active);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-on-dark) 10%, transparent 90%);
 }
 
 .site-nav a[aria-current="page"]::after {
@@ -142,7 +141,7 @@
   bottom: 0.34rem;
   height: 2px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 84%, white 16%);
+  background: var(--accent-brand);
 }
 
 @media (max-width: 1100px) {

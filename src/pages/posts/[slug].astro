@@ -3,11 +3,13 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import ArticleComments from "../../components/comments/ArticleComments";
 import ParagraphComments from "../../components/comments/ParagraphComments";
+import PostPager from "../../components/post/PostPager.astro";
 import PostToc from "../../components/post/PostToc.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
 import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
 import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFootnotes";
 import { resolvePostAuthor } from "../../lib/posts/author";
+import { getPostSiblings } from "../../lib/posts/navigation";
 import { buildPostToc } from "../../lib/posts/toc";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/article-comments.css";
@@ -29,6 +31,8 @@ const { post } = Astro.props;
 const resolvedAuthor = resolvePostAuthor(post);
 const { Content, headings, remarkPluginFrontmatter } = await post.render();
 const tocItems = buildPostToc(headings ?? []);
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const siblings = getPostSiblings(allPosts, post.slug);
 const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY])
   ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
   : [];
@@ -47,26 +51,60 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
   mainClass="shell--article-reading"
 >
   <!-- Reading progress bar -->
-  <div class="reading-progress-bar" id="reading-progress-bar" role="progressbar" aria-label="阅读进度" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}></div>
+  <div class="reading-progress-bar" id="reading-progress-bar" role="progressbar" aria-label="阅读进度" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}>
+    <span class="reading-progress-bar__fill" data-reading-progress-fill aria-hidden="true"></span>
+  </div>
   <script is:inline>
     (() => {
       const bar = document.getElementById('reading-progress-bar');
+      const fill = bar?.querySelector('[data-reading-progress-fill]');
       if (!bar) return;
+      if (bar.parentElement !== document.body) {
+        document.body.appendChild(bar);
+      }
+
       let ticking = false;
+      const scheduleProgressUpdate = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateProgress);
+          ticking = true;
+        }
+      };
+
       function updateProgress() {
-        const article = document.querySelector('[data-post-body]');
-        if (!article) return;
+        const article = document.querySelector('.post-reading-article');
+        const articleBody = document.querySelector('[data-post-body]');
+        const header = document.querySelector('.site-header');
+        if (!(article instanceof HTMLElement) || !(articleBody instanceof HTMLElement)) return;
+
         const rect = article.getBoundingClientRect();
-        const total = article.offsetHeight - window.innerHeight;
-        const scrolled = Math.max(0, -rect.top);
-        const pct = total > 0 ? Math.min(100, Math.round((scrolled / total) * 100)) : 0;
+        const headerOffset = header instanceof HTMLElement ? Math.max(header.offsetHeight, 44) : 44;
+        bar.dataset.floating = 'false';
+
+        const articleStart = Math.max(window.scrollY + rect.top - headerOffset, 0);
+        const articleEnd =
+          articleStart +
+          article.offsetHeight -
+          Math.min(window.innerHeight * 0.6, articleBody.offsetHeight * 0.22);
+
+        const total = Math.max(articleEnd - articleStart, 1);
+        const scrolled = Math.min(Math.max(window.scrollY - articleStart, 0), total);
+        const pct = Math.round((scrolled / total) * 100);
+
         bar.style.setProperty('--progress', pct + '%');
+        if (fill instanceof HTMLElement) {
+          fill.style.width = pct + '%';
+        }
         bar.setAttribute('aria-valuenow', String(pct));
         ticking = false;
       }
-      window.addEventListener('scroll', () => {
-        if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }
-      }, { passive: true });
+      
+      window.addEventListener('scroll', scheduleProgressUpdate, { passive: true });
+      
+      window.addEventListener('resize', () => {
+        window.requestAnimationFrame(updateProgress);
+      });
+      
       updateProgress();
     })();
   </script>
@@ -89,11 +127,33 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
       });
     })();
   </script>
+  <script is:inline>
+    (() => {
+      const init = () => {
+        const panel = document.querySelector('[data-reading-toc-panel]');
+        if (!(panel instanceof HTMLDetailsElement)) return;
+
+        const media = window.matchMedia('(max-width: 1180px)');
+        const syncPanel = () => {
+          panel.open = !media.matches;
+        };
+
+        syncPanel();
+        media.addEventListener('change', syncPanel);
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
 
   <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
     {tocItems.length > 0 ? (
       <aside class="post-reading-toc-rail" aria-label="文章目录">
-        <details class="post-reading-toc-panel" open>
+        <details class="post-reading-toc-panel" data-reading-toc-panel>
           <summary class="post-reading-toc-summary">目录</summary>
           <div class="post-reading-toc-body">
             <PostToc items={tocItems} variant="rail" />
@@ -154,6 +214,8 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
           <ArticleComments client:load postSlug={post.slug} />
         </div>
       </details>
+
+      <PostPager newerPost={siblings.newerPost} olderPost={siblings.olderPost} />
     </div>
 
     <aside class="post-reading-rail" aria-label="阅读侧栏">
@@ -170,23 +232,4 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
     </aside>
   </div>
 
-  <script is:inline>
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var cover = document.querySelector('.post-cover--hero .post-cover-img');
-      if (!cover) return;
-      var ticking = false;
-      function onScroll() {
-        var rect = cover.parentElement.getBoundingClientRect();
-        if (rect.bottom < 0 || rect.top > window.innerHeight) { ticking = false; return; }
-        var progress = -rect.top / (rect.height + window.innerHeight);
-        var offset = Math.round(progress * 30);
-        cover.style.transform = 'translateY(' + offset + 'px) scale(1.02)';
-        ticking = false;
-      }
-      window.addEventListener('scroll', function () {
-        if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
-      }, { passive: true });
-    })();
-  </script>
 </BaseLayout>

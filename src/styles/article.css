@@ -459,16 +459,6 @@ html.theme-transitioning body::before {
 }
 
 .post-reading-layout--scholarly {
-  --reading-paper-bg: #ece9e1;
-  --reading-paper-surface: #f1eee7;
-  --reading-ink: #22201d;
-  --reading-ink-subtle: #6b665f;
-  --reading-rail-bg: #ece9e1;
-  --reading-rule: #d4cec2;
-  --reading-rule-strong: #c4bcad;
-  --reading-accent: #5b4a39;
-  --reading-shadow: none;
-
   grid-template-columns: minmax(0, 740px) minmax(320px, 390px);
   justify-content: center;
   gap: clamp(1.75rem, 4vw, 3.25rem);
@@ -1996,9 +1986,10 @@ body:has(.shell--article-reading) .reading-progress-bar {
 .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre {
   margin: 1.5rem 0;
   padding: 1.1rem 1.3rem;
-  background: color-mix(in srgb, var(--reading-paper-surface) 68%, #c8b89044 32%);
-  border: 1px solid color-mix(in srgb, var(--reading-rule) 78%, transparent 22%);
-  border-left: 3px solid color-mix(in srgb, var(--reading-accent) 56%, transparent 44%);
+  background: var(--surface-strong);
+  border: 1px solid color-mix(in srgb, var(--c-ivory) 40%, transparent 60%);
+  border-left: 3px solid var(--c-ivory);
+  color: var(--text-on-dark);
   border-radius: 2px;
   overflow-x: auto;
   font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;

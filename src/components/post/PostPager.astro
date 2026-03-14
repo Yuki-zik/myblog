@@ -1,0 +1,44 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  newerPost: CollectionEntry<"posts"> | null;
+  olderPost: CollectionEntry<"posts"> | null;
+}
+
+const { newerPost, olderPost } = Astro.props;
+const pagerPosts = [
+  newerPost
+    ? {
+        post: newerPost,
+        label: "较新文章"
+      }
+    : null,
+  olderPost
+    ? {
+        post: olderPost,
+        label: "更早文章"
+      }
+    : null
+].filter(Boolean) as Array<{
+  post: CollectionEntry<"posts">;
+  label: string;
+}>;
+---
+
+{
+  pagerPosts.length > 0 ? (
+    <nav class="post-pager" aria-label="继续阅读">
+      {pagerPosts.map(({ post, label }) => (
+        <a class="post-pager-link" href={`/posts/${post.slug}`}>
+          <span class="post-pager-label">{label}</span>
+          <strong class="post-pager-title">{post.data.title}</strong>
+          <span class="post-pager-meta">
+            {new Date(post.data.date).toLocaleDateString("zh-CN")}
+            {post.data.summary ? ` · ${post.data.summary}` : ""}
+          </span>
+        </a>
+      ))}
+    </nav>
+  ) : null
+}

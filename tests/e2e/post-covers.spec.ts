@@ -102,3 +102,123 @@ test("post detail uses minimal reading header without hero cover", async ({ page
   await expect(heroCover).toHaveCount(0);
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });
+
+test("desktop header search stays between brand and navigation", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  const brand = page.locator(".brand");
+  const searchTrigger = page.locator("[data-search-trigger]");
+  const navLinks = page.locator(".site-nav-links");
+
+  await expect(brand).toBeVisible();
+  await expect(searchTrigger).toBeVisible();
+  await expect(navLinks).toBeVisible();
+
+  const brandBox = await brand.boundingBox();
+  const searchBox = await searchTrigger.boundingBox();
+  const navBox = await navLinks.boundingBox();
+
+  if (!brandBox || !searchBox || !navBox) {
+    throw new Error("Expected brand, search trigger, and nav links to have layout boxes");
+  }
+
+  expect(searchBox.x).toBeGreaterThan(brandBox.x + brandBox.width + 8);
+  expect(searchBox.x + searchBox.width).toBeLessThan(navBox.x - 8);
+  expect(brandBox.x).toBeGreaterThan(60);
+  expect(navBox.x + navBox.width).toBeLessThan(1380);
+  expect(Math.abs(searchBox.x + searchBox.width / 2 - 720)).toBeLessThan(160);
+});
+
+test("reading progress bar updates aria value and visible fill on scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const progressBar = page.locator("#reading-progress-bar");
+  const progressFill = page.locator("[data-reading-progress-fill]");
+
+  await expect(progressBar).toBeVisible();
+
+  const initialValue = Number(await progressBar.getAttribute("aria-valuenow"));
+  const initialWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
+  const initialMetrics = await progressBar.evaluate((el) => {
+    const styles = getComputedStyle(el);
+    return {
+      top: Number.parseFloat(styles.top),
+      left: Number.parseFloat(styles.left),
+      width: Number.parseFloat(styles.width)
+    };
+  });
+
+  await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight * 0.6);
+  });
+  await page.waitForTimeout(300);
+
+  await expect(page.locator(".site-header")).toHaveClass(/is-scrolled/);
+  await expect(page.locator(".site-header")).not.toHaveClass(/is-hidden/);
+
+  const nextValue = Number(await progressBar.getAttribute("aria-valuenow"));
+  const nextWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
+  const progressMetrics = await progressBar.evaluate((el) => {
+    const styles = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    return {
+      top: Number.parseFloat(styles.top),
+      left: Number.parseFloat(styles.left),
+      width: Number.parseFloat(styles.width),
+      height: Number.parseFloat(styles.height) || rect.height,
+      backgroundImage: styles.backgroundImage,
+      opacity: styles.opacity
+    };
+  });
+
+  expect(nextValue).toBeGreaterThan(initialValue);
+  expect(nextWidth).toBeGreaterThan(initialWidth);
+  expect(Math.abs(progressMetrics.top - initialMetrics.top)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(progressMetrics.left - initialMetrics.left)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(progressMetrics.width - initialMetrics.width)).toBeLessThanOrEqual(1);
+  expect(progressMetrics.height).toBeGreaterThanOrEqual(3);
+  expect(progressMetrics.opacity).toBe("1");
+  expect(progressMetrics.backgroundImage).toContain("linear-gradient");
+});
+
+test("reading toc clearly separates h2 and h3 hierarchy on desktop", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const tocRail = page.locator(".post-reading-toc-rail");
+  const h2Link = tocRail.locator("[data-toc-depth='2']").first();
+  const h3Link = tocRail.locator("[data-toc-depth='3']").first();
+
+  await expect(tocRail).toBeVisible();
+  await expect(h2Link).toBeVisible();
+  await expect(h3Link).toBeVisible();
+
+  const railWidth = await tocRail.evaluate((el) => el.getBoundingClientRect().width);
+  const h2Metrics = await h2Link.evaluate((el) => {
+    const styles = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    return {
+      left: rect.left,
+      textLeft: (el.querySelector(".post-toc-text") as HTMLElement | null)?.getBoundingClientRect().left ?? rect.left,
+      fontSize: Number.parseFloat(styles.fontSize),
+      fontWeight: Number.parseFloat(styles.fontWeight)
+    };
+  });
+  const h3Metrics = await h3Link.evaluate((el) => {
+    const styles = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    return {
+      left: rect.left,
+      textLeft: (el.querySelector(".post-toc-text") as HTMLElement | null)?.getBoundingClientRect().left ?? rect.left,
+      fontSize: Number.parseFloat(styles.fontSize),
+      fontWeight: Number.parseFloat(styles.fontWeight)
+    };
+  });
+
+  expect(railWidth).toBeGreaterThan(220);
+  expect(h2Metrics.fontSize).toBeGreaterThan(h3Metrics.fontSize);
+  expect(h2Metrics.fontWeight).toBeGreaterThan(h3Metrics.fontWeight);
+  expect(h3Metrics.textLeft - h2Metrics.textLeft).toBeGreaterThan(10);
+});

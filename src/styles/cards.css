@@ -18,9 +18,9 @@
   gap: 0.85rem;
   min-height: 100%;
   padding: 1.28rem;
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--surface-panel) 0%, var(--surface-panel-strong) 100%);
+  background: var(--surface-elevated);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -34,12 +34,12 @@
   inset-inline: 1.28rem;
   top: 0.95rem;
   height: 1px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 26%, transparent 74%), transparent 86%);
+  background: linear-gradient(90deg, var(--accent-soft) 0%, transparent 86%);
 }
 
 .card:hover {
   transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border-strong) 70%);
+  border-color: var(--border-strong);
   box-shadow: var(--shadow-lg);
 }
 
@@ -85,9 +85,9 @@
   min-height: 1.95rem;
   padding: 0.22rem 0.62rem;
   border-radius: var(--radius-full);
-  border: 1px solid color-mix(in srgb, var(--color-ivory) 30%, var(--border) 70%);
-  background: color-mix(in srgb, var(--surface-panel-strong) 80%, var(--color-ivory) 20%);
-  color: var(--muted-strong);
+  border: 1px solid var(--border-soft_ivory);
+  background: var(--notice-bg);
+  color: var(--notice-text);
   font-size: 0.8rem;
   line-height: 1.25;
   transition:
@@ -100,9 +100,9 @@
 .pill-list a:hover,
 .pill-list li:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--border-strong) 60%);
-  background: var(--surface-panel-strong);
-  color: var(--foreground-strong);
+  border-color: var(--accent-brand);
+  background: var(--accent-soft);
+  color: var(--text-primary);
 }
 
 .post-card {
@@ -110,9 +110,9 @@
   flex-direction: column;
   min-height: 100%;
   overflow: hidden;
-  border: 1px solid var(--edge-soft);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--surface-panel) 0%, var(--surface-panel-strong) 100%);
+  background: var(--surface-elevated);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -122,7 +122,7 @@
 
 .post-card:hover {
   transform: translateY(-5px);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border-strong) 70%);
+  border-color: var(--border-strong);
   box-shadow: var(--shadow-lg);
 }
 

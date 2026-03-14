@@ -2,10 +2,12 @@
 import { getCollection } from "astro:content";
 import PostCard from "../components/post/PostCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE_AUTHOR_PROFILE } from "../lib/site";
 
-const [topics, posts] = await Promise.all([
+const [topics, posts, concepts] = await Promise.all([
   getCollection("topics"),
-  getCollection("posts", ({ data }) => !data.draft)
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("concepts")
 ]);
 
 const sortedTopics = topics.sort((a, b) => {
@@ -27,31 +29,90 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
   });
   return acc;
 }, {});
+
+const heroLinks = SITE_AUTHOR_PROFILE.socials?.github
+  ? [
+      {
+        href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
+        label: "GitHub",
+        external: true
+      },
+      { href: "/author", label: "作者页" },
+      { href: "/archives", label: "阅读档案" }
+    ]
+  : [
+      { href: "/author", label: "作者页" },
+      { href: "/archives", label: "阅读档案" }
+    ];
+
+const heroNotes = [
+  {
+    title: "Topic-first",
+    body: "用主题而不是时间流组织知识，减少读者的入口噪声。"
+  },
+  {
+    title: "Paragraph-aware",
+    body: "评论贴附到段落边缘，讨论与上下文保持稳定关联。"
+  },
+  {
+    title: "Research-ready",
+    body: "适合长文、代码、脚注、参考文献和持续迭代的技术写作。"
+  }
+];
 ---
 
 <BaseLayout title="MyBlog | 主题化知识网络">
-  <!-- Hero Banner -->
   <section class="home-hero content-section" data-ux-reveal="fade-up" aria-label="博客简介">
     <div class="home-hero-copy">
-      <p class="home-hero-kicker">✦ 知识网络 · 段落短评</p>
-      <h1 class="home-hero-title">主题化<br />知识网络</h1>
+      <p class="home-hero-kicker">A-Znk · AI / 技术研究博客</p>
+      <h1 class="home-hero-title">主题先行的研究型个人博客</h1>
       <p class="home-hero-sub">
-        从主题进入，深入文章，留下段落短评。<br />
-        这里是阅读与思考交织的地方。
+        从主题地图进入，用文章展开判断，在段落边缘留下批注。
+        这里记录 AI、技术和知识组织方式，而不是一条只会被时间冲走的 feed。
       </p>
       <div class="home-hero-actions">
         <a href="/topics" class="home-hero-btn home-hero-btn--primary">浏览主题</a>
         <a href="/archives" class="home-hero-btn home-hero-btn--ghost">进入归档</a>
       </div>
-    </div>
-    <div class="home-hero-stats" aria-label="博客统计">
-      <div class="home-hero-stat">
-        <span class="home-hero-stat-value">{posts.length}</span>
-        <span class="home-hero-stat-label">篇文章</span>
+      <div class="home-hero-links" aria-label="站点快捷入口">
+        {heroLinks.map((link) => (
+          <a
+            href={link.href}
+            class="home-hero-link"
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer noopener" : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
-      <div class="home-hero-stat">
-        <span class="home-hero-stat-value">{topics.length}</span>
-        <span class="home-hero-stat-label">个主题</span>
+    </div>
+    <div class="home-hero-panel" aria-label="博客能力概览">
+      <div class="home-hero-panel-head">
+        <p class="home-hero-panel-kicker">Research Modes</p>
+        <p class="home-hero-panel-title">Refined, technical, calm.</p>
+      </div>
+      <ul class="home-hero-note-list">
+        {heroNotes.map((note) => (
+          <li class="home-hero-note">
+            <strong>{note.title}</strong>
+            <span>{note.body}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="home-hero-stats" aria-label="博客统计">
+        <div class="home-hero-stat">
+          <span class="home-hero-stat-value">{posts.length}</span>
+          <span class="home-hero-stat-label">篇文章</span>
+        </div>
+        <div class="home-hero-stat">
+          <span class="home-hero-stat-value">{topics.length}</span>
+          <span class="home-hero-stat-label">个主题</span>
+        </div>
+        <div class="home-hero-stat">
+          <span class="home-hero-stat-value">{concepts.length}</span>
+          <span class="home-hero-stat-label">个概念</span>
+        </div>
       </div>
     </div>
   </section>
@@ -89,25 +150,7 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 
   <section class="content-section home-archive-entry" data-home-archive-entry data-ux-reveal="fade-up">
     <h2>时间归档</h2>
-    <p class="subtle">按年与月份浏览全部文章，快速定位你错过的内容。</p>
+    <p class="subtle">按年与月份浏览全部文章，快速定位你错过的内容与写作节奏。</p>
     <a class="archive-entry-button" href="/archives">进入归档时间轴</a>
   </section>
-
-  <script is:inline>
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var hero = document.querySelector('.home-hero');
-      if (!hero) return;
-      var ticking = false;
-      function onScroll() {
-        var y = window.scrollY;
-        var offset = Math.round(y * 0.12);
-        hero.style.transform = 'translateY(' + offset + 'px)';
-        ticking = false;
-      }
-      window.addEventListener('scroll', function () {
-        if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
-      }, { passive: true });
-    })();
-  </script>
 </BaseLayout>

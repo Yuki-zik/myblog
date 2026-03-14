@@ -62,13 +62,13 @@
 }
 
 .post-toc-link:hover {
-  background: color-mix(in srgb, var(--surface-soft, #f0ede6) 60%, transparent 40%);
+  background: var(--action-hover);
   opacity: 1;
 }
 
 .post-toc-number {
   min-width: 1.5ch;
-  color: var(--toc-num, color-mix(in srgb, var(--subtle) 75%, transparent 25%));
+  color: var(--toc-num);
   font-weight: 620;
   line-height: 1.45;
   font-size: 1.05rem;
@@ -108,14 +108,14 @@
 }
 
 .post-toc-link.is-active {
-  background: color-mix(in srgb, var(--surface-soft, #f0ede6) 88%, transparent 12%);
-  color: var(--toc-active, #cf6d42);
+  background: var(--surface-subtle);
+  color: var(--toc-active);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(30, 18, 6, 0.10);
 }
 
 .post-toc-link.is-active .post-toc-number {
-  color: var(--toc-active, #d87749);
+  color: var(--toc-active);
 }
 
 .post-toc-mobile {
@@ -461,12 +461,12 @@
 }
 
 .post-toc-link:hover {
-  background: color-mix(in srgb, var(--accent-soft) 54%, white 46%);
+  background: var(--action-hover);
   transform: translateX(1px);
 }
 
 .post-toc-link.is-active {
-  background: color-mix(in srgb, var(--accent-soft) 62%, white 38%);
+  background: var(--accent-soft);
   color: var(--toc-title);
   box-shadow: none;
 }

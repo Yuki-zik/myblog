@@ -26,8 +26,11 @@ const { post } = Astro.props;
 
     {post.data.summary ? <p class="post-card-summary">{post.data.summary}</p> : null}
 
-    <ul class="pill-list post-card-topics">
-      {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
-    </ul>
+    <div class="post-card-footer">
+      <ul class="pill-list post-card-topics">
+        {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+      </ul>
+      <span class="post-card-more">阅读全文</span>
+    </div>
   </div>
 </article>

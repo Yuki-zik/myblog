@@ -20,6 +20,7 @@ const { post, author, dateLabel } = Astro.props;
     <PostCover post={post} variant="archive-square" />
 
     <div class="archive-post-overlay">
+      <p class="archive-post-kicker">{author}</p>
       <h3>{post.data.title}</h3>
     </div>
 
