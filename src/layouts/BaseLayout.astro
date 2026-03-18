@@ -92,7 +92,7 @@ const themeInitScript = `(function () {
     <script is:inline set:html={themeInitScript} />
   </head>
   <body>
-    <header class="site-header">
+    <header class="site-header" data-header-state="top">
       <div class="site-header-inner">
         <div class="shell">
           <a href="/" class="brand">MyBlog</a>
@@ -276,52 +276,101 @@ const themeInitScript = `(function () {
           });
         })();
 
-        // Navbar hide-on-scroll-down / show-on-scroll-up
+        // Navbar three-state scroll behavior: top -> compact -> hidden
         (function () {
           var header = document.querySelector(".site-header");
           if (!header) return;
-          var isArticleReading = Boolean(document.querySelector(".shell--article-reading"));
+
           function notifyHeaderFrameChange() {
             window.dispatchEvent(new CustomEvent("site-header-framechange"));
           }
 
+          var state = "top";
           var lastY = window.scrollY;
+          var downTravel = 0;
+          var upTravel = 0;
           var ticking = false;
-          var SCROLL_THRESHOLD = 20;   // px before border appears
-          var HIDE_THRESHOLD   = 80;   // px scrolled down before hide triggers
-          var SHOW_DELTA       = 12;   // px scrolled up before show triggers
+          var TOP_THRESHOLD = 10;
+          var COMPACT_THRESHOLD = 52;
+          var HIDE_THRESHOLD = 160;
+          var HIDE_DELTA = 34;
+          var SHOW_DELTA = 26;
+          var IGNORE_DELTA = 3;
+
+          function applyState(nextState) {
+            if (state === nextState && header.dataset.headerState === nextState) {
+              return;
+            }
+
+            state = nextState;
+            header.dataset.headerState = nextState;
+            header.classList.toggle("is-scrolled", nextState !== "top");
+            header.classList.toggle("is-hidden", nextState === "hidden");
+            notifyHeaderFrameChange();
+          }
+
+          function syncInitialState() {
+            var y = Math.max(window.scrollY, 0);
+            state = y <= TOP_THRESHOLD ? "top" : "compact";
+            downTravel = 0;
+            upTravel = 0;
+            lastY = y;
+            header.dataset.headerState = state;
+            header.classList.toggle("is-scrolled", state !== "top");
+            header.classList.toggle("is-hidden", state === "hidden");
+            notifyHeaderFrameChange();
+          }
 
           function update() {
-            var y = window.scrollY;
+            var y = Math.max(window.scrollY, 0);
             var delta = y - lastY;
+            var absDelta = Math.abs(delta);
 
-            // Border fade-in after first scroll past threshold
-            header.classList.toggle("is-scrolled", y > SCROLL_THRESHOLD);
-
-            if (isArticleReading) {
-              header.classList.remove("is-hidden");
-              notifyHeaderFrameChange();
+            if (y <= TOP_THRESHOLD) {
+              downTravel = 0;
+              upTravel = 0;
+              applyState("top");
               lastY = y;
               ticking = false;
               return;
             }
 
-            // Only hide/show after enough initial scroll
-            if (y > HIDE_THRESHOLD) {
-              if (delta > 6) {
-                // Scrolling DOWN — hide header
-                header.classList.add("is-hidden");
-              } else if (delta < -SHOW_DELTA) {
-                // Scrolling UP — show header
-                header.classList.remove("is-hidden");
-              }
+            if (absDelta <= IGNORE_DELTA) {
+              lastY = y;
+              ticking = false;
+              return;
+            }
+
+            if (delta > 0) {
+              downTravel += delta;
+              upTravel = 0;
             } else {
-              // Near top — always show
-              header.classList.remove("is-hidden");
+              upTravel += Math.abs(delta);
+              downTravel = 0;
+            }
+
+            if (state === "top" && y >= COMPACT_THRESHOLD) {
+              applyState("compact");
+              downTravel = 0;
+            }
+
+            if (state === "compact") {
+              if (delta > 0 && y >= HIDE_THRESHOLD && downTravel >= HIDE_DELTA) {
+                applyState("hidden");
+                downTravel = 0;
+              }
+            } else if (state === "hidden") {
+              if (upTravel >= SHOW_DELTA) {
+                applyState("compact");
+                upTravel = 0;
+              }
+            }
+
+            if (state !== "top" && y < COMPACT_THRESHOLD && y > TOP_THRESHOLD) {
+              applyState("compact");
             }
 
             lastY = y;
-            notifyHeaderFrameChange();
             ticking = false;
           }
 
@@ -332,9 +381,7 @@ const themeInitScript = `(function () {
             }
           }, { passive: true });
 
-          // Init state
-          header.classList.toggle("is-scrolled", window.scrollY > SCROLL_THRESHOLD);
-          notifyHeaderFrameChange();
+          syncInitialState();
         })();
       })();
     </script>

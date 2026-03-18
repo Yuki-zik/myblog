@@ -579,3 +579,62 @@
 .post-toc-number {
   font-variant-numeric: tabular-nums;
 }
+
+/* 2026-03-16: lighter TOC base for reading-first pages */
+.post-toc-list {
+  gap: 0.18rem;
+}
+
+.post-toc-link {
+  gap: 0.62rem;
+  padding: 0.28rem 0.46rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 88%, var(--text-primary) 12%);
+  font-size: 0.98rem;
+  transition:
+    color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+
+.post-toc-link:hover {
+  transform: none;
+  background: color-mix(in srgb, var(--surface-primary) 82%, transparent 18%);
+  border-color: transparent;
+  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 86%, white 14%);
+}
+
+.post-toc-number {
+  min-width: 1.4ch;
+  color: color-mix(in srgb, var(--toc-num, var(--text-secondary)) 86%, transparent 14%);
+  font-size: 0.92rem;
+  font-weight: 620;
+}
+
+.post-toc-text {
+  font-size: 0.97rem;
+  line-height: 1.46;
+}
+
+.post-toc-item--depth-2 .post-toc-link {
+  padding-left: 0.9rem;
+}
+
+.post-toc-item--depth-3 .post-toc-link {
+  padding-left: 1.5rem;
+  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 76%, transparent 24%);
+}
+
+.post-toc-link.is-active {
+  background: color-mix(in srgb, var(--selected-bg) 46%, white 54%);
+  border-color: transparent;
+  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 92%, white 8%);
+  box-shadow: inset 2px 0 0 var(--brand-accent);
+}
+
+.post-toc-link.is-active .post-toc-number {
+  color: color-mix(in srgb, var(--toc-active, var(--brand-accent)) 86%, var(--text-primary) 14%);
+}

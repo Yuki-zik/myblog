@@ -71,18 +71,17 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
       function updateProgress() {
         const article = document.querySelector('.post-reading-article');
         const articleBody = document.querySelector('[data-post-body]');
-        const header = document.querySelector('.site-header');
         if (!(article instanceof HTMLElement) || !(articleBody instanceof HTMLElement)) return;
 
         const rect = article.getBoundingClientRect();
-        const headerOffset = header instanceof HTMLElement ? Math.max(header.offsetHeight, 44) : 44;
         bar.dataset.floating = 'false';
+        const progressAnchorOffset = Math.max(window.innerHeight * 0.025, 24);
 
-        const articleStart = Math.max(window.scrollY + rect.top - headerOffset, 0);
+        const articleStart = Math.max(window.scrollY + rect.top - progressAnchorOffset, 0);
         const articleEnd =
           articleStart +
           article.offsetHeight -
-          Math.min(window.innerHeight * 0.6, articleBody.offsetHeight * 0.22);
+          Math.min(window.innerHeight * 0.58, articleBody.offsetHeight * 0.2);
 
         const total = Math.max(articleEnd - articleStart, 1);
         const scrolled = Math.min(Math.max(window.scrollY - articleStart, 0), total);
@@ -101,6 +100,8 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
       window.addEventListener('resize', () => {
         window.requestAnimationFrame(updateProgress);
       });
+
+      window.addEventListener('site-header-framechange', scheduleProgressUpdate);
       
       updateProgress();
     })();

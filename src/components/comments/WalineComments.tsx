@@ -18,6 +18,7 @@ export default function WalineComments({
       return;
     }
 
+    containerRef.current.dataset.walineReady = "initializing";
     const waline: WalineInstance | null = init({
       el: containerRef.current,
       serverURL,
@@ -37,8 +38,12 @@ export default function WalineComments({
         submit: "发送评论",
       },
     });
+    containerRef.current.dataset.walineReady = "true";
 
     return () => {
+      if (containerRef.current) {
+        delete containerRef.current.dataset.walineReady;
+      }
       waline?.destroy();
     };
   }, [path, serverURL]);

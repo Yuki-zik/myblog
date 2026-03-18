@@ -39,7 +39,7 @@ test("scholarly reading page keeps rail interactions and mounts waline comments"
   await page.locator(".tufte-footnote-ref").first().click();
   await expect(page.locator(".post-scholar-item--footnote").first()).toHaveClass(/is-flash/);
   await expect(page.locator(".waline-comments")).toBeVisible();
-  await expect(page.locator("[data-waline-mount] .wl-editor")).toBeVisible({ timeout: 15000 });
+  await expect(page.locator("[data-waline-mount][data-waline-ready='true']")).toBeVisible({ timeout: 15000 });
   await expect(page.locator(".comment-bubble")).toHaveCount(0);
   await expect(page.locator(".article-comments")).toHaveCount(0);
 

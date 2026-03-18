@@ -204,8 +204,17 @@
   --reading-accent: var(--link);
   --reading-link: var(--link);
   --reading-code-bg: var(--code-bg);
-  --reading-paper-bg: var(--page-bg);
-  --reading-paper-surface: var(--surface-elevated);
+  --reading-paper-page: #fcfaf4;
+  --reading-paper-sheet: #f8f4eb;
+  --reading-paper-sheet-deep: #f5ead8;
+  --reading-paper-edge: color-mix(in srgb, #8c7252 15%, transparent 85%);
+  --reading-paper-rule: color-mix(in srgb, #8c7252 11%, transparent 89%);
+  --reading-paper-shadow: 0 20px 42px rgba(80, 59, 33, 0.08), 0 8px 18px rgba(80, 59, 33, 0.05);
+  --reading-paper-emboss: inset 0 1px 0 rgba(255, 255, 255, 0.58), inset 0 0 0 1px rgba(122, 97, 61, 0.06);
+  --reading-paper-ink: #2c2118;
+  --reading-paper-ink-soft: color-mix(in srgb, var(--reading-paper-ink) 76%, white 24%);
+  --reading-paper-bg: var(--reading-paper-page);
+  --reading-paper-surface: var(--reading-paper-sheet);
   --reading-rail-bg: var(--surface-elevated);
   --reading-shadow: var(--shadow-sm);
   --reading-serif: var(--font-reading);
@@ -325,6 +334,17 @@
     --empty-border: var(--divider);
     --empty-text: var(--text-secondary);
     --empty-icon: color-mix(in srgb, var(--c-lace) 30%, var(--c-ivory) 70%);
+    --reading-paper-page: color-mix(in srgb, var(--c-midnight) 94%, #100d0a 6%);
+    --reading-paper-sheet: color-mix(in srgb, var(--c-midnight) 74%, #2d2118 26%);
+    --reading-paper-sheet-deep: color-mix(in srgb, var(--c-midnight) 68%, #3a291d 32%);
+    --reading-paper-edge: color-mix(in srgb, var(--c-ivory) 16%, transparent 84%);
+    --reading-paper-rule: color-mix(in srgb, var(--c-ivory) 22%, transparent 78%);
+    --reading-paper-shadow: 0 20px 40px rgba(0, 0, 0, 0.32), 0 8px 18px rgba(0, 0, 0, 0.22);
+    --reading-paper-emboss: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(255, 235, 214, 0.05);
+    --reading-paper-ink: color-mix(in srgb, var(--c-lace) 86%, #f3e7d6 14%);
+    --reading-paper-ink-soft: color-mix(in srgb, var(--reading-paper-ink) 72%, black 28%);
+    --reading-paper-bg: var(--reading-paper-page);
+    --reading-paper-surface: var(--reading-paper-sheet);
 
     --shadow-sm: 0 10px 22px rgba(0, 0, 0, 0.26), 0 2px 6px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.32), 0 3px 8px rgba(0, 0, 0, 0.24);
@@ -425,6 +445,17 @@
   --empty-border: var(--divider);
   --empty-text: var(--text-secondary);
   --empty-icon: color-mix(in srgb, var(--c-lace) 30%, var(--c-ivory) 70%);
+  --reading-paper-page: color-mix(in srgb, var(--c-midnight) 94%, #100d0a 6%);
+  --reading-paper-sheet: color-mix(in srgb, var(--c-midnight) 74%, #2d2118 26%);
+  --reading-paper-sheet-deep: color-mix(in srgb, var(--c-midnight) 68%, #3a291d 32%);
+  --reading-paper-edge: color-mix(in srgb, var(--c-ivory) 16%, transparent 84%);
+  --reading-paper-rule: color-mix(in srgb, var(--c-ivory) 22%, transparent 78%);
+  --reading-paper-shadow: 0 20px 40px rgba(0, 0, 0, 0.32), 0 8px 18px rgba(0, 0, 0, 0.22);
+  --reading-paper-emboss: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(255, 235, 214, 0.05);
+  --reading-paper-ink: color-mix(in srgb, var(--c-lace) 86%, #f3e7d6 14%);
+  --reading-paper-ink-soft: color-mix(in srgb, var(--reading-paper-ink) 72%, black 28%);
+  --reading-paper-bg: var(--reading-paper-page);
+  --reading-paper-surface: var(--reading-paper-sheet);
 
   --shadow-sm: 0 10px 22px rgba(0, 0, 0, 0.26), 0 2px 6px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 16px 32px rgba(0, 0, 0, 0.32), 0 3px 8px rgba(0, 0, 0, 0.24);

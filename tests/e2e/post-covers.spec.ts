@@ -143,20 +143,23 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   const initialWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
   const initialMetrics = await progressBar.evaluate((el) => {
     const styles = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
     return {
       top: Number.parseFloat(styles.top),
       left: Number.parseFloat(styles.left),
-      width: Number.parseFloat(styles.width)
+      width: Number.parseFloat(styles.width),
+      rectTop: rect.top,
+      rectBottom: rect.bottom
     };
   });
 
   await page.evaluate(() => {
-    window.scrollTo(0, document.body.scrollHeight * 0.6);
+    window.scrollTo(0, document.body.scrollHeight * 0.72);
   });
   await page.waitForTimeout(300);
 
   await expect(page.locator(".site-header")).toHaveClass(/is-scrolled/);
-  await expect(page.locator(".site-header")).not.toHaveClass(/is-hidden/);
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-state", "hidden");
 
   const nextValue = Number(await progressBar.getAttribute("aria-valuenow"));
   const nextWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
@@ -168,6 +171,8 @@ test("reading progress bar updates aria value and visible fill on scroll", async
       left: Number.parseFloat(styles.left),
       width: Number.parseFloat(styles.width),
       height: Number.parseFloat(styles.height) || rect.height,
+      rectTop: rect.top,
+      rectBottom: rect.bottom,
       backgroundImage: styles.backgroundImage,
       opacity: styles.opacity
     };
@@ -178,6 +183,8 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   expect(Math.abs(progressMetrics.top - initialMetrics.top)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(progressMetrics.left - initialMetrics.left)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(progressMetrics.width - initialMetrics.width)).toBeLessThanOrEqual(1);
+  expect(Math.abs(progressMetrics.rectTop - initialMetrics.rectTop)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(progressMetrics.rectBottom - initialMetrics.rectBottom)).toBeLessThanOrEqual(0.5);
   expect(progressMetrics.height).toBeGreaterThanOrEqual(3);
   expect(progressMetrics.opacity).toBe("1");
   expect(progressMetrics.backgroundImage).toContain("linear-gradient");
