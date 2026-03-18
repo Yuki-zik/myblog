@@ -11,14 +11,12 @@
   /* ========================================= */
   /* Page & Surfaces */
   /* ========================================= */
-  --page-bg: color-mix(in srgb, white 94%, var(--c-lace) 6%);
-  --page-bg-ambient:
-    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--c-lace) 20%, transparent 80%) 0%, transparent 34%),
-    radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--c-ivory) 14%, transparent 86%) 0%, transparent 28%);
-  --surface-primary: color-mix(in srgb, white 96%, var(--c-lace) 4%);
-  --surface-elevated: color-mix(in srgb, white 92%, var(--c-lace) 6%, var(--c-ivory) 2%);
+  --page-bg: rgb(252, 252, 253);
+  --page-bg-ambient: none;
+  --surface-primary: color-mix(in srgb, var(--page-bg) 98%, var(--c-lace) 2%);
+  --surface-elevated: color-mix(in srgb, var(--page-bg) 96%, var(--c-lace) 3%, var(--c-ivory) 1%);
   --surface-strong: var(--c-midnight);
-  --surface-subtle: color-mix(in srgb, white 88%, var(--c-lace) 8%, var(--c-ivory) 4%);
+  --surface-subtle: color-mix(in srgb, var(--page-bg) 94%, var(--c-lace) 4%, var(--c-ivory) 2%);
 
   /* ========================================= */
   /* Typography */

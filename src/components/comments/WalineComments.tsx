@@ -14,13 +14,15 @@ export default function WalineComments({
   const serverURL = import.meta.env.PUBLIC_WALINE_SERVER_URL;
 
   useEffect(() => {
-    if (!serverURL || !containerRef.current) {
+    const container = containerRef.current;
+
+    if (!serverURL || !container) {
       return;
     }
 
-    containerRef.current.dataset.walineReady = "initializing";
+    container.dataset.walineReady = "initializing";
     const waline: WalineInstance | null = init({
-      el: containerRef.current,
+      el: container,
       serverURL,
       path,
       lang: "zh-CN",
@@ -38,13 +40,11 @@ export default function WalineComments({
         submit: "发送评论",
       },
     });
-    containerRef.current.dataset.walineReady = "true";
+    container.dataset.walineReady = "true";
 
     return () => {
-      if (containerRef.current) {
-        delete containerRef.current.dataset.walineReady;
-      }
       waline?.destroy();
+      delete container.dataset.walineReady;
     };
   }, [path, serverURL]);
 

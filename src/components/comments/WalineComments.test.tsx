@@ -55,4 +55,25 @@ describe("WalineComments", () => {
 
     expect(destroy).toHaveBeenCalledTimes(1);
   });
+
+  it("re-initializes cleanly when the post path changes", () => {
+    vi.stubEnv("PUBLIC_WALINE_SERVER_URL", "https://waline.example");
+
+    const { rerender, unmount } = render(<WalineComments path="/posts/first-post" />);
+
+    rerender(<WalineComments path="/posts/second-post" />);
+
+    expect(init).toHaveBeenCalledTimes(2);
+    expect(init).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        path: "/posts/second-post",
+      }),
+    );
+    expect(destroy).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    expect(destroy).toHaveBeenCalledTimes(2);
+  });
 });

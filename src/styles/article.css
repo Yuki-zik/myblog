@@ -3827,10 +3827,7 @@ body:has(.shell--article-reading) {
   --article-chip-bg: color-mix(in srgb, white 16%, var(--article-paper) 84%);
   --article-chip-border: color-mix(in srgb, var(--article-ink) 10%, transparent 90%);
   --article-chip-text: color-mix(in srgb, var(--article-ink) 76%, white 24%);
-  background:
-    radial-gradient(circle at 50% -16%, rgba(255, 255, 255, 0.7) 0%, transparent 38%),
-    radial-gradient(circle at 4% 8%, rgba(225, 210, 186, 0.1) 0%, transparent 22%),
-    linear-gradient(180deg, #fdfbf6 0%, var(--article-page-bg) 34%, #fbf8f2 100%);
+  background: rgb(252, 252, 253);
 }
 
 :root[data-theme="dark"] body:has(.shell--article-reading) {
