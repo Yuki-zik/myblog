@@ -1,0 +1,16 @@
+{
+  "name": "myblog-waline-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone Waline server deployment unit for MyBlog",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node node_modules/@waline/vercel/vanilla.js",
+    "start": "node node_modules/@waline/vercel/vanilla.js"
+  },
+  "dependencies": {
+    "@waline/vercel": "1.39.3"
+  }
+}
