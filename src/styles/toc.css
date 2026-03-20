@@ -1,7 +1,13 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TOC — Table of Contents component
+   Single authoritative set of declarations (no override stacking)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Layout shell ─────────────────────────────────────────────── */
 .post-reading-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-  gap: 1.2rem;
+  gap: 1rem;
   align-items: start;
 }
 
@@ -14,89 +20,116 @@
   top: 92px;
 }
 
+/* ── 2. TOC card & title ─────────────────────────────────────────── */
 .post-toc {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.55rem;
 }
 
 .post-toc-card {
   border: none;
   background: transparent;
   padding: 0;
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 .post-toc-title {
-  margin: 0 0 1.25rem;
-  font-size: 1.4rem;
-  font-weight: 760;
-  letter-spacing: 0.02em;
-  color: var(--toc-title, var(--text-primary));
+  margin: 0 0 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 720;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
 }
 
+/* ── 3. TOC list & items ─────────────────────────────────────────── */
 .post-toc-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.25rem;
+  gap: 0.18rem;
 }
 
 .post-toc-item {
   margin: 0;
 }
 
+/* ── 4. TOC link — the main interactive element ──────────────────── */
 .post-toc-link {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: start;
-  gap: 0.75rem;
-  padding: 0.35rem 0.6rem;
-  border-radius: 12px;
-  color: var(--toc-text, color-mix(in srgb, var(--text-secondary) 78%, var(--text-primary) 22%));
-  text-decoration: none;
-  font-size: 1.02rem;
+  gap: 0.62rem;
+  padding: 0.28rem 0.46rem;
   border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 88%, var(--text-primary) 12%);
+  font-size: 0.98rem;
+  text-decoration: none;
+  /* Unified transition using motion tokens */
   transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-base) var(--motion-ease-standard);
 }
 
+/* Left accent bar (hidden by default, revealed on active) */
+.post-toc-link::before {
+  content: "";
+  position: absolute;
+  left: 0.18rem;
+  top: 0.32rem;
+  bottom: 0.32rem;
+  width: 2px;
+  border-radius: 999px;
+  background: transparent;
+  opacity: 0;
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    opacity var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+/* Hover: subtle background tint, no translateX shift */
 .post-toc-link:hover {
-  background: var(--state-hover);
-  border-color: color-mix(in srgb, var(--border-default) 82%, transparent 18%);
-  color: var(--toc-title);
-  transform: translateX(1px);
+  background: color-mix(in srgb, var(--surface-primary) 82%, transparent 18%);
+  border-color: transparent;
+  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 86%, white 14%);
 }
 
+/* ── 5. Number & text ────────────────────────────────────────────── */
 .post-toc-number {
-  min-width: 1.5ch;
-  color: var(--toc-num, color-mix(in srgb, var(--subtle) 75%, transparent 25%));
+  min-width: 1.4ch;
+  color: color-mix(in srgb, var(--toc-num, var(--text-secondary)) 86%, transparent 14%);
+  font-size: 0.92rem;
   font-weight: 620;
+  font-variant-numeric: tabular-nums;
   line-height: 1.45;
-  font-size: 1.05rem;
   text-align: right;
 }
 
 .post-toc-text {
-  line-height: 1.5;
-  text-wrap: balance;
-  font-size: 1.05rem;
+  font-size: 0.97rem;
+  line-height: 1.46;
+  text-wrap: pretty;
 }
 
+/* ── 6. Depth indentation ────────────────────────────────────────── */
 .post-toc-item--depth-1 .post-toc-link {
-  padding-left: 0.3rem;
+  padding-left: 0.46rem;
 }
 
 .post-toc-item--depth-2 .post-toc-link {
-  padding-left: 1rem;
+  padding-left: 0.9rem;
 }
 
 .post-toc-item--depth-3 .post-toc-link {
-  padding-left: 1.8rem;
-  color: color-mix(in srgb, var(--toc-text) 80%, transparent 20%);
+  padding-left: 1.5rem;
+  font-size: 0.84rem;
+  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 76%, transparent 24%);
 }
 
 .post-toc-item--depth-3 .post-toc-number {
@@ -104,35 +137,46 @@
 }
 
 .post-toc-item--depth-4 .post-toc-link {
-  padding-left: 2.6rem;
-  color: color-mix(in srgb, var(--toc-text) 60%, transparent 40%);
+  padding-left: 2rem;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 60%, transparent 40%);
 }
 
 .post-toc-item--depth-4 .post-toc-number {
   color: color-mix(in srgb, var(--toc-num) 60%, transparent 40%);
 }
 
+/* ── 7. Active state ─────────────────────────────────────────────── */
 .post-toc-link.is-active {
-  background: var(--selected-bg);
-  border-color: var(--selected-border);
-  color: var(--toc-title);
+  background: color-mix(in srgb, var(--selected-bg) 46%, white 54%);
+  border-color: transparent;
+  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 92%, white 8%);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--brand-accent);
+  box-shadow: inset 2px 0 0 var(--brand-accent);
+}
+
+.post-toc-link.is-active::before {
+  background: color-mix(in srgb, var(--brand-accent) 82%, var(--text-primary) 18%);
+  opacity: 1;
 }
 
 .post-toc-link.is-active .post-toc-number {
-  color: var(--toc-active);
+  color: color-mix(in srgb, var(--toc-active, var(--brand-accent)) 86%, var(--text-primary) 14%);
 }
 
+/* ── 8. Mobile TOC ───────────────────────────────────────────────── */
 .post-toc-mobile {
   display: none;
-  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--border-default) 76%, transparent 24%);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
 }
 
 .post-toc-mobile-summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.8rem 0.95rem;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.84rem;
   font-weight: 720;
 }
 
@@ -145,20 +189,20 @@
 }
 
 .post-toc-list--mobile {
-  padding: 0.8rem 0.6rem 0.9rem;
-  gap: 0.85rem;
+  padding: 0.25rem 0.6rem 0.75rem;
+  gap: 0.28rem;
 }
 
+/* ── 9. Article reading shell ────────────────────────────────────── */
 .shell.shell--article-reading {
   width: min(1480px, calc(100vw - 2rem));
 }
-
 
 .post-reading-layout--scholarly .post-reading-main {
   min-width: 0;
 }
 
-
+/* ── 10. Reading article card (base — overridden in article.css) ── */
 .post-reading-article {
   border: 1px solid color-mix(in srgb, var(--reading-rule) 86%, transparent 14%);
   border-radius: 24px;
@@ -171,11 +215,13 @@
   padding: clamp(1rem, 1.7vw, 1.4rem);
 }
 
+/* ── 11. Scholarly cover ─────────────────────────────────────────── */
 .post-reading-layout--scholarly .post-cover--hero {
   border-color: color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
   box-shadow: 0 14px 28px rgba(45, 33, 20, 0.08);
 }
 
+/* ── 12. Scholarly header ────────────────────────────────────────── */
 .post-header--scholarly {
   margin: 0;
 }
@@ -188,17 +234,18 @@
   margin-top: 0.2rem;
 }
 
-.post-header--scholarly>.subtle {
+.post-header--scholarly > .subtle {
   color: var(--reading-ink-subtle);
 }
 
-.post-header--scholarly>p:not(.subtle) {
+.post-header--scholarly > p:not(.subtle) {
   color: color-mix(in srgb, var(--reading-ink) 88%, var(--reading-ink-subtle) 12%);
   font-family: var(--reading-serif);
   font-size: 1.03rem;
   line-height: 1.75;
 }
 
+/* ── 13. Scholarly body base ─────────────────────────────────────── */
 .post-body--scholarly {
   color: var(--reading-ink);
   font-family: var(--reading-serif);
@@ -247,6 +294,7 @@
   color: color-mix(in srgb, var(--reading-accent) 88%, #3f2b1c 12%);
 }
 
+/* ── 14. Reading rail (right sidebar) base ───────────────────────── */
 .post-reading-rail {
   position: sticky;
   top: 92px;
@@ -279,125 +327,6 @@
   color: color-mix(in srgb, var(--reading-ink-subtle) 82%, var(--reading-ink) 18%);
 }
 
-/* 2026-03-15: Pure-inspired toc cleanup */
-.post-reading-layout {
-  gap: 1rem;
-}
-
-.post-toc {
-  gap: 0.55rem;
-}
-
-.post-toc-card {
-  margin-top: 0;
-}
-
-.post-toc-title {
-  margin: 0 0 0.85rem;
-  font-size: 0.78rem;
-  font-weight: 720;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.post-toc-list {
-  gap: 0.2rem;
-}
-
-.post-toc-link {
-  position: relative;
-  gap: 0.58rem;
-  padding: 0.34rem 0.55rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  border-color: transparent;
-}
-
-.post-toc-link::before {
-  content: "";
-  position: absolute;
-  left: 0.18rem;
-  top: 0.32rem;
-  bottom: 0.32rem;
-  width: 2px;
-  border-radius: 999px;
-  background: transparent;
-  transition:
-    background-color var(--duration-fast) var(--ease-out),
-    opacity var(--duration-fast) var(--ease-out);
-  opacity: 0;
-}
-
-.post-toc-link:hover {
-  background: color-mix(in srgb, var(--state-hover) 74%, transparent 26%);
-  border-color: transparent;
-  transform: none;
-}
-
-.post-toc-number {
-  min-width: 1.35rem;
-  font-size: 0.84rem;
-  color: color-mix(in srgb, var(--text-secondary) 82%, transparent 18%);
-}
-
-.post-toc-text {
-  font-size: 0.9rem;
-  line-height: 1.45;
-  text-wrap: pretty;
-}
-
-.post-toc-item--depth-1 .post-toc-link {
-  padding-left: 0.46rem;
-}
-
-.post-toc-item--depth-2 .post-toc-link {
-  padding-left: 0.9rem;
-}
-
-.post-toc-item--depth-3 .post-toc-link {
-  padding-left: 1.45rem;
-  font-size: 0.84rem;
-}
-
-.post-toc-item--depth-4 .post-toc-link {
-  padding-left: 2rem;
-  font-size: 0.8rem;
-}
-
-.post-toc-link.is-active {
-  background: color-mix(in srgb, var(--selected-bg) 72%, var(--surface-primary) 28%);
-  border-color: transparent;
-  color: var(--text-primary);
-  font-weight: 600;
-  box-shadow: none;
-}
-
-.post-toc-link.is-active::before {
-  background: color-mix(in srgb, var(--brand-accent) 82%, var(--text-primary) 18%);
-  opacity: 1;
-}
-
-.post-toc-link.is-active .post-toc-number {
-  color: var(--toc-active);
-}
-
-.post-toc-mobile {
-  border: 1px solid color-mix(in srgb, var(--border-default) 76%, transparent 24%);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
-}
-
-.post-toc-mobile-summary {
-  padding: 0.75rem 0.9rem;
-  font-size: 0.84rem;
-}
-
-.post-toc-list--mobile {
-  padding: 0.25rem 0.6rem 0.75rem;
-  gap: 0.28rem;
-}
-
 .post-scholar-section-summary::-webkit-details-marker {
   display: none;
 }
@@ -426,6 +355,7 @@
   color: color-mix(in srgb, var(--reading-accent) 86%, #3f2b1c 14%);
 }
 
+/* ── 15. Scholar item header / jump / meta ───────────────────────── */
 .post-scholar-item-header {
   display: flex;
   align-items: baseline;
@@ -444,6 +374,7 @@
   text-decoration: none;
   font-size: 0.75rem;
   color: var(--reading-ink-subtle);
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .post-scholar-jump:hover {
@@ -464,6 +395,7 @@
   padding: 0.05rem 0.22rem;
 }
 
+/* ── 16. Scholar lists (annotations / references / figures) ──────── */
 .post-scholar-annotation-list,
 .post-scholar-reference-list,
 .post-scholar-figure-list {
@@ -527,12 +459,13 @@
   text-decoration: none;
 }
 
-.post-scholar-source-links a+a::before {
+.post-scholar-source-links a + a::before {
   content: "、";
   color: var(--reading-ink-subtle);
   margin-right: 0.34rem;
 }
 
+/* ── 17. Scholar rail TOC ────────────────────────────────────────── */
 .post-scholar-rail .post-toc {
   gap: 0;
 }
@@ -557,6 +490,7 @@
   line-height: 1.4;
 }
 
+/* ── 18. Scholar reader notes ────────────────────────────────────── */
 .post-scholar-section--reader-notes .comment-thread-panel {
   margin-top: 0;
 }
@@ -565,76 +499,13 @@
   margin: 0 0 0.6rem;
 }
 
-
+/* ── 19. Desktop: force scholar sections open ────────────────────── */
 @media (min-width: 1101px) {
-  .post-scholar-section>.post-scholar-section-body {
+  .post-scholar-section > .post-scholar-section-body {
     display: block !important;
   }
 
-  .post-scholar-section>.post-scholar-section-summary {
+  .post-scholar-section > .post-scholar-section-summary {
     display: none;
   }
-}
-
-.post-toc-number {
-  font-variant-numeric: tabular-nums;
-}
-
-/* 2026-03-16: lighter TOC base for reading-first pages */
-.post-toc-list {
-  gap: 0.18rem;
-}
-
-.post-toc-link {
-  gap: 0.62rem;
-  padding: 0.28rem 0.46rem;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  background: transparent;
-  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 88%, var(--text-primary) 12%);
-  font-size: 0.98rem;
-  transition:
-    color 160ms var(--ease-out),
-    background-color 160ms var(--ease-out),
-    border-color 160ms var(--ease-out),
-    box-shadow 180ms var(--ease-out);
-}
-
-.post-toc-link:hover {
-  transform: none;
-  background: color-mix(in srgb, var(--surface-primary) 82%, transparent 18%);
-  border-color: transparent;
-  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 86%, white 14%);
-}
-
-.post-toc-number {
-  min-width: 1.4ch;
-  color: color-mix(in srgb, var(--toc-num, var(--text-secondary)) 86%, transparent 14%);
-  font-size: 0.92rem;
-  font-weight: 620;
-}
-
-.post-toc-text {
-  font-size: 0.97rem;
-  line-height: 1.46;
-}
-
-.post-toc-item--depth-2 .post-toc-link {
-  padding-left: 0.9rem;
-}
-
-.post-toc-item--depth-3 .post-toc-link {
-  padding-left: 1.5rem;
-  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 76%, transparent 24%);
-}
-
-.post-toc-link.is-active {
-  background: color-mix(in srgb, var(--selected-bg) 46%, white 54%);
-  border-color: transparent;
-  color: color-mix(in srgb, var(--toc-title, var(--text-primary)) 92%, white 8%);
-  box-shadow: inset 2px 0 0 var(--brand-accent);
-}
-
-.post-toc-link.is-active .post-toc-number {
-  color: color-mix(in srgb, var(--toc-active, var(--brand-accent)) 86%, var(--text-primary) 14%);
 }

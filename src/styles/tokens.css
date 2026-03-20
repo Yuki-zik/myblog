@@ -138,6 +138,15 @@
   --duration-enter: 520ms;
   --stagger-step: 50ms;
 
+  /* ── Motion system (semantic aliases) ──────────────── */
+  --motion-duration-fast: var(--duration-fast);      /* hover, small toggles */
+  --motion-duration-base: var(--duration-base);      /* standard transitions */
+  --motion-duration-slow: var(--duration-slow);      /* reveals, panels */
+  --motion-ease-standard: var(--ease-smooth);        /* default for all */
+  --motion-ease-emphasized: var(--ease-out);         /* entrances, scroll reveals */
+  --motion-ease-enter: var(--ease-out);              /* element appearance */
+  --motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);   /* element disappearance */
+
   --shadow-sm: 0 10px 24px rgba(24, 37, 64, 0.04), 0 1px 3px rgba(24, 37, 64, 0.03);
   --shadow-md: 0 14px 30px rgba(24, 37, 64, 0.06), 0 2px 6px rgba(24, 37, 64, 0.04);
   --shadow-lg: 0 18px 36px rgba(24, 37, 64, 0.08), 0 4px 12px rgba(24, 37, 64, 0.05);

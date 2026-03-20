@@ -616,7 +616,7 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
           return;
         }
 
-        const layoutTop = layout.getBoundingClientRect().top + window.scrollY;
+        const layerTop = layer.getBoundingClientRect().top + window.scrollY;
         const mainHeight = main.offsetHeight;
         let nextTop = 0;
         const gap = 16;
@@ -630,7 +630,7 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
           if (anchorId) {
             const paragraph = getAnchorParagraph(anchorId);
             if (paragraph) {
-              targetTop = paragraph.getBoundingClientRect().top + window.scrollY - layoutTop - topPad;
+              targetTop = paragraph.getBoundingClientRect().top + window.scrollY - layerTop - topPad;
             }
           }
 

@@ -1,81 +1,92 @@
-﻿@keyframes fade-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+/* ═══════════════════════════════════════════════════════════════════
+   Keyframe Library — restrained, reading-first motion
+   ═══════════════════════════════════════════════════════════════════ */
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ── Scroll-reveal entrance: fade-up ──────────────────────── */
+/* ── Scroll-reveal: gentle rise ──────────────────────────────────── */
+/* 8px displacement — enough to perceive direction, not enough to "fly in" */
 @keyframes ux-fade-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Scroll-reveal entrance: fade-in ─────────────────────── */
+/* ── Scroll-reveal: pure opacity ─────────────────────────────────── */
 @keyframes ux-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* ── Scroll-reveal entrance: slide-left ──────────────────── */
+/* ── Scroll-reveal: gentle slide from left ───────────────────────── */
 @keyframes ux-slide-left {
-  from { opacity: 0; transform: translateX(-20px); }
+  from { opacity: 0; transform: translateX(-6px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* ── Scroll-reveal entrance: slide-right ─────────────────── */
+/* ── Scroll-reveal: gentle slide from right ──────────────────────── */
 @keyframes ux-slide-right {
-  from { opacity: 0; transform: translateX(20px); }
+  from { opacity: 0; transform: translateX(6px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* ── Scroll-reveal entrance: scale-pop ───────────────────── */
+/* ── Scale entrance: subtle grow-in ──────────────────────────────── */
+/* 0.97 → 1 is perceptible without looking "poppy" */
 @keyframes ux-scale-pop {
-  from { opacity: 0; transform: scale(0.92); }
+  from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* ── CTA button shimmer ──────────────────────────────────── */
-@keyframes ux-shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-/* ── Stat number count-rise ──────────────────────────────── */
+/* ── Stat number count-rise ──────────────────────────────────────── */
 @keyframes ux-count-rise {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Theme toggle icon rotation ──────────────────────────── */
+/* ── Theme toggle icon: gentle partial rotation ──────────────────── */
+/* 90° is enough to convey "switch" without carnival-spin theatrics */
 @keyframes ux-icon-rotate {
-  from { transform: rotate(0deg) scale(0.8); opacity: 0.4; }
-  to   { transform: rotate(360deg) scale(1);  opacity: 1; }
+  from { transform: rotate(0deg); opacity: 0.5; }
+  to   { transform: rotate(90deg); opacity: 1; }
 }
 
-/* ── Back-to-top spring appear ───────────────────────────── */
+/* ── Back-to-top: calm fade-up (no bounce overshoot) ─────────────── */
 @keyframes ux-spring-up {
-  0%   { transform: translateY(20px) scale(0.8); opacity: 0; }
-  60%  { transform: translateY(-4px) scale(1.05); opacity: 1; }
-  80%  { transform: translateY(2px) scale(0.98); }
-  100% { transform: translateY(0) scale(1); }
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
-/* ── Page body entrance ──────────────────────────────────── */
+/* ── Page body entrance ──────────────────────────────────────────── */
 @keyframes ux-page-enter {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-/* ── Reading progress bar gradient flow ──────────────────── */
-@keyframes ux-progress-flow {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+/* ── Article cover reveal ────────────────────────────────────────── */
+@keyframes cover-reveal {
+  from { opacity: 0; transform: scale(1.01); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-/* ── Back-to-Top Button ─────────────────────────────────────── */
+/* ── Sidenote flash: warm tint on anchor arrival ─────────────────── */
+@keyframes tufte-sidenote-flash {
+  0%   { background: color-mix(in srgb, var(--reading-paper-surface, #f5f1ea) 96%, var(--reading-rule, #ccc) 4%); }
+  15%  { background: color-mix(in srgb, var(--reading-paper-surface, #f5f1ea) 90%, #d8c9a8 10%); }
+  100% { background: transparent; }
+}
+
+/* ── Footnote flash: body-side anchor highlight ──────────────────── */
+@keyframes post-scholar-footnote-flash {
+  0%   { background: color-mix(in srgb, var(--reading-paper-surface, #f5f1ea) 90%, transparent 10%); }
+  20%  { background: color-mix(in srgb, var(--reading-paper-surface, #f5f1ea) 94%, #d8cfbf 6%); }
+  100% { background: transparent; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   prefers-reduced-motion: disable all animation
+   ═══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
