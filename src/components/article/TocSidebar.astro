@@ -102,7 +102,7 @@ function sectionLabel(index: number): string {
     position: relative;
     max-block-size: calc(100vh - 8rem);
     overflow: auto;
-    padding-left: 1.1rem;
+    padding-left: 1.2rem;
     scrollbar-width: none;
   }
 
@@ -113,9 +113,9 @@ function sectionLabel(index: number): string {
   .toc-sidebar__track,
   .toc-sidebar__progress {
     position: absolute;
-    left: 0.28rem;
+    left: 0.12rem;
     top: 0.34rem;
-    width: 1px;
+    width: 3px;
     border-radius: 999px;
   }
 
@@ -125,9 +125,13 @@ function sectionLabel(index: number): string {
   }
 
   .toc-sidebar__progress {
-    height: 1.4rem;
+    height: 2.75rem;
     background: var(--toc-accent);
-    transition: height 180ms var(--ease-out, ease), opacity 180ms var(--ease-out, ease);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--toc-accent) 14%, transparent 86%);
+    transition:
+      transform 180ms var(--ease-out, ease),
+      height 180ms var(--ease-out, ease),
+      opacity 180ms var(--ease-out, ease);
   }
 
   .toc-sidebar__list,
@@ -139,13 +143,13 @@ function sectionLabel(index: number): string {
 
   .toc-sidebar__list {
     display: grid;
-    gap: 1rem;
+    gap: 1.1rem;
   }
 
   .toc-sidebar__children {
     margin-top: 0.78rem;
     margin-left: 0.1rem;
-    padding-left: 0.95rem;
+    padding-left: 1rem;
     border-left: 1px solid var(--toc-child-track);
     display: grid;
     gap: 0.72rem;
@@ -211,7 +215,7 @@ function sectionLabel(index: number): string {
 
   .toc-sidebar__link.is-active .toc-sidebar__title {
     color: var(--toc-text-strong);
-    font-weight: 650;
+    font-weight: 680;
   }
 
   .toc-sidebar__link.is-active.toc-sidebar__link--level-3 .toc-sidebar__title {

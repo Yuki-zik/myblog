@@ -4073,14 +4073,14 @@ body:has(.shell--article-reading) {
 }
 
 .shell--article-reading {
-  width: min(1480px, calc(100vw - 1.6rem));
+  width: min(1710px, calc(100vw - 0.55rem));
   padding-top: clamp(1rem, 1.7vw, 1.45rem);
   padding-bottom: clamp(2.8rem, 4vw, 4rem);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri {
-  grid-template-columns: minmax(176px, 224px) minmax(0, 728px) minmax(208px, 244px);
-  gap: clamp(0.9rem, 1.45vw, 1.3rem);
+  grid-template-columns: minmax(188px, 246px) minmax(0, 812px) minmax(224px, 284px);
+  gap: clamp(0.72rem, 1.08vw, 1.02rem);
   justify-content: center;
   align-items: start;
 }
@@ -4094,6 +4094,14 @@ body:has(.shell--article-reading) {
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail,
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail {
   top: 5.35rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
+  padding-right: 0.24rem;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail {
+  padding-left: 0.22rem;
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article {
@@ -4561,11 +4569,12 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
 
 @media (max-width: 1280px) {
   .shell--article-reading {
-    width: min(100%, calc(100vw - 1.1rem));
+    width: min(100%, calc(100vw - 0.8rem));
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri {
-    grid-template-columns: minmax(164px, 208px) minmax(0, 1fr) minmax(196px, 228px);
+    grid-template-columns: minmax(170px, 214px) minmax(0, 1fr) minmax(204px, 238px);
+    gap: clamp(0.66rem, 0.94vw, 0.92rem);
   }
 }
 
@@ -4674,5 +4683,65 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
 
   .post-pager {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1800px) {
+  .shell.shell--article-reading {
+    width: min(2280px, calc(100vw - 2rem));
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri {
+    grid-template-columns:
+      clamp(220px, 11.8vw, 286px)
+      minmax(0, clamp(920px, 50vw, 1140px))
+      clamp(252px, 14.8vw, 348px);
+    gap: clamp(0.9rem, 1vw, 1.18rem);
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-main {
+    padding-left: clamp(1rem, 1.2vw, 1.36rem);
+    padding-right: 0.32rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail {
+    padding-left: 0.42rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
+    max-width: 49.5rem;
+    padding: clamp(1.02rem, 1.1vw, 1.22rem);
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
+    gap: 0.72rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly h1 {
+    max-width: 13ch;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly > .post-header-dek {
+    max-width: 47rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero,
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly,
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly > *,
+  .post-waline-comments-section,
+  .post-pager {
+    max-width: 49.5rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly :where(ul, ol) {
+    max-width: 48.5rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly p {
+    max-width: 49.5rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly p[data-anchor] {
+    padding-right: 1.68rem;
   }
 }

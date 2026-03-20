@@ -243,7 +243,8 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
   const initialMetrics = await page.evaluate(() => {
     const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
     return {
-      progressHeight: progress?.getBoundingClientRect().height ?? 0
+      progressHeight: progress?.getBoundingClientRect().height ?? 0,
+      progressTransform: progress ? getComputedStyle(progress).transform : "none"
     };
   });
 
@@ -269,12 +270,14 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
     const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
     return {
       activeText: active?.textContent ?? "",
-      progressHeight: progress?.getBoundingClientRect().height ?? 0
+      progressHeight: progress?.getBoundingClientRect().height ?? 0,
+      progressTransform: progress ? getComputedStyle(progress).transform : "none"
     };
   });
 
   expect(activeMetrics.activeText).toContain("工程边界");
-  expect(activeMetrics.progressHeight).toBeGreaterThan(initialMetrics.progressHeight);
+  expect(activeMetrics.progressHeight).toBeGreaterThanOrEqual(40);
+  expect(activeMetrics.progressTransform).not.toBe(initialMetrics.progressTransform);
 
   await sidebar.locator("[data-toc-link]").filter({ hasText: "状态与回滚" }).click();
   await page.waitForFunction(() => {
@@ -473,4 +476,32 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.dekFontStyle).toBe("normal");
   expect(metrics.tocOpacity).toBeGreaterThan(0.8);
   expect(metrics.tocOpacity).toBeLessThanOrEqual(1);
+});
+
+test("article layout expands on ultra-wide screens without oversized gutters", async ({ page }) => {
+  await page.setViewportSize({ width: 2560, height: 1440 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const metrics = await page.evaluate(() => {
+    const shell = document.querySelector(".shell--article-reading") as HTMLElement | null;
+    const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
+    const titleCard = document.querySelector(".post-title-card") as HTMLElement | null;
+    const firstParagraph = document.querySelector(".post-body--scholarly > p") as HTMLElement | null;
+
+    return {
+      viewportWidth: window.innerWidth,
+      shellWidth: shell?.getBoundingClientRect().width ?? 0,
+      shellLeft: shell?.getBoundingClientRect().left ?? 0,
+      layoutWidth: layout?.getBoundingClientRect().width ?? 0,
+      titleWidth: titleCard?.getBoundingClientRect().width ?? 0,
+      bodyWidth: firstParagraph?.getBoundingClientRect().width ?? 0
+    };
+  });
+
+  expect(metrics.shellWidth).toBeGreaterThanOrEqual(2200);
+  expect(metrics.shellLeft).toBeLessThanOrEqual(180);
+  expect(metrics.layoutWidth).toBeGreaterThanOrEqual(2200);
+  expect(metrics.titleWidth).toBeGreaterThanOrEqual(780);
+  expect(metrics.bodyWidth).toBeGreaterThanOrEqual(780);
+  expect(metrics.bodyWidth).toBeLessThanOrEqual(860);
 });

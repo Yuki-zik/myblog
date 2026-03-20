@@ -1,6 +1,6 @@
 const HEADER_OFFSET = 112;
 const ACTIVE_OFFSET = 24;
-const MIN_PROGRESS_HEIGHT = 20;
+const MIN_INDICATOR_HEIGHT = 44;
 
 type TocEntry = {
   id: string;
@@ -48,17 +48,19 @@ function updateProgress(
 
   if (!activeEntry) {
     progressLine.style.height = "0px";
+    progressLine.style.transform = "translateY(0px)";
     return;
   }
 
   const listRect = list.getBoundingClientRect();
   const activeRect = activeEntry.link.getBoundingClientRect();
-  const rawHeight = activeRect.top - listRect.top + activeRect.height * 0.64;
+  const offset = Math.max(activeRect.top - listRect.top + 2, 0);
   const height = Math.min(
-    Math.max(rawHeight, MIN_PROGRESS_HEIGHT),
-    Math.max(listRect.height, MIN_PROGRESS_HEIGHT)
+    Math.max(activeRect.height - 6, MIN_INDICATOR_HEIGHT),
+    Math.max(listRect.height - offset, MIN_INDICATOR_HEIGHT)
   );
 
+  progressLine.style.transform = `translateY(${offset}px)`;
   progressLine.style.height = `${height}px`;
   activeEntry.item.scrollIntoView({ block: "nearest" });
   scrollBody.dataset.activeId = activeEntry.id;
