@@ -1,0 +1,78 @@
+---
+interface Props {
+  name: "calendar" | "refresh" | "article" | "clock" | "user" | "tag" | "nodes" | "section";
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 14, class: className } = Astro.props;
+---
+
+<svg
+  aria-hidden="true"
+  data-meta-icon={name}
+  class:list={className ? [className] : undefined}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.85"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  {
+    name === "calendar" ? (
+      <>
+        <rect x="3.5" y="5.5" width="17" height="15" rx="2.4"></rect>
+        <path d="M7.5 3.8v3.1"></path>
+        <path d="M16.5 3.8v3.1"></path>
+        <path d="M3.8 9.2h16.4"></path>
+      </>
+    ) : name === "refresh" ? (
+      <>
+        <path d="M19.2 7.4V3.9h-3.5"></path>
+        <path d="M4.8 16.6v3.5h3.5"></path>
+        <path d="M6.2 9.4a6.7 6.7 0 0 1 10.1-2.4l2.9 2.4"></path>
+        <path d="M17.8 14.6a6.7 6.7 0 0 1-10.1 2.4l-2.9-2.4"></path>
+      </>
+    ) : name === "article" ? (
+      <>
+        <path d="M7 3.8h7.4l4.1 4.1v12a2.1 2.1 0 0 1-2.1 2.1H7A2.1 2.1 0 0 1 4.9 19.9V5.9A2.1 2.1 0 0 1 7 3.8Z"></path>
+        <path d="M14.4 3.8v4.3h4.1"></path>
+        <path d="M8.2 12h7.6"></path>
+        <path d="M8.2 15.4h7.6"></path>
+      </>
+    ) : name === "clock" ? (
+      <>
+        <circle cx="12" cy="12" r="8.2"></circle>
+        <path d="M12 7.6v4.8l3 1.8"></path>
+      </>
+    ) : name === "user" ? (
+      <>
+        <circle cx="12" cy="8.2" r="3.1"></circle>
+        <path d="M5.5 19.2a7.2 7.2 0 0 1 13 0"></path>
+      </>
+    ) : name === "tag" ? (
+      <>
+        <path d="M4.4 12.2V6.1a1.7 1.7 0 0 1 1.7-1.7h6.1l7.3 7.3a1.7 1.7 0 0 1 0 2.4l-5.4 5.4a1.7 1.7 0 0 1-2.4 0Z"></path>
+        <circle cx="9" cy="9" r="1.1"></circle>
+      </>
+    ) : name === "nodes" ? (
+      <>
+        <circle cx="6.2" cy="12" r="2"></circle>
+        <circle cx="17.8" cy="7" r="2"></circle>
+        <circle cx="17.8" cy="17" r="2"></circle>
+        <path d="M8.2 11.1 15.8 7.9"></path>
+        <path d="M8.2 12.9 15.8 16.1"></path>
+      </>
+    ) : (
+      <>
+        <path d="M6 5.2h12"></path>
+        <path d="M6 9.6h12"></path>
+        <path d="M6 14h8.6"></path>
+        <path d="M6 18.4h6.2"></path>
+      </>
+    )
+  }
+</svg>

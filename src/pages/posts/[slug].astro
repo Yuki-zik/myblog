@@ -2,19 +2,34 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
+import TocSidebar from "../../components/article/TocSidebar.astro";
+import { buildTocTree } from "../../components/article/toc-utils";
 import PostPager from "../../components/post/PostPager.astro";
-import PostToc from "../../components/post/PostToc.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
+import MetaIcon from "../../components/ui/MetaIcon.astro";
 import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
 import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFootnotes";
 import { resolvePostAuthor } from "../../lib/posts/author";
 import { getPostSiblings } from "../../lib/posts/navigation";
+import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 import { buildPostToc } from "../../lib/posts/toc";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 interface Props {
   post: CollectionEntry<"posts">;
 }
+
+type HeaderMetaItem = {
+  icon: "calendar" | "refresh" | "user";
+  label: string;
+  ariaLabel: string;
+};
+
+type HeaderStatItem = {
+  icon: "clock" | "tag" | "nodes" | "section";
+  label: string;
+  ariaLabel: string;
+};
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -34,12 +49,60 @@ const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN
   ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
   : [];
 
-// Reading time estimate: ~220 Chinese char/min, ~250 English words/min hybrid
-const rawBody = post.body ?? "";
-const chineseChars = (rawBody.match(/[\u4e00-\u9fff]/g) ?? []).length;
-const latinWords = (rawBody.replace(/[\u4e00-\u9fff]/g, " ").match(/\b\w+\b/g) ?? []).length;
-const readingMinutes = Math.max(1, Math.round(chineseChars / 220 + latinWords / 250));
+const readingMinutes = getPostReadingMinutes(post);
 const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMinutes} 分钟`;
+const tocTree = buildTocTree(tocItems);
+const publishedLabel = new Date(post.data.date).toLocaleDateString("zh-CN");
+const updatedLabel = post.data.updated ? new Date(post.data.updated).toLocaleDateString("zh-CN") : null;
+const topicCount = post.data.topics.length;
+const conceptCount = post.data.concepts?.length ?? 0;
+const sectionCount = tocItems.filter((item) => item.depth === 2).length;
+const headerMetaItems = [
+  {
+    icon: "calendar" as const,
+    label: publishedLabel,
+    ariaLabel: `发布日期 ${publishedLabel}`
+  },
+  updatedLabel
+    ? {
+        icon: "refresh" as const,
+        label: updatedLabel,
+        ariaLabel: `更新日期 ${updatedLabel}`
+      }
+    : null,
+  {
+    icon: "user" as const,
+    label: resolvedAuthor.name,
+    ariaLabel: `作者 ${resolvedAuthor.name}`
+  }
+] as Array<HeaderMetaItem | null>;
+const headerStats = [
+  {
+    icon: "clock" as const,
+    label: `${readingTimeLabel}阅读`,
+    ariaLabel: `预计阅读时间 ${readingTimeLabel}阅读`
+  },
+  topicCount > 0
+    ? {
+        icon: "tag" as const,
+        label: `${topicCount} 个主题`,
+        ariaLabel: `${topicCount} 个主题`
+      }
+    : null,
+  conceptCount > 0
+    ? {
+        icon: "nodes" as const,
+        label: `${conceptCount} 个概念`,
+        ariaLabel: `${conceptCount} 个概念`
+      }
+    : sectionCount > 0
+      ? {
+          icon: "section" as const,
+          label: `${sectionCount} 个章节`,
+          ariaLabel: `${sectionCount} 个章节`
+        }
+      : null
+] as Array<HeaderStatItem | null>;
 ---
 
 <BaseLayout
@@ -106,103 +169,70 @@ const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMi
       updateProgress();
     })();
   </script>
-  <script is:inline>
-    // TOC smooth-scroll follow: scroll active item into view in left rail
-    (() => {
-      const FLAG = '__tocScrollBound';
-      if (window[FLAG]) return;
-      window[FLAG] = true;
-      const tocRail = document.querySelector('.post-reading-toc-rail');
-      if (!tocRail) return;
-      const observer = new MutationObserver(() => {
-        const active = tocRail.querySelector('.post-toc-link.is-active');
-        if (!active) return;
-        active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      });
-      // Observe class changes on all toc links
-      tocRail.querySelectorAll('.post-toc-link').forEach(el => {
-        observer.observe(el, { attributes: true, attributeFilter: ['class'] });
-      });
-    })();
-  </script>
-  <script is:inline>
-    (() => {
-      const init = () => {
-        const panel = document.querySelector('[data-reading-toc-panel]');
-        if (!(panel instanceof HTMLDetailsElement)) return;
-
-        const media = window.matchMedia('(max-width: 1180px)');
-        const syncPanel = () => {
-          panel.open = !media.matches;
-        };
-
-        syncPanel();
-        media.addEventListener('change', syncPanel);
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
-      } else {
-        init();
-      }
-    })();
-  </script>
-
   <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
-    {tocItems.length > 0 ? (
+    {tocTree.length > 0 ? (
       <aside class="post-reading-toc-rail" aria-label="文章目录">
-        <details class="post-reading-toc-panel" data-reading-toc-panel>
-          <summary class="post-reading-toc-summary">目录</summary>
-          <div class="post-reading-toc-body">
-            <PostToc items={tocItems} variant="rail" />
-          </div>
-        </details>
+        <TocSidebar items={tocTree} />
       </aside>
     ) : null}
 
     <div class="post-reading-main">
       <article class="post-reading-article">
-        {post.data.cover ? (
-          <div class="post-cover post-cover--hero">
-            <Image
-              src={post.data.cover.src}
-              alt={post.data.cover.alt}
-              class="post-cover-img"
-              loading="eager"
-              decoding="async"
-              widths={[640, 960, 1280]}
-              sizes="(max-width: 900px) 100vw, 900px"
-            />
-            {post.data.cover.credit ? (
-              <p class="post-cover-credit">{post.data.cover.credit}</p>
-            ) : null}
-          </div>
-        ) : null}
-        <header class="content-section post-header post-header--scholarly">
-          <div class="post-header-meta-row">
-            <p class="subtle post-header-meta">
-              发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
-              {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
-              {" · 作者 "}
-              {resolvedAuthor.name}
-              {" · "}
-              <span class="post-header-reading-time" aria-label={`预计阅读时间${readingTimeLabel}`}>{readingTimeLabel}阅读</span>
-            </p>
-          </div>
-          <h1>{post.data.title}</h1>
-          {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
-          {post.data.topics.length > 0 ? (
-            <p class="post-header-topics" aria-label="文章主题标签">
-              <span class="post-header-topics-label">主题：</span>
-              {post.data.topics.map((topicSlug) => (
-                <span class="post-header-topic-item">
-                  <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
-                </span>
-              ))}
-            </p>
+        <section class="post-title-card" aria-label="文章标题卡片">
+          {post.data.cover ? (
+            <div class="post-cover post-cover--hero">
+              <Image
+                src={post.data.cover.src}
+                alt={post.data.cover.alt}
+                class="post-cover-img"
+                loading="eager"
+                decoding="async"
+                widths={[640, 960, 1280]}
+                sizes="(max-width: 900px) 100vw, 900px"
+              />
+              {post.data.cover.credit ? (
+                <p class="post-cover-credit">{post.data.cover.credit}</p>
+              ) : null}
+            </div>
           ) : null}
-          <div class="post-header-divider" aria-hidden="true"></div>
-        </header>
+          <header class="content-section post-header post-header--scholarly">
+            <div class="post-header-meta-row">
+              <p class="subtle post-header-meta">
+                {(headerMetaItems.filter(Boolean) as HeaderMetaItem[]).map((item) => (
+                  <span class="post-header-meta-item" aria-label={item.ariaLabel}>
+                    <MetaIcon name={item.icon} class="post-header-meta-icon" />
+                    <span>{item.label}</span>
+                  </span>
+                ))}
+              </p>
+            </div>
+            <h1>{post.data.title}</h1>
+            {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
+            {headerStats.length > 0 ? (
+              <div class="post-header-stats-row" aria-label="文章辅助统计">
+                {(headerStats.filter(Boolean) as HeaderStatItem[]).map((item) => (
+                  <span class="post-header-stat" aria-label={item.ariaLabel}>
+                    <MetaIcon name={item.icon} class="post-header-stat-icon" />
+                    <span>{item.label}</span>
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            {post.data.topics.length > 0 ? (
+              <p class="post-header-topics" aria-label="文章主题标签">
+                <span class="post-header-topics-label" aria-hidden="true">
+                  <MetaIcon name="tag" class="post-header-topics-icon" />
+                </span>
+                {post.data.topics.map((topicSlug) => (
+                  <span class="post-header-topic-item">
+                    <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
+                  </span>
+                ))}
+              </p>
+            ) : null}
+            <div class="post-header-divider" aria-hidden="true"></div>
+          </header>
+        </section>
 
         <section class="post-body post-body--scholarly" data-post-body>
           <Content />

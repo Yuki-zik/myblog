@@ -1,0 +1,226 @@
+---
+import type { TocItem } from "./toc-utils";
+
+interface Props {
+  items: TocItem[];
+  title?: string;
+  accent?: string;
+}
+
+const { items, title = "文章目录", accent } = Astro.props;
+
+function sectionLabel(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}
+---
+
+{
+  items.length > 0 ? (
+    <nav
+      class="toc-sidebar"
+      data-toc-sidebar
+      aria-label={title}
+      style={accent ? `--toc-accent: ${accent};` : undefined}
+    >
+      <div class="toc-sidebar__body" data-toc-sidebar-body>
+        <span class="toc-sidebar__track" aria-hidden="true"></span>
+        <span class="toc-sidebar__progress" data-toc-progress aria-hidden="true"></span>
+
+        <ol class="toc-sidebar__list" data-toc-list>
+          {
+            items.map((item, index) => (
+              <li class="toc-sidebar__item" data-toc-item data-item-id={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  class="toc-sidebar__link toc-sidebar__link--level-2"
+                  data-toc-link
+                  data-target-id={item.id}
+                >
+                  <span class="toc-sidebar__number">{sectionLabel(index)}</span>
+                  <span class="toc-sidebar__title">{item.title}</span>
+                </a>
+
+                {
+                  item.children && item.children.length > 0 ? (
+                    <ol class="toc-sidebar__children">
+                      {
+                        item.children.map((child, childIndex) => (
+                          <li
+                            class="toc-sidebar__item toc-sidebar__item--child"
+                            data-toc-item
+                            data-item-id={child.id}
+                            data-parent-id={item.id}
+                          >
+                            <a
+                              href={`#${child.id}`}
+                              class="toc-sidebar__link toc-sidebar__link--level-3"
+                              data-toc-link
+                              data-target-id={child.id}
+                            >
+                              <span class="toc-sidebar__number toc-sidebar__number--child">
+                                {`${index + 1}.${childIndex + 1}`}
+                              </span>
+                              <span class="toc-sidebar__title toc-sidebar__title--child">{child.title}</span>
+                            </a>
+                          </li>
+                        ))
+                      }
+                    </ol>
+                  ) : null
+                }
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </nav>
+  ) : null
+}
+
+<script>
+  import { initTocSidebar } from "./toc-client";
+
+  document.querySelectorAll("[data-toc-sidebar]").forEach((root) => {
+    initTocSidebar(root);
+  });
+</script>
+
+<style>
+  .toc-sidebar {
+    --toc-accent: var(--brand-accent);
+    --toc-track: color-mix(in srgb, var(--border-default) 78%, transparent 22%);
+    --toc-text: color-mix(in srgb, var(--text-secondary) 76%, var(--text-primary) 24%);
+    --toc-text-strong: color-mix(in srgb, var(--text-primary) 92%, transparent 8%);
+    --toc-text-faint: color-mix(in srgb, var(--text-meta) 88%, transparent 12%);
+    --toc-hover: color-mix(in srgb, var(--surface-primary) 72%, transparent 28%);
+    --toc-child-track: color-mix(in srgb, var(--border-default) 62%, transparent 38%);
+    display: block;
+    color: var(--toc-text);
+  }
+
+  .toc-sidebar__body {
+    position: relative;
+    max-block-size: calc(100vh - 8rem);
+    overflow: auto;
+    padding-left: 1.1rem;
+    scrollbar-width: none;
+  }
+
+  .toc-sidebar__body::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toc-sidebar__track,
+  .toc-sidebar__progress {
+    position: absolute;
+    left: 0.28rem;
+    top: 0.34rem;
+    width: 1px;
+    border-radius: 999px;
+  }
+
+  .toc-sidebar__track {
+    bottom: 0.34rem;
+    background: var(--toc-track);
+  }
+
+  .toc-sidebar__progress {
+    height: 1.4rem;
+    background: var(--toc-accent);
+    transition: height 180ms var(--ease-out, ease), opacity 180ms var(--ease-out, ease);
+  }
+
+  .toc-sidebar__list,
+  .toc-sidebar__children {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-sidebar__list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .toc-sidebar__children {
+    margin-top: 0.78rem;
+    margin-left: 0.1rem;
+    padding-left: 0.95rem;
+    border-left: 1px solid var(--toc-child-track);
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .toc-sidebar__link {
+    display: grid;
+    gap: 0.18rem;
+    text-decoration: none;
+    color: var(--toc-text);
+    transition:
+      color 160ms var(--ease-out, ease),
+      transform 160ms var(--ease-out, ease);
+  }
+
+  .toc-sidebar__link:hover {
+    color: color-mix(in srgb, var(--toc-accent) 56%, var(--toc-text-strong) 44%);
+    transform: translateX(1px);
+  }
+
+  .toc-sidebar__number {
+    color: color-mix(in srgb, var(--toc-accent) 18%, var(--toc-text-faint) 82%);
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .toc-sidebar__title {
+    color: inherit;
+    font-size: 0.94rem;
+    font-weight: 560;
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  .toc-sidebar__link--level-3 {
+    gap: 0.12rem;
+  }
+
+  .toc-sidebar__number--child {
+    color: color-mix(in srgb, var(--toc-text-faint) 90%, transparent 10%);
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+  }
+
+  .toc-sidebar__title--child {
+    color: color-mix(in srgb, var(--toc-text) 88%, transparent 12%);
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.42;
+  }
+
+  .toc-sidebar__item.is-active-branch > .toc-sidebar__link--level-2 .toc-sidebar__title {
+    color: var(--toc-text-strong);
+  }
+
+  .toc-sidebar__link.is-active .toc-sidebar__number,
+  .toc-sidebar__item.is-active-branch > .toc-sidebar__link--level-2 .toc-sidebar__number {
+    color: var(--toc-accent);
+  }
+
+  .toc-sidebar__link.is-active .toc-sidebar__title {
+    color: var(--toc-text-strong);
+    font-weight: 650;
+  }
+
+  .toc-sidebar__link.is-active.toc-sidebar__link--level-3 .toc-sidebar__title {
+    color: color-mix(in srgb, var(--toc-accent) 62%, var(--toc-text-strong) 38%);
+  }
+
+  @media (max-width: 1180px) {
+    .toc-sidebar {
+      display: none;
+    }
+  }
+</style>

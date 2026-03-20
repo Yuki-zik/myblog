@@ -1,12 +1,70 @@
 ﻿---
 import type { CollectionEntry } from "astro:content";
 import PostCover from "./PostCover.astro";
+import MetaIcon from "../ui/MetaIcon.astro";
+import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 
 interface Props {
   post: CollectionEntry<"posts">;
 }
 
+type MetaItem = {
+  icon: "calendar" | "refresh" | "article";
+  label: string;
+  ariaLabel: string;
+};
+
+type StatItem = {
+  icon: "clock" | "tag" | "nodes";
+  label: string;
+  ariaLabel: string;
+};
+
 const { post } = Astro.props;
+const publishedLabel = new Date(post.data.date).toLocaleDateString("zh-CN");
+const updatedLabel = post.data.updated ? new Date(post.data.updated).toLocaleDateString("zh-CN") : null;
+const readingMinutes = getPostReadingMinutes(post);
+const readingTimeLabel = readingMinutes <= 1 ? "1 分钟阅读" : `${readingMinutes} 分钟阅读`;
+const topicCountLabel = `${post.data.topics.length} 个主题`;
+const conceptCountLabel = (post.data.concepts?.length ?? 0) > 0 ? `${post.data.concepts!.length} 个概念` : null;
+const metaItems = [
+  {
+    icon: "calendar" as const,
+    label: publishedLabel,
+    ariaLabel: `发布日期 ${publishedLabel}`
+  },
+  updatedLabel
+    ? {
+        icon: "refresh" as const,
+        label: updatedLabel,
+        ariaLabel: `更新日期 ${updatedLabel}`
+      }
+    : null,
+  {
+    icon: "article" as const,
+    label: "文章",
+    ariaLabel: "文章类型"
+  }
+] as Array<MetaItem | null>;
+const statItems = [
+  {
+    icon: "clock" as const,
+    label: readingTimeLabel,
+    ariaLabel: `预计阅读时间 ${readingTimeLabel}`
+  },
+  {
+    icon: "tag" as const,
+    label: topicCountLabel,
+    ariaLabel: topicCountLabel
+  },
+  conceptCountLabel
+    ? {
+        icon: "nodes" as const,
+        label: conceptCountLabel,
+        ariaLabel: conceptCountLabel
+      }
+    : null
+] as Array<StatItem | null>;
 ---
 
 <article class="post-card" data-post-card data-ux-reveal="fade-up">
@@ -15,13 +73,14 @@ const { post } = Astro.props;
   </a>
 
   <div class="post-card-body">
-    <div class="post-card-meta-row">
-      <p class="post-card-date subtle">
-        发布于 {new Date(post.data.date).toLocaleDateString("zh-CN")}
-        {post.data.updated ? ` · 更新于 ${new Date(post.data.updated).toLocaleDateString("zh-CN")}` : ""}
-      </p>
-      <span class="post-card-kind">文章</span>
-    </div>
+    <p class="post-card-meta-row subtle" aria-label="文章元信息">
+      {(metaItems.filter(Boolean) as MetaItem[]).map((item) => (
+        <span class="post-card-meta-item" aria-label={item.ariaLabel}>
+          <MetaIcon name={item.icon} class="post-card-meta-icon" />
+          <span>{item.label}</span>
+        </span>
+      ))}
+    </p>
 
     <h3 class="post-card-title">
       <a href={`/posts/${post.slug}`}>{post.data.title}</a>
@@ -29,11 +88,22 @@ const { post } = Astro.props;
 
     {post.data.summary ? <p class="post-card-summary">{post.data.summary}</p> : null}
 
-    <div class="post-card-footer">
-      <ul class="pill-list post-card-topics">
-        {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
-      </ul>
+    <div class="post-card-stats-row" aria-label="文章辅助信息">
+      <div class="post-card-stats">
+        {(statItems.filter(Boolean) as StatItem[]).map((item) => (
+          <span class="post-card-stat" aria-label={item.ariaLabel}>
+            <MetaIcon name={item.icon} class="post-card-stat-icon" />
+            <span>{item.label}</span>
+          </span>
+        ))}
+      </div>
       <span class="post-card-more">阅读全文</span>
     </div>
+
+    <ul class="pill-list post-card-topics" aria-label="文章主题标签">
+      {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+    </ul>
+
+    <div class="post-card-endmark" aria-hidden="true"></div>
   </div>
 </article>
