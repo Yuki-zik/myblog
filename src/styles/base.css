@@ -214,3 +214,21 @@ main.shell {
     padding-bottom: 4.2rem;
   }
 }
+
+/* ── Large desktop: expand shell to use available space ─────────── */
+@media (min-width: 1441px) {
+  .shell {
+    width: min(1440px, calc(100vw - 4rem));
+  }
+  main.shell {
+    padding-top: clamp(1.6rem, 2.2vw, 2.2rem);
+    padding-bottom: clamp(4.5rem, 6.5vw, 6.5rem);
+  }
+}
+
+/* ── Ultra-wide desktop ────────────────────────────────────────── */
+@media (min-width: 1921px) {
+  .shell {
+    width: min(1680px, calc(100vw - 6rem));
+  }
+}

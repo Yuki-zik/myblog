@@ -566,3 +566,15 @@
     width: min(6.4rem, 42%);
   }
 }
+
+/* ── Large desktop: expand card grid ─────────────────────────────── */
+@media (min-width: 1441px) {
+  .post-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: min(100%, 72rem);
+  }
+
+  .topic-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}

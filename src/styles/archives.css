@@ -367,3 +367,10 @@
     padding: 0.65rem;
   }
 }
+
+/* ── Large desktop: 2-column archive grid ────────────────────────── */
+@media (min-width: 1441px) {
+  .archive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

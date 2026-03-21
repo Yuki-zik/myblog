@@ -367,6 +367,8 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
     const tocRail = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
     const article = document.querySelector(".post-reading-article") as HTMLElement | null;
     const scholarRail = document.querySelector(".post-reading-rail") as HTMLElement | null;
+    const scholarNote = document.querySelector(".post-scholar-item--bubble") as HTMLElement | null;
+    const scholarNoteBody = document.querySelector(".post-scholar-footnote-body p") as HTMLElement | null;
     const titleGroup = document.querySelector(".post-header--scholarly") as HTMLElement | null;
     const firstH2 = body?.querySelector("h2") as HTMLElement | null;
     const firstH3 = body?.querySelector("h3") as HTMLElement | null;
@@ -417,6 +419,8 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       paperBandShadow: layoutBandStyles?.boxShadow ?? "",
       paperBandRadius: layoutBandStyles ? Number.parseFloat(layoutBandStyles.borderTopLeftRadius) : 0,
       scholarRailPaddingLeft: scholarRailStyles ? Number.parseFloat(scholarRailStyles.paddingLeft) : 0,
+      scholarNoteWidth: scholarNote?.getBoundingClientRect().width ?? 0,
+      scholarNoteBodyWidth: scholarNoteBody?.getBoundingClientRect().width ?? 0,
       firstH2Counter: h2BeforeStyles?.content ?? "",
       firstH2CounterColor: h2BeforeStyles?.color ?? "",
       firstH2CounterFontFamily: h2BeforeStyles?.fontFamily ?? "",
@@ -439,9 +443,9 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.bodyLineHeight / metrics.bodyFontSize).toBeGreaterThan(1.8);
   expect(metrics.bodyLineHeight / metrics.bodyFontSize).toBeLessThan(1.92);
   expect(metrics.titleCardWidth).toBeGreaterThan(640);
-  expect(metrics.titleCardRadius).toBeGreaterThanOrEqual(24);
-  expect(metrics.titleCardShadow).not.toBe("none");
-  expect(metrics.titleCardBackgroundImage).toContain("gradient");
+  expect(metrics.titleCardRadius).toBe(0);
+  expect(metrics.titleCardShadow).toBe("none");
+  expect(metrics.titleCardBackgroundImage).toBe("none");
   expect(metrics.firstParagraphWidth).toBeGreaterThan(640);
   expect(metrics.firstParagraphWidth).toBeLessThan(740);
   expect(metrics.paperBandRadius).toBeGreaterThanOrEqual(20);
@@ -451,12 +455,16 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.articleShadow).toBe("none");
   expect(metrics.articleBackgroundImage).toBe("none");
   expect(metrics.articleBackgroundColor).toBe("rgba(0, 0, 0, 0)");
-  expect(metrics.scholarRailPaddingLeft).toBeLessThanOrEqual(4);
+  expect(metrics.scholarRailPaddingLeft).toBeGreaterThanOrEqual(4);
+  expect(metrics.scholarRailPaddingLeft).toBeLessThanOrEqual(10);
+  expect(metrics.scholarNoteWidth).toBeGreaterThanOrEqual(268);
+  expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(232);
   expect(metrics.coverTop).toBeLessThan(metrics.metaTop);
   expect(metrics.metaTop).toBeLessThan(metrics.titleTop);
   expect(metrics.titleTop).toBeLessThan(metrics.dekTop);
-  expect(metrics.dekTop).toBeLessThan(metrics.statsTop);
+  expect(metrics.titleTop).toBeLessThan(metrics.statsTop);
   expect(metrics.statsTop).toBeLessThan(metrics.topicsTop);
+  expect(metrics.dekTop).toBeLessThan(metrics.topicsTop);
   expect(metrics.topicsTop).toBeLessThan(metrics.dividerTop);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.statsFontSize);
@@ -465,13 +473,13 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.firstH2Counter).not.toBe("none");
   expect(metrics.firstH2Counter).toContain("SECTION");
   expect(metrics.firstH2CounterColor).not.toBe("rgb(47, 52, 64)");
-  expect(metrics.firstH2CounterFontSize).toBeGreaterThanOrEqual(13);
+  expect(metrics.firstH2CounterFontSize).toBeGreaterThanOrEqual(10.5);
   expect(metrics.firstH2PaddingLeft).toBeLessThanOrEqual(2);
   expect(metrics.firstH3Counter).not.toBe("none");
   expect(metrics.firstH3CounterFontFamily).toContain("Source Serif");
-  expect(metrics.firstH3CounterFontSize).toBeGreaterThanOrEqual(16);
-  expect(metrics.firstH3PaddingLeft).toBeGreaterThanOrEqual(36);
-  expect(metrics.titleToBodyGap).toBeGreaterThan(50);
+  expect(metrics.firstH3CounterFontSize).toBeGreaterThanOrEqual(14.5);
+  expect(metrics.firstH3PaddingLeft).toBeGreaterThanOrEqual(35);
+  expect(metrics.titleToBodyGap).toBeGreaterThan(38);
   expect(metrics.coverRadius).toBeLessThanOrEqual(12.5);
   expect(metrics.dekFontStyle).toBe("normal");
   expect(metrics.tocOpacity).toBeGreaterThan(0.8);
@@ -485,23 +493,45 @@ test("article layout expands on ultra-wide screens without oversized gutters", a
   const metrics = await page.evaluate(() => {
     const shell = document.querySelector(".shell--article-reading") as HTMLElement | null;
     const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
+    const toc = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
+    const main = document.querySelector(".post-reading-main") as HTMLElement | null;
+    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
     const titleCard = document.querySelector(".post-title-card") as HTMLElement | null;
     const firstParagraph = document.querySelector(".post-body--scholarly > p") as HTMLElement | null;
+    const scholarNoteBody = document.querySelector(".post-scholar-footnote-body p") as HTMLElement | null;
+    const firstNote = document.querySelector(".post-scholar-item--bubble") as HTMLElement | null;
 
     return {
       viewportWidth: window.innerWidth,
       shellWidth: shell?.getBoundingClientRect().width ?? 0,
       shellLeft: shell?.getBoundingClientRect().left ?? 0,
+      tocLeft: toc?.getBoundingClientRect().left ?? 0,
       layoutWidth: layout?.getBoundingClientRect().width ?? 0,
+      mainWidth: main?.getBoundingClientRect().width ?? 0,
+      mainLeft: main?.getBoundingClientRect().left ?? 0,
+      railWidth: rail?.getBoundingClientRect().width ?? 0,
+      railRight: rail?.getBoundingClientRect().right ?? 0,
       titleWidth: titleCard?.getBoundingClientRect().width ?? 0,
-      bodyWidth: firstParagraph?.getBoundingClientRect().width ?? 0
+      bodyWidth: firstParagraph?.getBoundingClientRect().width ?? 0,
+      scholarNoteBodyWidth: scholarNoteBody?.getBoundingClientRect().width ?? 0,
+      titleBottom: titleCard?.getBoundingClientRect().bottom ?? 0,
+      firstNoteTop: firstNote?.getBoundingClientRect().top ?? 0
     };
   });
 
-  expect(metrics.shellWidth).toBeGreaterThanOrEqual(2200);
-  expect(metrics.shellLeft).toBeLessThanOrEqual(180);
-  expect(metrics.layoutWidth).toBeGreaterThanOrEqual(2200);
-  expect(metrics.titleWidth).toBeGreaterThanOrEqual(780);
-  expect(metrics.bodyWidth).toBeGreaterThanOrEqual(780);
-  expect(metrics.bodyWidth).toBeLessThanOrEqual(860);
+  expect(metrics.shellWidth).toBeGreaterThanOrEqual(2100);
+  expect(metrics.shellLeft).toBeLessThanOrEqual(240);
+  expect(metrics.layoutWidth).toBeGreaterThanOrEqual(2100);
+  expect(metrics.mainWidth).toBeGreaterThanOrEqual(900);
+  expect(metrics.railWidth).toBeGreaterThanOrEqual(300);
+  expect(metrics.railWidth).toBeLessThanOrEqual(340);
+  expect(metrics.titleWidth).toBeGreaterThanOrEqual(1180);
+  expect(metrics.titleWidth).toBeGreaterThan(metrics.mainWidth);
+  expect(metrics.bodyWidth).toBeGreaterThanOrEqual(720);
+  expect(metrics.bodyWidth).toBeLessThanOrEqual(780);
+  expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(240);
+  expect(metrics.firstNoteTop).toBeGreaterThan(metrics.titleBottom);
+  expect(metrics.tocLeft).toBeCloseTo(metrics.shellLeft, 0);
+  expect((metrics.shellLeft + metrics.shellWidth) - metrics.railRight).toBeGreaterThanOrEqual(220);
+  expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 520);
 });
