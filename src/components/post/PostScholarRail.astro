@@ -645,7 +645,7 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
           if (!(bubble instanceof HTMLElement)) continue;
           const anchorId = (bubble.dataset.anchorId || "").trim();
           const noteKey = (bubble.dataset.noteKey || "").trim();
-          let targetTop = nextTop;
+          let targetTop = Number.POSITIVE_INFINITY;
 
           if (anchorId) {
             const paragraph = getAnchorParagraph(anchorId);
@@ -659,16 +659,27 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
             }
           }
 
-          positionedBubbles.push({ bubble, targetTop });
+          positionedBubbles.push({ bubble, targetTop, domOrder: positionedBubbles.length });
         }
 
-        positionedBubbles.sort((a, b) => a.targetTop - b.targetTop);
+        positionedBubbles.sort((a, b) => {
+          const aAnchored = Number.isFinite(a.targetTop);
+          const bAnchored = Number.isFinite(b.targetTop);
+          if (aAnchored !== bAnchored) {
+            return aAnchored ? -1 : 1;
+          }
+          if (a.targetTop !== b.targetTop) {
+            return a.targetTop - b.targetTop;
+          }
+          return a.domOrder - b.domOrder;
+        });
 
         for (const { bubble, targetTop } of positionedBubbles) {
           if (!(bubble instanceof HTMLElement)) continue;
 
           const bubbleHeight = bubble.offsetHeight || 0;
-          const placedTop = Math.max(targetTop, nextTop);
+          const desiredTop = Number.isFinite(targetTop) ? targetTop : nextTop;
+          const placedTop = Math.max(desiredTop, nextTop);
           bubble.style.top = `${Math.max(0, placedTop)}px`;
           nextTop = placedTop + bubbleHeight + gap;
         }

@@ -244,6 +244,25 @@ test("list-item footnotes float near their list section instead of sinking to th
   expect(positions.note5Top).toBeLessThan(positions.note6Top);
 });
 
+test("paragraph-anchor article keeps unanchored references below anchored rail notes", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const positions = await page.evaluate(() => {
+    const firstFootnote = document.querySelector('[data-footnote-rail-item]') as HTMLElement | null;
+    const firstReference = document.querySelector('.post-scholar-item--reference') as HTMLElement | null;
+
+    return {
+      firstFootnoteTop: firstFootnote?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY,
+      firstReferenceTop: firstReference?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY
+    };
+  });
+
+  expect(positions.firstFootnoteTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.firstReferenceTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.firstReferenceTop).toBeGreaterThan(positions.firstFootnoteTop);
+});
+
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");
