@@ -3,7 +3,7 @@ import type { PostTocItem } from "../../lib/posts/toc";
 
 interface Props {
   items: PostTocItem[];
-  variant?: "standalone" | "rail";
+  variant?: "standalone" | "rail" | "mobileOnly";
 }
 
 const { items, variant = "standalone" } = Astro.props;
@@ -32,31 +32,34 @@ const { items, variant = "standalone" } = Astro.props;
       </ol>
     ) : (
       <>
-        <section class="post-toc-card post-toc-card--desktop" aria-label="文章目录">
-          <h2 class="post-toc-title">目录</h2>
-          <ol class="post-toc-list">
-            {
-              items.map((item) => (
-                <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
-                  <a
-                    href={`#${item.slug}`}
-                    class="post-toc-link"
-                    data-toc-link
-                    data-target-id={item.slug}
-                    data-toc-depth={item.depth}
-                  >
-                    <span class="post-toc-number">{item.numberLabel}</span>
-                    <span class="post-toc-text">{item.text}</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ol>
-        </section>
+        {variant !== "mobileOnly" && (
+          <section class="post-toc-card post-toc-card--desktop" aria-label="文章目录">
+            <h2 class="post-toc-title">目录</h2>
+            <ol class="post-toc-list">
+              {
+                items.map((item) => (
+                  <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+                    <a
+                      href={`#${item.slug}`}
+                      class="post-toc-link"
+                      data-toc-link
+                      data-target-id={item.slug}
+                      data-toc-depth={item.depth}
+                    >
+                      <span class="post-toc-number">{item.numberLabel}</span>
+                      <span class="post-toc-text">{item.text}</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ol>
+          </section>
+        )}
 
         <details class="post-toc-mobile" data-post-toc-mobile>
           <summary class="post-toc-mobile-summary">目录</summary>
           <ol class="post-toc-list post-toc-list--mobile">
+
             {
               items.map((item) => (
                 <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>

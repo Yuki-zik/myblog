@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
 import { buildTocTree } from "../../components/article/toc-utils";
+import PostToc from "../../components/post/PostToc.astro";
 import PostPager from "../../components/post/PostPager.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
 import MetaIcon from "../../components/ui/MetaIcon.astro";
@@ -233,6 +234,12 @@ const headerStats = [
             <div class="post-header-divider" aria-hidden="true"></div>
           </header>
         </section>
+
+        {tocItems.length > 0 ? (
+          <div class="post-toc-mobile-container" aria-label="移动端目录">
+            <PostToc items={tocItems} variant="mobileOnly" />
+          </div>
+        ) : null}
 
         <section class="post-body post-body--scholarly" data-post-body>
           <Content />

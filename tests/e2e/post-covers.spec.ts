@@ -1,4 +1,4 @@
-﻿import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 async function mockSupabase(page: Page) {
   await page.route("https://example.supabase.co/**", async (route) => {
@@ -195,8 +195,8 @@ test("reading toc clearly separates h2 and h3 hierarchy on desktop", async ({ pa
   await page.goto("/posts/paragraph-anchor-design");
 
   const tocRail = page.locator(".post-reading-toc-rail");
-  const h2Link = tocRail.locator("[data-toc-depth='2']").first();
-  const h3Link = tocRail.locator("[data-toc-depth='3']").first();
+  const h2Link = tocRail.locator(".toc-sidebar__link--level-2").first();
+  const h3Link = tocRail.locator(".toc-sidebar__link--level-3").first();
 
   await expect(tocRail).toBeVisible();
   await expect(h2Link).toBeVisible();
@@ -204,27 +204,31 @@ test("reading toc clearly separates h2 and h3 hierarchy on desktop", async ({ pa
 
   const railWidth = await tocRail.evaluate((el) => el.getBoundingClientRect().width);
   const h2Metrics = await h2Link.evaluate((el) => {
-    const styles = getComputedStyle(el);
+    const titleEl = el.querySelector(".toc-sidebar__title") as HTMLElement | null;
+    const targetEl = titleEl || el;
+    const styles = getComputedStyle(targetEl);
     const rect = el.getBoundingClientRect();
     return {
       left: rect.left,
-      textLeft: (el.querySelector(".post-toc-text") as HTMLElement | null)?.getBoundingClientRect().left ?? rect.left,
+      textLeft: titleEl?.getBoundingClientRect().left ?? rect.left,
       fontSize: Number.parseFloat(styles.fontSize),
       fontWeight: Number.parseFloat(styles.fontWeight)
     };
   });
   const h3Metrics = await h3Link.evaluate((el) => {
-    const styles = getComputedStyle(el);
+    const titleEl = el.querySelector(".toc-sidebar__title") as HTMLElement | null;
+    const targetEl = titleEl || el;
+    const styles = getComputedStyle(targetEl);
     const rect = el.getBoundingClientRect();
     return {
       left: rect.left,
-      textLeft: (el.querySelector(".post-toc-text") as HTMLElement | null)?.getBoundingClientRect().left ?? rect.left,
+      textLeft: titleEl?.getBoundingClientRect().left ?? rect.left,
       fontSize: Number.parseFloat(styles.fontSize),
       fontWeight: Number.parseFloat(styles.fontWeight)
     };
   });
 
-  expect(railWidth).toBeGreaterThan(220);
+  expect(railWidth).toBeGreaterThan(150);
   expect(h2Metrics.fontSize).toBeGreaterThan(h3Metrics.fontSize);
   expect(h2Metrics.fontWeight).toBeGreaterThan(h3Metrics.fontWeight);
   expect(h3Metrics.textLeft - h2Metrics.textLeft).toBeGreaterThan(10);

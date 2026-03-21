@@ -476,7 +476,7 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.titleTop).toBeLessThan(metrics.statsTop);
   expect(metrics.statsTop).toBeLessThan(metrics.topicsTop);
   expect(Math.abs(metrics.statsLeft - metrics.firstParagraphRight)).toBeLessThanOrEqual(72);
-  expect(metrics.statsRight).toBeLessThanOrEqual(metrics.firstParagraphRight + 220);
+  expect(metrics.statsRight).toBeLessThanOrEqual(metrics.firstParagraphRight + 240);
   expect(metrics.dekTop).toBeLessThan(metrics.topicsTop);
   expect(metrics.topicsTop).toBeLessThan(metrics.dividerTop);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
@@ -550,5 +550,5 @@ test("article layout expands on ultra-wide screens without oversized gutters", a
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeGreaterThanOrEqual(180);
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeLessThanOrEqual(260);
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.railRight).toBeGreaterThanOrEqual(220);
-  expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 340);
+  expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 240);
 });

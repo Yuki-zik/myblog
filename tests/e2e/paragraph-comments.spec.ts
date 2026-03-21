@@ -45,7 +45,7 @@ test("scholarly reading page keeps rail interactions and mounts waline comments"
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
-  await expect(page.locator(".post-reading-toc-summary")).toBeVisible();
+  await expect(page.locator(".post-toc-mobile-summary")).toBeVisible();
   await expect(page.locator(".post-scholar-item").first()).toBeVisible();
   await expect(page.locator(".waline-comments")).toBeVisible();
 });
