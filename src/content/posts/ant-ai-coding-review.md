@@ -7,7 +7,7 @@ topics:
   - agent-engineering
 summary: 记录一次蚂蚁 AI Coding 笔试中的准备过程、现场执行情况、踩坑点与时间线复盘。
 cover:
-  src: ./covers/ant-ai-coding-review.svg
+  src: ./covers/ant-ai-coding-review.png
   alt: 蚂蚁 AI Coding 笔试复盘封面
 ---
 
