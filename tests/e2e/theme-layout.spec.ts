@@ -211,6 +211,16 @@ test("post pages use the article summary for both dek and meta description", asy
   expect(twitterDescription).toBe(expectedSummary);
 });
 
+test("post footnotes keep their original reference numbers after rail reordering", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/ant-ai-coding-review");
+
+  await expect(page.locator('a.tufte-footnote-ref[data-footnote-rail-target="note-5"]').first()).toHaveText("5");
+  await expect(page.locator('[data-footnote-rail-item="note-5"] .post-scholar-footnote-number-button')).toHaveText("5");
+  await expect(page.locator('a.tufte-footnote-ref[data-footnote-rail-target="note-6"]').first()).toHaveText("6");
+  await expect(page.locator('[data-footnote-rail-item="note-6"] .post-scholar-footnote-number-button')).toHaveText("6");
+});
+
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");

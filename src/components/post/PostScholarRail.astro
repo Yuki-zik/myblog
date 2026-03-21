@@ -208,9 +208,11 @@ const railEntries: RailEntry[] = railEntriesBase.map((entry) => {
       bubbleId: `ref-${entry.reference.id}`
     };
   }
+
+  const footnoteNumber = entry.footnote.referenceOrder ?? Number.parseInt(entry.footnote.label, 10);
   return {
     ...entry,
-    number: String(infoNumber),
+    number: Number.isFinite(footnoteNumber) ? String(footnoteNumber) : entry.footnote.label,
     noteKey: `footnote:${entry.footnote.id}`,
     bubbleId: `${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}${entry.footnote.id}`
   };
