@@ -1,0 +1,60 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="220" y1="80" x2="1400" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#223759"/>
+      <stop offset="0.55" stop-color="#182540"/>
+      <stop offset="1" stop-color="#111B31"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="360" y1="260" x2="1220" y2="670" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8B73"/>
+      <stop offset="1" stop-color="#FF7A5B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <g opacity="0.16">
+    <path d="M120 130H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M120 255H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M120 380H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M120 505H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M120 630H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M120 755H1480" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M260 100V800" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M520 100V800" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M780 100V800" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M1040 100V800" stroke="#E6ECFB" stroke-width="1.5"/>
+    <path d="M1300 100V800" stroke="#E6ECFB" stroke-width="1.5"/>
+  </g>
+
+  <rect x="150" y="164" width="468" height="540" rx="28" fill="#F8FAFF" fill-opacity="0.06" stroke="#E6ECFB" stroke-opacity="0.22"/>
+  <rect x="190" y="214" width="388" height="18" rx="9" fill="#E6ECFB" fill-opacity="0.18"/>
+  <rect x="190" y="260" width="310" height="14" rx="7" fill="#E6ECFB" fill-opacity="0.14"/>
+  <rect x="190" y="304" width="342" height="14" rx="7" fill="#E6ECFB" fill-opacity="0.14"/>
+  <rect x="190" y="348" width="250" height="14" rx="7" fill="#E6ECFB" fill-opacity="0.14"/>
+  <rect x="190" y="432" width="388" height="140" rx="18" fill="#0D1528" fill-opacity="0.68" stroke="#E6ECFB" stroke-opacity="0.12"/>
+  <path d="M228 490H402" stroke="url(#accent)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M228 530H548" stroke="#E6ECFB" stroke-opacity="0.42" stroke-width="8" stroke-linecap="round"/>
+  <path d="M228 568H486" stroke="#E6ECFB" stroke-opacity="0.32" stroke-width="8" stroke-linecap="round"/>
+
+  <rect x="720" y="190" width="724" height="126" rx="26" fill="#F8FAFF" fill-opacity="0.05" stroke="#E6ECFB" stroke-opacity="0.18"/>
+  <rect x="720" y="370" width="724" height="126" rx="26" fill="#F8FAFF" fill-opacity="0.05" stroke="#E6ECFB" stroke-opacity="0.18"/>
+  <rect x="720" y="550" width="724" height="126" rx="26" fill="#F8FAFF" fill-opacity="0.05" stroke="#E6ECFB" stroke-opacity="0.18"/>
+
+  <circle cx="788" cy="253" r="26" fill="#FF7A5B" fill-opacity="0.16" stroke="#FF8B73" stroke-width="2"/>
+  <circle cx="788" cy="433" r="26" fill="#FF7A5B" fill-opacity="0.16" stroke="#FF8B73" stroke-width="2"/>
+  <circle cx="788" cy="613" r="26" fill="#FF7A5B" fill-opacity="0.16" stroke="#FF8B73" stroke-width="2"/>
+  <text x="788" y="261" text-anchor="middle" fill="#FFD5CB" font-family="'Space Grotesk', sans-serif" font-size="28" font-weight="700">01</text>
+  <text x="788" y="441" text-anchor="middle" fill="#FFD5CB" font-family="'Space Grotesk', sans-serif" font-size="28" font-weight="700">02</text>
+  <text x="788" y="621" text-anchor="middle" fill="#FFD5CB" font-family="'Space Grotesk', sans-serif" font-size="28" font-weight="700">03</text>
+
+  <text x="840" y="246" fill="#F8FAFF" font-family="'Space Grotesk', sans-serif" font-size="44" font-weight="700">AI Coding Exam Review</text>
+  <text x="840" y="286" fill="#B7C4E2" font-family="'Source Serif 4', serif" font-size="24">准备、执行、踩坑与时间线复盘</text>
+
+  <text x="840" y="426" fill="#F8FAFF" font-family="'Space Grotesk', sans-serif" font-size="44" font-weight="700">Prompt, Rules, Workflow</text>
+  <text x="840" y="466" fill="#B7C4E2" font-family="'Source Serif 4', serif" font-size="24">从工具箱幻觉到真实可执行流程</text>
+
+  <text x="840" y="606" fill="#F8FAFF" font-family="'Space Grotesk', sans-serif" font-size="44" font-weight="700">MVP, Testing, Delivery</text>
+  <text x="840" y="646" fill="#B7C4E2" font-family="'Source Serif 4', serif" font-size="24">不是堆功能，而是控制交付质量与叙事</text>
+
+  <text x="152" y="104" fill="#FFB4A2" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="700" letter-spacing="0.24em">EXAM NOTEBOOK</text>
+</svg>

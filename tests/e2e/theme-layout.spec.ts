@@ -58,8 +58,58 @@ async function mockSupabase(page: Page) {
   });
 }
 
+async function mockSubstats(page: Page) {
+  await page.route("https://api.swo.moe/stats/**", async (route) => {
+    const url = new URL(route.request().url());
+    const match = url.pathname.match(/^\/stats\/([^/]+)\/([^/]+)$/);
+
+    if (!match) {
+      return route.fulfill({ status: 404, body: "Not Found" });
+    }
+
+    const [, source, key] = match;
+
+    if (source === "telegram" && key === "A_Znkv") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          source,
+          key,
+          failed: false,
+          count: 6
+        })
+      });
+    }
+
+    if (source === "github" && key === "yuki-zik") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          source,
+          key,
+          failed: false,
+          count: 0
+        })
+      });
+    }
+
+    return route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        source,
+        key,
+        failed: true
+      })
+    });
+  });
+}
+
 test.beforeEach(async ({ page }) => {
   await mockSupabase(page);
+  await mockSubstats(page);
 });
 
 test("home hero and header stay structured on desktop", async ({ page }) => {
@@ -188,6 +238,35 @@ test("archives page stays readable without mobile overflow", async ({ page }) =>
 
   await expect(page.locator(".archives-hero")).toBeVisible();
   await expect(page.locator(".archive-grid")).toBeVisible();
+
+  const metrics = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    viewportWidth: window.innerWidth
+  }));
+
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+});
+
+test("author page presents a structured research profile without mobile overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.goto("/author");
+
+  await expect(page.locator(".author-hero")).toBeVisible();
+  await expect(page.locator(".author-avatar")).toBeVisible();
+  await expect(page.locator(".author-role")).toContainText("专注大模型系统与安全");
+  await expect(page.locator(".author-mission")).toContainText("把大模型从“能回答问题”变成“能完成任务的系统”");
+  await expect(page.locator(".author-direction-grid")).toBeVisible();
+  await expect(page.locator(".author-practice-list")).toBeVisible();
+  await expect(page.locator(".author-focus-grid")).toBeVisible();
+  await expect(page.locator(".author-contact-list")).toBeVisible();
+  await expect(page.locator(".author-social-panel")).toBeVisible();
+  await expect(page.locator(".author-social-card", { hasText: "GitHub" })).toContainText("0");
+  await expect(page.locator(".author-social-card", { hasText: "小红书" })).toContainText("652");
+  await expect(page.locator(".author-social-card", { hasText: "Telegram" })).toContainText("6");
+  await expect(page.locator(".author-social-card", { hasText: "知乎" })).toContainText("--");
+  await expect(page.locator(".author-links").getByRole("link", { name: "Email", exact: true })).toBeVisible();
+  await expect(page.locator(".author-links").getByRole("link", { name: "GitHub", exact: true })).toBeVisible();
+  await expect(page.locator(".author-contact-list").getByRole("link", { name: /scholar\.google\.com/ })).toBeVisible();
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,

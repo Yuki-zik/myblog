@@ -4,53 +4,314 @@ import { SITE_AUTHOR_PROFILE } from "../lib/site";
 import { resolvePostAuthor } from "../lib/posts/author";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft);
+const [posts, topics] = await Promise.all([
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("topics")
+]);
+
 const authorPosts = [...posts]
   .filter((post) => resolvePostAuthor(post).name === SITE_AUTHOR_PROFILE.name)
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size;
+const topicTitleBySlug = new Map(topics.map((topic) => [topic.slug, topic.data.title]));
+const socialNetworks = SITE_AUTHOR_PROFILE.socialNetworks ?? [];
+
+const authorQuickLinks = [
+  SITE_AUTHOR_PROFILE.email
+    ? {
+        label: "Email",
+        href: `mailto:${SITE_AUTHOR_PROFILE.email}`
+      }
+    : null,
+  SITE_AUTHOR_PROFILE.socials?.github
+    ? {
+        label: "GitHub",
+        href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
+        external: true
+      }
+    : null
+].filter(
+  (
+    link
+  ): link is {
+    label: string;
+    href: string;
+    external?: boolean;
+  } => link !== null
+);
+
+const authorContactEntries = [
+  SITE_AUTHOR_PROFILE.email
+    ? {
+        label: "Email",
+        value: SITE_AUTHOR_PROFILE.email,
+        href: `mailto:${SITE_AUTHOR_PROFILE.email}`
+      }
+    : null,
+  SITE_AUTHOR_PROFILE.socials?.github
+    ? {
+        label: "GitHub",
+        value: `github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
+        href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
+        external: true
+      }
+    : null,
+  {
+    label: "Google Scholar",
+    value: "scholar.google.com/citations?user=NTwrnCIAAAAJ&hl=zh-CN",
+    href: "https://scholar.google.com/citations?user=NTwrnCIAAAAJ&hl=zh-CN",
+    external: true
+  }
+].filter(
+  (
+    entry
+  ): entry is {
+    label: string;
+    value: string;
+    href: string;
+    external?: boolean;
+  } => entry !== null
+);
 ---
 
-<BaseLayout title={`${SITE_AUTHOR_PROFILE.name} | 作者`} authorMeta={SITE_AUTHOR_PROFILE.name}>
+<BaseLayout
+  title={`${SITE_AUTHOR_PROFILE.name} | 作者`}
+  description={SITE_AUTHOR_PROFILE.intro ?? SITE_AUTHOR_PROFILE.bioShort}
+  authorMeta={SITE_AUTHOR_PROFILE.name}
+>
   <section class="author-page">
-    <section class="author-hero" data-ux-reveal="scale-pop">
+    <section class="author-hero" data-ux-reveal="fade-up" aria-label="作者核心介绍">
       <div class="author-hero-copy">
-        <p class="author-kicker">Author</p>
+        <p class="author-kicker">About / Author</p>
         <h1>{SITE_AUTHOR_PROFILE.name}</h1>
-        {
-          SITE_AUTHOR_PROFILE.bioShort ? (
-            <p>{SITE_AUTHOR_PROFILE.bioShort}</p>
-          ) : (
-            <p class="subtle">作者简介尚未填写。你可以在 `src/lib/site.ts` 的 `SITE_AUTHOR_PROFILE` 中补充。</p>
-          )
-        }
+        {SITE_AUTHOR_PROFILE.tagline ? <p class="author-role">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
+        {SITE_AUTHOR_PROFILE.mission ? <p class="author-mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
+        {SITE_AUTHOR_PROFILE.intro ? <p class="author-summary">{SITE_AUTHOR_PROFILE.intro}</p> : null}
+      </div>
 
-        <ul class="author-stat-list">
-          <li>
-            <span class="author-stat-value">{authorPosts.length}</span>
-            <span class="author-stat-label">篇文章</span>
+      <aside class="author-hero-panel" aria-label="作者概览">
+        <div class="author-hero-panel-top">
+          {
+            SITE_AUTHOR_PROFILE.avatar ? (
+              <img
+                class="author-avatar"
+                src={SITE_AUTHOR_PROFILE.avatar}
+                alt={`${SITE_AUTHOR_PROFILE.name} 的头像`}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null
+          }
+
+          {
+            authorQuickLinks.length > 0 ? (
+              <div class="author-panel-links">
+                <p class="author-panel-label">快速链接</p>
+                <div class="author-links">
+                  {authorQuickLinks.map((link) => (
+                    <a href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer noopener" : undefined}>
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : null
+          }
+        </div>
+
+        <div class="author-panel-block">
+          <p class="author-panel-label">研究关键词</p>
+          <ul class="pill-list author-tag-list">
+            <li>MLLM</li>
+            <li>Model Safety</li>
+            <li>Harness Engineering</li>
+          </ul>
+        </div>
+
+        <div class="author-panel-block">
+          <p class="author-panel-label">博客内产出</p>
+          <ul class="author-stat-list">
+            <li>
+              <span class="author-stat-value">{authorPosts.length}</span>
+              <span class="author-stat-label">篇文章</span>
+            </li>
+            <li>
+              <span class="author-stat-value">{topicCount}</span>
+              <span class="author-stat-label">个主题</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="content-section author-section" data-ux-reveal="fade-up" aria-label="研究方向">
+      <div class="author-section-head">
+        <p class="author-kicker">Research</p>
+        <h2>研究 / 技术方向</h2>
+        <p class="subtle">围绕系统能力、行为控制与工程化闭环展开，而不是把模型能力停留在单点演示。</p>
+      </div>
+
+      <div class="author-direction-grid" data-ux-stagger>
+        {SITE_AUTHOR_PROFILE.researchTracks?.map((track) => (
+          <article class="author-section-panel author-direction-card" data-ux-reveal="fade-up">
+            <p class="author-section-label">{track.title}</p>
+            <h3>{track.title}</h3>
+            <p class="author-card-summary">{track.summary}</p>
+            <ul class="author-bullet-list">
+              {track.bullets.map((bullet) => <li>{bullet}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="content-section author-section" data-ux-reveal="fade-up" aria-label="项目与实践">
+      <div class="author-section-head">
+        <p class="author-kicker">Practice</p>
+        <h2>项目 / 实践</h2>
+        <p class="subtle">只保留能体现方法与落地能力的实践，不写空泛的能力陈述。</p>
+      </div>
+
+      <ol class="author-practice-list" data-ux-stagger>
+        {SITE_AUTHOR_PROFILE.practiceHighlights?.map((item, index) => (
+          <li class="author-practice-item" data-ux-reveal="fade-up">
+            <span class="author-practice-index">{String(index + 1).padStart(2, "0")}</span>
+            <div class="author-practice-copy">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </div>
           </li>
-          <li>
-            <span class="author-stat-value">{topicCount}</span>
-            <span class="author-stat-label">个主题</span>
-          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="content-section author-section" data-ux-reveal="fade-up" aria-label="关注与写作范围">
+      <div class="author-section-head">
+        <p class="author-kicker">Lens</p>
+        <h2>当前关注与博客定位</h2>
+        <p class="subtle">研究问题、工程方法和写作范围保持同一条主线，避免作者页与博客内容脱节。</p>
+      </div>
+
+      <div class="author-focus-grid" data-ux-stagger>
+        <article class="author-section-panel author-focus-card" data-ux-reveal="fade-up">
+          <p class="author-section-label">Current Focus</p>
+          <h3>当前关注</h3>
+          <ul class="author-bullet-list">
+            {SITE_AUTHOR_PROFILE.currentFocus?.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="author-section-panel author-focus-card" data-ux-reveal="fade-up">
+          <p class="author-section-label">Blog Scope</p>
+          <h3>本博客记录什么</h3>
+          <ul class="author-bullet-list">
+            {SITE_AUTHOR_PROFILE.blogScope?.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    {
+      socialNetworks.length ? (
+        <section class="content-section author-section" data-ux-reveal="fade-up" aria-label="社交媒体">
+          <div class="author-section-head">
+            <p class="author-kicker">Social Networks</p>
+            <h2>社交媒体</h2>
+            <p class="subtle">你也可以在这些平台继续找到我；支持的平台会实时刷新公开统计。</p>
+          </div>
+
+          <div class="author-section-panel author-social-panel">
+            <div class="author-social-grid" data-ux-stagger>
+              {socialNetworks.map((network) => (
+                <a
+                  class:list={["author-social-card", `author-social-card--${network.id}`]}
+                  href={network.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  data-ux-reveal="fade-up"
+                  data-substats-source={network.substats?.source}
+                  data-substats-key={network.substats?.key}
+                >
+                  <span class="author-social-symbol" aria-hidden="true">
+                    {network.id === "telegram"
+                      ? "TG"
+                      : network.id === "github"
+                        ? "GH"
+                        : network.id === "zhihu"
+                          ? "知"
+                          : "红"}
+                  </span>
+
+                  <span class="author-social-copy">
+                    <span class="author-social-name">{network.label}</span>
+                    {network.description ? <span class="author-social-description">{network.description}</span> : null}
+                  </span>
+
+                  <span class="author-social-stat">
+                    <strong data-social-count>
+                      {network.statValue !== undefined ? network.statValue : network.statValueFallback ?? "--"}
+                    </strong>
+                    {network.statLabel ? <span data-social-label>{network.statLabel}</span> : null}
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            <p class="author-social-note subtle">
+              Display real-time where available; powered by{" "}
+              <a href="https://github.com/spencerwooo/substats" target="_blank" rel="noreferrer noopener">
+                Substats
+              </a>
+              {" "}for GitHub / Telegram / Zhihu.
+            </p>
+          </div>
+        </section>
+      ) : null
+    }
+
+    <section class="content-section author-section" data-ux-reveal="fade-up" aria-label="联系方式">
+      <div class="author-section-head">
+        <p class="author-kicker">Contact</p>
+        <h2>联系方式 / 外链</h2>
+        <p class="subtle">保持最少但明确的公共入口；后续若补充学术或社交渠道，也会沿用同一结构。</p>
+      </div>
+
+      <div class="author-section-panel author-contact-panel">
+        <ul class="author-contact-list">
+          {authorContactEntries.map((entry) => (
+            <li class="author-contact-item">
+              <span class="author-contact-label">{entry.label}</span>
+              <a
+                class="author-contact-value"
+                href={entry.href}
+                target={entry.external ? "_blank" : undefined}
+                rel={entry.external ? "noreferrer noopener" : undefined}
+              >
+                {entry.value}
+              </a>
+            </li>
+          ))}
         </ul>
 
         {
-          SITE_AUTHOR_PROFILE.homepage || SITE_AUTHOR_PROFILE.socials ? (
-            <div class="author-links">
-              {SITE_AUTHOR_PROFILE.homepage ? <a href={SITE_AUTHOR_PROFILE.homepage}>主页</a> : null}
-              {SITE_AUTHOR_PROFILE.socials?.github ? <a href={SITE_AUTHOR_PROFILE.socials.github}>GitHub</a> : null}
-              {SITE_AUTHOR_PROFILE.socials?.x ? <a href={SITE_AUTHOR_PROFILE.socials.x}>X</a> : null}
+          SITE_AUTHOR_PROFILE.contactReservations?.length ? (
+            <div class="author-contact-note">
+              <p class="author-section-label">预留渠道</p>
+              <ul class="author-reserved-list">
+                {SITE_AUTHOR_PROFILE.contactReservations.map((label) => <li>{label}</li>)}
+              </ul>
+              <p class="subtle">若后续开放 Blog RSS，也会在这里补充。</p>
             </div>
           ) : null
         }
       </div>
     </section>
 
-    <section class="content-section author-posts" data-ux-reveal="fade-up">
+    <section class="content-section author-posts" data-ux-reveal="fade-up" aria-label="作者文章">
       <h2>作者文章</h2>
+      <p class="subtle">以下是当前博客中已发布、由 {SITE_AUTHOR_PROFILE.name} 署名的文章。</p>
+
       {
         authorPosts.length === 0 ? (
           <p class="subtle">暂时还没有可展示的文章。</p>
@@ -69,7 +330,11 @@ const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size
                 </p>
                 {post.data.summary ? <p class="author-post-summary">{post.data.summary}</p> : null}
                 <ul class="pill-list author-post-topics">
-                  {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+                  {post.data.topics.map((topicSlug) => (
+                    <li>
+                      <a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a>
+                    </li>
+                  ))}
                 </ul>
               </li>
             ))}
@@ -78,4 +343,46 @@ const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size
       }
     </section>
   </section>
+
+  <script is:inline>
+    (function () {
+      var cards = Array.from(document.querySelectorAll("[data-substats-source][data-substats-key]"));
+      if (!cards.length) return;
+
+      var formatter = new Intl.NumberFormat("en-US");
+
+      cards.forEach(function (card) {
+        var source = card.getAttribute("data-substats-source");
+        var key = card.getAttribute("data-substats-key");
+        var countEl = card.querySelector("[data-social-count]");
+        var labelEl = card.querySelector("[data-social-label]");
+
+        if (!source || !key || !countEl) return;
+
+        fetch("https://api.swo.moe/stats/" + encodeURIComponent(source) + "/" + encodeURIComponent(key), {
+          cache: "no-store"
+        })
+          .then(function (response) {
+            if (!response.ok) throw new Error(String(response.status));
+            return response.json();
+          })
+          .then(function (data) {
+            if (!data || data.failed || typeof data.count !== "number") {
+              throw new Error("invalid count");
+            }
+
+            countEl.textContent = formatter.format(data.count);
+
+            if (labelEl && source === "telegram") {
+              labelEl.textContent = data.count === 1 ? "subscriber" : "subscribers";
+            }
+
+            card.setAttribute("data-social-state", "ready");
+          })
+          .catch(function () {
+            card.setAttribute("data-social-state", "error");
+          });
+      });
+    })();
+  </script>
 </BaseLayout>
