@@ -195,6 +195,22 @@ test("post preview cards use the editorial cover-meta-title-summary-stats rhythm
   expect(metrics.coverAspectRatio).toBe("16 / 9");
 });
 
+test("post pages use the article summary for both dek and meta description", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/ant-ai-coding-review");
+
+  const expectedSummary = "记录一次蚂蚁 AI Coding 笔试中的准备过程、现场执行情况、踩坑点与时间线复盘。";
+  await expect(page.locator(".post-header-dek")).toHaveText(expectedSummary);
+
+  const metaDescription = await page.locator('meta[name="description"]').getAttribute("content");
+  const ogDescription = await page.locator('meta[property="og:description"]').getAttribute("content");
+  const twitterDescription = await page.locator('meta[name="twitter:description"]').getAttribute("content");
+
+  expect(metaDescription).toBe(expectedSummary);
+  expect(ogDescription).toBe(expectedSummary);
+  expect(twitterDescription).toBe(expectedSummary);
+});
+
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");
