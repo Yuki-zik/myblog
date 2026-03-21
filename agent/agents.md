@@ -5,6 +5,7 @@
 ## 1. 行为边界 (Rules of Engagement)
 
 ### 🟢 Always (必须执行)
+- **上下文节流**: 默认不要全量读取 `agent/` 文档。开始任务时仅读取 `agent/tasks.md` 的进行中/下一步，以及 `agent/timeline.md` 顶部最近 3-5 条；`agent/project.md` 仅在涉及架构或约束不清时按需读取。
 - **文档优先**: 任何功能更改必须优先构思架构，更新 `agent/project.md`（如有架构变动）和 `agent/tasks.md`。
 - **记录动机**: 所有的代码提交或重大调整必须在 `agent/timeline.md` 顶部记录，而且绝不省略“修改动机”一栏。
 - **先测后上**: 在修改现有功能或添加新模块前，必须先编写测试 (`vitest` 或 `playwright`)，再编写实现代码，保证 TDD 思维。
