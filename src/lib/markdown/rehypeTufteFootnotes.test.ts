@@ -160,4 +160,90 @@ describe("rehypeTufteFootnotes", () => {
     const frontmatter = ((file.data as any).astro?.frontmatter ?? {}) as Record<string, unknown>;
     expect(frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY]).toBeUndefined();
   });
+
+  it("anchors footnotes referenced from list items to synthetic list-item anchors", () => {
+    const footnoteRefLink: Element = {
+      type: "element",
+      tagName: "a",
+      properties: { href: "#user-content-fn-note-5", dataFootnoteRef: true },
+      children: [{ type: "text", value: "5" }]
+    };
+
+    const tree: Root = {
+      type: "root",
+      children: [
+        {
+          type: "element",
+          tagName: "p",
+          properties: { dataAnchor: "考试中::p3", id: "c-考试中::p3" },
+          children: [{ type: "text", value: "途中按顺序遇到这些坑：" }]
+        },
+        {
+          type: "element",
+          tagName: "ul",
+          properties: {},
+          children: [
+            {
+              type: "element",
+              tagName: "li",
+              properties: {},
+              children: [
+                { type: "text", value: "过于要求最小 MVP" },
+                {
+                  type: "element",
+                  tagName: "sup",
+                  properties: {},
+                  children: [footnoteRefLink]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          type: "element",
+          tagName: "section",
+          properties: { dataFootnotes: true, className: ["footnotes"] },
+          children: [
+            {
+              type: "element",
+              tagName: "ol",
+              properties: {},
+              children: [
+                {
+                  type: "element",
+                  tagName: "li",
+                  properties: { id: "user-content-fn-note-5" },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "p",
+                      properties: {},
+                      children: [{ type: "text", value: "这里很关键。" }]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const transformer = rehypeTufteFootnotes();
+    const file = {
+      path: "C:/repo/src/content/posts/example.md",
+      data: {}
+    };
+
+    transformer(tree, file);
+
+    const listItem = ((tree.children[1] as Element).children?.[0] ?? null) as Element;
+    const frontmatter = ((file.data as any).astro?.frontmatter ?? {}) as Record<string, unknown>;
+    const extracted = frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as Array<Record<string, string>>;
+
+    expect(listItem.properties?.id).toBe("c-考试中::p3::li1");
+    expect(listItem.properties?.["data-anchor"]).toBe("考试中::p3::li1");
+    expect(extracted[0]?.anchorId).toBe("考试中::p3::li1");
+    expect(extracted[0]?.referenceOrder).toBe(1);
+  });
 });

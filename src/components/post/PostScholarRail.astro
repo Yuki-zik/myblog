@@ -115,9 +115,11 @@ function getAnchoredEntryOrder(entry: AnchoredRailEntry): number {
 
 function parseAnchorLocation(anchorId?: string | null) {
   if (!anchorId) return null;
-  const [sectionSlugRaw, paragraphRaw] = anchorId.split("::");
+  const [sectionSlugRaw, paragraphRaw, itemRaw] = anchorId.split("::");
   const sectionSlug = sectionSlugRaw?.trim();
   const paragraphIndex = Number(paragraphRaw?.replace(/^p/i, ""));
+  const itemIndex =
+    typeof itemRaw === "string" && /^li\d+$/i.test(itemRaw) ? Number(itemRaw.replace(/^li/i, "")) : 0;
 
   if (!sectionSlug || !Number.isFinite(paragraphIndex)) return null;
 
@@ -125,7 +127,8 @@ function parseAnchorLocation(anchorId?: string | null) {
     sectionSlug,
     sectionOrder:
       sectionSlug === "root" ? -1 : (sectionOrderBySlug.get(sectionSlug) ?? Number.POSITIVE_INFINITY),
-    paragraphIndex
+    paragraphIndex,
+    itemIndex
   };
 }
 
@@ -153,6 +156,10 @@ const anchoredEntries: AnchoredRailEntry[] = [
   const aParagraph = aAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
   const bParagraph = bAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
   if (aParagraph !== bParagraph) return aParagraph - bParagraph;
+
+  const aItem = aAnchor?.itemIndex ?? 0;
+  const bItem = bAnchor?.itemIndex ?? 0;
+  if (aItem !== bItem) return aItem - bItem;
 
   const aOrder = getAnchoredEntryOrder(a);
   const bOrder = getAnchoredEntryOrder(b);
@@ -477,6 +484,15 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
       return el instanceof HTMLElement ? el : null;
     }
 
+    function getFootnoteAnchorElement(footnoteId) {
+      if (!footnoteId) return null;
+      const refs = getBodyFootnoteRefsById(footnoteId);
+      const firstRef = refs.find((item) => item instanceof HTMLElement);
+      if (!(firstRef instanceof HTMLElement)) return null;
+      const container = firstRef.closest("li, p, blockquote, details, figcaption, td, th");
+      return container instanceof HTMLElement ? container : firstRef;
+    }
+
     function ensureInlineRef(anchorParagraph, noteKey, bubbleId, displayNumber) {
       if (!(anchorParagraph instanceof HTMLElement) || !noteKey || !bubbleId || !displayNumber) return;
 
@@ -624,9 +640,11 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
         const gap = 16;
         const topPad = 4;
 
+        const positionedBubbles = [];
         for (const bubble of bubbles) {
           if (!(bubble instanceof HTMLElement)) continue;
           const anchorId = (bubble.dataset.anchorId || "").trim();
+          const noteKey = (bubble.dataset.noteKey || "").trim();
           let targetTop = nextTop;
 
           if (anchorId) {
@@ -634,7 +652,20 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
             if (paragraph) {
               targetTop = paragraph.getBoundingClientRect().top + window.scrollY - layerTop - topPad;
             }
+          } else if (noteKey.startsWith("footnote:")) {
+            const footnoteAnchor = getFootnoteAnchorElement(noteKey.slice("footnote:".length));
+            if (footnoteAnchor) {
+              targetTop = footnoteAnchor.getBoundingClientRect().top + window.scrollY - layerTop - topPad;
+            }
           }
+
+          positionedBubbles.push({ bubble, targetTop });
+        }
+
+        positionedBubbles.sort((a, b) => a.targetTop - b.targetTop);
+
+        for (const { bubble, targetTop } of positionedBubbles) {
+          if (!(bubble instanceof HTMLElement)) continue;
 
           const bubbleHeight = bubble.offsetHeight || 0;
           const placedTop = Math.max(targetTop, nextTop);

@@ -221,6 +221,29 @@ test("post footnotes keep their original reference numbers after rail reordering
   await expect(page.locator('[data-footnote-rail-item="note-6"] .post-scholar-footnote-number-button')).toHaveText("6");
 });
 
+test("list-item footnotes float near their list section instead of sinking to the rail tail", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/ant-ai-coding-review");
+
+  const positions = await page.evaluate(() => {
+    const topOf = (selector: string) => {
+      const element = document.querySelector(selector) as HTMLElement | null;
+      return element?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
+    };
+
+    return {
+      note5Top: topOf('[data-footnote-rail-item="note-5"]'),
+      note6Top: topOf('[data-footnote-rail-item="note-6"]'),
+      note7Top: topOf('[data-footnote-rail-item="note-7"]'),
+      note8Top: topOf('[data-footnote-rail-item="note-8"]')
+    };
+  });
+
+  expect(positions.note5Top).toBeLessThan(positions.note7Top);
+  expect(positions.note6Top).toBeLessThan(positions.note8Top);
+  expect(positions.note5Top).toBeLessThan(positions.note6Top);
+});
+
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");

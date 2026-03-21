@@ -171,6 +171,63 @@ function getParagraphAnchorFromAncestors(ancestors: unknown[]): string | undefin
   return undefined;
 }
 
+function getListItemAncestor(ancestors: unknown[]): Element | undefined {
+  for (let index = ancestors.length - 1; index >= 0; index -= 1) {
+    const ancestor = ancestors[index];
+    if (!isElementNode(ancestor) || String(ancestor.tagName) !== "li") {
+      continue;
+    }
+
+    return ancestor;
+  }
+
+  return undefined;
+}
+
+function getElementAnchorId(element: Element): string | undefined {
+  const value = getProperty(element.properties as Record<string, unknown> | undefined, "data-anchor");
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function getListItemIndex(element: Element, ancestors: unknown[]): number | undefined {
+  const parent = ancestors[ancestors.length - 1];
+  const siblings =
+    parent && typeof parent === "object" && Array.isArray((parent as HastNode).children)
+      ? (parent as HastNode).children
+      : undefined;
+  if (!Array.isArray(siblings)) {
+    return undefined;
+  }
+
+  let itemIndex = 0;
+  for (const sibling of siblings) {
+    if (!isElementNode(sibling) || String(sibling.tagName) !== "li") {
+      continue;
+    }
+
+    itemIndex += 1;
+    if (sibling === element) {
+      return itemIndex;
+    }
+  }
+
+  return undefined;
+}
+
+function ensureListItemAnchor(element: Element, ancestors: unknown[], baseAnchorId: string): string {
+  const existing = getElementAnchorId(element);
+  if (existing) {
+    return existing;
+  }
+
+  const listItemIndex = getListItemIndex(element, ancestors) ?? 1;
+  const anchorId = `${baseAnchorId}::li${listItemIndex}`;
+  element.properties ??= {};
+  (element.properties as Record<string, unknown>).id = `c-${anchorId}`;
+  (element.properties as Record<string, unknown>)["data-anchor"] = anchorId;
+  return anchorId;
+}
+
 function isPostContentFile(file: VFileLike | undefined): boolean {
   const rawPath = String(file?.path ?? "");
   if (!rawPath) {
@@ -387,9 +444,15 @@ export function applyTufteFootnoteClasses(tree: Root): void {
 function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; referenceOrder: number }> {
   const meta = new Map<string, { anchorId?: string; referenceOrder: number }>();
   let order = 0;
+  let lastAnchorId: string | undefined;
 
   visitParents(tree, "element", (node, ancestors) => {
     const element = node as Element;
+    const ownAnchorId = getElementAnchorId(element);
+    if (ownAnchorId) {
+      lastAnchorId = ownAnchorId;
+    }
+
     if (!isFootnoteRefLink(element) || hasFootnoteContainerAncestor(ancestors)) {
       return;
     }
@@ -405,8 +468,14 @@ function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; re
     }
 
     order += 1;
+    const paragraphAnchorId = getParagraphAnchorFromAncestors(ancestors);
+    const listItemAncestor = paragraphAnchorId ? undefined : getListItemAncestor(ancestors);
+    const anchorId =
+      paragraphAnchorId ||
+      (listItemAncestor && lastAnchorId ? ensureListItemAnchor(listItemAncestor, ancestors, lastAnchorId) : undefined);
+
     meta.set(footnoteId, {
-      anchorId: getParagraphAnchorFromAncestors(ancestors),
+      anchorId,
       referenceOrder: order
     });
   });
