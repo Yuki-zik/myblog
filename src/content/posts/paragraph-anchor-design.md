@@ -14,7 +14,7 @@ annotations:
     title: 设计前提
     body: 稳定定位协议先于交互样式，这是后续扩展到选中文本评论的关键前提。
   - id: optimistic-tradeoff
-    anchorId: 交互细节::p3
+    anchorId: 状态与回滚::p1
     title: 乐观更新权衡
     body: 乐观更新提升主观速度感，但需要完整的回滚路径配套，否则数据不一致会造成更大的用户困惑。
 references:

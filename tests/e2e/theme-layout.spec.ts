@@ -263,6 +263,27 @@ test("paragraph-anchor article keeps unanchored references below anchored rail n
   expect(positions.firstReferenceTop).toBeGreaterThan(positions.firstFootnoteTop);
 });
 
+test("paragraph-anchor article keeps optimistic annotation with the rollback paragraph", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const positions = await page.evaluate(() => {
+    const topOfNote = (selector: string) => {
+      const node = document.querySelector(selector) as HTMLElement | null;
+      return node?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
+    };
+
+    return {
+      warmupTop: topOfNote('[data-footnote-rail-item="warmup"]'),
+      optimisticFootnoteTop: topOfNote('[data-footnote-rail-item="optimistic"]'),
+      optimisticAnnotationTop: topOfNote('[data-note-key="annotation:optimistic-tradeoff"]')
+    };
+  });
+
+  expect(positions.warmupTop).toBeLessThan(positions.optimisticFootnoteTop);
+  expect(positions.optimisticFootnoteTop).toBeLessThan(positions.optimisticAnnotationTop);
+});
+
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");
