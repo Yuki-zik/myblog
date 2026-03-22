@@ -2,6 +2,10 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 统一文章页右侧文字型边注为类型化脚注链路：正文引用与信息注释统一使用标准 GFM 脚注，图表说明保留 figures 但按同一 sidenote 视觉渲染，并移除 posts schema 中的 annotations / references | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 修正 legacy reference 的 rail 显示标签语义：统一显示为 `文N`，不再沿用脚注式 `[n]` 标签 | ✅ | AI Assistant | 2026-03-22 |
+| 高 | 修复 scholar rail 混合脚注/注释/图表时的编号空间冲突：避免重复数字、跳号错觉与由此产生的排序误读 | ✅ | AI Assistant | 2026-03-22 |
+| 高 | 将 posts 的 references 从 frontmatter 主入口迁移为标准 GFM 脚注入口，并把 scholar rail / figure sourceRefIds 统一接到 markdown footnotes，保留 legacy references 作为兼容 fallback | ✅ | AI Assistant | 2026-03-22 |
 | 低 | 进一步提升正文脚注数字的可见性：在上一轮基础上继续放大并加粗正文中的脚注号与行内 marginalia 入口 | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 增强正文与侧边注释数字标号的可见性：略微加粗加大，并强化 hover / linked-hover / focus 的高亮反馈 | ✅ | AI Assistant | 2026-03-22 |
 | 高 | 修复《段落锚点短评的最小实现》中 optimistic-tradeoff 注释的错误锚点，使其回到“状态与回滚”段落附近 | ✅ | AI Assistant | 2026-03-22 |

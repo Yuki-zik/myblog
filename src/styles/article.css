@@ -1154,6 +1154,18 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   animation: tufte-sidenote-flash 1.3s var(--motion-ease-emphasized);
 }
 
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="reference"] {
+  border-left-color: color-mix(in srgb, var(--reading-accent) 24%, transparent 76%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="note"] {
+  border-left-color: color-mix(in srgb, var(--article-ink) 16%, transparent 84%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="figure"] {
+  border-left-color: color-mix(in srgb, var(--reading-rule-strong) 38%, transparent 62%);
+}
+
 /* ── 27. Sidenote number ─────────────────────────────────────────── */
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-number {
   font-family: Georgia, 'Times New Roman', serif;
@@ -1164,6 +1176,14 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   color: color-mix(in srgb, var(--reading-accent) 78%, var(--reading-ink) 22%);
   font-style: normal;
   font-weight: 650;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="note"] .post-scholar-footnote-number {
+  color: color-mix(in srgb, var(--reading-ink-subtle) 54%, var(--reading-ink) 46%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="figure"] .post-scholar-footnote-number {
+  color: color-mix(in srgb, var(--reading-rule-strong) 56%, var(--reading-ink) 44%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-number-button {
@@ -1219,6 +1239,52 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   margin-top: 0.22rem;
 }
 
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-footnote-content {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-footnote-meta {
+  display: flex;
+  align-items: center;
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item-type-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.2rem;
+  padding: 0.02rem 0.42rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--article-ink) 10%, transparent 90%);
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--reading-ink-subtle) 72%, var(--reading-ink) 28%);
+  background: color-mix(in srgb, var(--surface-subtle) 88%, transparent 12%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="reference"] .post-scholar-item-type-tag {
+  color: color-mix(in srgb, var(--reading-accent) 82%, var(--reading-ink) 18%);
+  border-color: color-mix(in srgb, var(--reading-accent) 18%, transparent 82%);
+  background: color-mix(in srgb, var(--reading-accent) 8%, var(--surface-subtle) 92%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="note"] .post-scholar-item-type-tag {
+  color: color-mix(in srgb, var(--reading-ink-subtle) 78%, var(--reading-ink) 22%);
+  border-color: color-mix(in srgb, var(--article-ink) 10%, transparent 90%);
+  background: color-mix(in srgb, var(--surface-subtle) 90%, transparent 10%);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="figure"] .post-scholar-item-type-tag {
+  color: color-mix(in srgb, var(--reading-rule-strong) 78%, var(--reading-ink) 22%);
+  border-color: color-mix(in srgb, var(--reading-rule-strong) 18%, transparent 82%);
+  background: color-mix(in srgb, var(--reading-rule-strong) 8%, var(--surface-subtle) 92%);
+}
+
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-item-content p {
   font-family: var(--reading-serif);
   max-width: 18.5rem;
@@ -1242,7 +1308,7 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 0.48rem;
-  align-items: baseline;
+  align-items: start;
 }
 
 /* Figure previews in sidenotes */

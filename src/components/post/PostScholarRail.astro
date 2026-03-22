@@ -3,134 +3,29 @@ import { Image } from "astro:assets";
 import PostToc from "./PostToc.astro";
 import type { PostTocItem } from "../../lib/posts/toc";
 import {
-  TUFTE_RAIL_FOOTNOTE_ID_PREFIX,
   type TufteRailFootnote
 } from "../../lib/markdown/rehypeTufteFootnotes";
-
-interface PostAnnotation {
-  id: string;
-  anchorId: string;
-  title?: string;
-  body: string;
-}
-
-interface PostReference {
-  id: string;
-  label?: string;
-  citation: string;
-  url?: string;
-  note?: string;
-}
-
-interface PostFigureImage {
-  src: any;
-  alt: string;
-}
-
-interface PostFigure {
-  id: string;
-  anchorId?: string;
-  title: string;
-  kind: "image" | "table";
-  caption?: string;
-  summary?: string;
-  sourceRefIds?: string[];
-  image?: PostFigureImage;
-}
+import {
+  buildPostScholarRailModel,
+  resolveFigureSourceLink,
+  type InfoRailEntry,
+  type PostFigure
+} from "../../lib/posts/postScholarRail";
 
 interface Props {
   tocItems: PostTocItem[];
-  annotations?: PostAnnotation[];
-  references?: PostReference[];
   figures?: PostFigure[];
   markdownFootnotes?: TufteRailFootnote[];
   postSlug: string;
   showToc?: boolean;
 }
 
-type TocRailEntry = { kind: "toc" };
-type AnnotationRailEntry = {
-  kind: "annotation";
-  annotation: PostAnnotation;
-  number?: string;
-  noteKey?: string;
-  bubbleId?: string;
-};
-type ReferenceRailEntry = {
-  kind: "reference";
-  reference: PostReference;
-  number?: string;
-  noteKey?: string;
-  bubbleId?: string;
-};
-type FigureRailEntry = {
-  kind: "figure";
-  figure: PostFigure;
-  number?: string;
-  noteKey?: string;
-  bubbleId?: string;
-};
-type FootnoteRailEntry = {
-  kind: "footnote";
-  footnote: TufteRailFootnote;
-  number?: string;
-  noteKey?: string;
-  bubbleId?: string;
-};
-type InfoRailEntry = AnnotationRailEntry | ReferenceRailEntry | FigureRailEntry | FootnoteRailEntry;
-type RailEntry = TocRailEntry | InfoRailEntry;
-type AnchoredRailEntry = AnnotationRailEntry | FigureRailEntry | FootnoteRailEntry;
-
 const {
   tocItems,
-  annotations = [],
-  references = [],
   figures = [],
   markdownFootnotes = [],
-  postSlug,
   showToc = true
 } = Astro.props;
-
-const referenceLabelById = new Map<string, string>(
-  references.map((reference, index) => [reference.id, reference.label?.trim() || `[${index + 1}]`])
-);
-const sectionOrderBySlug = new Map<string, number>(tocItems.map((item, index) => [item.slug, index]));
-
-function formatReferenceLabel(refId: string): string {
-  return referenceLabelById.get(refId) ?? refId;
-}
-
-function getAnchorId(entry: AnchoredRailEntry): string | undefined {
-  if (entry.kind === "annotation") return entry.annotation.anchorId;
-  if (entry.kind === "figure") return entry.figure.anchorId;
-  return entry.footnote.anchorId;
-}
-
-function getAnchoredEntryOrder(entry: AnchoredRailEntry): number {
-  if (entry.kind === "footnote") {
-    return entry.footnote.referenceOrder ?? Number.POSITIVE_INFINITY;
-  }
-  return Number.POSITIVE_INFINITY;
-}
-
-function parseAnchorLocation(anchorId?: string | null) {
-  if (!anchorId) return null;
-  const [sectionSlugRaw, paragraphRaw, itemRaw] = anchorId.split("::");
-  const sectionSlug = sectionSlugRaw?.trim();
-  const paragraphIndex = Number(paragraphRaw?.replace(/^p/i, ""));
-  const itemIndex =
-    typeof itemRaw === "string" && /^li\d+$/i.test(itemRaw) ? Number(itemRaw.replace(/^li/i, "")) : 0;
-
-  if (!sectionSlug || !Number.isFinite(paragraphIndex)) return null;
-
-  return {
-    sectionSlug,
-    sectionOrder:
-      sectionSlug === "root" ? -1 : (sectionOrderBySlug.get(sectionSlug) ?? Number.POSITIVE_INFINITY),
-    paragraphIndex,
-    itemIndex
-  };
-}
 
 function buildFigureInlineText(figure: PostFigure): string {
   const parts = [`${figure.kind === "image" ? "图" : "表"}：${figure.title}`];
@@ -139,94 +34,19 @@ function buildFigureInlineText(figure: PostFigure): string {
   return parts.join("。");
 }
 
-const anchoredEntries: AnchoredRailEntry[] = [
-  ...annotations.map((annotation) => ({ kind: "annotation" as const, annotation })),
-  ...figures.map((figure) => ({ kind: "figure" as const, figure })),
-  ...markdownFootnotes
-    .filter((footnote) => Boolean(footnote.anchorId))
-    .map((footnote) => ({ kind: "footnote" as const, footnote }))
-].sort((a, b) => {
-  const aAnchor = parseAnchorLocation(getAnchorId(a));
-  const bAnchor = parseAnchorLocation(getAnchorId(b));
-
-  const aSection = aAnchor?.sectionOrder ?? Number.POSITIVE_INFINITY;
-  const bSection = bAnchor?.sectionOrder ?? Number.POSITIVE_INFINITY;
-  if (aSection !== bSection) return aSection - bSection;
-
-  const aParagraph = aAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
-  const bParagraph = bAnchor?.paragraphIndex ?? Number.POSITIVE_INFINITY;
-  if (aParagraph !== bParagraph) return aParagraph - bParagraph;
-
-  const aItem = aAnchor?.itemIndex ?? 0;
-  const bItem = bAnchor?.itemIndex ?? 0;
-  if (aItem !== bItem) return aItem - bItem;
-
-  const aOrder = getAnchoredEntryOrder(a);
-  const bOrder = getAnchoredEntryOrder(b);
-  if (aOrder !== bOrder) return aOrder - bOrder;
-
-  return 0;
-});
-
-const unanchoredFootnotes: FootnoteRailEntry[] = markdownFootnotes
-  .filter((footnote) => !footnote.anchorId)
-  .map((footnote) => ({ kind: "footnote" as const, footnote }));
-
-const referenceEntries: ReferenceRailEntry[] = references.map((reference) => ({
-  kind: "reference" as const,
-  reference
-}));
-
-const railEntriesBase: RailEntry[] = [
-  ...(showToc && tocItems.length > 0 ? [{ kind: "toc" as const }] : []),
-  ...anchoredEntries,
-  ...unanchoredFootnotes,
-  ...referenceEntries
-];
-
-let infoNumber = 0;
-const railEntries: RailEntry[] = railEntriesBase.map((entry) => {
-  if (entry.kind === "toc") {
-    return entry;
-  }
-
-  infoNumber += 1;
-  if (entry.kind === "annotation") {
-    return {
-      ...entry,
-      number: String(infoNumber),
-      noteKey: `annotation:${entry.annotation.id}`,
-      bubbleId: `marginalia-annotation-${entry.annotation.id}`
-    };
-  }
+function getEntryAriaLabel(entry: InfoRailEntry): string {
   if (entry.kind === "figure") {
-    return {
-      ...entry,
-      number: String(infoNumber),
-      noteKey: `figure:${entry.figure.id}`,
-      bubbleId: `marginalia-figure-${entry.figure.id}`
-    };
+    return `定位到正文图表说明 ${entry.number ?? ""}`;
   }
-  if (entry.kind === "reference") {
-    return {
-      ...entry,
-      number: String(infoNumber),
-      noteKey: `reference:${entry.reference.id}`,
-      bubbleId: `ref-${entry.reference.id}`
-    };
-  }
+  return `定位到正文${entry.typeLabel} ${entry.number ?? entry.footnote.label}`;
+}
 
-  const footnoteNumber = entry.footnote.referenceOrder ?? Number.parseInt(entry.footnote.label, 10);
-  return {
-    ...entry,
-    number: Number.isFinite(footnoteNumber) ? String(footnoteNumber) : entry.footnote.label,
-    noteKey: `footnote:${entry.footnote.id}`,
-    bubbleId: `${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}${entry.footnote.id}`
-  };
+const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
+  tocItems,
+  figures,
+  markdownFootnotes,
+  showToc
 });
-
-const infoEntries = railEntries.filter((entry): entry is InfoRailEntry => entry.kind !== "toc");
-const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind === "toc");
 ---
 
 <div class="post-scholar-rail" data-post-scholar-rail>
@@ -249,42 +69,13 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
 
       {
         infoEntries.map((entry) => {
-          if (entry.kind === "annotation") {
-            return (
-              <article
-                class="post-scholar-item post-scholar-item--annotation post-scholar-item--simple-note post-scholar-item--bubble"
-                data-kind="annotation"
-                data-marginalia-bubble
-                data-anchor-id={entry.annotation.anchorId}
-                data-note-key={entry.noteKey}
-                id={entry.bubbleId}
-              >
-                <div class="post-scholar-item-content">
-                  <div class="post-scholar-footnote-row">
-                    <button
-                      type="button"
-                      class="post-scholar-footnote-number post-scholar-footnote-number-button"
-                      data-linked-note-key-source={entry.noteKey}
-                      data-linked-note-anchor-id={entry.annotation.anchorId}
-                      aria-label={`定位到正文注释 ${entry.number ?? ""}`}
-                    >
-                      {entry.number ?? ""}
-                    </button>
-                    <div class="post-scholar-footnote-body">
-                      <p>{entry.annotation.body}</p>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            );
-          }
-
           if (entry.kind === "figure") {
             const { figure } = entry;
             return (
               <article
                 class={`post-scholar-item post-scholar-item--figure post-scholar-item--figure-${figure.kind} post-scholar-item--simple-note post-scholar-item--bubble`}
                 data-kind={figure.kind}
+                data-note-type={entry.noteType}
                 data-marginalia-bubble
                 data-anchor-id={figure.anchorId}
                 data-note-key={entry.noteKey}
@@ -297,23 +88,30 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
                       class="post-scholar-footnote-number post-scholar-footnote-number-button"
                       data-linked-note-key-source={entry.noteKey}
                       data-linked-note-anchor-id={figure.anchorId}
-                      aria-label={`定位到正文图表注释 ${entry.number ?? ""}`}
+                      aria-label={getEntryAriaLabel(entry)}
                     >
                       {entry.number ?? ""}
                     </button>
-                    <div class="post-scholar-footnote-body">
+                    <div class="post-scholar-footnote-content">
+                      <div class="post-scholar-footnote-meta">
+                        <span class="post-scholar-item-type-tag">{entry.typeLabel}</span>
+                      </div>
+                      <div class="post-scholar-footnote-body">
                       <p>
                         {buildFigureInlineText(figure)}
                         {figure.sourceRefIds && figure.sourceRefIds.length > 0 ? (
                           <>
                             {" "}
                             来源{" "}
-                            {figure.sourceRefIds.map((refId, index) => (
-                              <>
-                                {index > 0 ? "、" : ""}
-                                <a href={`#ref-${refId}`}>{formatReferenceLabel(refId)}</a>
-                              </>
-                            ))}
+                            {figure.sourceRefIds.map((refId, index) => {
+                              const sourceLink = resolveFigureSourceLink(figureSourceLinks, refId);
+                              return (
+                                <>
+                                  {index > 0 ? "、" : ""}
+                                  <a href={sourceLink.href}>{sourceLink.label}</a>
+                                </>
+                              );
+                            })}
                           </>
                         ) : null}
                       </p>
@@ -323,46 +121,7 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
                           <Image src={figure.image.src} alt={figure.image.alt} loading="lazy" decoding="async" />
                         </figure>
                       ) : null}
-                    </div>
-                  </div>
-                </div>
-              </article>
-            );
-          }
-
-          if (entry.kind === "reference") {
-            const { reference } = entry;
-            return (
-              <article
-                class="post-scholar-item post-scholar-item--reference post-scholar-item--simple-note post-scholar-item--bubble"
-                data-kind="reference"
-                data-marginalia-bubble
-                data-note-key={entry.noteKey}
-                id={entry.bubbleId}
-              >
-                <div class="post-scholar-item-content">
-                  <div class="post-scholar-footnote-row">
-                    <button
-                      type="button"
-                      class="post-scholar-footnote-number post-scholar-footnote-number-button"
-                      data-linked-note-key-source={entry.noteKey}
-                      aria-label={`定位到右侧参考文献 ${entry.number ?? ""}`}
-                    >
-                      {entry.number ?? ""}
-                    </button>
-                    <div class="post-scholar-footnote-body">
-                      <p>
-                        {reference.citation}
-                        {reference.note ? ` ${reference.note}` : ""}
-                        {reference.url ? (
-                          <>
-                            {" "}
-                            <a href={reference.url} target="_blank" rel="noopener noreferrer nofollow">
-                              {reference.url}
-                            </a>
-                          </>
-                        ) : null}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -374,6 +133,7 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
             <article
               class="post-scholar-item post-scholar-item--footnote post-scholar-item--simple-note post-scholar-item--bubble"
               data-kind="footnote"
+              data-note-type={entry.noteType}
               data-marginalia-bubble
               data-anchor-id={entry.footnote.anchorId}
               data-note-key={entry.noteKey}
@@ -389,11 +149,16 @@ const tocEntry = railEntries.find((entry): entry is TocRailEntry => entry.kind =
                     data-footnote-display-number={entry.number ?? entry.footnote.label}
                     data-linked-note-key-source={entry.noteKey}
                     data-linked-note-anchor-id={entry.footnote.anchorId}
-                    aria-label={`定位到正文脚注 ${entry.number ?? entry.footnote.label}`}
+                    aria-label={getEntryAriaLabel(entry)}
                   >
                     {entry.number ?? entry.footnote.label}
                   </button>
-                  <div class="post-scholar-footnote-body" set:html={entry.footnote.html} />
+                  <div class="post-scholar-footnote-content">
+                    <div class="post-scholar-footnote-meta">
+                      <span class="post-scholar-item-type-tag">{entry.typeLabel}</span>
+                    </div>
+                    <div class="post-scholar-footnote-body" set:html={entry.footnote.html} />
+                  </div>
                 </div>
               </div>
             </article>

@@ -51,6 +51,21 @@ PUBLIC_WALINE_SERVER_URL=https://comments.example.com
 - 它必须指向已部署好的 Waline server 地址，而不是 Supabase 地址
 - 若不填写，文章页仍可正常渲染，只是评论区显示“当前未启用评论服务”的提示
 
+## 文章编写：参考文献与脚注
+
+新文章里，解释性注释和参考文献统一使用标准 GFM 脚注；正文引用位置决定右侧 rail 的出现位置。约定如下：
+
+```md
+这是解释性注释[^note-example]，相关资料可参考[^ref-example]
+
+[^note-example]: 解释性说明文字。
+[^ref-example]: Supabase Documentation - Row Level Security (RLS) for Postgres. <https://supabase.com/docs/guides/database/postgres/row-level-security>
+```
+
+- 右侧 rail 会按脚注第一次在正文中被引用的位置浮动，而不是把参考文献统一追加到末尾。
+- 解释性注释使用 `note-*` 前缀，参考文献使用 `ref-*` 前缀；渲染层会据此前缀区分 `注释` 与 `引用`。
+- `figures` frontmatter 继续保留，但 `figures[].sourceRefIds` 只允许指向 `ref-*` bibliography footnote。
+
 ## 评论部署方式
 
 本仓库已经提供独立部署单元：[`waline-server/`](./waline-server/README.md)

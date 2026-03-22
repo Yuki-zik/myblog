@@ -134,6 +134,7 @@ describe("rehypeTufteFootnotes", () => {
     expect(extracted).toHaveLength(1);
     expect(extracted[0]?.id).toBe("1");
     expect(extracted[0]?.label).toBe("1");
+    expect(extracted[0]?.type).toBe("note");
     expect(extracted[0]?.anchorId).toBe("root::p1");
     expect(extracted[0]?.referenceOrder).toBe(1);
     expect(extracted[0]?.html).toContain("Footnote");
@@ -143,6 +144,113 @@ describe("rehypeTufteFootnotes", () => {
     expect(footnoteRefLink.properties?.href).toBe(`#${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}1`);
     expect(footnoteRefLink.properties?.["data-footnote-rail-target"]).toBe("1");
     expect(tree.children.some((child) => (child as Element).tagName === "section")).toBe(false);
+  });
+
+  it("classifies prefixed footnote ids into reference and note types", () => {
+    const refLink: Element = {
+      type: "element",
+      tagName: "a",
+      properties: { href: "#user-content-fn-ref-paper", dataFootnoteRef: true },
+      children: [{ type: "text", value: "1" }]
+    };
+    const noteLink: Element = {
+      type: "element",
+      tagName: "a",
+      properties: { href: "#user-content-fn-note-side", dataFootnoteRef: true },
+      children: [{ type: "text", value: "2" }]
+    };
+
+    const tree: Root = {
+      type: "root",
+      children: [
+        {
+          type: "element",
+          tagName: "p",
+          properties: { dataAnchor: "root::p1", id: "c-root::p1" },
+          children: [
+            { type: "text", value: "Ref" },
+            { type: "element", tagName: "sup", properties: {}, children: [refLink] }
+          ]
+        },
+        {
+          type: "element",
+          tagName: "p",
+          properties: { dataAnchor: "root::p2", id: "c-root::p2" },
+          children: [
+            { type: "text", value: "Note" },
+            { type: "element", tagName: "sup", properties: {}, children: [noteLink] }
+          ]
+        },
+        {
+          type: "element",
+          tagName: "section",
+          properties: { dataFootnotes: true, className: ["footnotes"] },
+          children: [
+            {
+              type: "element",
+              tagName: "ol",
+              properties: {},
+              children: [
+                {
+                  type: "element",
+                  tagName: "li",
+                  properties: { id: "user-content-fn-ref-paper" },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "p",
+                      properties: {},
+                      children: [{ type: "text", value: "Reference footnote." }]
+                    }
+                  ]
+                },
+                {
+                  type: "element",
+                  tagName: "li",
+                  properties: { id: "user-content-fn-note-side" },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "p",
+                      properties: {},
+                      children: [{ type: "text", value: "Explanatory note." }]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const transformer = rehypeTufteFootnotes();
+    const file = {
+      path: "C:/repo/src/content/posts/example.md",
+      data: {}
+    };
+
+    transformer(tree, file);
+
+    const frontmatter = ((file.data as any).astro?.frontmatter ?? {}) as Record<string, unknown>;
+    const extracted = frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as Array<Record<string, string>>;
+
+    expect(extracted).toEqual([
+      expect.objectContaining({
+        id: "ref-paper",
+        label: "1",
+        type: "reference",
+        anchorId: "root::p1",
+        referenceOrder: 1
+      }),
+      expect.objectContaining({
+        id: "note-side",
+        label: "2",
+        type: "note",
+        anchorId: "root::p2",
+        referenceOrder: 2
+      })
+    ]);
   });
 
   it("keeps non-post files footnotes in place while still applying classes", () => {

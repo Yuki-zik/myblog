@@ -16,6 +16,7 @@ type VFileLike = {
 export interface TufteRailFootnote {
   id: string;
   label: string;
+  type: "reference" | "note";
   html: string;
   anchorId?: string;
   referenceOrder?: number;
@@ -153,6 +154,10 @@ function normalizeFootnoteId(rawValue: string): string {
     .replace(/^user-content-fn-/, "")
     .replace(/^fnref-/, "")
     .replace(/^fn-/, "");
+}
+
+function getFootnoteType(id: string): TufteRailFootnote["type"] {
+  return id.startsWith("ref-") ? "reference" : "note";
 }
 
 function getParagraphAnchorFromAncestors(ancestors: unknown[]): string | undefined {
@@ -379,6 +384,7 @@ function extractFootnotesForRail(
     return {
       id: normalizedId || String(index + 1),
       label: String(index + 1),
+      type: getFootnoteType(normalizedId),
       html,
       anchorId: refMetaByFootnoteId?.get(normalizedId)?.anchorId,
       referenceOrder: refMetaByFootnoteId?.get(normalizedId)?.referenceOrder

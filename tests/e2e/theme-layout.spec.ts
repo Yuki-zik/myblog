@@ -244,26 +244,80 @@ test("list-item footnotes float near their list section instead of sinking to th
   expect(positions.note5Top).toBeLessThan(positions.note6Top);
 });
 
-test("paragraph-anchor article keeps unanchored references below anchored rail notes", async ({ page }) => {
+test("paragraph-anchor article floats typed sidenotes by first body reference and keeps type distinctions visible", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
   const positions = await page.evaluate(() => {
-    const firstFootnote = document.querySelector('[data-footnote-rail-item]') as HTMLElement | null;
-    const firstReference = document.querySelector('.post-scholar-item--reference') as HTMLElement | null;
+    const topOf = (selector: string) => {
+      const node = document.querySelector(selector) as HTMLElement | null;
+      return node?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
+    };
+    const labels = Array.from(document.querySelectorAll(".post-scholar-footnote-number-button")).map((node) =>
+      (node.textContent || "").trim()
+    );
+    const typeTags = Array.from(document.querySelectorAll(".post-scholar-item-type-tag")).map((node) =>
+      (node.textContent || "").trim()
+    );
 
     return {
-      firstFootnoteTop: firstFootnote?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY,
-      firstReferenceTop: firstReference?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY
+      anchorContractTop: topOf('[data-footnote-rail-item="note-anchor-contract"]'),
+      supabaseTop: topOf('[data-footnote-rail-item="ref-supabase-rls"]'),
+      tufteTop: topOf('[data-footnote-rail-item="ref-tufte-css"]'),
+      warmupTop: topOf('[data-footnote-rail-item="note-warmup"]'),
+      optimisticTradeoffTop: topOf('[data-footnote-rail-item="note-optimistic-tradeoff"]'),
+      referenceCount: document.querySelectorAll('[data-note-type="reference"]').length,
+      noteCount: document.querySelectorAll('[data-note-type="note"]').length,
+      figureCount: document.querySelectorAll('[data-note-type="figure"]').length,
+      labels
+      ,
+      typeTags
     };
   });
 
-  expect(positions.firstFootnoteTop).toBeLessThan(Number.POSITIVE_INFINITY);
-  expect(positions.firstReferenceTop).toBeLessThan(Number.POSITIVE_INFINITY);
-  expect(positions.firstReferenceTop).toBeGreaterThan(positions.firstFootnoteTop);
+  expect(positions.referenceCount).toBe(2);
+  expect(positions.noteCount).toBeGreaterThan(0);
+  expect(positions.figureCount).toBe(1);
+  expect(positions.anchorContractTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.supabaseTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.tufteTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.warmupTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.optimisticTradeoffTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.anchorContractTop).toBeLessThan(positions.supabaseTop);
+  expect(positions.supabaseTop).toBeLessThan(positions.tufteTop);
+  expect(positions.supabaseTop).toBeLessThan(positions.warmupTop);
+  expect(positions.tufteTop).toBeLessThan(positions.optimisticTradeoffTop);
+  expect(positions.typeTags).toContain("引用");
+  expect(positions.typeTags).toContain("注释");
+  expect(positions.typeTags).toContain("图表");
+  expect(positions.labels).toContain("图1");
+  expect(positions.labels.filter((label) => /^\d+$/.test(label))).toEqual([
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10"
+  ]);
 });
 
-test("paragraph-anchor article keeps optimistic annotation with the rollback paragraph", async ({ page }) => {
+test("paragraph-anchor figure sources can point to footnote-backed bibliography items", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const figureSourceLink = page.locator(
+    '[data-note-key="figure:anchor-diagram"] a[href="#marginalia-footnote-ref-supabase-rls"]'
+  );
+
+  await expect(figureSourceLink).toBeVisible();
+  await expect(figureSourceLink).toHaveText(/\[\d+\]/);
+});
+
+test("paragraph-anchor article keeps the rollback note between the warmup note and later engineering-boundary notes", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
@@ -274,14 +328,14 @@ test("paragraph-anchor article keeps optimistic annotation with the rollback par
     };
 
     return {
-      warmupTop: topOfNote('[data-footnote-rail-item="warmup"]'),
-      optimisticFootnoteTop: topOfNote('[data-footnote-rail-item="optimistic"]'),
-      optimisticAnnotationTop: topOfNote('[data-note-key="annotation:optimistic-tradeoff"]')
+      warmupTop: topOfNote('[data-footnote-rail-item="note-warmup"]'),
+      optimisticFootnoteTop: topOfNote('[data-footnote-rail-item="note-optimistic-tradeoff"]'),
+      selectionBoundaryTop: topOfNote('[data-footnote-rail-item="note-selection-caveat"]')
     };
   });
 
   expect(positions.warmupTop).toBeLessThan(positions.optimisticFootnoteTop);
-  expect(positions.optimisticFootnoteTop).toBeLessThan(positions.optimisticAnnotationTop);
+  expect(positions.optimisticFootnoteTop).toBeLessThan(positions.selectionBoundaryTop);
 });
 
 test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {

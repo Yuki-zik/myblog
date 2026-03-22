@@ -11,6 +11,7 @@
 - **Waline 服务端部署层**: `waline-server/index.cjs` + `waline-server/vercel.json` — 与博客前端解耦的独立部署单元，推荐作为同仓库下第二个 Vercel 项目部署。
 - **评论数据存储层**: `Supabase PostgreSQL` + `waline-server/sql/waline.pgsql` — 承担 Waline 评论、计数器和后台用户表存储。
 - **内容处理层**: `src/lib/markdown/rehypeParagraphAnchors.ts` — 在 Markdown 解析阶段为有效段落生成唯一锚点 ID（格式：`sectionSlug::p0`），供阅读侧栏和脚注关联使用。
+- **脚注/参考文献侧栏层**: `src/lib/markdown/rehypeTufteFootnotes.ts` + `src/lib/posts/postScholarRail.ts` — 标准 GFM 脚注是文章页一切文字型 sidenote 的唯一入口：`note-*` 表示解释性注释，`ref-*` 表示正文引用型参考文献；右侧 rail 以脚注第一次在正文中的引用位置为准布局。`figures` frontmatter 仍保留为图表说明模型，但 `figures[].sourceRefIds` 仅允许指向 `ref-*` bibliography footnote。
 - **评论集成层**: `src/components/comments/WalineComments.tsx` — 统一封装 Waline `init()` 调用、主题切换适配和缺省配置提示。
 - **搜索与导航层**: `src/lib/search/index.ts`, `src/components/search/HeaderSearch.astro` — 静态搜索索引端点（`/search-index.json`）+ 客户端即时搜索 UI。
 - **目录组件层**: `src/lib/posts/toc.ts`, `src/components/post/PostToc.astro` — 从 Astro headings 提取 H2/H3，渲染带当前章节高亮的固定/折叠 TOC。
@@ -68,6 +69,7 @@
 ### Markdown 锚点插件
 - `src/lib/markdown/rehypeParagraphAnchors.ts`
 - `src/lib/markdown/rehypeTufteFootnotes.ts`
+- `src/lib/posts/postScholarRail.ts`
 
 ### 测试
 - `src/lib/markdown/rehypeParagraphAnchors.test.ts`

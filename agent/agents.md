@@ -11,6 +11,7 @@
 - **先测后上**: 在修改现有功能或添加新模块前，必须先编写测试 (`vitest` 或 `playwright`)，再编写实现代码，保证 TDD 思维。
 - **最小化改动**: 遵循“单一职责”，每次任务只修改必要文件，不产生多余或推测性的代码。
 - **部署单元隔离**: Waline server 相关入口、Vercel 配置和数据库初始化文件只放在 `waline-server/`，博客前端保留 client 接入与文档说明。
+- **文章侧注约束**: `posts` 不再使用 `annotations` / `references` frontmatter；解释性注释统一写成 `[^note-*]`，参考文献统一写成 `[^ref-*]`，图表来源 `figures[].sourceRefIds` 只能指向 `ref-*`。
 - **保持双向沟通**: 重大修改前必须经过用户的显式批准。
 
 ### 🟡 Ask (必须询问)

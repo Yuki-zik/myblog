@@ -23,27 +23,6 @@ const posts = defineCollection({
         .optional(),
       canonical: z.string().url().optional(),
       readingTime: z.number().positive().optional(),
-      annotations: z
-        .array(
-          z.object({
-            id: z.string().min(1),
-            anchorId: z.string().min(1),
-            title: z.string().min(1).optional(),
-            body: z.string().min(1)
-          })
-        )
-        .optional(),
-      references: z
-        .array(
-          z.object({
-            id: z.string().min(1),
-            label: z.string().min(1).optional(),
-            citation: z.string().min(1),
-            url: z.string().url().optional(),
-            note: z.string().optional()
-          })
-        )
-        .optional(),
       figures: z
         .array(
           z.object({
@@ -53,7 +32,8 @@ const posts = defineCollection({
             kind: z.enum(["image", "table"]),
             caption: z.string().optional(),
             summary: z.string().optional(),
-            sourceRefIds: z.array(z.string()).optional(),
+            // Figure sources should point to bibliography footnotes, e.g. `ref-supabase-rls`.
+            sourceRefIds: z.array(z.string().regex(/^ref-/)).optional(),
             image: z
               .object({
                 src: image(),
