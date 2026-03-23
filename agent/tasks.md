@@ -2,6 +2,18 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 清理搜索框原生焦点橙框并提升输入文字清晰度：去掉浏览器 search field 默认外观残留 | ✅ | AI Assistant | 2026-03-23 |
+| 高 | 提升顶部功能清晰度与搜索框现代感：鼠标回到顶部区域时让 header 进入更清晰的展示态，并重做搜索框视觉 | ✅ | AI Assistant | 2026-03-22 |
+| 高 | 参考苹果 Liquid Glass 官方思路重做顶部栏材质分层：让 header 更像“外层一块主玻璃”，同时不影响原有缩放与三态逻辑 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 继续增强顶部栏液态玻璃的折射与光线扭曲感：提升 caustics / refraction 层次，其余结构与动画保持不变 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 放慢并柔化顶部栏三态动画：让 header 的 top / compact / hidden 切换更丝滑、稳定且不过快 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 去掉顶部栏显式白色边缘线，并将 header 材质进一步收敛到更接近苹果液态玻璃的边缘与高光语言 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 修复顶部透明玻璃导致的文字发虚问题：在保持液态玻璃风格前提下提升 header 文案可读性 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 继续增强顶部栏液态玻璃效果：仅提升 header 的高光、折射、层次与悬浮感，其余结构与交互保持不变 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 优化顶部栏材质表现：保留现有结构与三态逻辑，仅把 header 提升为液态玻璃质感并确保文字清晰可读 | ✅ | AI Assistant | 2026-03-22 |
+| 中 | 阅读当前项目并并行建立可复用的 harness 上下文：梳理应用架构、内容/评论链路、验证命令与关键约束，并回写 agent 文档 | ✅ | AI Assistant | 2026-03-22 |
+| 高 | 将 `pnpm build` 纳入统一验证入口并补 GitHub CI workflow，避免 `test:all` 与人工提交流程脱节 | ⏳ | AI Assistant | 2026-03-23 |
+| 中 | 为 `waline-server/` 补最小 smoke / 自动验证，减少前端 wrapper 之外的评论回归盲区 | ⏳ | AI Assistant | 2026-03-23 |
 | 高 | 统一文章页右侧文字型边注为类型化脚注链路：正文引用与信息注释统一使用标准 GFM 脚注，图表说明保留 figures 但按同一 sidenote 视觉渲染，并移除 posts schema 中的 annotations / references | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 修正 legacy reference 的 rail 显示标签语义：统一显示为 `文N`，不再沿用脚注式 `[n]` 标签 | ✅ | AI Assistant | 2026-03-22 |
 | 高 | 修复 scholar rail 混合脚注/注释/图表时的编号空间冲突：避免重复数字、跳号错觉与由此产生的排序误读 | ✅ | AI Assistant | 2026-03-22 |

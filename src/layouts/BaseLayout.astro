@@ -291,11 +291,14 @@ const themeInitScript = `(function () {
           var upTravel = 0;
           var ticking = false;
           var TOP_THRESHOLD = 10;
-          var COMPACT_THRESHOLD = 52;
-          var HIDE_THRESHOLD = 160;
-          var HIDE_DELTA = 34;
-          var SHOW_DELTA = 26;
-          var IGNORE_DELTA = 3;
+          var COMPACT_THRESHOLD = 60;
+          var HIDE_THRESHOLD = 188;
+          var HIDE_DELTA = 52;
+          var SHOW_DELTA = 38;
+          var IGNORE_DELTA = 4;
+          var HOVER_ZONE = 108;
+          var clarity = "normal";
+          var hoverReveal = false;
 
           function applyState(nextState) {
             if (state === nextState && header.dataset.headerState === nextState) {
@@ -309,6 +312,26 @@ const themeInitScript = `(function () {
             notifyHeaderFrameChange();
           }
 
+          function applyClarity(nextClarity) {
+            if (clarity === nextClarity && header.dataset.headerClarity === nextClarity) {
+              return;
+            }
+
+            clarity = nextClarity;
+            header.dataset.headerClarity = nextClarity;
+          }
+
+          function applyHoverReveal(nextHoverReveal) {
+            if (hoverReveal === nextHoverReveal) {
+              return;
+            }
+
+            hoverReveal = nextHoverReveal;
+            header.classList.toggle("is-hover-revealed", nextHoverReveal);
+            applyClarity(nextHoverReveal ? "hover" : "normal");
+            notifyHeaderFrameChange();
+          }
+
           function syncInitialState() {
             var y = Math.max(window.scrollY, 0);
             state = y <= TOP_THRESHOLD ? "top" : "compact";
@@ -316,8 +339,10 @@ const themeInitScript = `(function () {
             upTravel = 0;
             lastY = y;
             header.dataset.headerState = state;
+            header.dataset.headerClarity = "normal";
             header.classList.toggle("is-scrolled", state !== "top");
             header.classList.toggle("is-hidden", state === "hidden");
+            header.classList.remove("is-hover-revealed");
             notifyHeaderFrameChange();
           }
 
@@ -380,6 +405,19 @@ const themeInitScript = `(function () {
               ticking = true;
             }
           }, { passive: true });
+
+          window.addEventListener("mousemove", function (event) {
+            if (!(event instanceof MouseEvent)) {
+              return;
+            }
+
+            var shouldReveal = event.clientY <= HOVER_ZONE;
+            applyHoverReveal(shouldReveal);
+          }, { passive: true });
+
+          window.addEventListener("mouseleave", function () {
+            applyHoverReveal(false);
+          });
 
           syncInitialState();
         })();
