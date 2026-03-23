@@ -103,6 +103,48 @@ test("post detail uses minimal reading header without hero cover", async ({ page
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });
 
+test("post detail title cover keeps a real blurred ghost layer with no container shadow", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  await expect(page.locator(".post-title-card .post-cover-img--shadow")).toBeVisible();
+  await expect(page.locator(".post-title-card .post-cover-img--main")).toBeVisible();
+
+  const metrics = await page.evaluate(() => {
+    const hero = document.querySelector(".post-title-card .post-cover--hero") as HTMLElement | null;
+    const shadow = document.querySelector(".post-title-card .post-cover-img--shadow") as HTMLElement | null;
+    const main = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
+    const heroStyles = hero ? getComputedStyle(hero) : null;
+    const shadowStyles = shadow ? getComputedStyle(shadow) : null;
+    const mainStyles = main ? getComputedStyle(main) : null;
+    const shadowBox = shadow?.getBoundingClientRect();
+    const mainBox = main?.getBoundingClientRect();
+
+    return {
+      heroShadow: heroStyles?.boxShadow ?? "",
+      shadowFilter: shadowStyles?.filter ?? "",
+      shadowOpacity: shadowStyles ? Number.parseFloat(shadowStyles.opacity) : 0,
+      shadowTransform: shadowStyles?.transform ?? "",
+      shadowOffsetX: shadowBox && mainBox ? shadowBox.left - mainBox.left : 0,
+      shadowOffsetY: shadowBox && mainBox ? shadowBox.top - mainBox.top : 0,
+      mainTransform: mainStyles?.transform ?? ""
+    };
+  });
+
+  expect(metrics.heroShadow).toBe("none");
+  expect(metrics.shadowFilter).toContain("blur");
+  expect(metrics.shadowOpacity).toBeGreaterThan(0.1);
+  expect(metrics.shadowOpacity).toBeLessThan(0.5);
+  expect(metrics.shadowTransform).not.toBe("none");
+  expect(metrics.shadowTransform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
+  expect(metrics.shadowOffsetX).toBeGreaterThan(10);
+  expect(metrics.shadowOffsetX).toBeLessThan(25);
+  expect(metrics.shadowOffsetY).toBeGreaterThan(10);
+  expect(metrics.shadowOffsetY).toBeLessThan(25);
+  expect(metrics.mainTransform).not.toBe("none");
+  expect(metrics.mainTransform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
+});
+
 test("desktop header search stays between brand and navigation", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
