@@ -206,11 +206,21 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  --post-cover-ghost-offset-y: clamp(1.2rem, 2.4vw, 2rem);
+  --post-cover-ghost-scale: 0.955;
+  --post-cover-ghost-blur: clamp(28px, 3.6vw, 44px);
+  --post-cover-ghost-opacity: 0.58;
+  --post-cover-ghost-hover-offset-y: clamp(1.75rem, 3.2vw, 2.65rem);
+  --post-cover-ghost-hover-scale: 0.91;
+  --post-cover-ghost-hover-blur: clamp(34px, 4.2vw, 52px);
+  --post-cover-ghost-hover-opacity: 0.7;
+  --post-cover-main-lift: -0.45rem;
 }
 
 .post-cover-stack {
   position: relative;
   isolation: isolate;
+  overflow: visible;
 }
 
 .post-cover-img {
@@ -219,38 +229,54 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   max-height: clamp(216px, 29vw, 292px);
   object-fit: cover;
   border-radius: 11px;
-  filter: saturate(0.98) contrast(1.04) brightness(1.015);
 }
 
-.post-cover-img--shadow {
+.post-cover-stack .post-cover-img--ghost {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
-  opacity: 0.32;
   pointer-events: none;
-  transform: translate(3%, 3.5%) scale(1.008);
-  filter: blur(6px) saturate(0.96) brightness(0.9) contrast(0.96);
-  /* Asymmetric mask: retains structure near center, fades out toward edges with extra softness at bottom-right */
-  mask-image:
-    radial-gradient(ellipse 120% 120% at 42% 38%,
-      rgba(0,0,0,0.92) 20%,
-      rgba(0,0,0,0.72) 44%,
-      rgba(0,0,0,0.38) 68%,
-      rgba(0,0,0,0.10) 88%,
-      rgba(0,0,0,0) 100%);
-  -webkit-mask-image:
-    radial-gradient(ellipse 120% 120% at 42% 38%,
-      rgba(0,0,0,0.92) 20%,
-      rgba(0,0,0,0.72) 44%,
-      rgba(0,0,0,0.38) 68%,
-      rgba(0,0,0,0.10) 88%,
-      rgba(0,0,0,0) 100%);
+  opacity: var(--post-cover-ghost-opacity);
+  transform: translateY(var(--post-cover-ghost-offset-y)) scale(var(--post-cover-ghost-scale));
+  filter: blur(var(--post-cover-ghost-blur));
+  transform-origin: center;
+  transition:
+    transform 460ms var(--motion-ease-emphasized),
+    filter 460ms var(--motion-ease-emphasized),
+    opacity 460ms var(--motion-ease-emphasized);
+  will-change: transform, filter, opacity;
 }
 
-.post-cover-img--main {
+.post-cover-stack .post-cover-img--main {
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  border: 1px solid color-mix(in srgb, rgba(255, 255, 255, 0.8) 78%, var(--article-rule) 22%);
+  box-shadow:
+    0 8px 30px rgba(35, 24, 18, 0.04),
+    0 2px 10px rgba(35, 24, 18, 0.03);
+  transition:
+    transform 460ms var(--motion-ease-emphasized),
+    box-shadow 460ms var(--motion-ease-emphasized),
+    border-color 460ms var(--motion-ease-emphasized);
+  will-change: transform, box-shadow;
   animation: cover-reveal 0.55s var(--motion-ease-emphasized) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero:hover .post-cover-img--ghost {
+    opacity: var(--post-cover-ghost-hover-opacity);
+    transform: translateY(var(--post-cover-ghost-hover-offset-y)) scale(var(--post-cover-ghost-hover-scale));
+    filter: blur(var(--post-cover-ghost-hover-blur));
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero:hover .post-cover-img--main {
+    transform: translateY(var(--post-cover-main-lift));
+    box-shadow:
+      0 16px 38px rgba(35, 24, 18, 0.07),
+      0 5px 16px rgba(35, 24, 18, 0.04);
+  }
 }
 
 .post-cover-credit {
@@ -834,7 +860,6 @@ body:has(.shell--article-reading)::before { opacity: 0; }
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
   --title-cover-width: min(100%, calc(100% - clamp(12.5rem, 16vw, 15rem)));
   position: relative;
-  isolation: isolate;
   display: grid;
   justify-items: center;
   gap: 0.68rem;
@@ -855,35 +880,10 @@ body:has(.shell--article-reading)::before { opacity: 0; }
   border-radius: 18px;
   object-fit: contain;
   object-position: center 44%;
-  filter: saturate(1.01) contrast(1.06) brightness(1.02);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack {
   width: var(--title-cover-width);
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--shadow {
-  opacity: 0.34;
-  transform: translate(2.8%, 3.2%) scale(1.006);
-  filter: blur(5px) saturate(0.97) brightness(0.91) contrast(0.97);
-  mask-image:
-    radial-gradient(ellipse 118% 118% at 44% 40%,
-      rgba(0,0,0,0.94) 22%,
-      rgba(0,0,0,0.74) 46%,
-      rgba(0,0,0,0.36) 70%,
-      rgba(0,0,0,0.08) 90%,
-      rgba(0,0,0,0) 100%);
-  -webkit-mask-image:
-    radial-gradient(ellipse 118% 118% at 44% 40%,
-      rgba(0,0,0,0.94) 22%,
-      rgba(0,0,0,0.74) 46%,
-      rgba(0,0,0,0.36) 70%,
-      rgba(0,0,0,0.08) 90%,
-      rgba(0,0,0,0) 100%);
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--main {
-  transform: translateY(-2px);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-credit {
@@ -1654,32 +1654,19 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
   .post-reading-layout--scholarly.post-reading-layout--tri .post-cover--hero {
     margin-bottom: 1.02rem;
     border-radius: 10px;
+    --post-cover-ghost-offset-y: clamp(1rem, 3.3vw, 1.45rem);
+    --post-cover-ghost-scale: 0.962;
+    --post-cover-ghost-blur: clamp(20px, 5.2vw, 30px);
+    --post-cover-ghost-opacity: 0.5;
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-cover-img {
     max-height: clamp(188px, 54vw, 238px);
     border-radius: 9px;
-    filter: saturate(0.99) contrast(1.04) brightness(1.015);
   }
 
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover-img--shadow {
-    opacity: 0.28;
-    transform: translate(2.5%, 3%) scale(1.006);
-    filter: blur(5px) saturate(0.96) brightness(0.9) contrast(0.96);
-    mask-image:
-      radial-gradient(ellipse 118% 118% at 44% 40%,
-        rgba(0,0,0,0.93) 22%,
-        rgba(0,0,0,0.7) 46%,
-        rgba(0,0,0,0.34) 70%,
-        rgba(0,0,0,0.09) 90%,
-        rgba(0,0,0,0) 100%);
-    -webkit-mask-image:
-      radial-gradient(ellipse 118% 118% at 44% 40%,
-        rgba(0,0,0,0.93) 22%,
-        rgba(0,0,0,0.7) 46%,
-        rgba(0,0,0,0.34) 70%,
-        rgba(0,0,0,0.09) 90%,
-        rgba(0,0,0,0) 100%);
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-cover-stack {
+    width: 100%;
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-header--scholarly {
@@ -1740,24 +1727,8 @@ body:has(.shell--article-reading) .reading-progress-bar__fill,
     object-fit: contain;
   }
 
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--shadow {
-    opacity: 0.30;
-    transform: translate(2.5%, 3%) scale(1.005);
-    filter: blur(4.5px) saturate(0.97) brightness(0.91) contrast(0.97);
-    mask-image:
-      radial-gradient(ellipse 116% 116% at 44% 40%,
-        rgba(0,0,0,0.94) 24%,
-        rgba(0,0,0,0.72) 48%,
-        rgba(0,0,0,0.34) 72%,
-        rgba(0,0,0,0.08) 91%,
-        rgba(0,0,0,0) 100%);
-    -webkit-mask-image:
-      radial-gradient(ellipse 116% 116% at 44% 40%,
-        rgba(0,0,0,0.94) 24%,
-        rgba(0,0,0,0.72) 48%,
-        rgba(0,0,0,0.34) 72%,
-        rgba(0,0,0,0.08) 91%,
-        rgba(0,0,0,0) 100%);
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack {
+    width: 100%;
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {

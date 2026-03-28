@@ -1,6 +1,6 @@
 # MyBlog v1
 
-> AI 代理请先阅读 [Agents.md](./Agents.md) 了解项目背景、设计决策与协作规范。
+> AI 代理请先阅读 [AGENTS.md](./AGENTS.md) 了解项目背景、设计决策与协作规范。
 
 Astro + React + Waline 的主题化知识博客首版，当前采用“博客前端 + 独立 Waline 服务 + Supabase PostgreSQL”三段式评论架构。
 

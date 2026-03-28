@@ -579,7 +579,7 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
     const body = document.querySelector(".post-body--scholarly") as HTMLElement | null;
     const firstParagraph = body?.querySelector("p[data-anchor]") as HTMLElement | null;
     const cover = document.querySelector(".post-cover--hero") as HTMLElement | null;
-    const coverImg = document.querySelector(".post-title-card .post-cover-img") as HTMLElement | null;
+    const coverImg = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
     const titleCard = document.querySelector(".post-title-card") as HTMLElement | null;
     const meta = document.querySelector(".post-title-card .post-header-meta") as HTMLElement | null;
     const title = document.querySelector(".post-title-card .post-header--scholarly h1") as HTMLElement | null;
@@ -605,12 +605,13 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
     const statsStyles = stats ? getComputedStyle(stats) : null;
     const coverStyles = cover ? getComputedStyle(cover) : null;
     const coverImgStyles = coverImg ? getComputedStyle(coverImg) : null;
+    const coverGhost = document.querySelector(".post-title-card .post-cover-img--ghost") as HTMLElement | null;
+    const coverGhostStyles = coverGhost ? getComputedStyle(coverGhost) : null;
     const tocStyles = tocRail ? getComputedStyle(tocRail) : null;
     const articleStyles = article ? getComputedStyle(article) : null;
     const scholarRailStyles = scholarRail ? getComputedStyle(scholarRail) : null;
     const h2BeforeStyles = firstH2 ? getComputedStyle(firstH2, "::before") : null;
     const h3BeforeStyles = firstH3 ? getComputedStyle(firstH3, "::before") : null;
-
     return {
       scrollWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
@@ -625,7 +626,15 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       coverBorderWidth: coverStyles ? Number.parseFloat(coverStyles.borderTopWidth) : 0,
       coverShadow: coverStyles?.boxShadow ?? "",
       coverImageRadius: coverImgStyles ? Number.parseFloat(coverImgStyles.borderTopLeftRadius) : 0,
+      coverImageFilter: coverImgStyles?.filter ?? "",
       coverImageShadow: coverImgStyles?.boxShadow ?? "",
+      coverImageBorderWidth: coverImgStyles ? Number.parseFloat(coverImgStyles.borderTopWidth) : 0,
+      coverImageOpacity: coverImgStyles ? Number.parseFloat(coverImgStyles.opacity) : 0,
+      coverGhostFilter: coverGhostStyles?.filter ?? "",
+      coverGhostOpacity: coverGhostStyles ? Number.parseFloat(coverGhostStyles.opacity) : 0,
+      coverGhostPosition: coverGhostStyles?.position ?? "",
+      coverGhostTransform: coverGhostStyles?.transform ?? "",
+      coverGhostCount: document.querySelectorAll(".post-title-card .post-cover-img--ghost").length,
       coverTop: cover?.getBoundingClientRect().top ?? 0,
       metaTop: meta?.getBoundingClientRect().top ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
@@ -718,6 +727,15 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.coverRadius).toBe(0);
   expect(metrics.coverImageRadius).toBeGreaterThanOrEqual(15);
   expect(metrics.coverImageShadow).not.toBe("none");
+  expect(metrics.coverImageBorderWidth).toBeGreaterThanOrEqual(1);
+  expect(metrics.coverGhostCount).toBe(1);
+  expect(metrics.coverGhostFilter).toContain("blur");
+  expect(metrics.coverGhostOpacity).toBeGreaterThan(0.4);
+  expect(metrics.coverGhostOpacity).toBeLessThan(0.7);
+  expect(metrics.coverGhostPosition).toBe("absolute");
+  expect(metrics.coverGhostTransform).not.toBe("none");
+  expect(metrics.coverImageFilter).not.toContain("drop-shadow");
+  expect(metrics.coverImageOpacity).toBeGreaterThan(0.75);
   expect(metrics.dekFontStyle).toBe("normal");
   expect(metrics.tocOpacity).toBeGreaterThan(0.8);
   expect(metrics.tocOpacity).toBeLessThanOrEqual(1);

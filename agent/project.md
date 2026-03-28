@@ -30,7 +30,17 @@
   - E2E 测试：`@playwright/test`
   - Markdown AST 工具：GitHub Slugger, Hast/Unist
 
-## 4. 关键文件索引
+## 4. 当前 UI 设计系统快照
+
+- **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 导入的模块化 CSS（`tokens/base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`）以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
+- **全站气质**: 设计系统以 five-color foundation 为底座，先在 `src/styles/tokens.css` 映射为 `surface/text/border/accent/chrome/reading` 语义 token，再由页面模块做克制分化。整体气质是冷静、研究型、阅读优先，而不是高饱和科技演示风。
+- **字体分工**: UI chrome 与标题使用 `Space Grotesk`，长文阅读区使用 `Source Serif 4`，代码使用 `IBM Plex Mono`；这让首页/导航保持现代感，文章页保持纸面阅读感。
+- **布局骨架**: 首页是 `hero + topics + latest posts + archives CTA`；主题/概念页沿用轻卡片与单列 editorial post stack；文章页则是独立的 scholarly tri-layout，桌面端由 `TOC rail + main reading column + scholar rail` 组成，并在正文下方接 Waline 和 pager。
+- **文章页封面语言**: 标题卡片顶部封面采用“双层同源图片”模型：底层是居中下移、缩小并高斯模糊后的同源彩色虚影，负责提供 ambient colored shadow；顶层主图带极轻的白色描边和常规阴影，与底层虚影形成剥离感，并在 hover 时主图微微上浮、虚影进一步扩散。
+- **核心交互**: Header 是三态液态玻璃控制台（`top / compact / hidden`），Search 是头部命令式即时搜索入口，TOC 是文章页的二级导航，Waline 评论位于文末，角色偏“全文讨论”而不是段落边批注。
+- **体验原则**: `topic-first`、`reading-first`、`research-ready`、`restrained motion`。首页负责建立“这不是时间流博客”的认知，文章页负责沉浸式研究阅读，搜索/目录/header 只做辅助理解，不抢正文叙事。
+
+## 5. 关键文件索引
 
 ### 项目配置
 - `package.json`, `astro.config.mjs`, `tsconfig.json`
@@ -77,7 +87,7 @@
 - `src/components/comments/WalineComments.test.tsx`
 - `tests/e2e/paragraph-comments.spec.ts`
 
-## 5. 环境变量
+## 6. 环境变量
 
 | 变量名 | 必填 | 说明 |
 |---|---|---|
@@ -93,7 +103,7 @@
 | `PG_PASSWORD` / `POSTGRES_PASSWORD` | Waline server ✅ | 数据库密码 |
 | `PG_SSL` / `POSTGRES_SSL` | Waline server ✅ | 是否启用 SSL，Supabase 建议为 `true` |
 
-## 6. 部署状态
+## 7. 部署状态
 
 - GitHub 仓库：`https://github.com/Yuki-zik/myblog`（分支 `main`）
 - 托管平台：Vercel（已连接 GitHub，自动部署）

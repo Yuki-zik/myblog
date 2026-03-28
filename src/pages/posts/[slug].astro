@@ -183,15 +183,27 @@ const headerStats = [
         <section class="post-title-card" aria-label="文章标题卡片">
           {post.data.cover ? (
             <div class="post-cover post-cover--hero">
-              <Image
-                src={post.data.cover.src}
-                alt={post.data.cover.alt}
-                class="post-cover-img"
-                loading="eager"
-                decoding="async"
-                widths={[640, 960, 1280]}
-                sizes="(max-width: 900px) 100vw, 900px"
-              />
+              <div class="post-cover-stack">
+                <Image
+                  src={post.data.cover.src}
+                  alt=""
+                  aria-hidden="true"
+                  class="post-cover-img post-cover-img--ghost"
+                  loading="eager"
+                  decoding="async"
+                  widths={[640, 960, 1280]}
+                  sizes="(max-width: 900px) 100vw, 900px"
+                />
+                <Image
+                  src={post.data.cover.src}
+                  alt={post.data.cover.alt}
+                  class="post-cover-img post-cover-img--main"
+                  loading="eager"
+                  decoding="async"
+                  widths={[640, 960, 1280]}
+                  sizes="(max-width: 900px) 100vw, 900px"
+                />
+              </div>
               {post.data.cover.credit ? (
                 <p class="post-cover-credit">{post.data.cover.credit}</p>
               ) : null}

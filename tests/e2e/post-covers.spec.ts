@@ -103,46 +103,70 @@ test("post detail uses minimal reading header without hero cover", async ({ page
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });
 
-test("post detail title cover keeps a real blurred ghost layer with no container shadow", async ({ page }) => {
+test("post detail title cover renders a subtle ghost image for floating depth", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
-  await expect(page.locator(".post-title-card .post-cover-img--shadow")).toBeVisible();
+  const heroCover = page.locator(".post-title-card .post-cover--hero");
+  await expect(heroCover).toBeVisible();
   await expect(page.locator(".post-title-card .post-cover-img--main")).toBeVisible();
+  await expect(page.locator(".post-title-card .post-cover-img--ghost")).toHaveCount(1);
 
-  const metrics = await page.evaluate(() => {
-    const hero = document.querySelector(".post-title-card .post-cover--hero") as HTMLElement | null;
-    const shadow = document.querySelector(".post-title-card .post-cover-img--shadow") as HTMLElement | null;
-    const main = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
-    const heroStyles = hero ? getComputedStyle(hero) : null;
-    const shadowStyles = shadow ? getComputedStyle(shadow) : null;
-    const mainStyles = main ? getComputedStyle(main) : null;
-    const shadowBox = shadow?.getBoundingClientRect();
-    const mainBox = main?.getBoundingClientRect();
+  const collectMetrics = () =>
+    page.evaluate(() => {
+      const hero = document.querySelector(".post-title-card .post-cover--hero") as HTMLElement | null;
+      const main = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
+      const ghost = document.querySelector(".post-title-card .post-cover-img--ghost") as HTMLElement | null;
+      const heroStyles = hero ? getComputedStyle(hero) : null;
+      const mainStyles = main ? getComputedStyle(main) : null;
+      const ghostStyles = ghost ? getComputedStyle(ghost) : null;
+      const mainBox = main?.getBoundingClientRect();
+      const ghostBox = ghost?.getBoundingClientRect();
 
-    return {
-      heroShadow: heroStyles?.boxShadow ?? "",
-      shadowFilter: shadowStyles?.filter ?? "",
-      shadowOpacity: shadowStyles ? Number.parseFloat(shadowStyles.opacity) : 0,
-      shadowTransform: shadowStyles?.transform ?? "",
-      shadowOffsetX: shadowBox && mainBox ? shadowBox.left - mainBox.left : 0,
-      shadowOffsetY: shadowBox && mainBox ? shadowBox.top - mainBox.top : 0,
-      mainTransform: mainStyles?.transform ?? ""
-    };
-  });
+      return {
+        heroShadow: heroStyles?.boxShadow ?? "",
+        mainFilter: mainStyles?.filter ?? "",
+        mainShadow: mainStyles?.boxShadow ?? "",
+        mainBorderWidth: mainStyles ? Number.parseFloat(mainStyles.borderTopWidth) : 0,
+        ghostFilter: ghostStyles?.filter ?? "",
+        ghostOpacity: ghostStyles ? Number.parseFloat(ghostStyles.opacity) : 0,
+        ghostPosition: ghostStyles?.position ?? "",
+        ghostTransform: ghostStyles?.transform ?? "",
+        ghostCount: document.querySelectorAll(".post-title-card .post-cover-img--ghost").length,
+        ghostOffsetY: mainBox && ghostBox ? ghostBox.top - mainBox.top : 0,
+        ghostWidth: ghostBox?.width ?? 0,
+        mainWidth: mainBox?.width ?? 0,
+        mainTop: mainBox?.top ?? 0,
+        mainOpacity: mainStyles ? Number.parseFloat(mainStyles.opacity) : 0
+      };
+    });
 
-  expect(metrics.heroShadow).toBe("none");
-  expect(metrics.shadowFilter).toContain("blur");
-  expect(metrics.shadowOpacity).toBeGreaterThan(0.1);
-  expect(metrics.shadowOpacity).toBeLessThan(0.5);
-  expect(metrics.shadowTransform).not.toBe("none");
-  expect(metrics.shadowTransform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
-  expect(metrics.shadowOffsetX).toBeGreaterThan(10);
-  expect(metrics.shadowOffsetX).toBeLessThan(25);
-  expect(metrics.shadowOffsetY).toBeGreaterThan(10);
-  expect(metrics.shadowOffsetY).toBeLessThan(25);
-  expect(metrics.mainTransform).not.toBe("none");
-  expect(metrics.mainTransform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
+  const initialMetrics = await collectMetrics();
+
+  expect(initialMetrics.heroShadow).toBe("none");
+  expect(initialMetrics.mainFilter).not.toContain("drop-shadow");
+  expect(initialMetrics.mainShadow).not.toBe("none");
+  expect(initialMetrics.mainBorderWidth).toBeGreaterThanOrEqual(1);
+  expect(initialMetrics.ghostFilter).toContain("blur");
+  expect(initialMetrics.ghostOpacity).toBeGreaterThan(0.4);
+  expect(initialMetrics.ghostOpacity).toBeLessThan(0.75);
+  expect(initialMetrics.ghostPosition).toBe("absolute");
+  expect(initialMetrics.ghostTransform).not.toBe("none");
+  expect(initialMetrics.ghostCount).toBe(1);
+  expect(initialMetrics.ghostOffsetY).toBeGreaterThan(18);
+  expect(initialMetrics.ghostOffsetY).toBeLessThan(48);
+  expect(initialMetrics.ghostWidth).toBeLessThan(initialMetrics.mainWidth);
+  expect(initialMetrics.mainOpacity).toBeGreaterThan(0.75);
+
+  await heroCover.hover();
+  await page.waitForTimeout(180);
+
+  const hoverMetrics = await collectMetrics();
+
+  expect(hoverMetrics.mainTop).toBeLessThan(initialMetrics.mainTop - 2);
+  expect(hoverMetrics.ghostOpacity).toBeGreaterThan(initialMetrics.ghostOpacity);
+  expect(hoverMetrics.ghostOffsetY).toBeGreaterThan(initialMetrics.ghostOffsetY + 4);
+  expect(hoverMetrics.ghostWidth).toBeLessThan(initialMetrics.ghostWidth);
 });
 
 test("desktop header search stays between brand and navigation", async ({ page }) => {

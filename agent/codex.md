@@ -26,7 +26,7 @@
 
   | 2026-02-21 10:30 | 添加用户认证模块 | src/auth.py, tests/test_auth.py | 使用JWT + bcrypt，分离 concerns | 解决安全漏洞并便于未来扩展 | 已通过单元测试，性能开销<5ms |  
 
-- `agent/agents.md`：AI代理专属指南（命令、边界、代码风格示例、测试要求）。参考AGENTS.md最佳实践：明确“Always/Ask/Never”规则、运行命令、示例代码片段。
+- `AGENTS.md`：仓库根目录唯一 AI 代理专属指南（命令、边界、代码风格示例、测试要求）。参考 AGENTS.md 最佳实践：明确“Always/Ask/Never”规则、运行命令、示例代码片段。
 
 **标准工作流程（严格按顺序执行）**  
 
