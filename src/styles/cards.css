@@ -313,6 +313,7 @@
 .post-card {
   display: grid;
   gap: 0;
+  overflow: visible;
   border-radius: calc(var(--radius-xl) + 4px);
   background: linear-gradient(180deg, var(--surface-primary) 0%, color-mix(in srgb, var(--surface-elevated) 94%, var(--surface-primary) 6%) 100%);
   box-shadow: var(--shadow-sm);
@@ -326,7 +327,7 @@
 
 .post-card-cover-link {
   display: block;
-  padding: clamp(0.95rem, 1.5vw, 1.18rem) clamp(0.95rem, 1.5vw, 1.18rem) 0;
+  padding: clamp(0.95rem, 1.5vw, 1.18rem) clamp(0.95rem, 1.5vw, 1.18rem) 0.4rem;
 }
 
 .post-card-cover-link,
@@ -337,7 +338,21 @@
 .post-card .post-cover--card {
   aspect-ratio: 16 / 9;
   border-radius: calc(var(--radius-xl) - 2px);
-  background: color-mix(in srgb, var(--surface-elevated) 78%, var(--surface-subtle) 22%);
+  background: transparent;
+  overflow: visible;
+  --post-cover-radius: calc(var(--radius-xl) - 2px);
+  --post-cover-main-border: #e2e8f0;
+  --post-cover-main-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-hover-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-lift: -0.25rem;
+  --post-cover-ghost-opacity: 0.34;
+  --post-cover-ghost-offset-y: 0.75rem;
+  --post-cover-ghost-scale: 0.95;
+  --post-cover-ghost-blur: 24px;
+  --post-cover-ghost-hover-opacity: 0.5;
+  --post-cover-ghost-hover-offset-y: 1rem;
+  --post-cover-ghost-hover-scale: 0.95;
+  --post-cover-ghost-hover-blur: 24px;
 }
 
 .post-card-body {
@@ -472,6 +487,130 @@
   box-shadow: none;
 }
 
+.post-cover--archive-square {
+  background: transparent;
+  overflow: visible;
+  --post-cover-radius: 14px;
+  --post-cover-main-border: #e2e8f0;
+  --post-cover-main-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-hover-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-lift: -0.2rem;
+  --post-cover-ghost-opacity: 0.3;
+  --post-cover-ghost-offset-y: 0.65rem;
+  --post-cover-ghost-scale: 0.95;
+  --post-cover-ghost-blur: 20px;
+  --post-cover-ghost-hover-opacity: 0.44;
+  --post-cover-ghost-hover-offset-y: 0.88rem;
+  --post-cover-ghost-hover-scale: 0.95;
+  --post-cover-ghost-hover-blur: 20px;
+}
+
+.post-cover--featured {
+  background: transparent;
+  overflow: visible;
+  --post-cover-radius: 0.75rem;
+  --post-cover-main-border: #e2e8f0;
+  --post-cover-main-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-hover-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-lift: -0.25rem;
+  --post-cover-ghost-opacity: 0.5;
+  --post-cover-ghost-offset-y: 1rem;
+  --post-cover-ghost-scale: 0.95;
+  --post-cover-ghost-blur: 40px;
+  --post-cover-ghost-hover-opacity: 0.7;
+  --post-cover-ghost-hover-offset-y: 1.5rem;
+  --post-cover-ghost-hover-scale: 0.95;
+  --post-cover-ghost-hover-blur: 40px;
+}
+
+html[data-theme="dark"] .post-cover--card,
+html[data-theme="dark"] .post-cover--archive-square,
+html[data-theme="dark"] .post-cover--featured {
+  --post-cover-main-border: #334155;
+}
+
+html[data-theme="dark"] .post-cover--card {
+  --post-cover-ghost-opacity: 0.3;
+  --post-cover-ghost-hover-opacity: 0.42;
+}
+
+html[data-theme="dark"] .post-cover--archive-square {
+  --post-cover-ghost-opacity: 0.26;
+  --post-cover-ghost-hover-opacity: 0.38;
+}
+
+html[data-theme="dark"] .post-cover--featured {
+  --post-cover-ghost-opacity: 0.4;
+  --post-cover-ghost-hover-opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] .post-cover--card,
+  :root[data-theme="system"] .post-cover--archive-square,
+  :root[data-theme="system"] .post-cover--featured {
+    --post-cover-main-border: #334155;
+  }
+
+  :root[data-theme="system"] .post-cover--card {
+    --post-cover-ghost-opacity: 0.3;
+    --post-cover-ghost-hover-opacity: 0.42;
+  }
+
+  :root[data-theme="system"] .post-cover--archive-square {
+    --post-cover-ghost-opacity: 0.26;
+    --post-cover-ghost-hover-opacity: 0.38;
+  }
+
+  :root[data-theme="system"] .post-cover--featured {
+    --post-cover-ghost-opacity: 0.4;
+    --post-cover-ghost-hover-opacity: 0.6;
+  }
+}
+
+.post-cover-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.post-cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  border-radius: var(--post-cover-radius, 12px);
+}
+
+.post-cover-img--ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--post-cover-ghost-opacity, 0);
+  transform: translateY(var(--post-cover-ghost-offset-y, 0)) scale(var(--post-cover-ghost-scale, 1));
+  filter: blur(var(--post-cover-ghost-blur, 0));
+  transition:
+    opacity 500ms ease,
+    transform 500ms ease,
+    filter 500ms ease;
+  will-change: opacity, transform, filter;
+}
+
+.post-cover-img--main {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--post-cover-main-border, transparent);
+  box-shadow: var(--post-cover-main-shadow, none);
+  transition:
+    transform 500ms ease,
+    box-shadow 500ms ease,
+    border-color 500ms ease;
+  will-change: transform, box-shadow;
+}
+
 .post-cover-fallback {
   gap: 0.3rem;
 }
@@ -533,6 +672,23 @@
 .post-cover-credit {
   margin: 0.55rem 0 0;
   font-size: 0.8rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .post-card:hover .post-cover--card .post-cover-img--ghost,
+  .archive-post-link:hover .post-cover--archive-square .post-cover-img--ghost,
+  .home-reference-featured-card:hover .post-cover--featured .post-cover-img--ghost {
+    opacity: var(--post-cover-ghost-hover-opacity, var(--post-cover-ghost-opacity, 0));
+    transform: translateY(var(--post-cover-ghost-hover-offset-y, var(--post-cover-ghost-offset-y, 0))) scale(var(--post-cover-ghost-hover-scale, var(--post-cover-ghost-scale, 1)));
+    filter: blur(var(--post-cover-ghost-hover-blur, var(--post-cover-ghost-blur, 0)));
+  }
+
+  .post-card:hover .post-cover--card .post-cover-img--main,
+  .archive-post-link:hover .post-cover--archive-square .post-cover-img--main,
+  .home-reference-featured-card:hover .post-cover--featured .post-cover-img--main {
+    transform: translateY(var(--post-cover-main-lift, 0));
+    box-shadow: var(--post-cover-main-hover-shadow, var(--post-cover-main-shadow, none));
+  }
 }
 
 .post-header > .subtle {

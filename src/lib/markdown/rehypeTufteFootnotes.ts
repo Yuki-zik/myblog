@@ -1,4 +1,6 @@
 import type { Element, Root } from "hast";
+import Slugger from "github-slugger";
+import { toString } from "hast-util-to-string";
 import { visitParents } from "unist-util-visit-parents";
 
 type HastNode = {
@@ -24,6 +26,7 @@ export interface TufteRailFootnote {
 
 export const TUFTE_MARKDOWN_FOOTNOTES_KEY = "tufteMarkdownFootnotes";
 export const TUFTE_RAIL_FOOTNOTE_ID_PREFIX = "marginalia-footnote-";
+const SECTION_HEADING_TAGS = new Set(["h2", "h3"]);
 
 function isElementNode(node: unknown): node is Element {
   if (!node || typeof node !== "object") {
@@ -192,6 +195,28 @@ function getListItemAncestor(ancestors: unknown[]): Element | undefined {
 function getElementAnchorId(element: Element): string | undefined {
   const value = getProperty(element.properties as Record<string, unknown> | undefined, "data-anchor");
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function getSectionSlugFromAnchor(anchorId: string | undefined): string | undefined {
+  const [sectionSlug] = anchorId?.split("::") ?? [];
+  return sectionSlug?.trim() || undefined;
+}
+
+function isSectionHeading(element: Element): boolean {
+  return SECTION_HEADING_TAGS.has(String(element.tagName));
+}
+
+function getSectionBaseAnchorId(element: Element, slugger: Slugger): string {
+  const rawId = getProperty(element.properties as Record<string, unknown> | undefined, "id");
+  const sectionSlug =
+    typeof rawId === "string" && rawId.trim()
+      ? rawId.trim()
+      : (() => {
+          const headingText = toString(element).trim();
+          return headingText ? slugger.slug(headingText) : "section";
+        })();
+
+  return `${sectionSlug}::p0`;
 }
 
 function getListItemIndex(element: Element, ancestors: unknown[]): number | undefined {
@@ -449,11 +474,17 @@ export function applyTufteFootnoteClasses(tree: Root): void {
 
 function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; referenceOrder: number }> {
   const meta = new Map<string, { anchorId?: string; referenceOrder: number }>();
+  const slugger = new Slugger();
   let order = 0;
   let lastAnchorId: string | undefined;
+  let currentSectionBaseAnchorId = "root::p0";
 
   visitParents(tree, "element", (node, ancestors) => {
     const element = node as Element;
+    if (isSectionHeading(element)) {
+      currentSectionBaseAnchorId = getSectionBaseAnchorId(element, slugger);
+    }
+
     const ownAnchorId = getElementAnchorId(element);
     if (ownAnchorId) {
       lastAnchorId = ownAnchorId;
@@ -476,9 +507,16 @@ function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; re
     order += 1;
     const paragraphAnchorId = getParagraphAnchorFromAncestors(ancestors);
     const listItemAncestor = paragraphAnchorId ? undefined : getListItemAncestor(ancestors);
+    const currentSectionSlug = getSectionSlugFromAnchor(currentSectionBaseAnchorId);
+    const lastAnchorSectionSlug = getSectionSlugFromAnchor(lastAnchorId);
+    const fallbackBaseAnchorId =
+      lastAnchorId &&
+      (currentSectionSlug === "root" || lastAnchorSectionSlug === currentSectionSlug)
+        ? lastAnchorId
+        : currentSectionBaseAnchorId;
     const anchorId =
       paragraphAnchorId ||
-      (listItemAncestor && lastAnchorId ? ensureListItemAnchor(listItemAncestor, ancestors, lastAnchorId) : undefined);
+      (listItemAncestor ? ensureListItemAnchor(listItemAncestor, ancestors, fallbackBaseAnchorId) : undefined);
 
     meta.set(footnoteId, {
       anchorId,

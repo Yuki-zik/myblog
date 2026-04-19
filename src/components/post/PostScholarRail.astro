@@ -177,8 +177,10 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
 
     const DESKTOP_MEDIA = "(min-width: 1101px)";
     let flashTimer = 0;
-    let linkedHoverNoteKey = "";
     let layoutRaf = 0;
+    let hoverBindingCounter = 0;
+    const linkedHoverOwners = new Map();
+    const linkedHoverCounts = new Map();
 
     function escapeSelectorValue(value) {
       if (window.CSS && typeof window.CSS.escape === "function") {
@@ -202,43 +204,70 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
       return document.querySelector(`[data-note-key="${safeKey}"]`);
     }
 
-    function clearLinkedHover() {
-      if (!linkedHoverNoteKey) return;
-      const currentKey = linkedHoverNoteKey;
-      linkedHoverNoteKey = "";
+    function applyLinkedHoverClass(noteKey, active) {
+      const bubble = getBubbleItemByNoteKey(noteKey);
+      if (bubble instanceof HTMLElement) bubble.classList.toggle("is-linked-hover", active);
 
-      const bubble = getBubbleItemByNoteKey(currentKey);
-      if (bubble instanceof HTMLElement) bubble.classList.remove("is-linked-hover");
-
-      const safeKey = escapeSelectorValue(currentKey);
+      const safeKey = escapeSelectorValue(noteKey);
       for (const el of document.querySelectorAll(`[data-linked-note-key-source="${safeKey}"]`)) {
-        if (el instanceof HTMLElement) el.classList.remove("is-linked-hover");
+        if (el instanceof HTMLElement) el.classList.toggle("is-linked-hover", active);
       }
-      for (const el of getBodyLinkedRefsByNoteKey(currentKey)) {
-        if (el instanceof HTMLElement) el.classList.remove("is-linked-hover");
+      for (const el of getBodyLinkedRefsByNoteKey(noteKey)) {
+        if (el instanceof HTMLElement) el.classList.toggle("is-linked-hover", active);
       }
     }
 
-    function setLinkedHover(noteKey) {
+    function activateLinkedHover(ownerId, noteKey) {
       const nextKey = typeof noteKey === "string" ? noteKey.trim() : "";
-      if (!nextKey) {
-        clearLinkedHover();
+      if (!ownerId || !nextKey) return;
+
+      const previousKey = linkedHoverOwners.get(ownerId);
+      if (previousKey === nextKey) return;
+      if (previousKey) deactivateLinkedHover(ownerId);
+
+      linkedHoverOwners.set(ownerId, nextKey);
+      const nextCount = (linkedHoverCounts.get(nextKey) || 0) + 1;
+      linkedHoverCounts.set(nextKey, nextCount);
+      if (nextCount === 1) {
+        applyLinkedHoverClass(nextKey, true);
+      }
+    }
+
+    function deactivateLinkedHover(ownerId) {
+      const currentKey = linkedHoverOwners.get(ownerId);
+      if (!currentKey) return;
+
+      linkedHoverOwners.delete(ownerId);
+      const nextCount = (linkedHoverCounts.get(currentKey) || 0) - 1;
+      if (nextCount <= 0) {
+        linkedHoverCounts.delete(currentKey);
+        applyLinkedHoverClass(currentKey, false);
         return;
       }
-      if (linkedHoverNoteKey === nextKey) return;
-      clearLinkedHover();
-      linkedHoverNoteKey = nextKey;
 
-      const bubble = getBubbleItemByNoteKey(nextKey);
-      if (bubble instanceof HTMLElement) bubble.classList.add("is-linked-hover");
+      linkedHoverCounts.set(currentKey, nextCount);
+    }
 
-      const safeKey = escapeSelectorValue(nextKey);
-      for (const el of document.querySelectorAll(`[data-linked-note-key-source="${safeKey}"]`)) {
-        if (el instanceof HTMLElement) el.classList.add("is-linked-hover");
-      }
-      for (const el of getBodyLinkedRefsByNoteKey(nextKey)) {
-        if (el instanceof HTMLElement) el.classList.add("is-linked-hover");
-      }
+    function bindLinkedHoverTarget(target, noteKey, ownerPrefix) {
+      if (!(target instanceof HTMLElement) || target.dataset.linkHoverBound === "true") return;
+      const normalizedKey = typeof noteKey === "string" ? noteKey.trim() : "";
+      if (!normalizedKey) return;
+
+      const baseOwner = ownerPrefix || `linked-hover:${hoverBindingCounter++}`;
+      const hoverOwner = `${baseOwner}:hover`;
+      const focusOwner = `${baseOwner}:focus`;
+      const activateHover = () => activateLinkedHover(hoverOwner, normalizedKey);
+      const deactivateHover = () => deactivateLinkedHover(hoverOwner);
+
+      target.dataset.linkHoverBound = "true";
+      target.addEventListener("mouseenter", activateHover);
+      target.addEventListener("mouseleave", deactivateHover);
+      target.addEventListener("mouseover", activateHover);
+      target.addEventListener("mouseout", deactivateHover);
+      target.addEventListener("pointerenter", activateHover);
+      target.addEventListener("pointerleave", deactivateHover);
+      target.addEventListener("focus", () => activateLinkedHover(focusOwner, normalizedKey));
+      target.addEventListener("blur", () => deactivateLinkedHover(focusOwner));
     }
 
     function getAnchorParagraph(anchorId) {
@@ -330,28 +359,21 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
 
     function bindLinkedHoverHandlers() {
       const bodyRefs = Array.from(document.querySelectorAll("[data-linked-note-key-ref]"));
+      let refIndex = 0;
       for (const ref of bodyRefs) {
-        if (!(ref instanceof HTMLElement) || ref.dataset.linkHoverBound === "true") continue;
+        if (!(ref instanceof HTMLElement)) continue;
         const noteKey = (ref.dataset.linkedNoteKeyRef || "").trim();
-        if (!noteKey) continue;
-        ref.dataset.linkHoverBound = "true";
-        ref.addEventListener("mouseenter", () => setLinkedHover(noteKey));
-        ref.addEventListener("mouseleave", clearLinkedHover);
-        ref.addEventListener("focus", () => setLinkedHover(noteKey));
-        ref.addEventListener("blur", clearLinkedHover);
+        bindLinkedHoverTarget(ref, noteKey, `body-ref:${noteKey}:${refIndex}`);
+        refIndex += 1;
       }
 
       const sourceButtons = Array.from(document.querySelectorAll("[data-linked-note-key-source]"));
+      let sourceIndex = 0;
       for (const source of sourceButtons) {
-        if (!(source instanceof HTMLElement) || source.dataset.linkHoverBound === "true") continue;
+        if (!(source instanceof HTMLElement)) continue;
         const noteKey = (source.dataset.linkedNoteKeySource || "").trim();
-        source.dataset.linkHoverBound = "true";
-        if (noteKey) {
-          source.addEventListener("mouseenter", () => setLinkedHover(noteKey));
-          source.addEventListener("mouseleave", clearLinkedHover);
-          source.addEventListener("focus", () => setLinkedHover(noteKey));
-          source.addEventListener("blur", clearLinkedHover);
-        }
+        bindLinkedHoverTarget(source, noteKey, `rail-source:${noteKey}:${sourceIndex}`);
+        sourceIndex += 1;
 
         source.addEventListener("click", () => {
           const refs = noteKey ? getBodyLinkedRefsByNoteKey(noteKey) : [];

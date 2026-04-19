@@ -1,0 +1,13 @@
+---
+interface Props {
+  title: string;
+  body: string;
+}
+
+const { title, body } = Astro.props;
+---
+
+<div class="discover-empty discover-surface">
+  <p class="discover-empty__title">{title}</p>
+  <p class="discover-empty__body">{body}</p>
+</div>

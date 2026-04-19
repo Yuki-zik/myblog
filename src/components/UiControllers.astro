@@ -1,0 +1,648 @@
+<script is:inline>
+  (function () {
+    document.documentElement.classList.remove("no-js");
+
+    function initReveal() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var STAGGER_MS = 50;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+
+          var el = entry.target;
+          var delay = parseInt(el.dataset.uxDelay || "0", 10);
+          el.style.animationDelay = delay + "ms";
+          el.classList.add("ux-revealed");
+          observer.unobserve(el);
+        });
+      }, {
+        threshold: 0.08,
+        rootMargin: "0px 0px -40px 0px"
+      });
+
+      document.querySelectorAll("[data-ux-reveal]").forEach(function (el) {
+        observer.observe(el);
+      });
+
+      document.querySelectorAll("[data-ux-stagger]").forEach(function (parent) {
+        var children = parent.querySelectorAll("[data-ux-reveal]");
+        children.forEach(function (child, index) {
+          child.dataset.uxDelay = String(index * STAGGER_MS);
+        });
+      });
+    }
+
+    function initThemeToggle() {
+      var root = document.documentElement;
+      var toggle = document.getElementById("theme-toggle");
+      if (!toggle) return;
+
+      var storageKey = "theme-preference";
+      var order = ["system", "light", "dark"];
+      var transitionResetTimer = 0;
+      var icons = {
+        system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.1"></circle><path d="M12 2.8v2.3"></path><path d="M12 18.9v2.3"></path><path d="M4.8 4.8l1.6 1.6"></path><path d="M17.6 17.6l1.6 1.6"></path><path d="M2.8 12h2.3"></path><path d="M18.9 12h2.3"></path><path d="M4.8 19.2l1.6-1.6"></path><path d="M17.6 6.4l1.6-1.6"></path></svg>',
+        light: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.3v2.8"></path><path d="M12 18.9v2.8"></path><path d="M5.2 5.2l2 2"></path><path d="M16.8 16.8l2 2"></path><path d="M2.3 12h2.8"></path><path d="M18.9 12h2.8"></path><path d="M5.2 18.8l2-2"></path><path d="M16.8 7.2l2-2"></path></svg>',
+        dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.7A8.4 8.4 0 1 1 9.3 3.8a6.9 6.9 0 1 0 10.9 10.9Z"></path></svg>'
+      };
+      var labels = {
+        system: "系统",
+        light: "亮色",
+        dark: "深色"
+      };
+      var ariaLabels = {
+        system: "切换主题（当前：跟随系统）",
+        light: "切换主题（当前：亮色）",
+        dark: "切换主题（当前：深色）"
+      };
+      var iconEl = toggle.querySelector(".theme-toggle-icon");
+      var labelEl = toggle.querySelector(".theme-toggle-label");
+      var media = window.matchMedia("(prefers-color-scheme: dark)");
+
+      function getPreference() {
+        var stored = localStorage.getItem(storageKey);
+        return order.indexOf(stored || "") > -1 ? stored : "system";
+      }
+
+      function resolvePreference(preference) {
+        return preference === "system" ? (media.matches ? "dark" : "light") : preference;
+      }
+
+      function applyPreference(preference, options) {
+        var animate = !options || options.animate !== false;
+        var resolved = resolvePreference(preference);
+
+        window.clearTimeout(transitionResetTimer);
+        if (animate) {
+          root.classList.add("theme-transitioning");
+        } else {
+          root.classList.remove("theme-transitioning");
+        }
+
+        root.dataset.theme = preference;
+        root.dataset.colorScheme = resolved;
+        root.style.colorScheme = resolved;
+
+        if (iconEl) {
+          iconEl.innerHTML = icons[preference];
+          if (animate) {
+            iconEl.style.animation = "none";
+            iconEl.offsetHeight;
+            iconEl.style.animation = "ux-icon-rotate 500ms cubic-bezier(0.34, 1.56, 0.64, 1)";
+          } else {
+            iconEl.style.animation = "";
+          }
+        }
+
+        if (labelEl) labelEl.textContent = labels[preference];
+        toggle.setAttribute("aria-label", ariaLabels[preference]);
+
+        if (animate) {
+          transitionResetTimer = window.setTimeout(function () {
+            root.classList.remove("theme-transitioning");
+          }, 700);
+        }
+      }
+
+      toggle.addEventListener("click", function () {
+        var current = getPreference();
+        var currentIndex = order.indexOf(current);
+        var next = order[(currentIndex + 1) % order.length];
+
+        localStorage.setItem(storageKey, next);
+        applyPreference(next);
+      });
+
+      media.addEventListener("change", function () {
+        if (getPreference() === "system") {
+          applyPreference("system");
+        }
+      });
+
+      applyPreference(getPreference(), { animate: false });
+    }
+
+    function initBackToTop() {
+      var btn = document.getElementById("back-to-top");
+      if (!btn) return;
+
+      var THRESHOLD = 300;
+      var visible = false;
+
+      function updateVisibility() {
+        var shouldShow = window.scrollY > THRESHOLD;
+        if (shouldShow !== visible) {
+          visible = shouldShow;
+          btn.classList.toggle("is-visible", visible);
+        }
+      }
+
+      window.addEventListener("scroll", updateVisibility, { passive: true });
+      updateVisibility();
+
+      btn.addEventListener("click", function () {
+        var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
+      });
+    }
+
+    function initHeader() {
+      var header = document.querySelector(".site-header");
+      if (!header) return;
+
+      function notifyHeaderFrameChange() {
+        window.dispatchEvent(new CustomEvent("site-header-framechange"));
+      }
+
+      var state = "top";
+      var lastY = window.scrollY;
+      var downTravel = 0;
+      var upTravel = 0;
+      var ticking = false;
+      var TOP_THRESHOLD = 10;
+      var COMPACT_THRESHOLD = 60;
+      var HIDE_THRESHOLD = 188;
+      var HIDE_DELTA = 52;
+      var SHOW_DELTA = 38;
+      var IGNORE_DELTA = 4;
+      var HOVER_ZONE = 108;
+      var clarity = "normal";
+      var hoverReveal = false;
+
+      function applyState(nextState) {
+        if (state === nextState && header.dataset.headerState === nextState) return;
+        state = nextState;
+        header.dataset.headerState = nextState;
+        header.classList.toggle("is-scrolled", nextState !== "top");
+        header.classList.toggle("is-hidden", nextState === "hidden");
+        notifyHeaderFrameChange();
+      }
+
+      function applyClarity(nextClarity) {
+        if (clarity === nextClarity && header.dataset.headerClarity === nextClarity) return;
+        clarity = nextClarity;
+        header.dataset.headerClarity = nextClarity;
+      }
+
+      function applyHoverReveal(nextHoverReveal) {
+        if (hoverReveal === nextHoverReveal) return;
+        hoverReveal = nextHoverReveal;
+        header.classList.toggle("is-hover-revealed", nextHoverReveal);
+        applyClarity(nextHoverReveal ? "hover" : "normal");
+        notifyHeaderFrameChange();
+      }
+
+      function syncInitialState() {
+        var y = Math.max(window.scrollY, 0);
+        state = y <= TOP_THRESHOLD ? "top" : "compact";
+        downTravel = 0;
+        upTravel = 0;
+        lastY = y;
+        header.dataset.headerState = state;
+        header.dataset.headerClarity = "normal";
+        header.classList.toggle("is-scrolled", state !== "top");
+        header.classList.toggle("is-hidden", state === "hidden");
+        header.classList.remove("is-hover-revealed");
+        notifyHeaderFrameChange();
+      }
+
+      function update() {
+        var y = Math.max(window.scrollY, 0);
+        var delta = y - lastY;
+        var absDelta = Math.abs(delta);
+
+        if (y <= TOP_THRESHOLD) {
+          downTravel = 0;
+          upTravel = 0;
+          applyState("top");
+          lastY = y;
+          ticking = false;
+          return;
+        }
+
+        if (absDelta <= IGNORE_DELTA) {
+          lastY = y;
+          ticking = false;
+          return;
+        }
+
+        if (delta > 0) {
+          downTravel += delta;
+          upTravel = 0;
+        } else {
+          upTravel += Math.abs(delta);
+          downTravel = 0;
+        }
+
+        if (state === "top" && y >= COMPACT_THRESHOLD) {
+          applyState("compact");
+          downTravel = 0;
+        }
+
+        if (state === "compact") {
+          if (delta > 0 && y >= HIDE_THRESHOLD && downTravel >= HIDE_DELTA) {
+            applyState("hidden");
+            downTravel = 0;
+          }
+        } else if (state === "hidden") {
+          if (upTravel >= SHOW_DELTA) {
+            applyState("compact");
+            upTravel = 0;
+          }
+        }
+
+        if (state !== "top" && y < COMPACT_THRESHOLD && y > TOP_THRESHOLD) {
+          applyState("compact");
+        }
+
+        lastY = y;
+        ticking = false;
+      }
+
+      window.addEventListener("scroll", function () {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      window.addEventListener("mousemove", function (event) {
+        if (!(event instanceof MouseEvent)) return;
+        applyHoverReveal(event.clientY <= HOVER_ZONE);
+      }, { passive: true });
+
+      window.addEventListener("mouseleave", function () {
+        applyHoverReveal(false);
+      });
+
+      syncInitialState();
+    }
+
+    function initDomainsCarousel() {
+      document.querySelectorAll('[data-controller~="domains-carousel"]').forEach(function (root) {
+        var viewport = root.querySelector("[data-home-domains-viewport]");
+        var track = root.querySelector("[data-home-domains-track]");
+        var previousButton = root.querySelector("[data-home-domains-prev]");
+        var nextButton = root.querySelector("[data-home-domains-next]");
+
+        if (!(viewport instanceof HTMLElement) || !(track instanceof HTMLElement)) return;
+
+        var cardSelector = "[data-home-domain-card]";
+        var motionReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+        var desktopViewport = window.matchMedia("(min-width: 1024px)");
+        var isAnimating = false;
+        var pendingDirections = [];
+        var activeDirection = 0;
+
+        function getCards() {
+          return Array.from(track.querySelectorAll(cardSelector)).filter(function (card) {
+            return card instanceof HTMLElement;
+          });
+        }
+
+        function canLoop() {
+          return desktopViewport.matches && getCards().length > 4;
+        }
+
+        function updateButtons() {
+          var loopActive = canLoop();
+          var trackStyles = window.getComputedStyle(track);
+          var gap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap || "16");
+          var cardWidth = Math.max(0, Math.floor((viewport.clientWidth - gap * 3) / 4));
+
+          viewport.style.setProperty("--home-domains-card-width", cardWidth + "px");
+          viewport.dataset.loop = loopActive ? "true" : "false";
+          if (previousButton instanceof HTMLButtonElement) {
+            previousButton.disabled = !loopActive;
+          }
+          if (nextButton instanceof HTMLButtonElement) {
+            nextButton.disabled = !loopActive;
+          }
+        }
+
+        function syncAnimationState() {
+          viewport.dataset.animating = isAnimating || pendingDirections.length > 0 ? "true" : "false";
+        }
+
+        function clearActiveAnimation() {
+          var activeAnimation = track.__homeDomainsTrackAnimation;
+          if (activeAnimation) {
+            activeAnimation.onfinish = null;
+            activeAnimation.oncancel = null;
+            activeAnimation.cancel();
+            track.__homeDomainsTrackAnimation = null;
+          }
+        }
+
+        function cleanupAnimation() {
+          clearActiveAnimation();
+          track.style.willChange = "";
+          track.style.transform = "";
+          isAnimating = false;
+          activeDirection = 0;
+          syncAnimationState();
+        }
+
+        function boostActiveAnimation() {
+          if (motionReduced.matches) return;
+
+          var activeAnimation = track.__homeDomainsTrackAnimation;
+          if (!activeAnimation) return;
+
+          var nextRate = Math.min(5.5, Math.max(activeAnimation.playbackRate || 1, 1.45) + 0.9);
+          activeAnimation.playbackRate = nextRate;
+        }
+
+        function pullNextBurst() {
+          var nextDirection = pendingDirections.shift();
+          if (!nextDirection) return null;
+
+          var stepCount = 1;
+          while (pendingDirections[0] === nextDirection) {
+            pendingDirections.shift();
+            stepCount += 1;
+          }
+
+          return {
+            direction: nextDirection,
+            stepCount: stepCount
+          };
+        }
+
+        function rotateNext(cards, stepCount) {
+          cards.slice(0, stepCount).forEach(function (card) {
+            track.appendChild(card);
+          });
+        }
+
+        function rotatePrevious(cards, stepCount) {
+          var movedCards = cards.slice(-stepCount);
+          for (var index = movedCards.length - 1; index >= 0; index -= 1) {
+            track.insertBefore(movedCards[index], track.firstChild);
+          }
+        }
+
+        function resolveCycleDuration(stepCount) {
+          if (stepCount <= 1) {
+            return 520;
+          }
+
+          return Math.min(700, 340 + (stepCount - 1) * 80);
+        }
+
+        function drainQueue() {
+          if (isAnimating) return;
+          if (!canLoop()) {
+            pendingDirections.length = 0;
+            cleanupAnimation();
+            return;
+          }
+
+          var nextBurst = pullNextBurst();
+          if (!nextBurst) {
+            syncAnimationState();
+            return;
+          }
+
+          startCycle(nextBurst.direction, nextBurst.stepCount);
+        }
+
+        function startCycle(direction, stepCount) {
+          var cards = getCards();
+          if (cards.length <= 1) return;
+
+          var cycleSteps = Math.max(1, Math.min(stepCount || 1, cards.length));
+          var trackStyles = window.getComputedStyle(track);
+          var gap = Number.parseFloat(trackStyles.columnGap || trackStyles.gap || "16");
+          var firstCard = cards[0];
+          if (!(firstCard instanceof HTMLElement)) return;
+          var step = firstCard.getBoundingClientRect().width + gap;
+          var distance = step * cycleSteps;
+
+          if (direction > 0) {
+            // next: animate the whole track left, then rotate the first card to the end.
+          } else {
+            // prev: pre-rotate the last card to the front, offset the track left by one card,
+            // then animate it back to zero so the motion mirrors the "next" direction.
+            rotatePrevious(cards, cycleSteps);
+            track.style.transform = "translate3d(" + (-distance) + "px, 0, 0)";
+          }
+
+          isAnimating = !motionReduced.matches;
+          activeDirection = direction;
+          syncAnimationState();
+
+          if (motionReduced.matches) {
+            if (direction > 0) {
+              rotateNext(cards, cycleSteps);
+            }
+            cleanupAnimation();
+            window.requestAnimationFrame(drainQueue);
+            return;
+          }
+
+          window.requestAnimationFrame(function () {
+            track.style.willChange = "transform";
+            var fromX = direction > 0 ? 0 : -distance;
+            var toX = direction > 0 ? -distance : 0;
+
+            if (track.__homeDomainsTrackAnimation) {
+              track.__homeDomainsTrackAnimation.cancel();
+            }
+
+            var duration = resolveCycleDuration(cycleSteps);
+            var animation = track.animate([
+              {
+                transform: "translate3d(" + fromX + "px, 0, 0)"
+              },
+              {
+                transform: "translate3d(" + toX + "px, 0, 0)"
+              }
+            ], {
+              duration: duration,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "both"
+            });
+            track.__homeDomainsTrackAnimation = animation;
+
+            animation.onfinish = function () {
+              if (track.__homeDomainsTrackAnimation !== animation) return;
+              if (direction > 0) {
+                rotateNext(cards, cycleSteps);
+              }
+              cleanupAnimation();
+              drainQueue();
+            };
+          });
+        }
+
+        function queueCycle(direction) {
+          if (!canLoop()) return;
+
+          pendingDirections.push(direction);
+          syncAnimationState();
+
+          if (isAnimating) {
+            if (activeDirection === direction) {
+              boostActiveAnimation();
+            }
+            return;
+          }
+
+          drainQueue();
+        }
+
+        if (previousButton instanceof HTMLButtonElement) {
+          previousButton.addEventListener("click", function () {
+            queueCycle(-1);
+          });
+        }
+
+        if (nextButton instanceof HTMLButtonElement) {
+          nextButton.addEventListener("click", function () {
+            queueCycle(1);
+          });
+        }
+
+        viewport.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            queueCycle(1);
+          }
+
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            queueCycle(-1);
+          }
+        });
+
+        window.addEventListener("resize", updateButtons);
+        updateButtons();
+      });
+    }
+
+    function initSocialStats() {
+      document.querySelectorAll('[data-controller~="social-stats"]').forEach(function (root) {
+        var cards = Array.from(root.querySelectorAll("[data-substats-source][data-substats-key]"));
+        if (!cards.length) return;
+
+        var formatter = new Intl.NumberFormat("en-US");
+
+        cards.forEach(function (card) {
+          var source = card.getAttribute("data-substats-source");
+          var key = card.getAttribute("data-substats-key");
+          var countEl = card.querySelector("[data-social-count]");
+          var labelEl = card.querySelector("[data-social-label]");
+
+          if (!source || !key || !countEl) return;
+
+          fetch("https://api.swo.moe/stats/" + encodeURIComponent(source) + "/" + encodeURIComponent(key), {
+            cache: "no-store"
+          })
+            .then(function (response) {
+              if (!response.ok) throw new Error(String(response.status));
+              return response.json();
+            })
+            .then(function (data) {
+              if (!data || data.failed || typeof data.count !== "number") {
+                throw new Error("invalid count");
+              }
+
+              countEl.textContent = formatter.format(data.count);
+
+              if (labelEl && source === "telegram") {
+                labelEl.textContent = data.count === 1 ? "subscriber" : "subscribers";
+              }
+
+              card.setAttribute("data-social-state", "ready");
+            })
+            .catch(function () {
+              card.setAttribute("data-social-state", "error");
+            });
+        });
+      });
+    }
+
+    function initReadingProgress() {
+      document.querySelectorAll('[data-controller~="reading-progress"]').forEach(function (bar) {
+        var fill = bar.querySelector("[data-reading-progress-fill]");
+        if (!(bar instanceof HTMLElement)) return;
+
+        if (bar.parentElement !== document.body) {
+          document.body.appendChild(bar);
+        }
+
+        var ticking = false;
+
+        function updateProgress() {
+          var article = document.querySelector(".post-reading-article");
+          var articleBody = document.querySelector("[data-post-body]");
+          if (!(article instanceof HTMLElement) || !(articleBody instanceof HTMLElement)) return;
+
+          var rect = article.getBoundingClientRect();
+          var progressAnchorOffset = Math.max(window.innerHeight * 0.025, 24);
+          var articleStart = Math.max(window.scrollY + rect.top - progressAnchorOffset, 0);
+          var articleEnd =
+            articleStart +
+            article.offsetHeight -
+            Math.min(window.innerHeight * 0.58, articleBody.offsetHeight * 0.2);
+
+          var total = Math.max(articleEnd - articleStart, 1);
+          var scrolled = Math.min(Math.max(window.scrollY - articleStart, 0), total);
+          var pct = Math.round((scrolled / total) * 100);
+
+          bar.style.setProperty("--progress", pct + "%");
+
+          if (fill instanceof HTMLElement) {
+            fill.style.width = pct + "%";
+          }
+
+          bar.setAttribute("aria-valuenow", String(pct));
+          ticking = false;
+        }
+
+        function scheduleProgressUpdate() {
+          if (!ticking) {
+            window.requestAnimationFrame(updateProgress);
+            ticking = true;
+          }
+        }
+
+        window.addEventListener("scroll", scheduleProgressUpdate, { passive: true });
+        window.addEventListener("resize", function () {
+          window.requestAnimationFrame(updateProgress);
+        });
+        window.addEventListener("site-header-framechange", scheduleProgressUpdate);
+        updateProgress();
+      });
+    }
+
+    function initSpoilers() {
+      document.querySelectorAll("[data-spoiler-inline]").forEach(function (button) {
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        var content = button.querySelector("[data-spoiler-inline-content]");
+        if (!(content instanceof HTMLElement)) return;
+
+        button.addEventListener("click", function () {
+          var revealed = button.getAttribute("data-revealed") === "true";
+          var next = !revealed;
+
+          button.setAttribute("data-revealed", next ? "true" : "false");
+          button.setAttribute("aria-pressed", next ? "true" : "false");
+          content.setAttribute("aria-hidden", next ? "false" : "true");
+        });
+      });
+    }
+
+    initReveal();
+    initThemeToggle();
+    initBackToTop();
+    initHeader();
+    initDomainsCarousel();
+    initSocialStats();
+    initReadingProgress();
+    initSpoilers();
+  })();
+</script>

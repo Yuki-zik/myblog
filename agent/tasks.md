@@ -2,6 +2,50 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ⏳ | AI Assistant | 2026-04-12 |
+| 高 | 收紧首页“关注领域”轮播的快速连续点击交互：取消必须等待单次动画结束的输入丢失与反馈迟滞 | ✅ | AI Assistant | 2026-04-12 |
+| 高 | 继续收紧首页“关注领域”卡片纵向比例：在上一轮基础上再缩短一点，并保持四卡窗口、hover 与轮播节奏不变 | ✅ | AI Assistant | 2026-04-12 |
+| 高 | 收紧首页“关注领域”卡片纵向比例：降低过高卡片高度并重平衡标题/描述/底部统计的垂直分配 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 收紧文章页目录跟进时机与进度条动作：让底部章节在上半屏就驱动 TOC 跟进，并把 progress 过渡收敛为更柔和的对称节奏 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 修复文章页目录在底部场景的进度条 bug：恢复长目录的自适应滚动，并修正进度条/轨道在容器自滚后的底部错位与裁切 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 为文章 Markdown 新增 spoiler 指令：支持块级/行内隐藏内容、posts-only 校验、阅读页样式与交互，并补齐转换约束与页面回归测试 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 修复文章页全屏时目录与正文容器间距过大的问题：收紧 ultrawide 阅读页 TOC spacer，并补齐 1920px 回归验证 | ✅ | AI Assistant | 2026-04-11 |
+| 中 | 核查文章页全屏下目录与正文容器间距过大的根因，并量化不同 viewport 下的实际轨道宽度与间距来源 | ✅ | AI Assistant | 2026-04-11 |
+| 中 | 收紧代理工作流中的浏览器/截图复查规则：仅对真实渲染或浏览器行为有影响的改动要求人工复查，并把触发/跳过条件写入 `AGENTS.md` | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 写作并发布《MyBlog 的设计说明书》：新增单源文章、SVG 封面与 `/design.md` 双出口，并补齐对应验证 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 快速并行掌握仓库：拆分 runtime/pages、内容契约、测试与交付三条线并汇总当前架构地图、风险与后续入口 | ✅ | AI Assistant | 2026-04-11 |
+| 高 | 收紧文章页列表缩进与选中文本可见性：让列表左缘贴回正文列，并为阅读页补更高对比度的 `::selection` 高亮 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 校准文章页全屏下 markdown 分割线与正文 measure：修复 `hr` 在大屏分支短于段落/列表导致的视觉错位，并补齐回归测试 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 修复文章页 figure marginalia 与正文内联引用的双向 hover / flash 联动回归，并补齐对应 E2E | ✅ | AI Assistant | 2026-03-31 |
+| 高 | 统一文章日期格式化与归档分组的时区处理，避免构建环境变化导致发布日期与归档月份漂移 | ✅ | AI Assistant | 2026-03-31 |
+| 高 | 修正 concept 页面“引用它的主题”聚合逻辑，改为按真实引用文章的 topics 反查而非只看 entryPosts | ✅ | AI Assistant | 2026-03-31 |
+| 中 | 补齐文章 canonical / OG / Twitter 元数据，并让文章页输出 article 级语义与分享图 | ✅ | AI Assistant | 2026-04-01 |
+| 中 | 收敛文章页 TOC 的重复客户端实现，避免 TocSidebar 与 PostToc 多套 observer / scroll 逻辑并存 | ✅ | AI Assistant | 2026-04-01 |
+| 中 | 收紧 Waline 挂载边界：补充 init 失败回退并评估改为 `client:visible` 以降低文章首屏负担 | ✅ | AI Assistant | 2026-04-01 |
+| 中 | 补 cross-collection integrity 测试并收紧文章 heading contract，防止坏 slug、orphan h3 与 h4-h6 静默进入线上 | ✅ | AI Assistant | 2026-04-01 |
+| 中 | 收紧 TypeScript 检查边界，避免根目录临时脚本被 `astro check` 纳入诊断范围 | ✅ | AI Assistant | 2026-04-01 |
+| 高 | 对博客项目进行正式 code review：并行审查核心模块、页面、数据流、状态管理、构建配置和公共组件，输出真实问题与高风险设计清单 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 审计并收紧首页“关注领域”的 light / dark / system 主题行为：补足链接外层约束并新增主题切换回归 | ⏳ | AI Assistant | 2026-03-29 |
+| 高 | 收紧文章页正文 measure 与分割线：缩短桌面端正文列宽，并同步收回标题 divider 与 `SECTION` 横线长度 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 继续精修首页“关注领域”循环列表：消除底部轻微裁切，并修正左右切换动画不对称/单侧触发异常 | ✅ | AI Assistant | 2026-03-29 |
+| 高 | 精修首页“关注领域”循环列表：让切换动画更优雅，并修复轮播切换压制卡片 hover 上浮的问题 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 重做首页“关注领域”为优雅循环 4 卡列表：移除滚动/进度条感，改成循环切换并保证卡片桌面端同高 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 继续放宽文章阅读页正文 measure：让段落更晚换行，并让 `SECTION` 分割线随之变长，目录位置保持不变 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 调整文章阅读页桌面端版心：增大正文内容宽度，缩小正文与右侧注释的空白，同时略增注释与右边框距离且保持目录位置不变 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 让文章页接入首页同款 ambient 背景，但保持阅读布局、TOC、Waline 与其余页面不变 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 按 Homepage-First runtime-first 方案完成 discover / reading 双运行时落地：统一全站非文章页面背景、hero、CTA、section-head、footer 与文章页家族化收口，并补齐 runtime matrix / 页面级 E2E | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 以 UX consistency reviewer 视角审查首页与非首页代表页面，输出设计漂移点、验收启发式与硬性批评 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 作为 Frontend implementation architect 审核全站路由与样式架构，输出“首页 runtime 扩展到全站”的系统设计决策与陷阱批判 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 作为 Design Systems Lead 解构当前首页实现，输出可扩展到全站的 homepage-first 设计模型与迁移失败模式批判 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 复盘“只有首页变了、其他页面几乎没变”的根因，明确当前仅完成首页 runtime 迁移而非全站视觉迁移 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 将首页“关注领域”改成可滑动/滚动的 4 卡窗口：一次展示 4 个 topic，但允许继续切换剩余主题 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 补齐作者页与归档页对共享封面/hover/button 视觉原语的接入，消除“首页已更新但次级页面无变化”的断层 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 深度复刻参考 featured card 与主按钮：统一全站封面图显示/hover 语言，并按 review workflow 完成实现与独立复核 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 对首页 reference-mode 做严格复刻 follow-up：修正背景覆盖、浮动节奏、按钮与卡片参数，使其更贴近参考项目 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 按参考项目像素级复刻首页正文：保留现有顶栏与文章页，重做 split hero / 关注领域 / 精选文章+近期列表 / 首页专属 footer，并补齐选择器与 E2E 回归 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 详细梳理 `参考项目/remix_-misty-shadows-ui-gallery.zip` 的结构、视觉语言、交互模式与可迁移要点 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 并行梳理整个项目并输出前端大规模重写前的结构基线、风险清单与迁移建议 | ✅ | AI Assistant | 2026-03-28 |
+| 高 | 继续增强文章页 ambient shadow 的浓度与存在感，让白底彩色虚影更明显 | ✅ | AI Assistant | 2026-03-25 |
 | 高 | 按“双层同源图片 + 底层高斯模糊虚影 + 顶层白边与轻阴影 + hover 联动”逻辑重做文章页封面 | ✅ | AI Assistant | 2026-03-25 |
 | 高 | 继续加强文章页封面图重影：提高存在感并扩大右下失焦范围，但不破坏阅读页克制气质 | ✅ | AI Assistant | 2026-03-25 |
 | 高 | 给文章页封面图添加贴体重影，以体现轻微浮动感并保持阅读页克制气质 | ✅ | AI Assistant | 2026-03-24 |

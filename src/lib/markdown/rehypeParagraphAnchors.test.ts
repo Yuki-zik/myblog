@@ -84,4 +84,22 @@ describe("rehypeParagraphAnchors", () => {
     expect(getAnchor(paragraphInBlockquote)).toBeUndefined();
     expect(getAnchor(normalParagraph)).toBe("root::p1");
   });
+
+  it("只将 h2/h3 视为分段边界，忽略更深层 heading", () => {
+    const tree: Root = {
+      type: "root",
+      children: [
+        { type: "element", tagName: "h2", properties: {}, children: [{ type: "text", value: "Section A" }] },
+        { type: "element", tagName: "p", properties: {}, children: [{ type: "text", value: "section p1" }] },
+        { type: "element", tagName: "h4", properties: {}, children: [{ type: "text", value: "Deep Heading" }] },
+        { type: "element", tagName: "p", properties: {}, children: [{ type: "text", value: "section p2" }] }
+      ]
+    };
+
+    runPlugin(tree);
+    const [, firstParagraph, , secondParagraph] = tree.children as Element[];
+
+    expect(getAnchor(firstParagraph)).toBe("section-a::p1");
+    expect(getAnchor(secondParagraph)).toBe("section-a::p2");
+  });
 });

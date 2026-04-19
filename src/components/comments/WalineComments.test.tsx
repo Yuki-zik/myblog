@@ -76,4 +76,16 @@ describe("WalineComments", () => {
 
     expect(destroy).toHaveBeenCalledTimes(2);
   });
+
+  it("renders a runtime hint when waline initialization throws", () => {
+    vi.stubEnv("PUBLIC_WALINE_SERVER_URL", "https://waline.example");
+    init.mockImplementationOnce(() => {
+      throw new Error("waline init failed");
+    });
+
+    render(<WalineComments path="/posts/test-post" />);
+
+    expect(screen.getByText(/评论服务初始化失败/)).toBeInTheDocument();
+    expect(screen.queryByTestId("waline-runtime-error")).toBeInTheDocument();
+  });
 });

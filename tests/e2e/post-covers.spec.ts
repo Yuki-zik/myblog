@@ -62,15 +62,68 @@ test.beforeEach(async ({ page }) => {
   await mockSupabase(page);
 });
 
-test("home latest posts renders card covers", async ({ page }) => {
+test("home featured publication renders the same-source ghost cover stack", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
 
-  const latestPosts = page.locator("[data-latest-posts]");
-  await expect(latestPosts).toBeVisible();
+  const featuredPost = page.locator("[data-home-featured-post]");
+  await expect(featuredPost).toBeVisible();
+  await expect(featuredPost.locator(".home-featured-cover-image--main")).toBeVisible();
+  await expect(featuredPost.locator(".home-featured-cover-image--ghost")).toHaveCount(1);
 
-  const covers = latestPosts.locator('[data-post-cover="card"]');
-  await expect(covers.first()).toBeVisible();
-  expect(await covers.count()).toBeGreaterThan(0);
+  const collectMetrics = () =>
+    page.evaluate(() => {
+      const stack = document.querySelector("[data-home-featured-cover]") as HTMLElement | null;
+      const main = document.querySelector(".home-featured-cover-image--main") as HTMLElement | null;
+      const ghost = document.querySelector(".home-featured-cover-image--ghost") as HTMLElement | null;
+      const stackStyles = stack ? getComputedStyle(stack) : null;
+      const mainStyles = main ? getComputedStyle(main) : null;
+      const ghostStyles = ghost ? getComputedStyle(ghost) : null;
+      const mainBox = main?.getBoundingClientRect();
+      const ghostBox = ghost?.getBoundingClientRect();
+
+      return {
+        stackAspectRatio: stackStyles?.aspectRatio ?? "",
+        mainBorderWidth: mainStyles ? Number.parseFloat(mainStyles.borderTopWidth) : 0,
+        mainShadow: mainStyles?.boxShadow ?? "",
+        ghostFilter: ghostStyles?.filter ?? "",
+        ghostBlurPx: ghostStyles?.filter
+          ? Number.parseFloat(ghostStyles.filter.match(/blur\(([\d.]+)px\)/)?.[1] ?? "0")
+          : 0,
+        ghostOpacity: ghostStyles ? Number.parseFloat(ghostStyles.opacity) : 0,
+        ghostPosition: ghostStyles?.position ?? "",
+        ghostOffsetY: mainBox && ghostBox ? ghostBox.top - mainBox.top : 0,
+        ghostWidth: ghostBox?.width ?? 0,
+        mainWidth: mainBox?.width ?? 0,
+        ghostSpread: mainBox && ghostBox ? mainBox.width - ghostBox.width : 0,
+        mainTop: mainBox?.top ?? 0
+      };
+    });
+
+  const initialMetrics = await collectMetrics();
+
+  expect(initialMetrics.stackAspectRatio).toBe("4 / 3");
+  expect(initialMetrics.mainBorderWidth).toBeGreaterThanOrEqual(1);
+  expect(initialMetrics.mainShadow).not.toBe("none");
+  expect(initialMetrics.ghostFilter).toContain("blur");
+  expect(initialMetrics.ghostBlurPx).toBeGreaterThanOrEqual(38);
+  expect(initialMetrics.ghostOpacity).toBeGreaterThan(0.45);
+  expect(initialMetrics.ghostOpacity).toBeLessThan(0.85);
+  expect(initialMetrics.ghostPosition).toBe("absolute");
+  expect(initialMetrics.ghostOffsetY).toBeGreaterThan(12);
+  expect(initialMetrics.ghostSpread).toBeGreaterThan(initialMetrics.mainWidth * 0.04);
+
+  await featuredPost.locator(".home-reference-featured-card").hover();
+  await page.waitForTimeout(180);
+
+  const hoverMetrics = await collectMetrics();
+
+  expect(hoverMetrics.mainTop).toBeLessThan(initialMetrics.mainTop - 2);
+  expect(hoverMetrics.ghostOpacity).toBeGreaterThan(initialMetrics.ghostOpacity + 0.08);
+  expect(hoverMetrics.ghostOffsetY).toBeGreaterThan(initialMetrics.ghostOffsetY + 4);
+  expect(hoverMetrics.ghostBlurPx).toBeGreaterThanOrEqual(38);
+  expect(hoverMetrics.ghostSpread).toBeGreaterThan(hoverMetrics.mainWidth * 0.04);
+  expect(Math.abs(hoverMetrics.ghostWidth - initialMetrics.ghostWidth)).toBeLessThan(1.5);
 });
 
 test("topic page related posts renders card covers", async ({ page }) => {
@@ -82,6 +135,10 @@ test("topic page related posts renders card covers", async ({ page }) => {
   const covers = topicPosts.locator('[data-post-cover="card"]');
   await expect(covers.first()).toBeVisible();
   expect(await covers.count()).toBeGreaterThan(0);
+
+  const manualCover = topicPosts.locator('[data-post-cover="card"][data-post-cover-manual="true"]').first();
+  await expect(manualCover.locator(".post-cover-img--main")).toBeVisible();
+  await expect(manualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
 });
 
 test("concept page related posts renders card covers", async ({ page }) => {
@@ -93,6 +150,31 @@ test("concept page related posts renders card covers", async ({ page }) => {
   const covers = conceptPosts.locator('[data-post-cover="card"]');
   await expect(covers.first()).toBeVisible();
   expect(await covers.count()).toBeGreaterThan(0);
+
+  const manualCover = conceptPosts.locator('[data-post-cover="card"][data-post-cover-manual="true"]').first();
+  await expect(manualCover.locator(".post-cover-img--main")).toBeVisible();
+  await expect(manualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
+});
+
+test("archive tiles reuse the shared manual cover stack", async ({ page }) => {
+  await page.goto("/archives");
+
+  const archiveManualCover = page.locator('[data-post-cover="archive-square"][data-post-cover-manual="true"]').first();
+  await expect(archiveManualCover).toBeVisible();
+  await expect(archiveManualCover.locator(".post-cover-img--main")).toBeVisible();
+  await expect(archiveManualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
+});
+
+test("author page published posts reuse the shared post card cover stack", async ({ page }) => {
+  await page.goto("/author");
+
+  const authorCard = page.locator(".author-post-grid .post-card").first();
+  await expect(authorCard).toBeVisible();
+
+  const manualCover = page.locator('.author-post-grid [data-post-cover="card"][data-post-cover-manual="true"]').first();
+  await expect(manualCover).toBeVisible();
+  await expect(manualCover.locator(".post-cover-img--main")).toBeVisible();
+  await expect(manualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
 });
 
 test("post detail uses minimal reading header without hero cover", async ({ page }) => {
@@ -148,25 +230,15 @@ test("post detail title cover renders a subtle ghost image for floating depth", 
   expect(initialMetrics.mainShadow).not.toBe("none");
   expect(initialMetrics.mainBorderWidth).toBeGreaterThanOrEqual(1);
   expect(initialMetrics.ghostFilter).toContain("blur");
-  expect(initialMetrics.ghostOpacity).toBeGreaterThan(0.4);
-  expect(initialMetrics.ghostOpacity).toBeLessThan(0.75);
+  expect(initialMetrics.ghostOpacity).toBeGreaterThan(0.52);
+  expect(initialMetrics.ghostOpacity).toBeLessThan(0.88);
   expect(initialMetrics.ghostPosition).toBe("absolute");
   expect(initialMetrics.ghostTransform).not.toBe("none");
   expect(initialMetrics.ghostCount).toBe(1);
-  expect(initialMetrics.ghostOffsetY).toBeGreaterThan(18);
-  expect(initialMetrics.ghostOffsetY).toBeLessThan(48);
+  expect(initialMetrics.ghostOffsetY).toBeGreaterThan(24);
+  expect(initialMetrics.ghostOffsetY).toBeLessThan(56);
   expect(initialMetrics.ghostWidth).toBeLessThan(initialMetrics.mainWidth);
   expect(initialMetrics.mainOpacity).toBeGreaterThan(0.75);
-
-  await heroCover.hover();
-  await page.waitForTimeout(180);
-
-  const hoverMetrics = await collectMetrics();
-
-  expect(hoverMetrics.mainTop).toBeLessThan(initialMetrics.mainTop - 2);
-  expect(hoverMetrics.ghostOpacity).toBeGreaterThan(initialMetrics.ghostOpacity);
-  expect(hoverMetrics.ghostOffsetY).toBeGreaterThan(initialMetrics.ghostOffsetY + 4);
-  expect(hoverMetrics.ghostWidth).toBeLessThan(initialMetrics.ghostWidth);
 });
 
 test("desktop header search stays between brand and navigation", async ({ page }) => {
@@ -201,12 +273,19 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   await page.goto("/posts/paragraph-anchor-design");
 
   const progressBar = page.locator("#reading-progress-bar");
-  const progressFill = page.locator("[data-reading-progress-fill]");
 
   await expect(progressBar).toBeVisible();
 
   const initialValue = Number(await progressBar.getAttribute("aria-valuenow"));
-  const initialWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
+  const initialFillState = await progressBar.evaluate((el) => {
+    const fill = el.querySelector("[data-reading-progress-fill]") as HTMLElement | null;
+    const styles = fill ? getComputedStyle(fill) : null;
+    return {
+      cssProgress: (el as HTMLElement).style.getPropertyValue("--progress"),
+      fillWidth: fill?.style.width ?? "",
+      fillOpacity: styles?.opacity ?? ""
+    };
+  });
   const initialMetrics = await progressBar.evaluate((el) => {
     const styles = getComputedStyle(el);
     const rect = el.getBoundingClientRect();
@@ -228,7 +307,15 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   await expect(page.locator(".site-header")).toHaveAttribute("data-header-state", "hidden");
 
   const nextValue = Number(await progressBar.getAttribute("aria-valuenow"));
-  const nextWidth = await progressFill.evaluate((el) => Number.parseFloat(getComputedStyle(el).width));
+  const nextFillState = await progressBar.evaluate((el) => {
+    const fill = el.querySelector("[data-reading-progress-fill]") as HTMLElement | null;
+    const styles = fill ? getComputedStyle(fill) : null;
+    return {
+      cssProgress: (el as HTMLElement).style.getPropertyValue("--progress"),
+      fillWidth: fill?.style.width ?? "",
+      fillOpacity: styles?.opacity ?? ""
+    };
+  });
   const progressMetrics = await progressBar.evaluate((el) => {
     const styles = getComputedStyle(el);
     const rect = el.getBoundingClientRect();
@@ -245,7 +332,8 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   });
 
   expect(nextValue).toBeGreaterThan(initialValue);
-  expect(nextWidth).toBeGreaterThan(initialWidth);
+  expect(nextFillState.cssProgress).not.toBe(initialFillState.cssProgress);
+  expect(nextFillState.fillWidth).not.toBe(initialFillState.fillWidth);
   expect(Math.abs(progressMetrics.top - initialMetrics.top)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(progressMetrics.left - initialMetrics.left)).toBeLessThanOrEqual(0.5);
   expect(Math.abs(progressMetrics.width - initialMetrics.width)).toBeLessThanOrEqual(1);

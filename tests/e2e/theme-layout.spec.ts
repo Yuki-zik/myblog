@@ -112,25 +112,34 @@ test.beforeEach(async ({ page }) => {
   await mockSubstats(page);
 });
 
-test("home hero and header stay structured on desktop", async ({ page }) => {
+test("home reference hero and header stay structured on desktop", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
 
-  await expect(page.locator(".home-hero")).toBeVisible();
-  await expect(page.locator(".home-hero-title")).toBeVisible();
-  await expect(page.locator(".home-hero-actions a")).toHaveCount(2);
+  await expect(page.locator(".home-reference-hero__title")).toBeVisible();
+  await expect(page.locator(".home-reference-hero__actions a")).toHaveCount(2);
+  await expect(page.locator("[data-home-reference-terminal]")).toBeVisible();
+  expect(await page.locator("[data-home-domains] [data-home-domain-card]").count()).toBeGreaterThan(4);
+  await expect(page.locator("[data-home-reference-footer]")).toBeVisible();
 
   const metrics = await page.evaluate(() => {
     const brand = document.querySelector(".brand") as HTMLElement | null;
     const search = document.querySelector("[data-search-trigger]") as HTMLElement | null;
     const nav = document.querySelector(".site-nav-links") as HTMLElement | null;
+    const heroCopy = document.querySelector(".home-reference-hero__copy") as HTMLElement | null;
+    const terminal = document.querySelector(".home-reference-terminal-wrap") as HTMLElement | null;
+    const domainCards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
 
     return {
       scrollWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
       brandBox: brand?.getBoundingClientRect() ?? null,
       searchBox: search?.getBoundingClientRect() ?? null,
-      navBox: nav?.getBoundingClientRect() ?? null
+      navBox: nav?.getBoundingClientRect() ?? null,
+      heroCopyBox: heroCopy?.getBoundingClientRect() ?? null,
+      terminalBox: terminal?.getBoundingClientRect() ?? null,
+      terminalPosition: terminal ? getComputedStyle(terminal).position : "",
+      domainTops: domainCards.map((card) => card.getBoundingClientRect().top)
     };
   });
 
@@ -138,61 +147,61 @@ test("home hero and header stay structured on desktop", async ({ page }) => {
   expect(metrics.brandBox).not.toBeNull();
   expect(metrics.searchBox).not.toBeNull();
   expect(metrics.navBox).not.toBeNull();
+  expect(metrics.heroCopyBox).not.toBeNull();
+  expect(metrics.terminalBox).not.toBeNull();
   expect(metrics.searchBox!.x).toBeGreaterThan(metrics.brandBox!.x + metrics.brandBox!.width);
   expect(metrics.searchBox!.x + metrics.searchBox!.width).toBeLessThan(metrics.navBox!.x);
+  expect(metrics.terminalPosition).toBe("sticky");
+  expect(metrics.terminalBox!.x).toBeGreaterThan(metrics.heroCopyBox!.x + metrics.heroCopyBox!.width * 0.72);
+  expect(Math.abs(metrics.terminalBox!.y - metrics.heroCopyBox!.y)).toBeLessThan(80);
+  expect(Math.max(...metrics.domainTops) - Math.min(...metrics.domainTops)).toBeLessThan(12);
 });
 
-test("post preview cards use the editorial cover-meta-title-summary-stats rhythm", async ({ page }) => {
+test("home recent notes keep the reference list rhythm and hover arrow interaction", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
 
-  const firstCard = page.locator(".post-card").first();
-  await expect(firstCard.locator(".post-cover--card")).toBeVisible();
-  await expect(firstCard.locator(".post-card-meta-row")).toBeVisible();
-  await expect(firstCard.locator('[data-meta-icon="calendar"]')).toBeVisible();
-  await expect(firstCard.locator(".post-card-title")).toBeVisible();
-  await expect(firstCard.locator(".post-card-summary")).toBeVisible();
-  await expect(firstCard.locator(".post-card-stats-row")).toBeVisible();
-  await expect(firstCard.locator('[data-meta-icon="clock"]')).toBeVisible();
-  await expect(firstCard.locator(".post-card-topics")).toBeVisible();
+  const firstItem = page.locator("[data-home-recent-item]").first();
+  await expect(firstItem.locator(".home-reference-recent-item__date")).toBeVisible();
+  await expect(firstItem.locator(".home-reference-recent-item__tag")).toBeVisible();
+  await expect(firstItem.locator(".home-reference-recent-item__title")).toBeVisible();
 
   const metrics = await page.evaluate(() => {
-    const grid = document.querySelector(".post-card-grid") as HTMLElement | null;
-    const card = document.querySelector(".post-card") as HTMLElement | null;
-    const title = document.querySelector(".post-card-title") as HTMLElement | null;
-    const meta = document.querySelector(".post-card-meta-row") as HTMLElement | null;
-    const summary = document.querySelector(".post-card-summary") as HTMLElement | null;
-    const stats = document.querySelector(".post-card-stats-row") as HTMLElement | null;
-    const tags = document.querySelector(".post-card-topics") as HTMLElement | null;
-    const endmark = document.querySelector(".post-card-endmark") as HTMLElement | null;
-    const cover = document.querySelector(".post-card .post-cover--card") as HTMLElement | null;
+    const item = document.querySelector("[data-home-recent-item]") as HTMLElement | null;
+    const meta = document.querySelector(".home-reference-recent-item__meta") as HTMLElement | null;
+    const title = document.querySelector(".home-reference-recent-item__title") as HTMLElement | null;
+    const arrow = document.querySelector(".home-reference-recent-item__arrow") as HTMLElement | null;
+    const tag = document.querySelector(".home-reference-recent-item__tag") as HTMLElement | null;
 
     return {
-      gridWidth: grid?.getBoundingClientRect().width ?? 0,
-      cardWidth: card?.getBoundingClientRect().width ?? 0,
-      metaTop: meta?.getBoundingClientRect().top ?? 0,
+      itemWidth: item?.getBoundingClientRect().width ?? 0,
+      metaWidth: meta?.getBoundingClientRect().width ?? 0,
+      metaLeft: meta?.getBoundingClientRect().left ?? 0,
+      titleLeft: title?.getBoundingClientRect().left ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
-      summaryTop: summary?.getBoundingClientRect().top ?? 0,
-      statsTop: stats?.getBoundingClientRect().top ?? 0,
-      tagsTop: tags?.getBoundingClientRect().top ?? 0,
-      endmarkTop: endmark?.getBoundingClientRect().top ?? 0,
-      titleFontSize: title ? Number.parseFloat(getComputedStyle(title).fontSize) : 0,
-      metaFontSize: meta ? Number.parseFloat(getComputedStyle(meta).fontSize) : 0,
-      statsFontSize: stats ? Number.parseFloat(getComputedStyle(stats).fontSize) : 0,
-      coverAspectRatio: cover ? getComputedStyle(cover).aspectRatio : ""
+      metaTop: meta?.getBoundingClientRect().top ?? 0,
+      arrowOpacity: arrow ? Number.parseFloat(getComputedStyle(arrow).opacity) : 0,
+      arrowTransform: arrow ? getComputedStyle(arrow).transform : "",
+      tagBackground: tag ? getComputedStyle(tag).backgroundColor : ""
     };
   });
 
-  expect(metrics.gridWidth).toBeGreaterThan(800);
-  expect(metrics.cardWidth).toBeGreaterThan(800);
-  expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
-  expect(metrics.titleFontSize).toBeGreaterThan(metrics.statsFontSize);
-  expect(metrics.metaTop).toBeLessThan(metrics.titleTop);
-  expect(metrics.titleTop).toBeLessThan(metrics.summaryTop);
-  expect(metrics.summaryTop).toBeLessThan(metrics.statsTop);
-  expect(metrics.statsTop).toBeLessThan(metrics.tagsTop);
-  expect(metrics.tagsTop).toBeLessThan(metrics.endmarkTop);
-  expect(metrics.coverAspectRatio).toBe("16 / 9");
+  expect(metrics.itemWidth).toBeGreaterThan(700);
+  expect(metrics.metaWidth).toBeGreaterThan(180);
+  expect(metrics.titleLeft).toBeGreaterThan(metrics.metaLeft + metrics.metaWidth - 12);
+  expect(Math.abs(metrics.metaTop - metrics.titleTop)).toBeLessThan(24);
+  expect(metrics.arrowOpacity).toBe(0);
+  expect(metrics.arrowTransform).not.toBe("none");
+  expect(metrics.tagBackground).not.toBe("rgba(0, 0, 0, 0)");
+
+  await firstItem.hover();
+  await page.waitForTimeout(320);
+
+  const hoverArrowOpacity = await firstItem
+    .locator(".home-reference-recent-item__arrow")
+    .evaluate((node) => Number.parseFloat(getComputedStyle(node).opacity));
+
+  expect(hoverArrowOpacity).toBeGreaterThan(0.7);
 });
 
 test("post pages use the article summary for both dek and meta description", async ({ page }) => {
@@ -209,6 +218,54 @@ test("post pages use the article summary for both dek and meta description", asy
   expect(metaDescription).toBe(expectedSummary);
   expect(ogDescription).toBe(expectedSummary);
   expect(twitterDescription).toBe(expectedSummary);
+});
+
+test("post pages emit article metadata when SITE_URL is configured", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+  await expect(page.locator('meta[property="article:published_time"]')).toHaveAttribute(
+    "content",
+    "2026-02-20T11:00:00+08:00"
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://myblog.example/posts/paragraph-anchor-design"
+  );
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+    "content",
+    "https://myblog.example/posts/paragraph-anchor-design"
+  );
+
+  const ogImage = await page.locator('meta[property="og:image"]').getAttribute("content");
+  const twitterImage = await page.locator('meta[name="twitter:image"]').getAttribute("content");
+  const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute("content");
+
+  expect(ogImage).toMatch(/^https:\/\/myblog\.example\//);
+  expect(twitterImage).toBe(ogImage);
+  expect(twitterCard).toBe("summary_large_image");
+});
+
+test("discover routes provide route-specific meta descriptions", async ({ page }) => {
+  const routes = [
+    "/",
+    "/topics",
+    "/topics/knowledge-network",
+    "/concepts/anchor-id",
+    "/archives",
+    "/author"
+  ];
+  const descriptions: string[] = [];
+
+  for (const route of routes) {
+    await page.goto(route);
+    const description = await page.locator('meta[name="description"]').getAttribute("content");
+    expect(description, route).toBeTruthy();
+    descriptions.push(description ?? "");
+  }
+
+  expect(new Set(descriptions).size).toBe(descriptions.length);
 });
 
 test("post footnotes keep their original reference numbers after rail reordering", async ({ page }) => {
@@ -338,17 +395,19 @@ test("paragraph-anchor article keeps the rollback note between the warmup note a
   expect(positions.optimisticFootnoteTop).toBeLessThan(positions.selectionBoundaryTop);
 });
 
-test("topic pages keep post preview cards centered in a single-column editorial stack", async ({ page }) => {
+test("topic pages adopt the discover detail runtime with poster hero and two-column post grid", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");
 
-  const grid = page.locator("[data-topic-posts] .post-card-grid");
+  await expect(page.locator("body")).toHaveAttribute("data-runtime", "discover");
+  await expect(page.locator("[data-discover-hero]")).toBeVisible();
+  const grid = page.locator("[data-topic-posts] .discover-post-grid");
   const firstCard = grid.locator(".post-card").first();
   await expect(grid).toBeVisible();
   await expect(firstCard).toBeVisible();
 
   const metrics = await page.evaluate(() => {
-    const gridEl = document.querySelector("[data-topic-posts] .post-card-grid") as HTMLElement | null;
+    const gridEl = document.querySelector("[data-topic-posts] .discover-post-grid") as HTMLElement | null;
     const cardEl = gridEl?.querySelector(".post-card") as HTMLElement | null;
     const gridStyle = gridEl ? getComputedStyle(gridEl) : null;
     const gridBox = gridEl?.getBoundingClientRect();
@@ -367,20 +426,22 @@ test("topic pages keep post preview cards centered in a single-column editorial 
     };
   });
 
-  expect(metrics.gridColumns.split(" ").length).toBe(1);
-  expect(metrics.gridWidth).toBeGreaterThan(800);
-  expect(metrics.cardWidth).toBeGreaterThan(800);
-  expect(metrics.leftGap).toBeGreaterThan(120);
-  expect(metrics.rightGap).toBeGreaterThan(120);
-  expect(Math.abs(metrics.leftGap - metrics.rightGap)).toBeLessThan(10);
+  expect(metrics.gridColumns.split(" ").length).toBe(2);
+  expect(metrics.gridWidth).toBeGreaterThan(900);
+  expect(metrics.cardWidth).toBeGreaterThan(360);
+  expect(metrics.cardWidth).toBeLessThan(metrics.gridWidth * 0.56);
+  expect(metrics.leftGap).toBeGreaterThan(24);
+  expect(metrics.rightGap).toBeGreaterThan(24);
 });
 
 test("archives page stays readable without mobile overflow", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/archives");
 
-  await expect(page.locator(".archives-hero")).toBeVisible();
-  await expect(page.locator(".archive-grid")).toBeVisible();
+  await expect(page.locator("[data-discover-hero]")).toBeVisible();
+  const archiveGrids = page.locator(".archive-grid");
+  await expect(archiveGrids.first()).toBeVisible();
+  expect(await archiveGrids.count()).toBeGreaterThan(0);
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
@@ -394,22 +455,23 @@ test("author page presents a structured research profile without mobile overflow
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/author");
 
-  await expect(page.locator(".author-hero")).toBeVisible();
+  await expect(page.locator("body")).toHaveAttribute("data-runtime", "discover");
+  await expect(page.locator("[data-discover-hero]")).toBeVisible();
   await expect(page.locator(".author-avatar")).toBeVisible();
-  await expect(page.locator(".author-role")).toContainText("专注大模型系统与安全");
-  await expect(page.locator(".author-mission")).toContainText("把大模型从“能回答问题”变成“能完成任务的系统”");
-  await expect(page.locator(".author-direction-grid")).toBeVisible();
-  await expect(page.locator(".author-practice-list")).toBeVisible();
-  await expect(page.locator(".author-focus-grid")).toBeVisible();
-  await expect(page.locator(".author-contact-list")).toBeVisible();
-  await expect(page.locator(".author-social-panel")).toBeVisible();
+  await expect(page.locator("[data-discover-hero] .discover-hero__panel-copy").getByText("AI 安全 USTC 硕士｜专注大模型系统与安全")).toBeVisible();
+  await expect(page.locator("[data-discover-hero] .discover-hero__panel-copy").getByText("把大模型从“能回答问题”变成“能完成任务的系统”")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "研究 / 技术方向" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "项目 / 实践" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "当前关注与博客定位" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "联系方式 / 外链" })).toBeVisible();
+  await expect(page.locator(".author-post-grid .post-card").first()).toBeVisible();
   await expect(page.locator(".author-social-card", { hasText: "GitHub" })).toContainText("0");
   await expect(page.locator(".author-social-card", { hasText: "小红书" })).toContainText("652");
   await expect(page.locator(".author-social-card", { hasText: "Telegram" })).toContainText("6");
   await expect(page.locator(".author-social-card", { hasText: "知乎" })).toContainText("--");
-  await expect(page.locator(".author-links").getByRole("link", { name: "Email", exact: true })).toBeVisible();
-  await expect(page.locator(".author-links").getByRole("link", { name: "GitHub", exact: true })).toBeVisible();
-  await expect(page.locator(".author-contact-list").getByRole("link", { name: /scholar\.google\.com/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /I\.OVE@outlook\.com/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /github\.com\/yuki-zik/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /scholar\.google\.com/ })).toBeVisible();
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
@@ -417,6 +479,27 @@ test("author page presents a structured research profile without mobile overflow
   }));
 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+});
+
+test("runtime matrix marks discover and reading routes explicitly", async ({ page }) => {
+  const cases = [
+    { path: "/", runtime: "discover" },
+    { path: "/topics", runtime: "discover" },
+    { path: "/topics/knowledge-network", runtime: "discover" },
+    { path: "/concepts/anchor-id", runtime: "discover" },
+    { path: "/author", runtime: "discover" },
+    { path: "/archives", runtime: "discover" },
+    { path: "/posts/paragraph-anchor-design", runtime: "reading" }
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.path);
+    await expect(page.locator("body")).toHaveAttribute("data-runtime", item.runtime);
+    await expect(page.locator("main")).toHaveAttribute("data-runtime", item.runtime);
+  }
+
+  await page.goto("/posts/paragraph-anchor-design");
+  await expect(page.locator(".discover-page__ambient")).toBeVisible();
 });
 
 test("post page collapses to a single mobile column and shows follow-up navigation", async ({ page }) => {
@@ -462,56 +545,53 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
   await expect(sidebar).toBeVisible();
   await expect(sidebar.locator("[data-toc-link].is-active")).toContainText("锚点规则");
 
-  const initialMetrics = await page.evaluate(() => {
-    const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
-    return {
-      progressHeight: progress?.getBoundingClientRect().height ?? 0,
-      progressTransform: progress ? getComputedStyle(progress).transform : "none"
-    };
-  });
-
-  await page.locator("h2", { hasText: "工程边界" }).evaluate((heading) => {
-    heading.scrollIntoView({ behavior: "auto", block: "start" });
-  });
-  await page.waitForFunction(() => {
+  await page.evaluate(() => {
     const heading = Array.from(document.querySelectorAll("h2")).find((node) => node.textContent?.includes("工程边界"));
     if (!(heading instanceof HTMLElement)) {
-      return false;
+      return;
     }
 
-    const top = heading.getBoundingClientRect().top;
-    return top > 70 && top < 180;
+    const targetTop = heading.getBoundingClientRect().top + window.scrollY - 120;
+    window.scrollTo({ top: targetTop, behavior: "instant" });
   });
-  await page.waitForFunction(() => {
-    const active = document.querySelector("[data-toc-link].is-active");
-    return active?.textContent?.includes("工程边界") ?? false;
-  });
+  await page.waitForTimeout(400);
 
   const activeMetrics = await page.evaluate(() => {
     const active = document.querySelector("[data-toc-link].is-active") as HTMLElement | null;
     const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
+    const track = document.querySelector(".toc-sidebar__track") as HTMLElement | null;
+    const heading = Array.from(document.querySelectorAll("h2")).find((node) => node.textContent?.includes("工程边界")) as
+      | HTMLElement
+      | undefined;
+    const progressRect = progress?.getBoundingClientRect();
+    const trackRect = track?.getBoundingClientRect();
     return {
       activeText: active?.textContent ?? "",
       progressHeight: progress?.getBoundingClientRect().height ?? 0,
-      progressTransform: progress ? getComputedStyle(progress).transform : "none"
+      headingTop: heading?.getBoundingClientRect().top ?? 0,
+      progressWithinTrack:
+        !!progressRect &&
+        !!trackRect &&
+        progressRect.top >= trackRect.top - 1 &&
+        progressRect.bottom <= trackRect.bottom + 1
     };
   });
 
   expect(activeMetrics.activeText).toContain("工程边界");
   expect(activeMetrics.progressHeight).toBeGreaterThanOrEqual(40);
-  expect(activeMetrics.progressTransform).not.toBe(initialMetrics.progressTransform);
+  expect(activeMetrics.headingTop).toBeGreaterThan(70);
+  expect(activeMetrics.headingTop).toBeLessThan(180);
+  expect(activeMetrics.progressWithinTrack).toBe(true);
 
   await sidebar.locator("[data-toc-link]").filter({ hasText: "状态与回滚" }).click();
-  await page.waitForFunction(() => {
-    const active = document.querySelector("[data-toc-link].is-active");
-    const heading = Array.from(document.querySelectorAll("h3")).find((node) => node.textContent?.includes("状态与回滚"));
-    if (!(heading instanceof HTMLElement)) {
-      return false;
-    }
-
-    const top = heading.getBoundingClientRect().top;
-    return (active?.textContent?.includes("状态与回滚") ?? false) && top > 70 && top < 180;
-  });
+  await page.waitForFunction(
+    () => {
+      const active = document.querySelector("[data-toc-sidebar] [data-toc-link].is-active");
+      return active?.textContent?.includes("状态与回滚") ?? false;
+    },
+    { timeout: 5000 }
+  );
+  await page.waitForTimeout(250);
 
   const clickMetrics = await page.evaluate(() => {
     const active = document.querySelector("[data-toc-link].is-active") as HTMLElement | null;
@@ -525,6 +605,82 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
   expect(clickMetrics.activeText).toContain("状态与回滚");
   expect(clickMetrics.top).toBeGreaterThan(70);
   expect(clickMetrics.top).toBeLessThan(180);
+});
+
+test("article toc sidebar keeps the last section visible and the progress rail intact near the bottom", async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 1440, height: 760 });
+  await page.goto("/posts/myblog-design-manual");
+
+  await page.evaluate(() => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+  });
+
+  await page.waitForFunction(() => {
+    const active = document.querySelector("[data-toc-link].is-active");
+    const body = document.querySelector("[data-toc-sidebar-body]") as HTMLElement | null;
+    return (
+      (active?.textContent?.includes("References") ?? false) &&
+      !!body &&
+      body.scrollTop > 0
+    );
+  });
+
+  await page.waitForTimeout(400);
+
+  const metrics = await page.evaluate(() => {
+    const body = document.querySelector("[data-toc-sidebar-body]") as HTMLElement | null;
+    const track = document.querySelector(".toc-sidebar__track") as HTMLElement | null;
+    const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
+    const active = document.querySelector("[data-toc-sidebar] [data-toc-link].is-active") as HTMLElement | null;
+    const item = active?.closest("[data-toc-item]") as HTMLElement | null;
+    const bodyRect = body?.getBoundingClientRect();
+    const itemRect = item?.getBoundingClientRect();
+    const activeRect = active?.getBoundingClientRect();
+    const trackRect = track?.getBoundingClientRect();
+    const progressRect = progress?.getBoundingClientRect();
+
+    return {
+      activeText: active?.textContent ?? "",
+      bodyScrollTop: body?.scrollTop ?? 0,
+      itemVisible:
+        !!bodyRect &&
+        !!itemRect &&
+        itemRect.top >= bodyRect.top - 1 &&
+        itemRect.bottom <= bodyRect.bottom + 1,
+      progressWithinTrack:
+        !!trackRect &&
+        !!progressRect &&
+        progressRect.top >= trackRect.top - 1 &&
+        progressRect.bottom <= trackRect.bottom + 1,
+      progressBottomDelta: trackRect && progressRect ? progressRect.bottom - trackRect.bottom : 0,
+      progressTopVsActiveTop: progressRect && activeRect ? progressRect.top - activeRect.top : 0,
+      progressBottomVsActiveBottom: progressRect && activeRect ? progressRect.bottom - activeRect.bottom : 0
+    };
+  });
+
+  expect(metrics.activeText).toContain("References");
+  expect(metrics.bodyScrollTop).toBeGreaterThan(0);
+  expect(metrics.itemVisible).toBe(true);
+  expect(metrics.progressWithinTrack).toBe(true);
+  expect(metrics.progressBottomDelta).toBeLessThanOrEqual(1);
+  expect(Math.abs(metrics.progressTopVsActiveTop)).toBeLessThanOrEqual(24);
+  expect(Math.abs(metrics.progressBottomVsActiveBottom)).toBeLessThanOrEqual(24);
+});
+
+test("mobile article toc closes after selecting a heading on tablet widths", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const mobileToc = page.locator("[data-post-toc-mobile]");
+  await expect(mobileToc).toBeVisible();
+  await mobileToc.evaluate((node) => {
+    (node as HTMLDetailsElement).open = true;
+  });
+  await mobileToc.locator("[data-toc-link]").filter({ hasText: "工程边界" }).click();
+
+  await expect(mobileToc).not.toHaveAttribute("open", "");
 });
 
 test("article header transitions through top, compact, hidden, and restores on upward scroll", async ({ page }) => {
@@ -658,8 +814,12 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       paperBandShadow: layoutBandStyles?.boxShadow ?? "",
       paperBandRadius: layoutBandStyles ? Number.parseFloat(layoutBandStyles.borderTopLeftRadius) : 0,
       scholarRailPaddingLeft: scholarRailStyles ? Number.parseFloat(scholarRailStyles.paddingLeft) : 0,
+      scholarRailPaddingRight: scholarRailStyles ? Number.parseFloat(scholarRailStyles.paddingRight) : 0,
       scholarNoteWidth: scholarNote?.getBoundingClientRect().width ?? 0,
       scholarNoteBodyWidth: scholarNoteBody?.getBoundingClientRect().width ?? 0,
+      scholarNoteLeft: scholarNote?.getBoundingClientRect().left ?? 0,
+      scholarNoteRight: scholarNote?.getBoundingClientRect().right ?? 0,
+      scholarRailRight: scholarRail?.getBoundingClientRect().right ?? 0,
       firstParagraphRight: firstParagraph?.getBoundingClientRect().right ?? 0,
       firstH2Counter: h2BeforeStyles?.content ?? "",
       firstH2CounterColor: h2BeforeStyles?.color ?? "",
@@ -686,8 +846,8 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.titleCardRadius).toBe(0);
   expect(metrics.titleCardShadow).toBe("none");
   expect(metrics.titleCardBackgroundImage).toBe("none");
-  expect(metrics.firstParagraphWidth).toBeGreaterThan(640);
-  expect(metrics.firstParagraphWidth).toBeLessThan(740);
+  expect(metrics.firstParagraphWidth).toBeGreaterThan(715);
+  expect(metrics.firstParagraphWidth).toBeLessThan(810);
   expect(metrics.paperBandRadius).toBeGreaterThanOrEqual(20);
   expect(metrics.paperBandShadow).not.toBe("none");
   expect(metrics.paperBandBackgroundImage).toContain("gradient");
@@ -695,10 +855,14 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.articleShadow).toBe("none");
   expect(metrics.articleBackgroundImage).toBe("none");
   expect(metrics.articleBackgroundColor).toBe("rgba(0, 0, 0, 0)");
-  expect(metrics.scholarRailPaddingLeft).toBeGreaterThanOrEqual(4);
-  expect(metrics.scholarRailPaddingLeft).toBeLessThanOrEqual(10);
+  expect(metrics.scholarRailPaddingLeft).toBeGreaterThanOrEqual(2);
+  expect(metrics.scholarRailPaddingLeft).toBeLessThanOrEqual(6);
+  expect(metrics.scholarRailPaddingRight).toBeGreaterThanOrEqual(8);
+  expect(metrics.scholarRailPaddingRight).toBeLessThanOrEqual(14);
   expect(metrics.scholarNoteWidth).toBeGreaterThanOrEqual(268);
   expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(275);
+  expect(metrics.scholarNoteLeft - metrics.firstParagraphRight).toBeLessThanOrEqual(78);
+  expect(metrics.scholarRailRight - metrics.scholarNoteRight).toBeGreaterThanOrEqual(6);
   expect(metrics.coverTop).toBeLessThan(metrics.metaTop);
   expect(metrics.coverBorderWidth).toBe(0);
   expect(metrics.coverShadow).toBe("none");
@@ -713,7 +877,7 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.statsFontSize);
   expect(metrics.dividerWidth).toBeGreaterThan(70);
-  expect(metrics.dividerWidth).toBeLessThan(160);
+  expect(metrics.dividerWidth).toBeLessThan(148);
   expect(metrics.firstH2Counter).not.toBe("none");
   expect(metrics.firstH2Counter).toContain("SECTION");
   expect(metrics.firstH2CounterColor).not.toBe("rgb(47, 52, 64)");
@@ -730,8 +894,8 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.coverImageBorderWidth).toBeGreaterThanOrEqual(1);
   expect(metrics.coverGhostCount).toBe(1);
   expect(metrics.coverGhostFilter).toContain("blur");
-  expect(metrics.coverGhostOpacity).toBeGreaterThan(0.4);
-  expect(metrics.coverGhostOpacity).toBeLessThan(0.7);
+  expect(metrics.coverGhostOpacity).toBeGreaterThan(0.52);
+  expect(metrics.coverGhostOpacity).toBeLessThan(0.88);
   expect(metrics.coverGhostPosition).toBe("absolute");
   expect(metrics.coverGhostTransform).not.toBe("none");
   expect(metrics.coverImageFilter).not.toContain("drop-shadow");
@@ -739,6 +903,66 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.dekFontStyle).toBe("normal");
   expect(metrics.tocOpacity).toBeGreaterThan(0.8);
   expect(metrics.tocOpacity).toBeLessThanOrEqual(1);
+});
+
+test("article markdown blocks stay within the same reading measure", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/ant-ai-coding-review");
+
+  const metrics = await page.evaluate(() => {
+    const parseColor = (value: string) => {
+      const rgbMatch = value.match(/^rgba?\(([^)]+)\)$/);
+      if (rgbMatch) {
+        return rgbMatch[1]
+          .split(",")
+          .slice(0, 3)
+          .map((part) => Number.parseFloat(part.trim()));
+      }
+
+      const srgbMatch = value.match(/^color\(srgb ([^ ]+) ([^ ]+) ([^ )/]+)/);
+      if (srgbMatch) {
+        return srgbMatch.slice(1, 4).map((part) => Number.parseFloat(part) * 255);
+      }
+
+      return [0, 0, 0];
+    };
+
+    const body = document.querySelector(".post-body--scholarly") as HTMLElement | null;
+    const paragraph = body?.querySelector("p[data-anchor], p") as HTMLElement | null;
+    const list = body?.querySelector("ul, ol") as HTMLElement | null;
+    const firstListItem = list?.querySelector("li") as HTMLElement | null;
+    const readableBlocks = Array.from(body?.children ?? []).filter((node) =>
+      node.matches("ul, ol, pre, table, blockquote, figure")
+    ) as HTMLElement[];
+    const rule = body?.querySelector("hr") as HTMLElement | null;
+    const selectionStyles = paragraph ? getComputedStyle(paragraph, "::selection") : null;
+    const bodyBackground = getComputedStyle(document.body).backgroundColor;
+    const [selectionR, selectionG, selectionB] = parseColor(selectionStyles?.backgroundColor ?? "");
+    const [bodyR, bodyG, bodyB] = parseColor(bodyBackground);
+
+    return {
+      paragraphWidth: paragraph?.getBoundingClientRect().width ?? 0,
+      listWidth: list?.getBoundingClientRect().width ?? 0,
+      listTextInset:
+        paragraph && firstListItem
+          ? firstListItem.getBoundingClientRect().left - paragraph.getBoundingClientRect().left
+          : 0,
+      widestReadableWidth: readableBlocks.reduce(
+        (max, node) => Math.max(max, node.getBoundingClientRect().width),
+        0
+      ),
+      ruleWidth: rule?.getBoundingClientRect().width ?? 0,
+      selectionContrastFromBody: Math.hypot(selectionR - bodyR, selectionG - bodyG, selectionB - bodyB)
+    };
+  });
+
+  expect(metrics.paragraphWidth).toBeGreaterThanOrEqual(720);
+  expect(metrics.listWidth).toBeLessThanOrEqual(metrics.paragraphWidth - 120);
+  expect(metrics.listTextInset).toBeLessThanOrEqual(32);
+  expect(metrics.widestReadableWidth).toBeLessThanOrEqual(metrics.paragraphWidth + 1);
+  expect(metrics.ruleWidth).toBeGreaterThanOrEqual(metrics.widestReadableWidth - 12);
+  expect(metrics.ruleWidth).toBeLessThanOrEqual(metrics.paragraphWidth + 1);
+  expect(metrics.selectionContrastFromBody).toBeGreaterThan(28);
 });
 
 test("article layout expands on ultra-wide screens without oversized gutters", async ({ page }) => {
@@ -783,12 +1007,34 @@ test("article layout expands on ultra-wide screens without oversized gutters", a
   expect(metrics.railWidth).toBeLessThanOrEqual(360);
   expect(metrics.titleWidth).toBeGreaterThanOrEqual(1180);
   expect(metrics.titleWidth).toBeGreaterThan(metrics.mainWidth);
-  expect(metrics.bodyWidth).toBeGreaterThanOrEqual(720);
-  expect(metrics.bodyWidth).toBeLessThanOrEqual(780);
+  expect(metrics.bodyWidth).toBeGreaterThanOrEqual(790);
+  expect(metrics.bodyWidth).toBeLessThanOrEqual(860);
   expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(290);
   expect(metrics.firstNoteTop).toBeGreaterThan(metrics.titleBottom);
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeGreaterThanOrEqual(180);
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeLessThanOrEqual(260);
   expect((metrics.shellLeft + metrics.shellWidth) - metrics.railRight).toBeGreaterThanOrEqual(220);
-  expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 240);
+  expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 170);
+});
+
+test("full-screen reading layout keeps the toc close to the body container", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1200 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const metrics = await page.evaluate(() => {
+    const toc = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
+    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
+
+    return {
+      railToTocGap:
+        toc && rail ? toc.getBoundingClientRect().left - rail.getBoundingClientRect().right : 0,
+      tocWidth: toc?.getBoundingClientRect().width ?? 0,
+      railWidth: rail?.getBoundingClientRect().width ?? 0
+    };
+  });
+
+  expect(metrics.tocWidth).toBeGreaterThanOrEqual(190);
+  expect(metrics.railWidth).toBeGreaterThanOrEqual(300);
+  expect(metrics.railToTocGap).toBeGreaterThanOrEqual(24);
+  expect(metrics.railToTocGap).toBeLessThanOrEqual(60);
 });

@@ -79,10 +79,46 @@ test("archive card navigates to post detail", async ({ page }) => {
   await expect(page).toHaveURL(/\/posts\//);
 });
 
+test("archive cards lift as full tiles instead of only animating the cover", async ({ page }) => {
+  await page.goto("/archives");
+
+  const tile = page.locator("[data-archive-card]").first();
+  const link = tile.locator(".archive-post-link");
+  await expect(tile).toBeVisible();
+
+  const before = await tile.evaluate((el) => {
+    const tileStyles = getComputedStyle(el);
+    const titleEl = el.querySelector(".archive-post-content h3") as HTMLElement | null;
+    return {
+      transform: tileStyles.transform,
+      boxShadow: tileStyles.boxShadow,
+      titleColor: titleEl ? getComputedStyle(titleEl).color : ""
+    };
+  });
+
+  await link.hover();
+  await page.waitForTimeout(180);
+
+  const after = await tile.evaluate((el) => {
+    const tileStyles = getComputedStyle(el);
+    const titleEl = el.querySelector(".archive-post-content h3") as HTMLElement | null;
+    return {
+      transform: tileStyles.transform,
+      boxShadow: tileStyles.boxShadow,
+      titleColor: titleEl ? getComputedStyle(titleEl).color : ""
+    };
+  });
+
+  expect(after.transform).not.toBe("none");
+  expect(after.transform).not.toBe(before.transform);
+  expect(after.boxShadow).not.toBe(before.boxShadow);
+  expect(after.titleColor).not.toBe(before.titleColor);
+});
+
 test("header and homepage provide archive entry", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator("[data-home-archive-entry]")).toBeVisible();
+  await expect(page.locator('.home-reference-hero__button--primary[href="/archives"]')).toBeVisible();
   await page.locator('header .site-nav a[href="/archives"]').click();
   await expect(page).toHaveURL("/archives");
 });

@@ -31,19 +31,33 @@ const coverSizes =
 <figure
   class:list={["post-cover", `post-cover--${variant}`, !hasManualCover && "post-cover--fallback"]}
   data-post-cover={variant}
+  data-post-cover-manual={hasManualCover ? "true" : "false"}
 >
   {
     hasManualCover ? (
-      <Image
-        src={post.data.cover!.src}
-        alt={post.data.cover!.alt}
-        width={1600}
-        height={900}
-        class="post-cover-image"
-        loading={variant === "hero" ? "eager" : "lazy"}
-        decoding="async"
-        sizes={coverSizes}
-      />
+      <div class="post-cover-stack" data-post-cover-stack="manual">
+        <Image
+          src={post.data.cover!.src}
+          alt=""
+          aria-hidden="true"
+          width={1600}
+          height={900}
+          class="post-cover-img post-cover-img--ghost"
+          loading={variant === "hero" ? "eager" : "lazy"}
+          decoding="async"
+          sizes={coverSizes}
+        />
+        <Image
+          src={post.data.cover!.src}
+          alt={post.data.cover!.alt}
+          width={1600}
+          height={900}
+          class="post-cover-img post-cover-img--main"
+          loading={variant === "hero" ? "eager" : "lazy"}
+          decoding="async"
+          sizes={coverSizes}
+        />
+      </div>
     ) : (
       <div
         class="post-cover-fallback"

@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-03-14 (local session)
+Last updated: 2026-04-11 (design manual + browser verification policy session)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -25,7 +25,7 @@ Last updated: 2026-03-14 (local session)
 **并行与子 Agent 推理强度**
 
 - 默认并行处理独立任务（检索、文档核对、测试排查、可拆分实现），并确保写入范围不重叠。
-- 子 Agent 推理强度分级：`low` / `medium` / `high` / `xhigh`，默认 `high`。
+- 子 Agent 推理强度分级：`low` / `medium` / `high` / `xhigh`，默认 `xhigh`。
 - 关键路径收敛和最终集成由主 Agent 完成。
 
 ## 1) Project Goal
@@ -70,9 +70,10 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 - Waline wrapper: `src/components/comments/WalineComments.tsx`
 - Waline theme integration: `src/styles/waline.css`
 - Rule:
-  - article pages mount Waline with `path=/posts/<slug>`
+  - article pages mount Waline with `path=/posts/<slug>` and `client:visible`
   - dark mode follows `html[data-theme="dark"]`
   - when `PUBLIC_WALINE_SERVER_URL` is missing, the wrapper renders a configuration hint instead of crashing
+  - when Waline `init()` throws, the wrapper renders a runtime error hint instead of tearing down the page
 
 ## 3) Cloud/Deployment Progress
 
@@ -87,6 +88,10 @@ Frontend/public vars:
 
 - `PUBLIC_WALINE_SERVER_URL` = Waline service URL
 
+Build-time vars:
+
+- `SITE_URL` = canonical / OG absolute URL base used by Astro `site` and page metadata
+
 ## 5) Validation Status
 
 ### 5.1 Local checks
@@ -99,6 +104,30 @@ Frontend/public vars:
 
 1. On `/posts/paragraph-anchor-design`, confirm Waline can load and submit against the configured server.
 2. Confirm `PUBLIC_WALINE_SERVER_URL` exists for both Production and Preview in Vercel.
+
+### 5.3 Conditional browser/screenshot review
+
+Do **not** treat screenshot review as a blanket requirement for every change. Use a real browser plus at least one targeted screenshot only when the change can be "technically green but visually or behaviorally wrong" in the browser.
+
+Trigger browser/screenshot review when a change affects one or more of these areas:
+
+- rendered layout, spacing, typography, color, theme, cover art, cards, or any other visual presentation
+- a new page/route/content surface whose correctness depends on how the page actually renders in the browser
+- browser-owned behavior such as responsive breakpoints, scroll states, sticky/fixed positioning, modals/lightboxes/drawers, TOC/highlight sync, theme toggle, localStorage-backed UI state, reduced-motion, or React/Astro hydration boundaries
+- user-reported issues described in visual or interaction terms, such as "错位", "太宽", "不显示", "会跳", "层级不对"
+
+You can skip browser/screenshot review when the change is limited to:
+
+- server-only, build-only, config-only, schema-only, or test-only work with no user-visible rendering impact
+- documentation or pure content edits that do not introduce new visual assets, new routes, new interactive mounts, or template/layout changes
+- internal refactors already covered by automated checks where browser state, media queries, and visual composition are not part of the risk
+
+When browser review is triggered, keep it scoped:
+
+1. Run the project checks first.
+2. Open only the affected route(s) and state(s) in a real browser.
+3. Capture screenshot evidence only for the surfaces touched by the change; do not mechanically screenshot the whole site.
+4. If the change is responsive or theme-sensitive, inspect only the impacted breakpoint/theme combinations rather than every matrix permutation.
 
 ## 6) Key Files Index (for new agent)
 
@@ -137,3 +166,31 @@ Frontend/public vars:
 - Repository is on `main` tracking `origin/main`.
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
+
+## 9) Frontend Rewrite Guardrails
+
+- Treat the repo as **two runtimes**: the shared editorial shell (`src/layouts/BaseLayout.astro` + global chrome/styles) and the article-specific scholarly reader (`src/pages/posts/[slug].astro` + TOC/rail/comments runtime). Do not plan the rewrite as “all pages same difficulty”.
+- The home route remains the most reference-faithful page (`src/pages/index.astro` + `src/styles/home-reference.css` + `src/components/home/HomeReferenceFooter.astro` + `src/lib/home/selectors.ts`), but non-article discover routes now share a common runtime shell via `src/components/discover/*`, `src/styles/discover.css`, and `runtime="discover"` on `BaseLayout`. Treat homepage-specific classes as refinements on top of the shared discover family, not a separate ad-hoc island.
+- `src/layouts/BaseLayout.astro` now emits explicit `body/main[data-runtime]` and `footerVariant`; `src/components/UiControllers.astro` owns reveal/theme/header/back-to-top/domains-carousel/social-stats/reading-progress initialization. Do not reintroduce page-scoped inline scripts unless the user explicitly approves breaking that controller boundary.
+- `src/styles/home-reference.css` still owns the full-bleed home background and footer polish, but runtime switching no longer depends on `body:has(main.shell--home-reference)`. If a discover page loses its background, first check `runtime="discover"` in `BaseLayout` and `src/styles/discover.css`; if only the homepage loses fidelity, then inspect `home-reference.css`.
+- The home `关注领域` section is no longer a server-picked quartet. Current behavior is: render the full topic pool, but on desktop constrain it to a **4-card viewport** with horizontal movement via prev/next controls, arrow keys, and wheel-to-horizontal mapping. If this section ever looks static again, inspect `src/pages/index.astro` and the `home-reference-domains-viewport` rules in `src/styles/home-reference.css` before changing the data layer.
+- `src/components/post/PostCover.astro` + `src/styles/cards.css` now define the shared **manual cover stack** contract for non-reading surfaces: topic/concept cards, archive tiles, and the home featured card should reuse the same `ghost + main` image structure, white rim, misty blur spread, and hover lift instead of forking bespoke cover treatments. If homepage featured imagery diverges, fix the shared cover primitive first.
+- The author page is no longer exempt from that card language: the "作者文章" section should prefer `PostCard.astro` over ad-hoc text-only lists so users can actually perceive the shared cover/hover system outside the home route. If author posts look visually disconnected again, start by checking whether `src/pages/author.astro` still renders `PostCard`.
+- Archive pages still keep their time-ledger structure, but `archive-post-tile` should behave like a first-class shared card, not a static thumbnail row. Regressions to watch for are: only the image animates while the tile body stays inert, or the read cue/title no longer react on hover.
+- The home primary CTA color is part of the reference fidelity contract. Regressions tend to show up first in `light` vs `system-on-dark` theme branches, so changes to `src/styles/home-reference.css` should be checked against both explicit dark mode and `:root[data-theme="system"]` with `prefers-color-scheme: dark`.
+- The current `参考项目/` directory contains a small Vite/Tailwind UI demo (`remix_-misty-shadows-ui-gallery.zip`) that is useful as a **visual reference only**. Do not treat it as an architecture reference for routing, content modeling, comments, or build setup.
+- Preserve these contracts unless the user explicitly approves breaking them:
+  - paragraph anchor ids from `src/lib/markdown/rehypeParagraphAnchors.ts`
+  - `note-*` / `ref-*` GFM footnote semantics from `src/lib/markdown/rehypeTufteFootnotes.ts`
+  - scholar rail ordering/model from `src/lib/posts/postScholarRail.ts`
+  - search endpoint `/search-index.json`
+  - Waline mount boundary in `src/components/comments/WalineComments.tsx`
+- Suggested rewrite order:
+  1. Shared shell / chrome (`BaseLayout`, header, search, theme toggle, footer)
+  2. Home + topic/concept/list pages + card language
+  3. Article reading runtime (`article.css`, TOC, scholar rail, reading layout)
+  4. Author / archives special pages
+- The main CSS hotspots are `src/styles/article.css`, `src/styles/layout.css`, `src/styles/author.css`, `src/styles/cards.css`, and `src/styles/toc.css`. Prefer further decomposition before large visual changes in those files.
+- Current runtime map:
+  - `discover`: `/`, `/topics`, `/topics/[slug]`, `/concepts/[slug]`, `/author`, `/archives`
+  - `reading`: `/posts/[slug]`

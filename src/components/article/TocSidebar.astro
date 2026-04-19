@@ -22,10 +22,10 @@ function sectionLabel(index: number): string {
       aria-label={title}
       style={accent ? `--toc-accent: ${accent};` : undefined}
     >
-      <div class="toc-sidebar__body" data-toc-sidebar-body>
-        <span class="toc-sidebar__track" aria-hidden="true"></span>
-        <span class="toc-sidebar__progress" data-toc-progress aria-hidden="true"></span>
+      <span class="toc-sidebar__track" aria-hidden="true"></span>
+      <span class="toc-sidebar__progress" data-toc-progress aria-hidden="true"></span>
 
+      <div class="toc-sidebar__body" data-toc-sidebar-body>
         <ol class="toc-sidebar__list" data-toc-list>
           {
             items.map((item, index) => (
@@ -94,6 +94,7 @@ function sectionLabel(index: number): string {
     --toc-text-faint: color-mix(in srgb, var(--text-meta) 88%, transparent 12%);
     --toc-hover: color-mix(in srgb, var(--surface-primary) 72%, transparent 28%);
     --toc-child-track: color-mix(in srgb, var(--border-default) 62%, transparent 38%);
+    position: relative;
     display: block;
     color: var(--toc-text);
   }
@@ -117,6 +118,7 @@ function sectionLabel(index: number): string {
     top: 0.34rem;
     width: 3px;
     border-radius: 999px;
+    pointer-events: none;
   }
 
   .toc-sidebar__track {
@@ -129,9 +131,9 @@ function sectionLabel(index: number): string {
     background: var(--toc-accent);
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--toc-accent) 14%, transparent 86%);
     transition:
-      transform 180ms var(--ease-out, ease),
-      height 180ms var(--ease-out, ease),
-      opacity 180ms var(--ease-out, ease);
+      transform 320ms var(--ease-out, ease),
+      height 320ms var(--ease-out, ease),
+      opacity 320ms var(--ease-out, ease);
   }
 
   .toc-sidebar__list,

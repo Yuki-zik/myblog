@@ -44,7 +44,7 @@ export function buildPostToc(headings: TocHeadingLike[]): PostTocItem[] {
     }
 
     if (h2Index === 0) {
-      h2Index = 1;
+      return;
     }
     h3Index += 1;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { init, type WalineInstance } from "@waline/client";
 
 interface WalineCommentsProps {
@@ -11,35 +11,50 @@ export default function WalineComments({
   path,
 }: WalineCommentsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [runtimeError, setRuntimeError] = useState<string | null>(null);
   const serverURL = import.meta.env.PUBLIC_WALINE_SERVER_URL;
 
   useEffect(() => {
     const container = containerRef.current;
 
     if (!serverURL || !container) {
+      setRuntimeError(null);
       return;
     }
 
     container.dataset.walineReady = "initializing";
-    const waline: WalineInstance | null = init({
-      el: container,
-      serverURL,
-      path,
-      lang: "zh-CN",
-      dark: 'html[data-theme="dark"]',
-      login: "disable",
-      meta: ["nick", "mail", "link"],
-      requiredMeta: ["nick"],
-      emoji: false,
-      reaction: false,
-      search: false,
-      pageview: false,
-      locale: {
-        placeholder: "写下你的评论，支持 Markdown。",
-        sofa: "还没有评论，来留下第一条。",
-        submit: "发送评论",
-      },
-    });
+    setRuntimeError(null);
+
+    let waline: WalineInstance | null = null;
+    try {
+      waline = init({
+        el: container,
+        serverURL,
+        path,
+        lang: "zh-CN",
+        dark: 'html[data-theme="dark"]',
+        login: "disable",
+        meta: ["nick", "mail", "link"],
+        requiredMeta: ["nick"],
+        emoji: false,
+        reaction: false,
+        search: false,
+        pageview: false,
+        locale: {
+          placeholder: "写下你的评论，支持 Markdown。",
+          sofa: "还没有评论，来留下第一条。",
+          submit: "发送评论",
+        },
+      });
+    } catch (error) {
+      delete container.dataset.walineReady;
+      setRuntimeError(
+        error instanceof Error && error.message
+          ? `评论服务初始化失败：${error.message}`
+          : "评论服务初始化失败，请稍后重试。"
+      );
+      return;
+    }
     container.dataset.walineReady = "true";
 
     return () => {
@@ -58,11 +73,22 @@ export default function WalineComments({
       </div>
 
       {serverURL ? (
-        <div
-          ref={containerRef}
-          className="waline-comments__mount"
-          data-waline-mount
-        />
+        <>
+          <div
+            ref={containerRef}
+            className="waline-comments__mount"
+            data-waline-mount
+          />
+          {runtimeError ? (
+            <p
+              className="waline-comments__config"
+              data-testid="waline-runtime-error"
+              role="status"
+            >
+              {runtimeError}
+            </p>
+          ) : null}
+        </>
       ) : (
         <p className="waline-comments__config">
           缺少 `PUBLIC_WALINE_SERVER_URL`，当前未启用评论服务。

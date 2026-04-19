@@ -1,7 +1,13 @@
-﻿---
+---
+import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
-import PostCard from "../components/post/PostCard.astro";
+import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  pickFeaturedHomePost,
+  pickRecentHomePosts
+} from "../lib/home/selectors";
+import { getPostDateISO } from "../lib/posts/date";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
 
 const [topics, posts, concepts] = await Promise.all([
@@ -10,147 +16,364 @@ const [topics, posts, concepts] = await Promise.all([
   getCollection("concepts")
 ]);
 
-const sortedTopics = topics.sort((a, b) => {
+const sortedTopics = [...topics].sort((a, b) => {
   const orderA = a.data.order ?? Number.POSITIVE_INFINITY;
   const orderB = b.data.order ?? Number.POSITIVE_INFINITY;
+
   if (orderA !== orderB) {
     return orderA - orderB;
   }
+
   return a.data.title.localeCompare(b.data.title, "zh-CN");
 });
 
-const latestPosts = [...posts]
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
-  .slice(0, 6);
+const topicTitleBySlug = new Map(sortedTopics.map((topic) => [topic.slug, topic.data.title]));
 
 const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
   post.data.topics.forEach((topicSlug) => {
     acc[topicSlug] = (acc[topicSlug] ?? 0) + 1;
   });
+
   return acc;
 }, {});
 
-const heroLinks = SITE_AUTHOR_PROFILE.socials?.github
-  ? [
-      {
-        href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
-        label: "GitHub",
-        external: true
-      },
-      { href: "/author", label: "作者页" },
-      { href: "/archives", label: "阅读档案" }
-    ]
-  : [
-      { href: "/author", label: "作者页" },
-      { href: "/archives", label: "阅读档案" }
-    ];
+const featuredPost = pickFeaturedHomePost(posts);
+const recentPosts = pickRecentHomePosts(posts, featuredPost?.slug, 5);
+const homeDomainsLoopable = sortedTopics.length > 4;
 
-const heroNotes = [
-  {
-    title: "Topic-first",
-    body: "用主题而不是时间流组织知识，减少读者的入口噪声。"
-  },
-  {
-    title: "Paragraph-aware",
-    body: "评论贴附到段落边缘，讨论与上下文保持稳定关联。"
-  },
-  {
-    title: "Research-ready",
-    body: "适合长文、代码、脚注、参考文献和持续迭代的技术写作。"
-  }
-];
+const featuredTopicLabel = featuredPost?.data.topics[0]
+  ? topicTitleBySlug.get(featuredPost.data.topics[0]) ?? featuredPost.data.topics[0]
+  : "精选文章";
+
+const primaryCta = {
+  href: "/archives",
+  label: "翻阅归档"
+};
+
+const secondaryCta = SITE_AUTHOR_PROFILE.socials?.github
+  ? {
+      href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
+      label: "查看源码",
+      external: true
+    }
+  : {
+      href: "/author",
+      label: "作者页",
+      external: false
+    };
+
+const heroIssueNumber = String(posts.length).padStart(2, "0");
+const terminalTracks = SITE_AUTHOR_PROFILE.researchTracks?.slice(0, 3) ?? [];
+const terminalScope = SITE_AUTHOR_PROFILE.blogScope?.slice(0, 3) ?? [];
+const homeDescription =
+  "以主题为入口组织大模型系统、安全研究与 Agent 工程笔记，把文章、概念和实践串成可浏览的知识网络。";
 ---
 
-<BaseLayout title="MyBlog | 主题化知识网络">
-  <section class="home-hero content-section" data-ux-reveal="fade-up" aria-label="博客简介">
-    <div class="home-hero-copy">
-      <p class="home-hero-kicker">A-Znk · AI / 技术研究博客</p>
-      <h1 class="home-hero-title">主题先行的研究型个人博客</h1>
-      <p class="home-hero-sub">
-        从主题地图进入，用文章展开判断，在段落边缘留下批注。
-        这里记录 AI、技术和知识组织方式，而不是一条只会被时间冲走的 feed。
-      </p>
-      <div class="home-hero-actions">
-        <a href="/topics" class="home-hero-btn home-hero-btn--primary">浏览主题</a>
-        <a href="/archives" class="home-hero-btn home-hero-btn--ghost">进入归档</a>
-      </div>
-      <div class="home-hero-links" aria-label="站点快捷入口">
-        {heroLinks.map((link) => (
-          <a
-            href={link.href}
-            class="home-hero-link"
-            target={link.external ? "_blank" : undefined}
-            rel={link.external ? "noreferrer noopener" : undefined}
-          >
-            {link.label}
-          </a>
-        ))}
-      </div>
+<BaseLayout
+  title="MyBlog | Editorial Home"
+  description={homeDescription}
+  runtime="discover"
+  mainClass="shell--home-reference"
+  footerVariant="none"
+>
+  <div class="home-reference" data-home-reference-root>
+    <div class="home-reference__ambient" aria-hidden="true">
+      <div class="home-reference__grid"></div>
+      <div class="home-reference__grain"></div>
+      <div class="home-reference__orb home-reference__orb--blue"></div>
+      <div class="home-reference__orb home-reference__orb--amber"></div>
     </div>
-    <div class="home-hero-panel" aria-label="博客能力概览">
-      <div class="home-hero-panel-head">
-        <p class="home-hero-panel-kicker">Research Modes</p>
-        <p class="home-hero-panel-title">Refined, technical, calm.</p>
-      </div>
-      <ul class="home-hero-note-list">
-        {heroNotes.map((note) => (
-          <li class="home-hero-note">
-            <strong>{note.title}</strong>
-            <span>{note.body}</span>
-          </li>
-        ))}
-      </ul>
-      <div class="home-hero-stats" aria-label="博客统计">
-        <div class="home-hero-stat">
-          <span class="home-hero-stat-value">{posts.length}</span>
-          <span class="home-hero-stat-label">篇文章</span>
-        </div>
-        <div class="home-hero-stat">
-          <span class="home-hero-stat-value">{topics.length}</span>
-          <span class="home-hero-stat-label">个主题</span>
-        </div>
-        <div class="home-hero-stat">
-          <span class="home-hero-stat-value">{concepts.length}</span>
-          <span class="home-hero-stat-label">个概念</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="grid topic-grid content-section" data-ux-stagger>
-    {
-      sortedTopics.map((topic) => (
-        <article class="card" data-ux-reveal="fade-up">
-          <h3>
-            <a href={`/topics/${topic.slug}`}>{topic.data.title}</a>
-          </h3>
-          <p>{topic.data.summary}</p>
-          <p class="subtle" style="margin-top: 0.6rem;">
-            相关文章 {postCountByTopic[topic.slug] ?? 0} 篇
+    <div class="home-reference__body">
+      <section class="home-reference-hero" aria-label="首页视觉主叙事" data-ux-stagger>
+        <div class="home-reference-hero__copy" data-ux-reveal="fade-up">
+          <div class="home-reference-hero__kicker">
+            <span class="home-reference-hero__kicker-dot" aria-hidden="true"></span>
+            <span>Vol. {heroIssueNumber} — 持续构建中</span>
+          </div>
+
+          <h1 class="home-reference-hero__title">
+            大模型系统
+            <br />
+            安全研究
+            <br />
+            <span class="home-reference-hero__title-tail">
+              <span class="home-reference-hero__title-accent">&amp;</span> 工程笔记.
+            </span>
+          </h1>
+
+          <p class="home-reference-hero__description">
+            {SITE_AUTHOR_PROFILE.mission}
+            {" "}
+            {SITE_AUTHOR_PROFILE.intro}
           </p>
-        </article>
-      ))
-    }
-  </section>
 
-  <section class="content-section" data-latest-posts data-ux-reveal="fade-up">
-    <h2>最新文章</h2>
-    <p class="subtle">每篇文章都提供封面图，帮助你更快定位主题和上下文。</p>
-
-    {
-      latestPosts.length === 0 ? (
-        <p class="subtle">暂时还没有可展示的文章。</p>
-      ) : (
-        <div class="grid post-card-grid" data-ux-stagger>
-          {latestPosts.map((post) => <PostCard post={post} />)}
+          <div class="home-reference-hero__actions">
+            <a href={primaryCta.href} class="home-reference-hero__button home-reference-hero__button--primary">
+              <span>{primaryCta.label}</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+            <a
+              href={secondaryCta.href}
+              class="home-reference-hero__button home-reference-hero__button--secondary"
+              target={secondaryCta.external ? "_blank" : undefined}
+              rel={secondaryCta.external ? "noreferrer noopener" : undefined}
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6" cy="6" r="2"></circle>
+                <circle cx="18" cy="6" r="2"></circle>
+                <circle cx="12" cy="18" r="2"></circle>
+                <path d="M8 6h8"></path>
+                <path d="m7.7 7.1 3.2 8.1"></path>
+                <path d="m16.3 7.1-3.2 8.1"></path>
+              </svg>
+              <span>{secondaryCta.label}</span>
+            </a>
+          </div>
         </div>
-      )
-    }
-  </section>
 
-  <section class="content-section home-archive-entry" data-home-archive-entry data-ux-reveal="fade-up">
-    <h2>时间归档</h2>
-    <p class="subtle">按年与月份浏览全部文章，快速定位你错过的内容与写作节奏。</p>
-    <a class="archive-entry-button" href="/archives">进入归档时间轴</a>
-  </section>
+        <div class="home-reference-terminal-wrap" data-ux-reveal="fade-up">
+          <div class="home-reference-card home-reference-terminal">
+            <div class="home-reference-terminal__shell" data-home-reference-terminal>
+              <div class="home-reference-terminal__header">
+                <div class="home-reference-terminal__lights" aria-hidden="true">
+                  <span class="home-reference-terminal__light home-reference-terminal__light--red"></span>
+                  <span class="home-reference-terminal__light home-reference-terminal__light--amber"></span>
+                  <span class="home-reference-terminal__light home-reference-terminal__light--green"></span>
+                </div>
+                <span class="home-reference-terminal__filename">research_blog.rs</span>
+              </div>
+
+              <div class="home-reference-terminal__body">
+                <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">fn</span> <span class="home-reference-terminal__fn">build_editorial_home</span>() -&gt; <span class="home-reference-terminal__type">Result&lt;Homepage, Drift&gt;</span> {"{"}</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 当前主研究轨道</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> focus = [</p>
+                {terminalTracks.map((track) => (
+                  <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{track.title}"</span>,</p>
+                ))}
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">];</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 博客覆盖范围</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> notes = [</p>
+                {terminalScope.map((scope) => (
+                  <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{scope}"</span>,</p>
+                ))}
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">];</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> archive = Route::new(<span class="home-reference-terminal__string">"/archives"</span>);</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> states = Homepage::compose(focus, notes, archive)?;</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">Ok</span>(states.with_theme(Theme::MistyShadows))</p>
+                <p class="home-reference-terminal__line">{"}"}</p>
+                <div class="home-reference-terminal__meta">
+                  <span>{posts.length} posts indexed</span>
+                  <span>{topics.length} topics mapped</span>
+                  <span>{concepts.length} concepts linked</span>
+                </div>
+                <div class="home-reference-terminal__prompt">
+                  <span>$</span>
+                  <span class="home-reference-terminal__cursor" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-home-domains data-controller="domains-carousel" data-ux-stagger>
+        <div class="home-reference-section-head" data-ux-reveal="fade-up">
+          <h2>关注领域</h2>
+          <div class="home-reference-domain-toolbar">
+            <span>{String(sortedTopics.length).padStart(2, "0")} 活跃中</span>
+            {
+              homeDomainsLoopable ? (
+                <div class="home-reference-domain-nav" data-home-domains-nav>
+                  <button
+                    type="button"
+                    class="home-reference-domain-nav__button"
+                    data-home-domains-prev
+                    aria-label="查看上一组主题"
+                  >
+                    <span aria-hidden="true">←</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="home-reference-domain-nav__button"
+                    data-home-domains-next
+                    aria-label="查看下一组主题"
+                  >
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              ) : null
+            }
+          </div>
+        </div>
+
+        <div
+          class="home-reference-domains-viewport"
+          data-home-domains-viewport
+          tabindex="0"
+          aria-label="关注领域循环列表"
+        >
+          <div class="home-reference-domain-grid" data-home-domains-track>
+            {sortedTopics.map((topic, index) => {
+              const cardNumber = String(index + 1).padStart(2, "0");
+
+              return (
+                <a
+                  href={`/topics/${topic.slug}`}
+                  class="home-reference-domain-item"
+                  data-home-domain-card
+                  data-ux-reveal="fade-up"
+                  aria-label={`进入主题：${topic.data.title}`}
+                >
+                  <div class="home-reference-card home-reference-domain-card">
+                    <div class="home-reference-domain-card__head">
+                      <span class="home-reference-domain-card__glyph" aria-hidden="true">
+                        {
+                          index === 0 ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                              <path d="M9 9h6v6H9z"></path>
+                              <path d="M9 2v2"></path>
+                              <path d="M15 2v2"></path>
+                              <path d="M9 20v2"></path>
+                              <path d="M15 20v2"></path>
+                            </svg>
+                          ) : index === 1 ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <ellipse cx="12" cy="6" rx="7" ry="3"></ellipse>
+                              <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"></path>
+                              <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path>
+                            </svg>
+                          ) : index === 2 ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <circle cx="6" cy="12" r="2"></circle>
+                              <circle cx="18" cy="6" r="2"></circle>
+                              <circle cx="18" cy="18" r="2"></circle>
+                              <path d="M8 11 16 7"></path>
+                              <path d="m8 13 8 4"></path>
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M4 6h16"></path>
+                              <path d="M7 12h10"></path>
+                              <path d="M9 18h6"></path>
+                            </svg>
+                          )
+                        }
+                      </span>
+                      <span class="home-reference-domain-card__id" data-home-domain-id>{cardNumber}</span>
+                    </div>
+
+                    <h3 data-home-domain-title>{topic.data.title}</h3>
+                    <p data-home-domain-summary>{topic.data.summary}</p>
+                    <p class="home-reference-domain-card__meta" data-home-domain-meta>
+                      相关文章 {postCountByTopic[topic.slug] ?? 0} 篇
+                    </p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section class="home-reference-publishing-grid" data-ux-stagger>
+        <div data-home-featured-post data-ux-reveal="fade-up">
+          <div class="home-reference-section-head">
+            <h2>近期得意之作</h2>
+          </div>
+
+          {
+            featuredPost ? (
+              <a href={`/posts/${featuredPost.slug}`} class="home-reference-card home-reference-featured-card">
+                <div class="home-featured-cover-stack post-cover post-cover--featured" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
+                  {
+                    featuredPost.data.cover?.src ? (
+                      <>
+                        <Image
+                          src={featuredPost.data.cover.src}
+                          alt=""
+                          width={1600}
+                          height={1200}
+                          class="home-featured-cover-image home-featured-cover-image--ghost post-cover-img post-cover-img--ghost"
+                          loading="eager"
+                          decoding="async"
+                          aria-hidden="true"
+                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 420px"
+                        />
+                        <Image
+                          src={featuredPost.data.cover.src}
+                          alt={featuredPost.data.cover.alt}
+                          width={1600}
+                          height={1200}
+                          class="home-featured-cover-image home-featured-cover-image--main post-cover-img post-cover-img--main"
+                          loading="eager"
+                          decoding="async"
+                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 420px"
+                        />
+                      </>
+                    ) : (
+                      <div class="home-featured-cover-fallback">Featured Note</div>
+                    )
+                  }
+                </div>
+
+                <div class="home-reference-featured-card__body">
+                  <div class="home-reference-featured-card__eyebrow">{featuredTopicLabel}</div>
+                  <h3 class="home-reference-featured-card__title">{featuredPost.data.title}</h3>
+                  {featuredPost.data.summary ? (
+                    <p class="home-reference-featured-card__summary">{featuredPost.data.summary}</p>
+                  ) : null}
+                </div>
+              </a>
+            ) : (
+              <p class="home-reference-empty">暂时还没有可展示的精选文章。</p>
+            )
+          }
+        </div>
+
+        <div data-home-recent-posts data-ux-reveal="fade-up">
+          <div class="home-reference-section-head">
+            <h2>近期碎片</h2>
+            <a href="/archives" class="home-reference-section-link">
+              <span>查看全部</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+
+          {recentPosts.length === 0 ? (
+            <p class="home-reference-empty">暂时还没有更多文章。</p>
+          ) : (
+            <div class="home-reference-recent-list">
+              {recentPosts.map((post) => (
+                <a href={`/posts/${post.slug}`} class="home-reference-card home-reference-recent-item" data-home-recent-item>
+                  <div class="home-reference-recent-item__meta">
+                    <span class="home-reference-recent-item__date">{getPostDateISO(post.data.date)}</span>
+                    <span class="home-reference-recent-item__tag">
+                      {topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}
+                    </span>
+                  </div>
+                  <h3 class="home-reference-recent-item__title">{post.data.title}</h3>
+                  <span class="home-reference-recent-item__arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12h14"></path>
+                      <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                  </span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <HomeReferenceFooter variant="full-bleed" />
+    </div>
+  </div>
 </BaseLayout>

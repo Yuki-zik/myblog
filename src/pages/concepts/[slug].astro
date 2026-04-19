@@ -1,6 +1,11 @@
-﻿---
+---
 import { getCollection, type CollectionEntry } from "astro:content";
+import DiscoverShell from "../../components/discover/DiscoverShell.astro";
+import EmptyState from "../../components/discover/EmptyState.astro";
+import PageHero from "../../components/discover/PageHero.astro";
+import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
+import { collectReferencedTopicsForConcept } from "../../lib/content/concepts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 interface Props {
@@ -18,63 +23,157 @@ export async function getStaticPaths() {
 const { concept } = Astro.props;
 const { Content } = await concept.render();
 
-const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const [allPosts, allTopics, allConcepts] = await Promise.all([
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("topics"),
+  getCollection("concepts")
+]);
 const referencedPosts = allPosts
   .filter((post) => (post.data.concepts ?? []).includes(concept.slug))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-const postSlugSet = new Set(referencedPosts.map((post) => post.slug));
+const referencedTopics = collectReferencedTopicsForConcept(concept.slug, referencedPosts, allTopics);
 
-const allTopics = await getCollection("topics");
-const referencedTopics = allTopics.filter((topic) =>
-  (topic.data.entryPosts ?? []).some((postSlug) => postSlugSet.has(postSlug))
-);
+const relatedConcepts = (concept.data.related ?? [])
+  .map((slug) => allConcepts.find((entry) => entry.slug === slug) ?? null)
+  .filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
+
+const primaryPost = referencedPosts[0] ?? null;
+const conceptDescription = `${concept.data.summary} 从概念返回引用它的文章与主题网络。`;
 ---
 
-<BaseLayout title={`${concept.data.title} | 概念`}>
-  <section class="content-section" data-ux-reveal="fade-up">
-    <h1>{concept.data.title}</h1>
-    <p class="subtle">{concept.data.summary}</p>
-  </section>
-
-  <section class="content-section">
-    <Content />
-  </section>
-
-  {
-    (concept.data.tags?.length ?? 0) > 0 ? (
-      <section class="content-section">
-        <h2>标签</h2>
-        <ul class="pill-list">
-          {concept.data.tags?.map((tag) => <li>{tag}</li>)}
-        </ul>
-      </section>
-    ) : null
-  }
-
-  <section class="content-section" data-concept-posts>
-    <h2>引用它的文章</h2>
-    {
-      referencedPosts.length === 0 ? (
-        <p class="subtle">暂无文章引用该概念。</p>
-      ) : (
-        <div class="grid post-card-grid" data-ux-stagger>
-          {referencedPosts.map((post) => <PostCard post={post} />)}
+<BaseLayout
+  title={`${concept.data.title} | 概念`}
+  description={conceptDescription}
+  runtime="discover"
+>
+  <DiscoverShell>
+    <PageHero
+      variant="split"
+      kicker="Discover / Concept"
+      title={concept.data.title}
+      description={concept.data.summary}
+      actions={[
+        primaryPost
+          ? {
+              href: `/posts/${primaryPost.slug}`,
+              label: `阅读《${primaryPost.data.title}》`,
+              variant: "primary",
+              icon: "arrow"
+            }
+          : {
+              href: "/topics",
+              label: "浏览主题",
+              variant: "primary",
+              icon: "topic"
+            },
+        {
+          href: "/topics",
+          label: "返回主题列表",
+          variant: "secondary",
+          icon: "topic"
+        }
+      ]}
+    >
+      <div slot="aside">
+        <div class="discover-hero__panel-copy">
+          <p class="discover-hero__panel-label">Definition</p>
+          <p>{concept.data.summary}</p>
         </div>
-      )
-    }
-  </section>
+        <div class="discover-hero__panel-stats">
+          <div class="discover-hero__panel-stat">
+            <strong>{String(referencedPosts.length).padStart(2, "0")}</strong>
+            <span>引用文章</span>
+          </div>
+          <div class="discover-hero__panel-stat">
+            <strong>{String(referencedTopics.length).padStart(2, "0")}</strong>
+            <span>关联主题</span>
+          </div>
+          <div class="discover-hero__panel-stat">
+            <strong>{String(concept.data.tags?.length ?? 0).padStart(2, "0")}</strong>
+            <span>标签</span>
+          </div>
+          <div class="discover-hero__panel-stat">
+            <strong>{String(relatedConcepts.length).padStart(2, "0")}</strong>
+            <span>相关概念</span>
+          </div>
+        </div>
+      </div>
+    </PageHero>
 
-  <section class="content-section">
-    <h2>引用它的主题（通过 entryPosts 间接推导）</h2>
+    <section class="discover-section">
+      <SectionHead
+        kicker="Definition"
+        title="概念说明"
+        description="概念页比 topic detail 更轻，但仍使用相同的 poster hero、surface 与 section 节奏。"
+      />
+      <div class="discover-surface discover-rich">
+        <Content />
+      </div>
+    </section>
+
     {
-      referencedTopics.length === 0 ? (
-        <p class="subtle">暂无主题通过入门路径引用该概念。</p>
-      ) : (
-        <ul class="meta-list">
-          {referencedTopics.map((topic) => <li><a href={`/topics/${topic.slug}`}>{topic.data.title}</a></li>)}
-        </ul>
-      )
+      (concept.data.tags?.length ?? 0) > 0 ? (
+        <section class="discover-section">
+          <SectionHead
+            kicker="Tags"
+            title="概念标签"
+            description="标签继续保留在概念详情中，但不再以裸 pill 列表漂浮在页面里。"
+            countLabel={`${concept.data.tags?.length ?? 0} tags`}
+          />
+          <div class="discover-mini-grid" data-ux-stagger>
+            {concept.data.tags?.map((tag) => (
+              <div class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+                <span class="discover-mini-card__meta">Tag</span>
+                <h3>{tag}</h3>
+                <p>作为概念索引标签，用来帮助读者从不同文章里反向识别这一概念。</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null
     }
-  </section>
+
+    <section class="discover-section" data-concept-posts>
+      <SectionHead
+        kicker="Posts"
+        title="引用它的文章"
+        description="概念页的核心仍然是反向追踪：从概念返回到引用它的文章与上下文。"
+        countLabel={`${referencedPosts.length} posts`}
+      />
+      {
+        referencedPosts.length === 0 ? (
+          <EmptyState title="暂无文章引用该概念。" body="后续有文章标注这个概念后，这里会自动出现统一的文章卡片列表。" />
+        ) : (
+          <div class="discover-post-grid" data-ux-stagger>
+            {referencedPosts.map((post) => <PostCard post={post} />)}
+          </div>
+        )
+      }
+    </section>
+
+    <section class="discover-section">
+      <SectionHead
+        kicker="Topics"
+        title="引用它的主题"
+        description="这里直接从真实引用该概念的文章 topics 反推主题，而不是再依赖 entryPosts 的间接猜测。"
+        countLabel={`${referencedTopics.length} topics`}
+      />
+      {
+        referencedTopics.length === 0 ? (
+          <EmptyState title="暂无主题通过入门路径引用该概念。" body="等主题和 entry post 关系补充完整后，这里会自动形成更清晰的网络。" />
+        ) : (
+          <div class="discover-mini-grid" data-ux-stagger>
+            {referencedTopics.map((topic) => (
+              <a href={`/topics/${topic.slug}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+                <span class="discover-mini-card__meta">Topic</span>
+                <h3>{topic.data.title}</h3>
+                <p>{topic.data.summary}</p>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </DiscoverShell>
 </BaseLayout>

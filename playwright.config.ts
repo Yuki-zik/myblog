@@ -13,7 +13,8 @@ export default defineConfig({
     url: "http://127.0.0.1:4173",
     reuseExistingServer: true,
     env: {
-      PUBLIC_WALINE_SERVER_URL: "https://waline.example"
+      PUBLIC_WALINE_SERVER_URL: "https://waline.example",
+      SITE_URL: "https://myblog.example"
     }
   }
 });

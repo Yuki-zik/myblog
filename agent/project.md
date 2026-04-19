@@ -34,11 +34,77 @@
 
 - **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 导入的模块化 CSS（`tokens/base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`）以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
 - **全站气质**: 设计系统以 five-color foundation 为底座，先在 `src/styles/tokens.css` 映射为 `surface/text/border/accent/chrome/reading` 语义 token，再由页面模块做克制分化。整体气质是冷静、研究型、阅读优先，而不是高饱和科技演示风。
-- **字体分工**: UI chrome 与标题使用 `Space Grotesk`，长文阅读区使用 `Source Serif 4`，代码使用 `IBM Plex Mono`；这让首页/导航保持现代感，文章页保持纸面阅读感。
-- **布局骨架**: 首页是 `hero + topics + latest posts + archives CTA`；主题/概念页沿用轻卡片与单列 editorial post stack；文章页则是独立的 scholarly tri-layout，桌面端由 `TOC rail + main reading column + scholar rail` 组成，并在正文下方接 Waline 和 pager。
+- **字体分工**: 顶栏与全站 chrome 仍使用 `Space Grotesk / Source Serif 4 / IBM Plex Mono`；首页正文单独引入 `Outfit / Noto Serif SC / JetBrains Mono` 做 reference-mode 的 editorial 叙事，文章页继续保留既有阅读字体系统。
+- **布局骨架**: 站点现在明确分成两套 runtime。`discover-runtime` 覆盖首页、主题列表、主题详情、概念详情、作者页、归档页，统一使用 `ambient field + poster/split hero + section-head + discover surface + family footer`；`reading-runtime` 覆盖文章详情页，保留 scholarly tri-layout，桌面端由 `TOC rail + main reading column + scholar rail` 组成，并在正文下方接 Waline、family actions 和 pager。
 - **文章页封面语言**: 标题卡片顶部封面采用“双层同源图片”模型：底层是居中下移、缩小并高斯模糊后的同源彩色虚影，负责提供 ambient colored shadow；顶层主图带极轻的白色描边和常规阴影，与底层虚影形成剥离感，并在 hover 时主图微微上浮、虚影进一步扩散。
 - **核心交互**: Header 是三态液态玻璃控制台（`top / compact / hidden`），Search 是头部命令式即时搜索入口，TOC 是文章页的二级导航，Waline 评论位于文末，角色偏“全文讨论”而不是段落边批注。
 - **体验原则**: `topic-first`、`reading-first`、`research-ready`、`restrained motion`。首页负责建立“这不是时间流博客”的认知，文章页负责沉浸式研究阅读，搜索/目录/header 只做辅助理解，不抢正文叙事。
+
+## 4.1 大规模前端重写前的稳定契约
+
+- **全站入口契约**: `src/layouts/BaseLayout.astro` 是全站视觉与交互的唯一注入入口，现已显式区分 `runtime="discover" | "reading"` 并输出 `body/main[data-runtime]`。它统一负责模块化 CSS 导入、字体、footer 变体，以及共享 `UiControllers` 挂载。若要继续重写 header / shell，优先从这里切分，而不是在页面里重新散落脚本。
+- **样式契约**: `src/styles/tokens.css` 是全站 light/dark 语义 token 源；`src/styles/themeContract.test.ts` 已把 foundation 色值、语义变量、禁用 legacy token 的边界锁死。重写时应先保留 token contract，再重做模块实现。
+- **页面复杂度分层**: discover 页面族（首页、主题页、概念页、归档页、作者页）现在共用 `src/components/discover/*` 与 `src/styles/discover.css`，但内容复杂度仍有高低：topic/concept/author/archives 已进入同一 discover shell；文章页则是单独的 scholarly runtime，耦合了 tri-layout、进度条、浮动脚注/图表 rail、Waline 和移动目录，复杂度仍显著高于其他页面。
+- **内容渲染契约**: `astro.config.mjs` 在 markdown 层固定挂了 `rehypeParagraphAnchors` 与 `rehypeTufteFootnotes`；文章页依赖 `TUFTE_MARKDOWN_FOOTNOTES_KEY`、`buildPostScholarRailModel()` 与段落 anchor 来定位 rail 内容。前端重写不能破坏 `data-anchor` / footnote id / rail 定位这条链路。
+- **搜索与评论契约**: 搜索入口固定消费 `/search-index.json`；评论入口固定为 `WalineComments.tsx` + `PUBLIC_WALINE_SERVER_URL`。这两条是独立基础设施，适合在视觉重写中保持接口不变。
+- **测试契约**: E2E 已经锁定 header 布局、post cover 语义、文章阅读页比例、移动 TOC、Waline 挂载和脚注/rail 行为；因此更适合采用“先保留 DOM contract，再逐步迁移样式”的重写策略，而不是一次性推翻结构。
+
+## 4.2 本轮梳理得出的重写切分建议
+
+- **第一批：全站 chrome / shell**
+  从 `src/layouts/BaseLayout.astro`、`src/components/search/HeaderSearch.astro`、`src/styles/layout.css`、`src/styles/search.css`、`src/styles/theme-toggle.css` 入手，先把 header / search / theme / footer / reveal 这层全站框架收口。当前它们集中在同一入口，是最适合先拆的高杠杆区。
+- **第二批：首页与列表页语言**
+  覆盖 `src/pages/index.astro`、`src/pages/topics/index.astro`、`src/pages/topics/[slug].astro`、`src/pages/concepts/[slug].astro`、`src/components/post/PostCard.astro`、`src/components/post/PostCover.astro` 与 `src/styles/cards.css` / `home.css`。这里主要重构信息节奏、卡片语言和 topic-first 入口感，风险显著低于文章页。
+- **第三批：文章阅读 runtime**
+  单独处理 `src/pages/posts/[slug].astro`、`src/components/article/TocSidebar.astro`、`src/components/post/PostToc.astro`、`src/components/post/PostScholarRail.astro`、`src/styles/article.css`、`src/styles/toc.css`。这部分是当前最重的耦合区，也是本仓库最需要“先保契约再换壳”的区域。
+- **第四批：特殊页面**
+  `src/pages/author.astro` + `src/styles/author.css`、`src/pages/archives.astro` + `src/styles/archives.css` 可后置。它们视觉独立，但对全站主流程影响较小。
+- **当前样式热点**
+  模块化 CSS 总量约 `6659` 行，其中 `src/styles/article.css` 约 `1758` 行、`src/styles/layout.css` 约 `742` 行、`src/styles/author.css` 约 `607` 行、`src/styles/cards.css` 约 `580` 行、`src/styles/toc.css` 约 `511` 行。重写时应优先把这些热点按 runtime / shell / page cluster 继续切薄。
+- **推荐实施策略**
+  先冻结 token contract 和核心 DOM/data contract，再逐页替换视觉实现；尤其文章页，建议保留 `post-reading-layout`、Waline mount、TOC/rail 的数据接口与语义属性，避免视觉重写演变成内容基础设施重写。
+
+## 4.3 参考项目精读结论（`参考项目/remix_-misty-shadows-ui-gallery.zip`）
+
+- **项目本质**: 这是一个小体量的 React 19 + Vite 6 + Tailwind CSS 4 UI demo，并不是真正的 Remix 项目。`metadata.json` 虽然写着 “Remix: Misty Shadows UI Gallery”，但实际入口是 `src/main.tsx -> src/App.tsx`，路由使用 `BrowserRouter`，页面只有 `Home` 和 `ArticleView` 两个。
+- **工程洁净度一般**: 这个 demo 带有明显的 AI Studio 模板残留。`README.md`、`index.html` 和 `.env.example` 仍引用 `GEMINI_API_KEY` / AI Studio；`package.json` 里有 `@google/genai`、`express`、`dotenv` 等未实际使用的依赖。它更适合作为视觉参考，而不是架构参考。
+- **视觉语言**: 设计核心是 “warm paper + deep obsidian + misty glow”。`src/index.css` 只定义了少量全局原语：`tech-grid`（点阵背景）、`soft-card`（毛玻璃白卡/暗卡）、三套字体（Outfit / Noto Serif SC / JetBrains Mono）。页面大量依赖 Tailwind utility classes 即时拼装氛围。
+- **首页编排**: `src/pages/Home.tsx` 采用非常明确的 editorial split hero：
+  - 左侧是 serif 标题、mono kicker、两枚 pill CTA；
+  - 右侧是 sticky 的“终端/代码块”视觉物件；
+  - 下方依次是领域卡片、精选文章、近期碎片列表。
+  这说明它的强项不是复杂组件系统，而是“一个主视觉物件 + 两三个规整内容区块”的节奏控制。
+- **文章页编排**: `src/pages/ArticleView.tsx` 是标准的 `8/4` 阅读布局：左侧正文，右侧 sticky TOC，顶部是 metadata pills，底部是 EOF + back-to-top。结构清楚，但远比当前博客的 scholarly tri-layout 简单，不含段落 anchor、脚注 rail、Waline 或边注系统。
+- **动画与氛围来源**:
+  - `motion/react` 用于 fade-up/stagger 和背景 orb 漂浮；
+  - film grain 用固定 SVG data URL 覆盖；
+  - 两个大 blur orb 提供 ambient glow；
+  - featured card 用“双层同源图片：底层 blur 残像 + 顶层清晰主图”制造 misty shadow。
+  这些是它最值得借鉴的地方。
+- **最适合迁移到本仓库的设计点**:
+  - 全局背景分层：可借鉴 “微弱 grid + grain + 低频大光晕”，但要比当前 demo 更克制。
+  - 字体角色分工：serif 负责长文与标题、mono 负责 metadata/chrome 的思路值得保留。
+  - 首页主视觉结构：你的首页可借鉴它“左文右物”的 split hero，而不是继续纯卡片堆叠。
+  - 封面表现：featured card 的 “blur 副本 + 主图” 语言对你当前文章封面探索非常相关。
+  - TOC 呈现：文章页右侧目录卡的“低噪声、线性高亮、sticky card”值得吸收。
+- **不应直接照搬的部分**:
+  - 不要照搬它的 `BrowserRouter` / 全客户端路由模式；
+  - 不要照搬它把文章内容硬编码在 `src/data/articles.tsx` 里的方式；
+  - 不要照搬它的装饰性搜索框和未连通按钮；
+  - 不要把当前博客降级成普通 blog article + sticky TOC，因为你现有仓库的独特资产正是 scholar rail / anchor / footnote runtime。
+
+## 4.4 已落地的首页 reference-mode 重构
+
+- **实现边界**: 仅首页正文切到 reference-mode；现有顶栏、搜索、主题切换与文章页 scholarly runtime 保持原状。通过 `BaseLayout.astro` 新增 `hideFooter`，首页关闭全站默认 footer，改挂首页专属 footer。
+- **首页结构**: `src/pages/index.astro` 现为四段固定骨架：split hero、主题四卡、精选文章 + 近期列表、首页专属 footer。右侧 sticky 终端块、featured cover 的双层同源图、recent list 的 hover arrow 和首页背景的 grid / grain / orb 都已迁入。
+- **数据映射**: `src/lib/home/selectors.ts` 现在只负责精选文章选择与近期列表去重；首页不再使用“topic 第 4 卡按本地日期轮换”的旧逻辑，而是把全部 topic 渲染到一个客户端可滚动的 4 卡视窗里。
+- **样式隔离**: 新增 `src/styles/home-reference.css` 与 `src/components/home/HomeReferenceFooter.astro`，所有参考站视觉语言都收敛在 `shell--home-reference` / `home-reference-*` 命名空间，避免污染主题页、归档页和文章阅读页。
+- **严格复刻补强**: 后续 follow-up 已把首页背景层进一步对齐到参考项目的真实参数：整页 body 背景切换为 `warm paper / deep obsidian`，film grain 改为 fixed overlay，grid / ambient orb 的尺寸与动画周期改回参考值，首页 footer 改为 full-bleed，hero 主副按钮和 `soft-card` 几何也收敛到参考项目同级数值。
+- **共享封面与 CTA 原语**: 最新一轮把参考项目的 featured card 进一步抽成共享图片原语。`src/components/post/PostCover.astro`、`src/styles/cards.css` 与首页 featured block 现在统一使用 `post-cover-stack` 的 `ghost + main` 双层同源图片结构，topic/concept 预览卡、归档方卡、首页精选卡共享白边、悬浮位移、misty blur spread 与 hover 扩散语言；文章页标题封面保留更克制的阅读态，但继续沿用同源虚影模型。首页主 CTA 颜色也重新按参考按钮收敛到深海军蓝底、白字、高圆角 pill，并补齐 `system + prefers-color-scheme: dark` 分支，避免系统主题下出现错色。
+- **次级页面补齐**: 作者页与归档页此前只部分吃到共享原语，用户体感上仍像“首页单独升级”。本轮已把作者页“作者文章”切到 `PostCard` 链路，确保作者页文章区和 topic/concept 列表共用同一套封面、hover、meta 与标签语言；归档页则保留时间轴结构，但把 tile 本身的 hover lift、边框强化、标题高亮和 read cue 提升到与共享卡片同级的反馈层级。作者页快速链接按钮也改为同一 visual family 的 pill CTA。
+- **关注领域交互**: 首页 `关注领域` 现在是“4 卡窗口 + 用户控制”的轨道，而不是按天轮换第四张。桌面端一次完整显示 4 张卡，支持左右按钮、左右方向键和鼠标滚轮转横向位移；平板端回落为两列，手机端回落为单列，以保持可读性。
+- **验证现状**: 新增 `src/lib/home/selectors.test.ts` 与 `tests/e2e/home-reference.spec.ts`，并同步更新 `tests/e2e/theme-layout.spec.ts`、`tests/e2e/post-covers.spec.ts`、`tests/e2e/archives.spec.ts`、`tests/e2e/paragraph-comments.spec.ts`；当前 `pnpm test`、`pnpm test:e2e`、`pnpm build` 全通过。
+- **当前真实迁移边界**: 这一轮之后，discover 页面族已经整体迁入 homepage family。`/topics`、`/topics/[slug]`、`/concepts/[slug]`、`/author`、`/archives` 都改为 `DiscoverShell + PageHero + SectionHead + discover surface + compact family footer`，不再停留在旧的 `content-section / topic-grid / card` 结构。文章页仍然保留独立 `reading-runtime`，但现在也通过 `data-runtime="reading"`、阅读页 family footer 和统一 CTA 色板与 homepage family 收口。当前尚未彻底统一的是 header/search/theme chrome 的 surface token 深度，以及部分历史 CSS 文件仍保留旧规则作为兼容层。
 
 ## 5. 关键文件索引
 
@@ -60,8 +126,24 @@
 
 ### 主题与样式系统
 - `src/styles/tokens.css`
-- `src/styles/base.css`, `layout.css`, `home.css`, `cards.css`, `search.css`, `theme-toggle.css`, `footer.css`, `archives.css`, `toc.css`, `article.css`, `waline.css`
+- `src/styles/base.css`, `layout.css`, `home.css`, `home-reference.css`, `cards.css`, `search.css`, `theme-toggle.css`, `footer.css`, `archives.css`, `toc.css`, `article.css`, `waline.css`
 - `src/styles/themeContract.test.ts`
+
+### 首页 reference-mode
+- `src/pages/index.astro`
+- `src/components/home/HomeReferenceFooter.astro`
+- `src/lib/home/selectors.ts`
+- `src/lib/home/selectors.test.ts`
+- `tests/e2e/home-reference.spec.ts`
+
+### Discover runtime
+- `src/components/discover/DiscoverShell.astro`
+- `src/components/discover/PageHero.astro`
+- `src/components/discover/ActionPair.astro`
+- `src/components/discover/SectionHead.astro`
+- `src/components/discover/EmptyState.astro`
+- `src/components/UiControllers.astro`
+- `src/styles/discover.css`
 
 ### 搜索
 - `src/lib/search/index.ts`

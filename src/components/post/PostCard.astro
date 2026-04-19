@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import PostCover from "./PostCover.astro";
 import MetaIcon from "../ui/MetaIcon.astro";
+import { formatPostDisplayDate } from "../../lib/posts/date";
 import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 
 interface Props {
@@ -21,8 +22,8 @@ type StatItem = {
 };
 
 const { post } = Astro.props;
-const publishedLabel = new Date(post.data.date).toLocaleDateString("zh-CN");
-const updatedLabel = post.data.updated ? new Date(post.data.updated).toLocaleDateString("zh-CN") : null;
+const publishedLabel = formatPostDisplayDate(post.data.date);
+const updatedLabel = post.data.updated ? formatPostDisplayDate(post.data.updated) : null;
 const readingMinutes = getPostReadingMinutes(post);
 const readingTimeLabel = readingMinutes <= 1 ? "1 分钟阅读" : `${readingMinutes} 分钟阅读`;
 const topicCountLabel = `${post.data.topics.length} 个主题`;

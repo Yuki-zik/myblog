@@ -1,9 +1,18 @@
 ---
 import { getCollection } from "astro:content";
+import DiscoverShell from "../../components/discover/DiscoverShell.astro";
+import EmptyState from "../../components/discover/EmptyState.astro";
+import PageHero from "../../components/discover/PageHero.astro";
+import SectionHead from "../../components/discover/SectionHead.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const topics = await getCollection("topics");
-const sortedTopics = topics.sort((a, b) => {
+const [topics, posts, concepts] = await Promise.all([
+  getCollection("topics"),
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("concepts")
+]);
+
+const sortedTopics = [...topics].sort((a, b) => {
   const orderA = a.data.order ?? Number.POSITIVE_INFINITY;
   const orderB = b.data.order ?? Number.POSITIVE_INFINITY;
   if (orderA !== orderB) {
@@ -11,25 +20,85 @@ const sortedTopics = topics.sort((a, b) => {
   }
   return a.data.title.localeCompare(b.data.title, "zh-CN");
 });
+
+const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
+  post.data.topics.forEach((topicSlug) => {
+    acc[topicSlug] = (acc[topicSlug] ?? 0) + 1;
+  });
+  return acc;
+}, {});
+
+const primaryTopic = sortedTopics[0] ?? null;
+const topicsPageDescription =
+  "按主题进入知识网络，而不是沿时间流被动翻找；这里汇总每个研究主题的摘要、写作理由与文章规模。";
 ---
 
-<BaseLayout title="主题列表 | MyBlog">
-  <section class="content-section" data-ux-reveal="slide-left">
-    <h1>主题列表</h1>
-    <p class="subtle">每个主题都是知识网络入口，而不是时间流末端。</p>
-  </section>
+<BaseLayout title="主题列表 | MyBlog" description={topicsPageDescription} runtime="discover">
+  <DiscoverShell>
+    <PageHero
+      kicker="Discover / Topics"
+      title="主题列表"
+      description="每个主题都是知识网络入口，而不是时间流末端。首页的研究入口语法在这里延展成稳定的主题浏览面，不再退回旧的普通卡片墙。"
+      actions={[
+        primaryTopic
+          ? {
+              href: `/topics/${primaryTopic.slug}`,
+              label: `进入 ${primaryTopic.data.title}`,
+              variant: "primary",
+              icon: "arrow"
+            }
+          : {
+              href: "/archives",
+              label: "翻阅归档",
+              variant: "primary",
+              icon: "archive"
+            },
+        {
+          href: "/archives",
+          label: "浏览归档",
+          variant: "secondary",
+          icon: "archive"
+        }
+      ]}
+      stats={[
+        { value: String(sortedTopics.length).padStart(2, "0"), label: "个主题" },
+        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
+        { value: String(concepts.length).padStart(2, "0"), label: "个概念" }
+      ]}
+    />
 
-  <section class="grid topic-grid" data-ux-stagger>
-    {
-      sortedTopics.map((topic) => (
-        <article class="card" data-ux-reveal="fade-up">
-          <h3>
-            <a href={`/topics/${topic.slug}`}>{topic.data.title}</a>
-          </h3>
-          <p>{topic.data.summary}</p>
-          <p class="subtle" style="margin-top: 0.6rem;">{topic.data.why}</p>
-        </article>
-      ))
-    }
-  </section>
+    <section class="discover-section" data-ux-stagger>
+      <SectionHead
+        kicker="Browse"
+        title="按主题进入知识网络"
+        description="主题页不是归档替身，而是压缩后的研究入口。每张卡都保留主题摘要、写作理由与文章规模。"
+        countLabel={`${sortedTopics.length} topics indexed`}
+      />
+
+      {
+        sortedTopics.length === 0 ? (
+          <EmptyState title="暂时还没有主题。" body="等第一批主题建好后，这里会按同一套 discover 语言展示研究入口。" />
+        ) : (
+          <div class="discover-entity-grid" data-ux-stagger>
+            {sortedTopics.map((topic, index) => (
+              <a
+                href={`/topics/${topic.slug}`}
+                class="discover-surface discover-entity-card"
+                data-ux-reveal="fade-up"
+                aria-label={`进入主题：${topic.data.title}`}
+              >
+                <div class="discover-entity-card__top">
+                  <span class="discover-entity-card__id">{String(index + 1).padStart(2, "0")}</span>
+                  <span class="discover-entity-card__meta">{postCountByTopic[topic.slug] ?? 0} 篇文章</span>
+                </div>
+                <h3>{topic.data.title}</h3>
+                <p>{topic.data.summary}</p>
+                <p>{topic.data.why}</p>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </DiscoverShell>
 </BaseLayout>

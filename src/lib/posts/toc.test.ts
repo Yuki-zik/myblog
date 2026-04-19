@@ -29,9 +29,9 @@ describe("buildPostToc", () => {
     expect(toc).toEqual([]);
   });
 
-  it("handles h3 before any h2 by seeding the first section", () => {
+  it("skips orphan h3 headings before any h2", () => {
     const toc = buildPostToc([{ depth: 3, slug: "intro-note", text: "说明" }]);
 
-    expect(toc[0]?.numberLabel).toBe("1.1");
+    expect(toc).toEqual([]);
   });
 });

@@ -1,6 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { DEFAULT_POST_AUTHOR } from "../site";
 import { resolvePostAuthor } from "./author";
+import { getPostMonthKey } from "./date";
 
 export interface ArchiveMonthGroup {
   monthKey: string;
@@ -13,23 +14,7 @@ export interface ArchiveYearGroup {
   months: ArchiveMonthGroup[];
 }
 
-export function getPostDateISO(dateValue: string): string {
-  const direct = dateValue.slice(0, 10);
-  if (/^\d{4}-\d{2}-\d{2}$/.test(direct)) {
-    return direct;
-  }
-
-  const parsed = new Date(dateValue);
-  if (Number.isNaN(parsed.getTime())) {
-    return "0000-00-00";
-  }
-
-  return parsed.toISOString().slice(0, 10);
-}
-
-export function getPostMonthKey(dateValue: string): string {
-  return getPostDateISO(dateValue).slice(0, 7);
-}
+export { getPostDateISO, getPostMonthKey } from "./date";
 
 export function getPostAuthor(
   post: CollectionEntry<"posts">,

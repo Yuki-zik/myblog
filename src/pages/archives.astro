@@ -1,70 +1,96 @@
-﻿---
+---
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
+import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import EmptyState from "../components/discover/EmptyState.astro";
+import PageHero from "../components/discover/PageHero.astro";
+import SectionHead from "../components/discover/SectionHead.astro";
 import ArchivePostTile from "../components/post/ArchivePostTile.astro";
 import { buildArchiveGroups, getPostAuthor, getPostDateISO } from "../lib/posts/archive";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-// Optional: Fallback banner if placed in src/assets
-import bannerImg from "../assets/archive-banner-placeholder.jpg";
-
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 const archiveGroups = buildArchiveGroups(posts);
+const latestPost = [...posts].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0] ?? null;
+const archivesDescription = "按年月浏览全部文章，像时间账本一样回看研究记录、实现过程与复盘。";
 ---
 
-<BaseLayout title="Archives | MyBlog">
-  <div class="archives-page">
-    <section class="archives-hero">
-      <Image 
-        src={bannerImg} 
-        alt="Archive timeline banner" 
-        class="archives-hero-image"
-        width={1200}
-        height={400}
-        loading="eager"
-        decoding="async"
+<BaseLayout title="Archives | MyBlog" description={archivesDescription} runtime="discover">
+  <DiscoverShell>
+    <PageHero
+      kicker="Archive / Ledger"
+      title="时间归档"
+      description="按年月浏览全部文章，快速定位你错过的内容。归档页保留时间账本语义，但整体结构、CTA 与页尾都回到 homepage family。"
+      actions={[
+        latestPost
+          ? {
+              href: `/posts/${latestPost.slug}`,
+              label: `阅读《${latestPost.data.title}》`,
+              variant: "primary",
+              icon: "arrow"
+            }
+          : {
+              href: "/topics",
+              label: "浏览主题",
+              variant: "primary",
+              icon: "topic"
+            },
+        {
+          href: "/topics",
+          label: "主题列表",
+          variant: "secondary",
+          icon: "topic"
+        }
+      ]}
+      stats={[
+        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
+        { value: String(archiveGroups.length).padStart(2, "0"), label: "个年份" }
+      ]}
+    />
+
+    <section class="discover-section">
+      <SectionHead
+        kicker="Ledger"
+        title="按年份检索文章"
+        description="只保留时间轴这一个特殊结构，其余外壳、边框、hover 与页尾都收回到 discover 体系。"
+        countLabel={`${posts.length} posts tracked`}
       />
-      <div class="archives-hero-content">
-        <h1>时间归档</h1>
-        <p>按年月浏览全部文章，快速定位你错过的内容。</p>
-      </div>
+
+      {
+        archiveGroups.length === 0 ? (
+          <EmptyState title="归档暂时为空。" body="等第一批文章发布后，这里会按年月自动生成时间账本。" />
+        ) : (
+          <div class="archives-page">
+            {archiveGroups.map((yearGroup) => (
+              <section class="archive-year-section" data-archive-year={yearGroup.year} data-ux-reveal="fade-up">
+                <div class="archive-year-tile">
+                  <span>{yearGroup.year}</span>
+                </div>
+
+                <div class="archive-year-content">
+                  {yearGroup.months.map((month) => (
+                    <section class="archive-month-group">
+                      <div class="archive-month-node" data-archive-month={month.monthKey}>
+                        <span class="archive-month-label">{month.monthLabel}</span>
+                        <span class="archive-month-line" aria-hidden="true"></span>
+                      </div>
+
+                      <div class="archive-grid" data-ux-stagger>
+                        {month.posts.map((post) => (
+                          <ArchivePostTile
+                            post={post}
+                            author={getPostAuthor(post)}
+                            dateLabel={getPostDateISO(post.data.date)}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )
+      }
     </section>
-
-    {
-      archiveGroups.length === 0 ? (
-        <section class="content-section">
-          <p class="subtle">No published posts in archive yet.</p>
-        </section>
-      ) : (
-        archiveGroups.map((yearGroup) => (
-          <section class="archive-year-section" data-archive-year={yearGroup.year} data-ux-reveal="fade-up">
-            <div class="archive-year-tile">
-              <span>{yearGroup.year}</span>
-            </div>
-
-            <div class="archive-year-content">
-              {yearGroup.months.map((month) => (
-                <section class="archive-month-group">
-                  <div class="archive-month-node" data-archive-month={month.monthKey}>
-                    <span class="archive-month-label">{month.monthLabel}</span>
-                    <span class="archive-month-line" aria-hidden="true"></span>
-                  </div>
-
-                  <div class="archive-grid" data-ux-stagger>
-                    {month.posts.map((post) => (
-                      <ArchivePostTile
-                        post={post}
-                        author={getPostAuthor(post)}
-                        dateLabel={getPostDateISO(post.data.date)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          </section>
-        ))
-      )
-    }
-  </div>
+  </DiscoverShell>
 </BaseLayout>

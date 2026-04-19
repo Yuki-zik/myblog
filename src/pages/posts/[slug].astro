@@ -4,13 +4,16 @@ import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
 import { buildTocTree } from "../../components/article/toc-utils";
+import DiscoverAmbient from "../../components/discover/DiscoverAmbient.astro";
 import PostToc from "../../components/post/PostToc.astro";
 import PostPager from "../../components/post/PostPager.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
+import ActionPair from "../../components/discover/ActionPair.astro";
 import MetaIcon from "../../components/ui/MetaIcon.astro";
 import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
 import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFootnotes";
 import { resolvePostAuthor } from "../../lib/posts/author";
+import { formatPostDisplayDate } from "../../lib/posts/date";
 import { getPostSiblings } from "../../lib/posts/navigation";
 import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 import { buildPostToc } from "../../lib/posts/toc";
@@ -53,8 +56,8 @@ const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN
 const readingMinutes = getPostReadingMinutes(post);
 const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMinutes} 分钟`;
 const tocTree = buildTocTree(tocItems);
-const publishedLabel = new Date(post.data.date).toLocaleDateString("zh-CN");
-const updatedLabel = post.data.updated ? new Date(post.data.updated).toLocaleDateString("zh-CN") : null;
+const publishedLabel = formatPostDisplayDate(post.data.date);
+const updatedLabel = post.data.updated ? formatPostDisplayDate(post.data.updated) : null;
 const topicCount = post.data.topics.length;
 const conceptCount = post.data.concepts?.length ?? 0;
 const sectionCount = tocItems.filter((item) => item.depth === 2).length;
@@ -110,171 +113,159 @@ const headerStats = [
   title={`${post.data.title} | 文章`}
   description={post.data.summary}
   authorMeta={resolvedAuthor.name}
+  canonical={post.data.canonical ?? `/posts/${post.slug}`}
+  metaType="article"
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updated}
+  openGraphImage={post.data.cover?.src.src}
+  runtime="reading"
   mainClass="shell--article-reading"
 >
-  <!-- Reading progress bar -->
-  <div class="reading-progress-bar" id="reading-progress-bar" role="progressbar" aria-label="阅读进度" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}>
-    <span class="reading-progress-bar__fill" data-reading-progress-fill aria-hidden="true"></span>
-  </div>
-  <script is:inline>
-    (() => {
-      const bar = document.getElementById('reading-progress-bar');
-      const fill = bar?.querySelector('[data-reading-progress-fill]');
-      if (!bar) return;
-      if (bar.parentElement !== document.body) {
-        document.body.appendChild(bar);
-      }
+  <div class="post-reading-page">
+    <DiscoverAmbient />
+    <!-- Reading progress bar -->
+    <div
+      class="reading-progress-bar"
+      id="reading-progress-bar"
+      data-controller="reading-progress"
+      role="progressbar"
+      aria-label="阅读进度"
+      aria-valuenow={0}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <span class="reading-progress-bar__fill" data-reading-progress-fill aria-hidden="true"></span>
+    </div>
+    <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
+      {tocTree.length > 0 ? (
+        <aside class="post-reading-toc-rail" aria-label="文章目录">
+          <TocSidebar items={tocTree} />
+        </aside>
+      ) : null}
 
-      let ticking = false;
-      const scheduleProgressUpdate = () => {
-        if (!ticking) {
-          window.requestAnimationFrame(updateProgress);
-          ticking = true;
-        }
-      };
-
-      function updateProgress() {
-        const article = document.querySelector('.post-reading-article');
-        const articleBody = document.querySelector('[data-post-body]');
-        if (!(article instanceof HTMLElement) || !(articleBody instanceof HTMLElement)) return;
-
-        const rect = article.getBoundingClientRect();
-        bar.dataset.floating = 'false';
-        const progressAnchorOffset = Math.max(window.innerHeight * 0.025, 24);
-
-        const articleStart = Math.max(window.scrollY + rect.top - progressAnchorOffset, 0);
-        const articleEnd =
-          articleStart +
-          article.offsetHeight -
-          Math.min(window.innerHeight * 0.58, articleBody.offsetHeight * 0.2);
-
-        const total = Math.max(articleEnd - articleStart, 1);
-        const scrolled = Math.min(Math.max(window.scrollY - articleStart, 0), total);
-        const pct = Math.round((scrolled / total) * 100);
-
-        bar.style.setProperty('--progress', pct + '%');
-        if (fill instanceof HTMLElement) {
-          fill.style.width = pct + '%';
-        }
-        bar.setAttribute('aria-valuenow', String(pct));
-        ticking = false;
-      }
-      
-      window.addEventListener('scroll', scheduleProgressUpdate, { passive: true });
-      
-      window.addEventListener('resize', () => {
-        window.requestAnimationFrame(updateProgress);
-      });
-
-      window.addEventListener('site-header-framechange', scheduleProgressUpdate);
-      
-      updateProgress();
-    })();
-  </script>
-  <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
-    {tocTree.length > 0 ? (
-      <aside class="post-reading-toc-rail" aria-label="文章目录">
-        <TocSidebar items={tocTree} />
-      </aside>
-    ) : null}
-
-    <div class="post-reading-main">
-      <article class="post-reading-article">
-        <section class="post-title-card" aria-label="文章标题卡片">
-          {post.data.cover ? (
-            <div class="post-cover post-cover--hero">
-              <div class="post-cover-stack">
-                <Image
-                  src={post.data.cover.src}
-                  alt=""
-                  aria-hidden="true"
-                  class="post-cover-img post-cover-img--ghost"
-                  loading="eager"
-                  decoding="async"
-                  widths={[640, 960, 1280]}
-                  sizes="(max-width: 900px) 100vw, 900px"
-                />
-                <Image
-                  src={post.data.cover.src}
-                  alt={post.data.cover.alt}
-                  class="post-cover-img post-cover-img--main"
-                  loading="eager"
-                  decoding="async"
-                  widths={[640, 960, 1280]}
-                  sizes="(max-width: 900px) 100vw, 900px"
-                />
+      <div class="post-reading-main">
+        <article class="post-reading-article">
+          <section class="post-title-card" aria-label="文章标题卡片">
+            {post.data.cover ? (
+              <div class="post-cover post-cover--hero">
+                <div class="post-cover-stack">
+                  <Image
+                    src={post.data.cover.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="post-cover-img post-cover-img--ghost"
+                    loading="eager"
+                    decoding="async"
+                    widths={[640, 960, 1280]}
+                    sizes="(max-width: 900px) 100vw, 900px"
+                  />
+                  <Image
+                    src={post.data.cover.src}
+                    alt={post.data.cover.alt}
+                    class="post-cover-img post-cover-img--main"
+                    loading="eager"
+                    decoding="async"
+                    widths={[640, 960, 1280]}
+                    sizes="(max-width: 900px) 100vw, 900px"
+                  />
+                </div>
+                {post.data.cover.credit ? (
+                  <p class="post-cover-credit">{post.data.cover.credit}</p>
+                ) : null}
               </div>
-              {post.data.cover.credit ? (
-                <p class="post-cover-credit">{post.data.cover.credit}</p>
+            ) : null}
+            <header class="content-section post-header post-header--scholarly">
+              <div class="post-header-meta-row">
+                <p class="subtle post-header-meta">
+                  {(headerMetaItems.filter(Boolean) as HeaderMetaItem[]).map((item) => (
+                    <span class="post-header-meta-item" aria-label={item.ariaLabel}>
+                      <MetaIcon name={item.icon} class="post-header-meta-icon" />
+                      <span>{item.label}</span>
+                    </span>
+                  ))}
+                </p>
+              </div>
+              <h1>{post.data.title}</h1>
+              {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
+              {headerStats.length > 0 ? (
+                <div class="post-header-stats-row" aria-label="文章辅助统计">
+                  {(headerStats.filter(Boolean) as HeaderStatItem[]).map((item) => (
+                    <span class="post-header-stat" aria-label={item.ariaLabel}>
+                      <MetaIcon name={item.icon} class="post-header-stat-icon" />
+                      <span>{item.label}</span>
+                    </span>
+                  ))}
+                </div>
               ) : null}
+              {post.data.topics.length > 0 ? (
+                <p class="post-header-topics" aria-label="文章主题标签">
+                  <span class="post-header-topics-label" aria-hidden="true">
+                    <MetaIcon name="tag" class="post-header-topics-icon" />
+                  </span>
+                  {post.data.topics.map((topicSlug) => (
+                    <span class="post-header-topic-item">
+                      <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+              <div class="post-header-divider" aria-hidden="true"></div>
+            </header>
+          </section>
+
+          {tocItems.length > 0 ? (
+            <div class="post-toc-mobile-container" aria-label="移动端目录">
+              <PostToc items={tocItems} variant="mobileOnly" />
             </div>
           ) : null}
-          <header class="content-section post-header post-header--scholarly">
-            <div class="post-header-meta-row">
-              <p class="subtle post-header-meta">
-                {(headerMetaItems.filter(Boolean) as HeaderMetaItem[]).map((item) => (
-                  <span class="post-header-meta-item" aria-label={item.ariaLabel}>
-                    <MetaIcon name={item.icon} class="post-header-meta-icon" />
-                    <span>{item.label}</span>
-                  </span>
-                ))}
-              </p>
-            </div>
-            <h1>{post.data.title}</h1>
-            {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
-            {headerStats.length > 0 ? (
-              <div class="post-header-stats-row" aria-label="文章辅助统计">
-                {(headerStats.filter(Boolean) as HeaderStatItem[]).map((item) => (
-                  <span class="post-header-stat" aria-label={item.ariaLabel}>
-                    <MetaIcon name={item.icon} class="post-header-stat-icon" />
-                    <span>{item.label}</span>
-                  </span>
-                ))}
-              </div>
-            ) : null}
-            {post.data.topics.length > 0 ? (
-              <p class="post-header-topics" aria-label="文章主题标签">
-                <span class="post-header-topics-label" aria-hidden="true">
-                  <MetaIcon name="tag" class="post-header-topics-icon" />
-                </span>
-                {post.data.topics.map((topicSlug) => (
-                  <span class="post-header-topic-item">
-                    <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
-                  </span>
-                ))}
-              </p>
-            ) : null}
-            <div class="post-header-divider" aria-hidden="true"></div>
-          </header>
+
+          <section class="post-body post-body--scholarly" data-post-body>
+            <Content />
+          </section>
+        </article>
+
+        <section class="post-waline-comments-section" aria-label="评论">
+          <WalineComments client:visible path={`/posts/${post.slug}`} />
         </section>
 
-        {tocItems.length > 0 ? (
-          <div class="post-toc-mobile-container" aria-label="移动端目录">
-            <PostToc items={tocItems} variant="mobileOnly" />
-          </div>
-        ) : null}
-
-        <section class="post-body post-body--scholarly" data-post-body>
-          <Content />
+        <section class="post-reading-family-actions" aria-label="继续浏览">
+          <ActionPair
+            actions={[
+              siblings.olderPost
+                ? {
+                    href: `/posts/${siblings.olderPost.slug}`,
+                    label: `下一篇：${siblings.olderPost.data.title}`,
+                    variant: "primary",
+                    icon: "arrow"
+                  }
+                : {
+                    href: "/archives",
+                    label: "翻阅归档",
+                    variant: "primary",
+                    icon: "archive"
+                  },
+              {
+                href: `/topics/${post.data.topics[0]}`,
+                label: `返回主题：${post.data.topics[0]}`,
+                variant: "secondary",
+                icon: "topic"
+              }
+            ]}
+          />
         </section>
-      </article>
 
-      <section class="post-waline-comments-section" aria-label="评论">
-        <WalineComments client:load path={`/posts/${post.slug}`} />
-      </section>
+        <PostPager newerPost={siblings.newerPost} olderPost={siblings.olderPost} />
+      </div>
 
-      <PostPager newerPost={siblings.newerPost} olderPost={siblings.olderPost} />
+      <aside class="post-reading-rail" aria-label="阅读侧栏">
+        <PostScholarRail
+          tocItems={tocItems}
+          figures={post.data.figures ?? []}
+          markdownFootnotes={markdownFootnotes}
+          postSlug={post.slug}
+          showToc={false}
+        />
+      </aside>
     </div>
-
-    <aside class="post-reading-rail" aria-label="阅读侧栏">
-      <PostScholarRail
-        tocItems={tocItems}
-        figures={post.data.figures ?? []}
-        markdownFootnotes={markdownFootnotes}
-        postSlug={post.slug}
-        showToc={false}
-      />
-    </aside>
   </div>
-
 </BaseLayout>

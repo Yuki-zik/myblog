@@ -11,7 +11,7 @@ const EXCLUDED_ANCESTORS = new Set([
   "figcaption"
 ]);
 
-const HEADING_TAGS = new Set(["h2", "h3", "h4", "h5", "h6"]);
+const HEADING_TAGS = new Set(["h2", "h3"]);
 
 function hasExcludedAncestor(ancestors: unknown[]): boolean {
   return ancestors.some((ancestor) => {

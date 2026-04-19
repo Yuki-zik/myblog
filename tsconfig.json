@@ -8,9 +8,18 @@
   },
   "include": [
     ".astro/types.d.ts",
-    "**/*"
+    "src/**/*",
+    "tests/**/*",
+    "astro.config.mjs",
+    "playwright.config.ts",
+    "vitest.config.ts"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "node_modules",
+    "test-results",
+    "playwright-report",
+    "patch.js",
+    "patch_timeline.js"
   ]
 }

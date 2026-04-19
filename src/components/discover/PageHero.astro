@@ -1,0 +1,65 @@
+---
+import ActionPair, { type DiscoverAction } from "./ActionPair.astro";
+
+export type DiscoverHeroStat = {
+  value: string;
+  label: string;
+};
+
+interface Props {
+  kicker: string;
+  title: string;
+  description?: string;
+  actions?: DiscoverAction[];
+  stats?: DiscoverHeroStat[];
+  variant?: "poster" | "split" | "reading-header";
+  className?: string;
+}
+
+const {
+  kicker,
+  title,
+  description,
+  actions = [],
+  stats = [],
+  variant = "poster",
+  className
+} = Astro.props;
+---
+
+<section
+  class:list={[
+    "discover-hero",
+    `discover-hero--${variant}`,
+    className
+  ]}
+  data-discover-hero
+  data-ux-stagger
+>
+  <div class="discover-hero__copy" data-ux-reveal="fade-up">
+    <p class="discover-hero__kicker">{kicker}</p>
+    <h1 class="discover-hero__title">{title}</h1>
+    {description ? <p class="discover-hero__description">{description}</p> : null}
+    {actions.length > 0 ? <ActionPair actions={actions} /> : null}
+    {
+      stats.length > 0 ? (
+        <ul class="discover-hero__stats" aria-label="页面摘要">
+          {stats.map((stat) => (
+            <li class="discover-hero__stat">
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null
+    }
+  </div>
+
+  {
+    variant === "split" ? (
+      <aside class="discover-hero__panel discover-surface" data-ux-reveal="fade-up">
+        <slot name="aside" />
+      </aside>
+    ) : null
+  }
+</section>
