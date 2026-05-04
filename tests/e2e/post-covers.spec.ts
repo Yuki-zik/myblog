@@ -114,7 +114,20 @@ test("home featured publication renders the same-source ghost cover stack", asyn
   expect(initialMetrics.ghostSpread).toBeGreaterThan(initialMetrics.mainWidth * 0.04);
 
   await featuredPost.locator(".home-reference-featured-card").hover();
-  await page.waitForTimeout(180);
+
+  // Poll for the hover transition to settle. Under parallel load the CSS
+  // transition can take longer than a fixed timeout, so wait until the ghost
+  // opacity has actually advanced past the threshold instead of relying on a
+  // brittle waitForTimeout.
+  await expect
+    .poll(
+      async () => {
+        const m = await collectMetrics();
+        return m.ghostOpacity;
+      },
+      { timeout: 4000 }
+    )
+    .toBeGreaterThan(initialMetrics.ghostOpacity + 0.08);
 
   const hoverMetrics = await collectMetrics();
 

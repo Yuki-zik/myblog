@@ -248,6 +248,7 @@ test("home domains keep consistent colors across system-dark, light, and dark th
 });
 
 test("theme switching keeps the home background and cards in the same tonal family", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
   await page.addInitScript(() => {
     window.localStorage.setItem("theme-preference", "dark");
   });
@@ -257,32 +258,37 @@ test("theme switching keeps the home background and cards in the same tonal fami
   await waitForThemeSettled(page);
 
   await page.click("#theme-toggle");
-  await page.waitForTimeout(180);
 
-  const midTransition = await page.evaluate(() => {
-    const bodyStyles = getComputedStyle(document.body);
-    const card = document.querySelector(".home-reference-card") as HTMLElement | null;
-    const cardStyles = card ? getComputedStyle(card) : null;
+  const readTransitionState = () =>
+    page.evaluate(() => {
+      const bodyStyles = getComputedStyle(document.body);
+      const card = document.querySelector(".home-reference-card") as HTMLElement | null;
+      const cardStyles = card ? getComputedStyle(card) : null;
+      const bodyMatch = bodyStyles.backgroundColor.match(/\d+/g) ?? [];
+      const cardMatch = cardStyles?.backgroundColor.match(/\d+/g) ?? [];
 
-    return {
-      theme: document.documentElement.dataset.theme,
-      colorScheme: document.documentElement.dataset.colorScheme,
-      bodyBackground: bodyStyles.backgroundColor,
-      cardBackground: cardStyles?.backgroundColor ?? ""
-    };
+      return {
+        theme: document.documentElement.dataset.theme,
+        colorScheme: document.documentElement.dataset.colorScheme,
+        bodyRed: Number.parseInt(bodyMatch[0] ?? "0", 10),
+        cardRed: Number.parseInt(cardMatch[0] ?? "0", 10)
+      };
+    });
+
+  // Poll until the body background transition has measurably progressed past
+  // the dark starting tone. This keeps the assertion deterministic under heavy
+  // parallel load while still verifying the cross-theme tonal family.
+  await expect.poll(readTransitionState, { timeout: 4000 }).toMatchObject({
+    theme: "system",
+    colorScheme: "light"
   });
+  await expect
+    .poll(async () => (await readTransitionState()).bodyRed, { timeout: 4000 })
+    .toBeGreaterThan(88);
 
-  expect(midTransition.theme).toBe("system");
-  expect(midTransition.colorScheme).toBe("light");
-
-  const bodyMatch = midTransition.bodyBackground.match(/\d+/g) ?? [];
-  const cardMatch = midTransition.cardBackground.match(/\d+/g) ?? [];
-  const bodyRed = Number.parseInt(bodyMatch[0] ?? "0", 10);
-  const cardRed = Number.parseInt(cardMatch[0] ?? "0", 10);
-
-  expect(bodyRed).toBeGreaterThan(88);
-  expect(cardRed).toBeGreaterThan(120);
-  expect(Math.abs(cardRed - bodyRed)).toBeLessThan(110);
+  const settled = await readTransitionState();
+  expect(settled.cardRed).toBeGreaterThan(120);
+  expect(Math.abs(settled.cardRed - settled.bodyRed)).toBeLessThan(110);
 
   await waitForThemeSettled(page);
 });

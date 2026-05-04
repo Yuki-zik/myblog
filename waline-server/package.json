@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "node node_modules/@waline/vercel/vanilla.js",
-    "start": "node node_modules/@waline/vercel/vanilla.js"
+    "start": "node node_modules/@waline/vercel/vanilla.js",
+    "smoke": "node smoke.cjs"
   },
   "dependencies": {
     "@waline/vercel": "1.39.3"

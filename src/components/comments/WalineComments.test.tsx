@@ -47,7 +47,7 @@ describe("WalineComments", () => {
         path: "/posts/test-post",
         lang: "zh-CN",
         login: "disable",
-        dark: 'html[data-theme="dark"]',
+        dark: 'html[data-color-scheme="dark"]',
       }),
     );
 

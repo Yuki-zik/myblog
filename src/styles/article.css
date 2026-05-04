@@ -26,7 +26,7 @@ body[data-runtime="reading"] {
   background: rgb(252, 252, 253);
 }
 
-:root[data-theme="dark"] body[data-runtime="reading"] {
+:root[data-color-scheme="dark"] body[data-runtime="reading"] {
   --article-page-bg: var(--reading-paper-page);
   --article-page-bg-strong: color-mix(in srgb, var(--reading-paper-page) 82%, black 18%);
   --article-ink-faint: color-mix(in srgb, var(--article-ink) 56%, black 44%);
@@ -1582,7 +1582,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 
 /* ── 31. Reading progress bar — no animated gradient ─────────────── */
 body[data-runtime="reading"] .reading-progress-bar,
-:root[data-theme="dark"] .reading-progress-bar,
+:root[data-color-scheme="dark"] .reading-progress-bar,
 .reading-progress-bar {
   position: fixed;
   top: 0;
@@ -1620,10 +1620,10 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
 .reading-progress-bar:not([aria-valuenow="0"]) .reading-progress-bar__fill { opacity: 1; }
 
 /* ── 32. Dark mode surface resets ────────────────────────────────── */
-:root[data-theme="dark"] .post-reading-article,
-:root[data-theme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
-:root[data-theme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail,
-:root[data-theme="dark"] .post-article-comments-collapsible {
+:root[data-color-scheme="dark"] .post-reading-article,
+:root[data-color-scheme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
+:root[data-color-scheme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail,
+:root[data-color-scheme="dark"] .post-article-comments-collapsible {
   background: transparent;
 }
 

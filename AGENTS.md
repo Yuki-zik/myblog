@@ -71,7 +71,7 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 - Waline theme integration: `src/styles/waline.css`
 - Rule:
   - article pages mount Waline with `path=/posts/<slug>` and `client:visible`
-  - dark mode follows `html[data-theme="dark"]`
+  - dark mode follows `html[data-color-scheme="dark"]` (computed from the tri-state `data-theme` + `prefers-color-scheme`)
   - when `PUBLIC_WALINE_SERVER_URL` is missing, the wrapper renders a configuration hint instead of crashing
   - when Waline `init()` throws, the wrapper renders a runtime error hint instead of tearing down the page
 

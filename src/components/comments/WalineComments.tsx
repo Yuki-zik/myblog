@@ -32,7 +32,7 @@ export default function WalineComments({
         serverURL,
         path,
         lang: "zh-CN",
-        dark: 'html[data-theme="dark"]',
+        dark: 'html[data-color-scheme="dark"]',
         login: "disable",
         meta: ["nick", "mail", "link"],
         requiredMeta: ["nick"],

@@ -372,7 +372,7 @@
   }
 }
 
-:root[data-theme="dark"] {
+:root[data-color-scheme="dark"] {
   --page-bg: color-mix(in srgb, var(--c-midnight) 92%, black 8%);
   --page-bg-ambient:
     radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--c-navy) 42%, transparent 58%) 0%, transparent 34%),

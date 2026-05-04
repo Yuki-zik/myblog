@@ -502,6 +502,27 @@ test("runtime matrix marks discover and reading routes explicitly", async ({ pag
   await expect(page.locator(".discover-page__ambient")).toBeVisible();
 });
 
+test("non-home discover routes follow dark OS when theme stays on system", async ({ page }) => {
+  const routes = ["/topics", "/archives", "/author"];
+
+  for (const route of routes) {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.addInitScript(() => {
+      window.localStorage.removeItem("theme-preference");
+    });
+
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(route);
+    await page.waitForFunction(() => !document.documentElement.classList.contains("theme-transitioning"));
+
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "system");
+    await expect(page.locator("html")).toHaveAttribute("data-color-scheme", "dark");
+
+    const bodyBackground = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    expect(bodyBackground, `${route} should show the dark discover background under system+dark OS`).toBe("rgb(11, 15, 25)");
+  }
+});
+
 test("post page collapses to a single mobile column and shows follow-up navigation", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/posts/paragraph-anchor-design");

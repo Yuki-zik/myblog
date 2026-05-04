@@ -2,6 +2,7 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 对最新一轮 code review 的 5 项问题做全面修复：还原依赖、把 `pnpm build` 与 GitHub CI 接入统一验证入口、修复非首页 discover 与 Waline 在 `system + OS dark` 下未跟随暗色的问题、补 waline-server 最小 smoke、并新增非首页 system-dark 回归 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ⏳ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”轮播的快速连续点击交互：取消必须等待单次动画结束的输入丢失与反馈迟滞 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”卡片纵向比例：在上一轮基础上再缩短一点，并保持四卡窗口、hover 与轮播节奏不变 | ✅ | AI Assistant | 2026-04-12 |
@@ -80,8 +81,8 @@
 | 中 | 继续增强顶部栏液态玻璃效果：仅提升 header 的高光、折射、层次与悬浮感，其余结构与交互保持不变 | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 优化顶部栏材质表现：保留现有结构与三态逻辑，仅把 header 提升为液态玻璃质感并确保文字清晰可读 | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 阅读当前项目并并行建立可复用的 harness 上下文：梳理应用架构、内容/评论链路、验证命令与关键约束，并回写 agent 文档 | ✅ | AI Assistant | 2026-03-22 |
-| 高 | 将 `pnpm build` 纳入统一验证入口并补 GitHub CI workflow，避免 `test:all` 与人工提交流程脱节 | ⏳ | AI Assistant | 2026-03-23 |
-| 中 | 为 `waline-server/` 补最小 smoke / 自动验证，减少前端 wrapper 之外的评论回归盲区 | ⏳ | AI Assistant | 2026-03-23 |
+| 高 | 将 `pnpm build` 纳入统一验证入口并补 GitHub CI workflow，避免 `test:all` 与人工提交流程脱节 | ✅ | AI Assistant | 2026-04-12 |
+| 中 | 为 `waline-server/` 补最小 smoke / 自动验证，减少前端 wrapper 之外的评论回归盲区 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 统一文章页右侧文字型边注为类型化脚注链路：正文引用与信息注释统一使用标准 GFM 脚注，图表说明保留 figures 但按同一 sidenote 视觉渲染，并移除 posts schema 中的 annotations / references | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 修正 legacy reference 的 rail 显示标签语义：统一显示为 `文N`，不再沿用脚注式 `[n]` 标签 | ✅ | AI Assistant | 2026-03-22 |
 | 高 | 修复 scholar rail 混合脚注/注释/图表时的编号空间冲突：避免重复数字、跳号错觉与由此产生的排序误读 | ✅ | AI Assistant | 2026-03-22 |
