@@ -152,6 +152,8 @@ test("topic page related posts renders card covers", async ({ page }) => {
   const manualCover = topicPosts.locator('[data-post-cover="card"][data-post-cover-manual="true"]').first();
   await expect(manualCover.locator(".post-cover-img--main")).toBeVisible();
   await expect(manualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
+  await expect(topicPosts.locator(".post-card-topics").first()).toContainText("#主题化知识网络");
+  await expect(topicPosts.locator(".post-card-topics").first()).not.toContainText("#knowledge-network");
 });
 
 test("concept page related posts renders card covers", async ({ page }) => {
@@ -167,6 +169,8 @@ test("concept page related posts renders card covers", async ({ page }) => {
   const manualCover = conceptPosts.locator('[data-post-cover="card"][data-post-cover-manual="true"]').first();
   await expect(manualCover.locator(".post-cover-img--main")).toBeVisible();
   await expect(manualCover.locator(".post-cover-img--ghost")).toHaveCount(1);
+  await expect(conceptPosts.locator(".post-card-topics").first()).toContainText("#段落级短评");
+  await expect(conceptPosts.locator(".post-card-topics").first()).not.toContainText("#paragraph-review");
 });
 
 test("archive tiles reuse the shared manual cover stack", async ({ page }) => {
@@ -281,6 +285,127 @@ test("desktop header search stays between brand and navigation", async ({ page }
   expect(Math.abs(searchBox.x + searchBox.width / 2 - 720)).toBeLessThan(160);
 });
 
+test("header search supports keyboard selection and enter navigation", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  await page.keyboard.press("/");
+  const input = page.locator("[data-search-input]");
+  await expect(input).toBeFocused();
+  await input.fill("设计说明书");
+
+  const results = page.locator("[data-search-results]");
+  await expect(results.locator("a")).toContainText(["MyBlog 的设计说明书"]);
+  await expect(input).toHaveAttribute("role", "combobox");
+  await expect(results).toHaveAttribute("role", "listbox");
+  await expect(results.locator("[role='option']")).toHaveCount(1);
+
+  const panelMetrics = await page.evaluate(() => {
+    const headerInner = document.querySelector(".site-header-inner") as HTMLElement | null;
+    const panel = document.querySelector("[data-search-panel]") as HTMLElement | null;
+    const headerRect = headerInner?.getBoundingClientRect();
+    const panelRect = panel?.getBoundingClientRect();
+    return {
+      headerOverflow: headerInner ? getComputedStyle(headerInner).overflow : "",
+      viewportHeight: window.innerHeight,
+      headerBottom: headerRect?.bottom ?? 0,
+      panelTop: panelRect?.top ?? 0,
+      panelBottom: panelRect?.bottom ?? 0,
+      panelHeight: panelRect?.height ?? 0,
+      visibleInsideHeader:
+        headerRect && panelRect
+          ? Math.max(0, Math.min(headerRect.bottom, panelRect.bottom) - Math.max(headerRect.top, panelRect.top))
+          : 0
+    };
+  });
+
+  expect(panelMetrics.headerOverflow).toBe("visible");
+  expect(panelMetrics.panelHeight).toBeGreaterThan(120);
+  expect(panelMetrics.panelTop).toBeGreaterThanOrEqual(panelMetrics.headerBottom - 8);
+  expect(panelMetrics.panelBottom).toBeLessThanOrEqual(panelMetrics.viewportHeight);
+
+  await page.keyboard.press("ArrowDown");
+  const activeId = await input.getAttribute("aria-activedescendant");
+  expect(activeId).toBeTruthy();
+  await expect(results.locator(`#${activeId}`)).toHaveAttribute("aria-selected", "true");
+
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/posts\/myblog-design-manual$/);
+});
+
+test("header search controls expose visible keyboard focus states", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Tab");
+  const triggerFocus = await page.locator("[data-search-trigger]").evaluate((node) => {
+    const styles = getComputedStyle(node);
+    return {
+      boxShadow: styles.boxShadow,
+      outlineStyle: styles.outlineStyle
+    };
+  });
+
+  expect(triggerFocus.boxShadow === "none" && triggerFocus.outlineStyle === "none").toBe(false);
+
+  await page.keyboard.press("/");
+  const inputFocus = await page.locator("[data-search-input]").evaluate((node) => {
+    const field = node.closest("[data-search-field]");
+    const nodeStyles = getComputedStyle(node);
+    const fieldStyles = field ? getComputedStyle(field) : null;
+    return {
+      inputBoxShadow: nodeStyles.boxShadow,
+      fieldBoxShadow: fieldStyles?.boxShadow ?? "none"
+    };
+  });
+
+  expect(inputFocus.inputBoxShadow === "none" && inputFocus.fieldBoxShadow === "none").toBe(false);
+});
+
+test("header search expands within the viewport on short tablet aspect ratios", async ({ page }) => {
+  await page.setViewportSize({ width: 824, height: 227 });
+  await page.goto("/author");
+
+  const trigger = page.locator("[data-search-trigger]");
+  await expect(trigger).toBeVisible();
+
+  const collapsed = await trigger.boundingBox();
+  expect(collapsed).not.toBeNull();
+  expect(collapsed!.x + collapsed!.width).toBeLessThanOrEqual(824);
+
+  await trigger.click();
+  await expect(page.locator("[data-search-input]")).toBeVisible();
+
+  const metrics = await page.evaluate(() => {
+    const field = document.querySelector("[data-search-field]") as HTMLElement | null;
+    const input = document.querySelector("[data-search-input]") as HTMLElement | null;
+    const nav = document.querySelector(".site-nav") as HTMLElement | null;
+    const theme = document.querySelector("#theme-toggle") as HTMLElement | null;
+    const fieldRect = field?.getBoundingClientRect();
+    const inputRect = input?.getBoundingClientRect();
+    const navRect = nav?.getBoundingClientRect();
+    const themeRect = theme?.getBoundingClientRect();
+
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
+      fieldLeft: fieldRect?.left ?? -1,
+      fieldRight: fieldRect?.right ?? -1,
+      inputWidth: inputRect?.width ?? 0,
+      navRight: navRect?.right ?? -1,
+      themeRight: themeRect?.right ?? -1
+    };
+  });
+
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+  expect(metrics.fieldLeft).toBeGreaterThanOrEqual(0);
+  expect(metrics.fieldRight).toBeLessThanOrEqual(metrics.viewportWidth);
+  expect(metrics.inputWidth).toBeGreaterThan(180);
+  expect(metrics.navRight).toBeLessThanOrEqual(metrics.viewportWidth);
+  expect(metrics.themeRight).toBeLessThanOrEqual(metrics.viewportWidth);
+});
+
 test("reading progress bar updates aria value and visible fill on scroll", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
@@ -288,6 +413,7 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   const progressBar = page.locator("#reading-progress-bar");
 
   await expect(progressBar).toBeVisible();
+  await expect(progressBar).toHaveAttribute("aria-label", "正文阅读进度");
 
   const initialValue = Number(await progressBar.getAttribute("aria-valuenow"));
   const initialFillState = await progressBar.evaluate((el) => {
@@ -317,7 +443,7 @@ test("reading progress bar updates aria value and visible fill on scroll", async
   await page.waitForTimeout(300);
 
   await expect(page.locator(".site-header")).toHaveClass(/is-scrolled/);
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-state", "hidden");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-state", /compact|hidden/);
 
   const nextValue = Number(await progressBar.getAttribute("aria-valuenow"));
   const nextFillState = await progressBar.evaluate((el) => {

@@ -10,7 +10,6 @@ function createPost(
 ): CollectionEntry<"posts"> {
   return {
     id: slug,
-    slug,
     body: "",
     collection: "posts",
     data: {
@@ -20,9 +19,6 @@ function createPost(
       draft: false,
       author
     },
-    render: async () => {
-      throw new Error("not needed in unit tests");
-    }
   } as unknown as CollectionEntry<"posts">;
 }
 
@@ -40,7 +36,7 @@ describe("archive helpers", () => {
     expect(groups.map((group) => group.year)).toEqual(["2026", "2025"]);
     expect(groups[0].months.map((month) => month.monthKey)).toEqual(["2026-02"]);
     expect(groups[1].months.map((month) => month.monthKey)).toEqual(["2025-07", "2025-06"]);
-    expect(groups[0].months[0].posts.map((post) => post.slug)).toEqual([
+    expect(groups[0].months[0].posts.map((post) => post.id)).toEqual([
       "post-2026-02-a",
       "post-2026-02-b"
     ]);

@@ -1,5 +1,5 @@
 ﻿---
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import PostCover from "./PostCover.astro";
 import MetaIcon from "../ui/MetaIcon.astro";
 import { formatPostDisplayDate } from "../../lib/posts/date";
@@ -22,6 +22,8 @@ type StatItem = {
 };
 
 const { post } = Astro.props;
+const topics = await getCollection("topics");
+const topicTitleBySlug = new Map(topics.map((topic) => [topic.id, topic.data.title]));
 const publishedLabel = formatPostDisplayDate(post.data.date);
 const updatedLabel = post.data.updated ? formatPostDisplayDate(post.data.updated) : null;
 const readingMinutes = getPostReadingMinutes(post);
@@ -69,7 +71,7 @@ const statItems = [
 ---
 
 <article class="post-card" data-post-card data-ux-reveal="fade-up">
-  <a href={`/posts/${post.slug}`} class="post-card-cover-link" aria-label={`阅读文章：${post.data.title}`}>
+  <a href={`/posts/${post.id}`} class="post-card-cover-link" aria-label={`阅读文章：${post.data.title}`}>
     <PostCover post={post} variant="card" />
   </a>
 
@@ -84,7 +86,7 @@ const statItems = [
     </p>
 
     <h3 class="post-card-title">
-      <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+      <a href={`/posts/${post.id}`}>{post.data.title}</a>
     </h3>
 
     {post.data.summary ? <p class="post-card-summary">{post.data.summary}</p> : null}
@@ -102,7 +104,9 @@ const statItems = [
     </div>
 
     <ul class="pill-list post-card-topics" aria-label="文章主题标签">
-      {post.data.topics.map((topicSlug) => <li><a href={`/topics/${topicSlug}`}>#{topicSlug}</a></li>)}
+      {post.data.topics.map((topicSlug) => (
+        <li><a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a></li>
+      ))}
     </ul>
 
     <div class="post-card-endmark" aria-hidden="true"></div>

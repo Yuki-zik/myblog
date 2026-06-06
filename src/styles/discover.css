@@ -15,8 +15,7 @@ html.theme-transitioning body[data-runtime="reading"] *::after {
   transition-timing-function: var(--motion-ease-emphasized) !important;
 }
 
-body[data-runtime="discover"],
-body[data-runtime="reading"] {
+body[data-runtime="discover"] {
   --brand-accent: #2563eb;
   --accent: #2563eb;
   --accent-soft: rgba(96, 165, 250, 0.16);
@@ -29,14 +28,12 @@ body[data-runtime="reading"] {
   --progress-fill: linear-gradient(90deg, rgba(37, 99, 235, 0.98) 0%, rgba(59, 130, 246, 1) 55%, rgba(96, 165, 250, 0.96) 100%);
 }
 
-body[data-runtime="discover"],
-body[data-runtime="reading"] {
+body[data-runtime="discover"] {
   background: #f7f7f5;
   overflow-x: hidden;
 }
 
-body[data-runtime="discover"]::before,
-body[data-runtime="reading"]::before {
+body[data-runtime="discover"]::before {
   inset: 0;
   z-index: 60;
   opacity: 0.08;
@@ -45,24 +42,20 @@ body[data-runtime="reading"]::before {
   background-repeat: repeat;
 }
 
-html[data-color-scheme="dark"] body[data-runtime="discover"],
-html[data-color-scheme="dark"] body[data-runtime="reading"] {
+html[data-color-scheme="dark"] body[data-runtime="discover"] {
   background: #0b0f19;
 }
 
-html[data-color-scheme="dark"] body[data-runtime="discover"]::before,
-html[data-color-scheme="dark"] body[data-runtime="reading"]::before {
+html[data-color-scheme="dark"] body[data-runtime="discover"]::before {
   opacity: 0.15;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] body[data-runtime="discover"],
-  :root[data-theme="system"] body[data-runtime="reading"] {
+  :root[data-theme="system"] body[data-runtime="discover"] {
     background: #0b0f19;
   }
 
-  :root[data-theme="system"] body[data-runtime="discover"]::before,
-  :root[data-theme="system"] body[data-runtime="reading"]::before {
+  :root[data-theme="system"] body[data-runtime="discover"]::before {
     opacity: 0.15;
   }
 
@@ -112,6 +105,9 @@ html[data-color-scheme="dark"] .discover-page {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  overflow: clip;
+  max-width: 100vw;
+  contain: paint;
   pointer-events: none;
   z-index: 0;
 }
@@ -179,6 +175,7 @@ html[data-color-scheme="dark"] .discover-page__orb--amber {
   flex-direction: column;
   gap: 5rem;
   width: 100%;
+  min-width: 0;
   max-width: 80rem;
   margin: 0 auto;
   padding: 3rem 1.5rem 0;
@@ -510,6 +507,7 @@ html[data-color-scheme="dark"] .discover-hero__panel-stat strong {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.5rem;
+  min-width: 0;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e2e8f0;
 }
@@ -521,6 +519,7 @@ html[data-color-scheme="dark"] .discover-section-head {
 .discover-section-head__copy {
   display: grid;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .discover-section-head h2 {
@@ -552,6 +551,7 @@ html[data-color-scheme="dark"] .discover-section-head__copy p:last-child {
   align-items: center;
   gap: 0.9rem;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .discover-section-head__count,
@@ -702,6 +702,8 @@ html[data-color-scheme="dark"] .discover-stream-item__summary {
 
 .discover-rich {
   padding: 1.35rem 1.4rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .discover-rich :where(h2, h3, h4) {
@@ -797,6 +799,20 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
   }
 }
 
+@media (max-width: 1280px) {
+  .discover-page__orb--blue {
+    left: 0;
+    width: min(32vw, 18rem);
+    height: min(32vw, 18rem);
+  }
+
+  .discover-page__orb--amber {
+    right: 0;
+    width: min(28vw, 16rem);
+    height: min(28vw, 16rem);
+  }
+}
+
 @media (max-width: 1024px) {
   .discover-page__body {
     gap: 4rem;
@@ -850,6 +866,18 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
   .discover-section-head {
     align-items: flex-start;
     flex-direction: column;
+    width: 100%;
+  }
+
+  .discover-section-head__copy,
+  .discover-section-head__meta {
+    width: 100%;
+  }
+
+  .discover-section-head :where(h2, p),
+  .discover-rich :where(h2, h3, h4, p, li, code) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .discover-hero__title {

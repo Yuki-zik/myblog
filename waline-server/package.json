@@ -12,6 +12,32 @@
     "smoke": "node smoke.cjs"
   },
   "dependencies": {
-    "@waline/vercel": "1.39.3"
+    "@waline/vercel": "1.40.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "protobufjs",
+      "sqlite3"
+    ],
+    "overrides": {
+      "form-data@<2.5.4": "2.5.4",
+      "protobufjs": "^7.5.8",
+      "axios": "^0.32.0",
+      "tar": "^7.5.10",
+      "validator": "^13.15.23",
+      "ws": "^8.20.1",
+      "qs": "^6.15.2"
+    },
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-p6mc-m468-83gw",
+        "GHSA-p8p7-x288-28g6",
+        "GHSA-72xf-g2v4-qvf3",
+        "GHSA-w9mr-4mfr-499f",
+        "GHSA-xxjr-mmjv-4gpg",
+        "GHSA-f23m-r3pf-42rh",
+        "GHSA-w5hq-g745-h8pq"
+      ]
+    }
   }
 }

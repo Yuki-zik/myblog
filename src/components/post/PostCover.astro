@@ -10,7 +10,7 @@ interface Props {
 
 const { post, variant = "card" } = Astro.props;
 const hasManualCover = Boolean(post.data.cover?.src);
-const tokens = getPostCoverTokens(post.slug);
+const tokens = getPostCoverTokens(post.id);
 
 const fallbackStyle = [
   `--cover-c1: ${tokens.palette[0]}`,

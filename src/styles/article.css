@@ -24,6 +24,11 @@ body[data-runtime="reading"] {
   --article-chip-border: color-mix(in srgb, var(--article-ink) 10%, transparent 90%);
   --article-chip-text: color-mix(in srgb, var(--article-ink) 76%, white 24%);
   background: rgb(252, 252, 253);
+  overflow-x: hidden;
+}
+
+.post-reading-page {
+  overflow-x: clip;
 }
 
 :root[data-color-scheme="dark"] body[data-runtime="reading"] {
@@ -1730,17 +1735,44 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
   }
 }
 
-/* ── 35. Tablet / single-column (≤1180px) ────────────────────────── */
-@media (max-width: 1180px) {
+/* ── 35. Tablet / single-column (≤1280px) ────────────────────────── */
+@media (max-width: 1280px) {
   .post-reading-layout--scholarly.post-reading-layout--tri {
     grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
   }
 
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail { order: 0; grid-column: 1 / -1; }
+  .post-reading-layout--scholarly.post-reading-layout--tri::after {
+    display: none;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card,
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail,
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-main,
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail { order: 0; }
   .post-reading-layout--scholarly.post-reading-layout--tri .post-toc-mobile-container .post-toc-mobile { display: block; margin: 1.5rem 0 2.5rem; }
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-main { order: 1; grid-column: 1 / -1; }
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail { order: 2; margin-top: 1.05rem; grid-column: 1 / -1; }
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-main { order: 1; }
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail { order: 2; margin-top: 1.05rem; }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-spacer {
+    display: none;
+  }
+
+  .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble {
+    position: relative;
+    inset-inline: auto;
+    top: auto !important;
+  }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel {
     border: 1px solid var(--article-rule);

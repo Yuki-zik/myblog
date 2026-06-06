@@ -259,7 +259,7 @@ test("discover routes provide route-specific meta descriptions", async ({ page }
   const descriptions: string[] = [];
 
   for (const route of routes) {
-    await page.goto(route);
+    await page.goto(route, { waitUntil: "domcontentloaded" });
     const description = await page.locator('meta[name="description"]').getAttribute("content");
     expect(description, route).toBeTruthy();
     descriptions.push(description ?? "");
@@ -445,10 +445,34 @@ test("archives page stays readable without mobile overflow", async ({ page }) =>
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
-    viewportWidth: window.innerWidth
+    viewportWidth: window.innerWidth,
+    yearGridColumns: getComputedStyle(document.querySelector(".archive-year-section") as HTMLElement).gridTemplateColumns,
+    tileWidth: (document.querySelector(".archive-post-tile") as HTMLElement | null)?.getBoundingClientRect().width ?? 0,
+    contentWidth: (document.querySelector(".archive-post-content") as HTMLElement | null)?.getBoundingClientRect().width ?? 0
   }));
 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+  expect(metrics.yearGridColumns.split(" ").length).toBe(1);
+  expect(metrics.tileWidth).toBeGreaterThan(330);
+  expect(metrics.contentWidth).toBeGreaterThan(190);
+});
+
+test("concept detail page avoids mobile horizontal overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/concepts/anchor-id");
+
+  await expect(page.locator("[data-discover-hero]")).toBeVisible();
+
+  const metrics = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    viewportWidth: window.innerWidth,
+    sectionHeadWidth: (document.querySelector(".discover-section-head") as HTMLElement | null)?.getBoundingClientRect().width ?? 0,
+    richWidth: (document.querySelector(".discover-rich") as HTMLElement | null)?.getBoundingClientRect().width ?? 0
+  }));
+
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+  expect(metrics.sectionHeadWidth).toBeLessThanOrEqual(metrics.viewportWidth - 24);
+  expect(metrics.richWidth).toBeLessThanOrEqual(metrics.viewportWidth - 24);
 });
 
 test("author page presents a structured research profile without mobile overflow", async ({ page }) => {
@@ -493,7 +517,7 @@ test("runtime matrix marks discover and reading routes explicitly", async ({ pag
   ];
 
   for (const item of cases) {
-    await page.goto(item.path);
+    await page.goto(item.path, { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toHaveAttribute("data-runtime", item.runtime);
     await expect(page.locator("main")).toHaveAttribute("data-runtime", item.runtime);
   }
@@ -556,6 +580,21 @@ test("post page collapses to a single mobile column and shows follow-up navigati
   expect(metrics.railWidth).toBeGreaterThan(300);
   expect(metrics.articleTop).toBeGreaterThan(metrics.tocTop);
   expect(metrics.railTop).toBeGreaterThan(metrics.articleTop);
+
+  const railMetrics = await page.evaluate(() => {
+    const bubble = document.querySelector("[data-marginalia-bubble]") as HTMLElement | null;
+    const layer = document.querySelector("[data-post-scholar-floating-layer]") as HTMLElement | null;
+    return {
+      bubblePosition: bubble ? getComputedStyle(bubble).position : "",
+      layerDisplay: layer ? getComputedStyle(layer).display : "",
+      layerHeight: layer?.getBoundingClientRect().height ?? 0,
+      bubbleHeight: bubble?.getBoundingClientRect().height ?? 0
+    };
+  });
+
+  expect(railMetrics.bubblePosition).not.toBe("absolute");
+  expect(railMetrics.layerDisplay).toBe("grid");
+  expect(railMetrics.layerHeight).toBeGreaterThan(railMetrics.bubbleHeight);
 });
 
 test("article toc sidebar tracks active sections and keeps a progress rail", async ({ page }) => {
@@ -633,13 +672,23 @@ test("article toc sidebar keeps the last section visible and the progress rail i
 }) => {
   await page.setViewportSize({ width: 1440, height: 760 });
   await page.goto("/posts/myblog-design-manual");
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(400);
 
   await page.evaluate(() => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+    const scrollRoot = document.scrollingElement ?? document.documentElement;
+    scrollRoot.scrollTop = scrollRoot.scrollHeight;
   });
 
   await page.waitForFunction(() => {
-    const active = document.querySelector("[data-toc-link].is-active");
+    const scrollRoot = document.scrollingElement ?? document.documentElement;
+    const remaining = scrollRoot.scrollHeight - (scrollRoot.scrollTop + window.innerHeight);
+    if (remaining > 2) {
+      scrollRoot.scrollTop = scrollRoot.scrollHeight;
+      window.dispatchEvent(new Event("scroll"));
+      return false;
+    }
+    const active = document.querySelector("[data-toc-sidebar] [data-toc-link].is-active");
     const body = document.querySelector("[data-toc-sidebar-body]") as HTMLElement | null;
     return (
       (active?.textContent?.includes("References") ?? false) &&
@@ -739,10 +788,12 @@ test("article header transitions through top, compact, hidden, and restores on u
 test("article reading layout keeps restrained desktop proportions", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.addInitScript(() => {
-    localStorage.setItem("theme", "light");
+    localStorage.setItem("theme-preference", "light");
   });
   await page.goto("/posts/paragraph-anchor-design");
 
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute("data-color-scheme", "light");
   await expect(page.locator(".post-title-card")).toBeVisible();
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
   await expect(page.locator('.post-title-card [data-meta-icon="calendar"]')).toBeVisible();
@@ -924,6 +975,62 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.dekFontStyle).toBe("normal");
   expect(metrics.tocOpacity).toBeGreaterThan(0.8);
   expect(metrics.tocOpacity).toBeLessThanOrEqual(1);
+});
+
+test("article reading layout keeps usable measure around the 1280px breakpoint", async ({ page }) => {
+  await page.setViewportSize({ width: 1240, height: 900 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const metrics = await page.evaluate(() => {
+    const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
+    const article = document.querySelector(".post-reading-article") as HTMLElement | null;
+    const paragraph = document.querySelector(".post-body--scholarly p[data-anchor]") as HTMLElement | null;
+    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
+    return {
+      gridColumns: layout ? getComputedStyle(layout).gridTemplateColumns : "",
+      articleWidth: article?.getBoundingClientRect().width ?? 0,
+      paragraphWidth: paragraph?.getBoundingClientRect().width ?? 0,
+      railTop: rail?.getBoundingClientRect().top ?? 0,
+      articleTop: article?.getBoundingClientRect().top ?? 0
+    };
+  });
+
+  expect(metrics.gridColumns.split(" ").length).toBeLessThanOrEqual(3);
+  expect(metrics.articleWidth).toBeGreaterThan(620);
+  expect(metrics.paragraphWidth).toBeGreaterThan(560);
+  expect(metrics.railTop).toBeGreaterThan(metrics.articleTop);
+});
+
+test("article reading runtime keeps its paper background separate from discover", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("theme-preference", "light");
+  });
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const metrics = await page.evaluate(() => {
+    const bodyStyles = getComputedStyle(document.body);
+    const beforeStyles = getComputedStyle(document.body, "::before");
+    return {
+      bodyBackground: bodyStyles.backgroundColor,
+      beforeOpacity: beforeStyles.opacity
+    };
+  });
+
+  expect(metrics.bodyBackground).toBe("rgb(252, 252, 253)");
+  expect(metrics.beforeOpacity).toBe("0");
+});
+
+test("article topic chips display topic titles while preserving slug links", async ({ page }) => {
+  await page.goto("/posts/paragraph-anchor-design");
+
+  await expect(page.locator(".post-header-topic-item a")).toContainText([
+    "#段落级短评",
+    "#主题化知识网络"
+  ]);
+  await expect(page.locator('.post-header-topic-item a[href="/topics/paragraph-review"]')).toBeVisible();
+  await expect(page.locator('.post-header-topic-item a[href="/topics/knowledge-network"]')).toBeVisible();
+  await expect(page.locator(".post-reading-family-actions")).toContainText("返回主题：段落级短评");
 });
 
 test("article markdown blocks stay within the same reading measure", async ({ page }) => {

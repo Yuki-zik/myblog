@@ -6,7 +6,7 @@ const MIN_INDICATOR_HEIGHT = 44;
 const ACTIVE_CLASS = "is-active";
 const MOBILE_TOC_MEDIA = "(max-width: 1180px)";
 const HEADING_SCROLL_MARGIN_TOP = "calc(var(--site-header-offset, 6.5rem) + 1rem)";
-const MANUAL_ACTIVE_LOCK_MS = 900;
+const MANUAL_ACTIVE_LOCK_MS = 1400;
 const OBSERVER_OPTIONS: IntersectionObserverInit = {
   rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
   threshold: [0, 0.35, 0.6, 1]
@@ -37,7 +37,7 @@ function resolveActiveId(headings: HTMLElement[]): string {
 
   const scrollRoot = document.documentElement;
   const isAtDocumentEnd =
-    window.scrollY + window.innerHeight >= scrollRoot.scrollHeight - Math.max(window.innerHeight * 0.08, 48);
+    window.scrollY + window.innerHeight >= scrollRoot.scrollHeight - Math.max(window.innerHeight * 0.28, 180);
 
   if (isAtDocumentEnd) {
     return headings[headings.length - 1]?.id ?? "";
@@ -79,14 +79,7 @@ function createActiveIdResolver(headings: HTMLElement[]) {
         if (!lockedHeading || lockExpired) {
           clearLock();
         } else {
-          const top = lockedHeading.getBoundingClientRect().top;
-          const lowerBound = -HEADER_OFFSET - 24;
-
-          if (top <= getActivationLine() + 24 && top >= lowerBound) {
-            return lockedId;
-          }
-
-          clearLock();
+          return lockedId;
         }
       }
 
@@ -174,7 +167,12 @@ function bindTocLinkClicks(
 
       onActivate(entry.id);
       window.history.replaceState(null, "", `#${entry.id}`);
-      entry.heading.scrollIntoView({ behavior: "smooth", block: "start" });
+      const targetTop = Math.max(
+        entry.heading.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET - ACTIVE_OFFSET,
+        0
+      );
+      const scrollRoot = document.scrollingElement ?? document.documentElement;
+      scrollRoot.scrollTop = targetTop;
       afterSelect?.();
     };
 
@@ -243,19 +241,18 @@ function updateProgress(
   const activeRect = activeEntry.link.getBoundingClientRect();
   const isOutsideViewport = activeRect.top < bodyRect.top || activeRect.bottom > bodyRect.bottom;
   if (isOutsideViewport) {
-    let renderedAfterScroll = false;
-    const handleScrollSettle = () => {
-      renderedAfterScroll = true;
-      renderProgress();
-    };
+    const itemTop = activeEntry.item.offsetTop;
+    const itemBottom = itemTop + activeEntry.item.offsetHeight;
+    const visibleTop = scrollBody.scrollTop;
+    const visibleBottom = visibleTop + scrollBody.clientHeight;
 
-    scrollBody.addEventListener("scroll", handleScrollSettle, { passive: true, once: true });
-    activeEntry.item.scrollIntoView({ block: "nearest" });
-    window.setTimeout(() => {
-      if (!renderedAfterScroll) {
-        renderProgress();
-      }
-    }, 140);
+    if (itemTop < visibleTop) {
+      scrollBody.scrollTop = itemTop;
+    } else if (itemBottom > visibleBottom) {
+      scrollBody.scrollTop = itemBottom - scrollBody.clientHeight;
+    }
+
+    window.requestAnimationFrame(renderProgress);
     return;
   }
 

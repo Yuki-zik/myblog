@@ -146,6 +146,60 @@ describe("rehypeTufteFootnotes", () => {
     expect(tree.children.some((child) => (child as Element).tagName === "section")).toBe(false);
   });
 
+  it("sanitizes footnote html before it is rendered in the scholar rail", () => {
+    const { tree } = createFootnoteTree();
+    const footnotes = tree.children[1] as Element;
+    const orderedList = footnotes.children?.[0] as Element;
+    const item = orderedList.children?.[0] as Element;
+    const paragraph = item.children?.[0] as Element;
+
+    paragraph.children = [
+      {
+        type: "element",
+        tagName: "script",
+        properties: {},
+        children: [{ type: "text", value: "alert(1)" }]
+      },
+      {
+        type: "element",
+        tagName: "img",
+        properties: { src: "x", onError: "alert(1)" },
+        children: []
+      },
+      {
+        type: "element",
+        tagName: "a",
+        properties: { href: "javascript:alert(1)", target: "_blank" },
+        children: [{ type: "text", value: "bad" }]
+      },
+      {
+        type: "element",
+        tagName: "a",
+        properties: { href: "https://example.com", target: "_blank" },
+        children: [{ type: "text", value: "safe" }]
+      }
+    ];
+
+    const file = {
+      path: "/repo/src/content/posts/example.md",
+      data: {}
+    };
+
+    rehypeTufteFootnotes()(tree, file);
+
+    const frontmatter = ((file.data as any).astro?.frontmatter ?? {}) as Record<string, unknown>;
+    const extracted = frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as Array<Record<string, string>>;
+    const html = extracted[0]?.html ?? "";
+
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("alert(1)");
+    expect(html).not.toContain("onerror");
+    expect(html).not.toContain("javascript:");
+    expect(html).toContain('href="https://example.com"');
+    expect(html).toContain('target="_blank"');
+    expect(html).toContain('rel="noopener noreferrer"');
+  });
+
   it("classifies prefixed footnote ids into reference and note types", () => {
     const refLink: Element = {
       type: "element",

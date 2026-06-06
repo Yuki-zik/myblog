@@ -8,7 +8,6 @@ function createPost(
 ): CollectionEntry<"posts"> {
   return {
     id: slug,
-    slug,
     body: "",
     collection: "posts",
     data: {
@@ -17,9 +16,6 @@ function createPost(
       topics: ["knowledge-network"],
       draft: false
     },
-    render: async () => {
-      throw new Error("not needed in unit tests");
-    }
   } as unknown as CollectionEntry<"posts">;
 }
 
@@ -30,7 +26,7 @@ describe("post navigation helpers", () => {
   const posts = [current, older, newer];
 
   it("sorts posts by published date descending", () => {
-    expect(sortPostsByDateDesc(posts).map((post) => post.slug)).toEqual([
+    expect(sortPostsByDateDesc(posts).map((post) => post.id)).toEqual([
       "newer-post",
       "current-post",
       "older-post"
@@ -39,19 +35,19 @@ describe("post navigation helpers", () => {
 
   it("returns newer and older siblings around the current post", () => {
     expect(getPostSiblings(posts, "current-post")).toMatchObject({
-      newerPost: { slug: "newer-post" },
-      olderPost: { slug: "older-post" }
+      newerPost: { id: "newer-post" },
+      olderPost: { id: "older-post" }
     });
   });
 
   it("returns null at the boundaries", () => {
     expect(getPostSiblings(posts, "newer-post")).toMatchObject({
       newerPost: null,
-      olderPost: { slug: "current-post" }
+      olderPost: { id: "current-post" }
     });
 
     expect(getPostSiblings(posts, "older-post")).toMatchObject({
-      newerPost: { slug: "current-post" },
+      newerPost: { id: "current-post" },
       olderPost: null
     });
   });

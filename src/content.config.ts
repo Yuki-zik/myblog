@@ -1,9 +1,10 @@
 import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const isoDate = z.string().datetime({ offset: true });
 
 const posts = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/posts" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -47,7 +48,7 @@ const posts = defineCollection({
 });
 
 const topics = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/topics" }),
   schema: z.object({
     title: z.string(),
     order: z.number().int().optional(),
@@ -59,7 +60,7 @@ const topics = defineCollection({
 });
 
 const concepts = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/concepts" }),
   schema: z.object({
     title: z.string(),
     summary: z.string(),

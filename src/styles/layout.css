@@ -399,7 +399,7 @@
 
 .site-header .site-header-inner {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
 }
 
@@ -409,6 +409,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  overflow: hidden;
   pointer-events: none;
   transition:
     opacity 460ms var(--header-ease-surface),
@@ -434,6 +435,18 @@
     linear-gradient(102deg, transparent 0%, color-mix(in srgb, white 7%, transparent 93%) 12%, transparent 18%, color-mix(in srgb, white 22%, transparent 78%) 28%, transparent 36%, color-mix(in srgb, white 10%, transparent 90%) 45%, transparent 52%, color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 61%, transparent 70%, color-mix(in srgb, white 13%, transparent 87%) 82%, transparent 100%),
     linear-gradient(128deg, transparent 4%, color-mix(in srgb, white 12%, transparent 88%) 18%, transparent 26%, color-mix(in srgb, white 18%, transparent 82%) 34%, transparent 42%, color-mix(in srgb, white 9%, transparent 91%) 50%, transparent 58%, color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 72%, transparent 100%);
   transform: translateY(0) scale(1.014);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header-inner,
+  .site-header-inner::before,
+  .site-header-inner::after,
+  .site-header .shell,
+  .site-nav a {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
 }
 
 .site-header[data-header-state="top"] .site-header-inner::after {

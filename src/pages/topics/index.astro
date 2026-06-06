@@ -40,10 +40,10 @@ const topicsPageDescription =
       title="主题列表"
       description="每个主题都是知识网络入口，而不是时间流末端。首页的研究入口语法在这里延展成稳定的主题浏览面，不再退回旧的普通卡片墙。"
       actions={[
-        primaryTopic
-          ? {
-              href: `/topics/${primaryTopic.slug}`,
-              label: `进入 ${primaryTopic.data.title}`,
+	        primaryTopic
+	          ? {
+	              href: `/topics/${primaryTopic.id}`,
+	              label: `进入 ${primaryTopic.data.title}`,
               variant: "primary",
               icon: "arrow"
             }
@@ -82,14 +82,14 @@ const topicsPageDescription =
           <div class="discover-entity-grid" data-ux-stagger>
             {sortedTopics.map((topic, index) => (
               <a
-                href={`/topics/${topic.slug}`}
+	                href={`/topics/${topic.id}`}
                 class="discover-surface discover-entity-card"
                 data-ux-reveal="fade-up"
                 aria-label={`进入主题：${topic.data.title}`}
               >
                 <div class="discover-entity-card__top">
                   <span class="discover-entity-card__id">{String(index + 1).padStart(2, "0")}</span>
-                  <span class="discover-entity-card__meta">{postCountByTopic[topic.slug] ?? 0} 篇文章</span>
+	                  <span class="discover-entity-card__meta">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
                 </div>
                 <h3>{topic.data.title}</h3>
                 <p>{topic.data.summary}</p>

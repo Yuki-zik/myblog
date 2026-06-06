@@ -42,7 +42,7 @@
       var order = ["system", "light", "dark"];
       var transitionResetTimer = 0;
       var icons = {
-        system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.1"></circle><path d="M12 2.8v2.3"></path><path d="M12 18.9v2.3"></path><path d="M4.8 4.8l1.6 1.6"></path><path d="M17.6 17.6l1.6 1.6"></path><path d="M2.8 12h2.3"></path><path d="M18.9 12h2.3"></path><path d="M4.8 19.2l1.6-1.6"></path><path d="M17.6 6.4l1.6-1.6"></path></svg>',
+        system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="11.5" rx="2.4"></rect><path d="M8.5 20h7"></path><path d="M12 16v4"></path><path d="M8.2 10.2h2.6v-2.6"></path><path d="M15.8 9.8h-2.6v2.6"></path><path d="M10.8 7.6 8.2 10.2"></path><path d="m13.2 12.4 2.6-2.6"></path></svg>',
         light: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.4"></circle><path d="M12 2.3v2.8"></path><path d="M12 18.9v2.8"></path><path d="M5.2 5.2l2 2"></path><path d="M16.8 16.8l2 2"></path><path d="M2.3 12h2.8"></path><path d="M18.9 12h2.8"></path><path d="M5.2 18.8l2-2"></path><path d="M16.8 7.2l2-2"></path></svg>',
         dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.7A8.4 8.4 0 1 1 9.3 3.8a6.9 6.9 0 1 0 10.9 10.9Z"></path></svg>'
       };
@@ -294,6 +294,7 @@
         var isAnimating = false;
         var pendingDirections = [];
         var activeDirection = 0;
+        var wheelDeltaBuffer = 0;
 
         function getCards() {
           return Array.from(track.querySelectorAll(cardSelector)).filter(function (card) {
@@ -516,6 +517,24 @@
             queueCycle(-1);
           }
         });
+
+        viewport.addEventListener("wheel", function (event) {
+          if (!canLoop()) return;
+
+          var horizontalIntent = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
+          if (!horizontalIntent) return;
+
+          var dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+          if (Math.abs(dominantDelta) < 4) return;
+
+          event.preventDefault();
+          wheelDeltaBuffer += dominantDelta;
+
+          if (Math.abs(wheelDeltaBuffer) < 90) return;
+
+          queueCycle(wheelDeltaBuffer > 0 ? 1 : -1);
+          wheelDeltaBuffer = 0;
+        }, { passive: false });
 
         window.addEventListener("resize", updateButtons);
         updateButtons();

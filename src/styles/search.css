@@ -171,6 +171,19 @@
   box-shadow: none;
 }
 
+.header-search-trigger:focus-visible,
+.header-search-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 46%, transparent 54%);
+}
+
+.header-search:focus-within .header-search-field {
+  border-color: color-mix(in srgb, var(--focus-ring) 68%, transparent 32%);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--focus-ring) 38%, transparent 62%),
+    inset 0 1px 0 color-mix(in srgb, white 20%, transparent 80%);
+}
+
 .header-search-input::placeholder {
   color: color-mix(in srgb, var(--chrome-text-muted) 78%, transparent 22%);
 }
@@ -269,7 +282,8 @@
     background-color var(--duration-fast) var(--ease-out);
 }
 
-.header-search-result-link:hover {
+.header-search-result-link:hover,
+.header-search-result-item.is-active .header-search-result-link {
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--accent) 30%, var(--border) 70%);
   background: color-mix(in srgb, white 72%, var(--accent-soft) 28%);
@@ -350,7 +364,8 @@
   background: transparent;
 }
 
-.header-search-result-link:hover {
+.header-search-result-link:hover,
+.header-search-result-item.is-active .header-search-result-link {
   transform: none;
   border-color: color-mix(in srgb, var(--selected-border) 74%, transparent 26%);
   background: color-mix(in srgb, var(--selected-bg) 68%, var(--surface-primary) 32%);
@@ -405,5 +420,45 @@
     left: auto;
     right: 0;
     width: min(28rem, calc(100vw - 1rem));
+  }
+
+  .site-header-search-slot:has(.header-search.is-open) {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    max-width: none;
+  }
+
+  .site-header-search-slot:has(.header-search.is-open) .header-search {
+    width: 100%;
+    max-width: none;
+  }
+
+  .site-header-search-slot:has(.header-search.is-open) .header-search-field {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .site-header-search-slot:has(.header-search.is-open) .header-search-input {
+    min-width: 0;
+  }
+
+  .site-header-search-slot:has(.header-search.is-open) .header-search-panel {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-search,
+  .header-search-trigger,
+  .header-search-field,
+  .header-search-panel,
+  .header-search-result-link,
+  .header-search-close {
+    animation: none !important;
+    transition-duration: 1ms !important;
+    transform: none !important;
   }
 }

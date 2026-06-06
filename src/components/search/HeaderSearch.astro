@@ -40,6 +40,7 @@
       aria-autocomplete="list"
       aria-expanded="false"
       aria-controls="site-search-results"
+      role="combobox"
     />
     <button
       type="button"
@@ -56,7 +57,7 @@
 
   <div class="header-search-panel" data-search-panel hidden>
     <p class="header-search-status subtle" data-search-status></p>
-    <ul class="header-search-results" id="site-search-results" data-search-results></ul>
+    <ul class="header-search-results" id="site-search-results" data-search-results role="listbox"></ul>
   </div>
 </div>
 
@@ -151,6 +152,8 @@
     const closeBtnEl = closeBtn;
     const rootEl = root;
     let renderToken = 0;
+    let activeIndex = -1;
+    let currentResults: SearchIndexItem[] = [];
 
     function setExpanded(expanded: boolean): void {
       inputEl.setAttribute("aria-expanded", expanded ? "true" : "false");
@@ -159,6 +162,7 @@
     function closePanel(): void {
       panelEl.hidden = true;
       setExpanded(false);
+      setActiveIndex(-1);
     }
 
     function openPanel(): void {
@@ -168,11 +172,43 @@
 
     function clearResults(): void {
       listEl.replaceChildren();
+      currentResults = [];
+      setActiveIndex(-1);
     }
 
     function renderStatus(message: string): void {
       statusEl.textContent = message;
       statusEl.hidden = message.length === 0;
+    }
+
+    function getResultOptions(): HTMLElement[] {
+      return Array.from(listEl.querySelectorAll<HTMLElement>("[role='option']"));
+    }
+
+    function setActiveIndex(nextIndex: number): void {
+      const options = getResultOptions();
+      activeIndex = options.length === 0 ? -1 : Math.max(0, Math.min(nextIndex, options.length - 1));
+
+      options.forEach((option, index) => {
+        const selected = index === activeIndex;
+        option.classList.toggle("is-active", selected);
+        option.setAttribute("aria-selected", selected ? "true" : "false");
+      });
+
+      if (activeIndex >= 0 && options[activeIndex]) {
+        inputEl.setAttribute("aria-activedescendant", options[activeIndex].id);
+      } else {
+        inputEl.removeAttribute("aria-activedescendant");
+      }
+    }
+
+    function navigateToActiveResult(): void {
+      const options = getResultOptions();
+      const activeOption = activeIndex >= 0 ? options[activeIndex] : options[0];
+      const link = activeOption?.querySelector("a");
+      if (link instanceof HTMLAnchorElement) {
+        window.location.href = link.href;
+      }
     }
 
     /* ── Open / Close search field ─────────────── */
@@ -228,6 +264,7 @@
 
     function renderResults(results: SearchIndexItem[]): void {
       clearResults();
+      currentResults = results;
 
       if (results.length === 0) {
         return;
@@ -238,6 +275,9 @@
       results.forEach((item, index) => {
         const li = document.createElement("li");
         li.className = "header-search-result-item";
+        li.id = `site-search-result-${index}`;
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", "false");
 
         const link = document.createElement("a");
         link.className = "header-search-result-link";
@@ -278,6 +318,7 @@
       });
 
       listEl.append(fragment);
+      setActiveIndex(0);
     }
 
     async function updateSearchResults(): Promise<void> {
@@ -335,11 +376,24 @@
         return;
       }
 
+      if (event.key === "ArrowDown" && currentResults.length > 0) {
+        event.preventDefault();
+        openPanel();
+        setActiveIndex(activeIndex + 1);
+        return;
+      }
+
+      if (event.key === "ArrowUp" && currentResults.length > 0) {
+        event.preventDefault();
+        openPanel();
+        setActiveIndex(activeIndex <= 0 ? currentResults.length - 1 : activeIndex - 1);
+        return;
+      }
+
       if (event.key === "Enter" && inputEl.value.trim()) {
-        const firstResult = panelEl.querySelector("[data-search-first='true']");
-        if (firstResult instanceof HTMLAnchorElement) {
+        if (currentResults.length > 0) {
           event.preventDefault();
-          window.location.href = firstResult.href;
+          navigateToActiveResult();
         }
       }
     });

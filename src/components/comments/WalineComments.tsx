@@ -48,11 +48,8 @@ export default function WalineComments({
       });
     } catch (error) {
       delete container.dataset.walineReady;
-      setRuntimeError(
-        error instanceof Error && error.message
-          ? `评论服务初始化失败：${error.message}`
-          : "评论服务初始化失败，请稍后重试。"
-      );
+      console.error("[WalineComments] init failed:", error);
+      setRuntimeError("评论服务初始化失败，请稍后重试。");
       return;
     }
     container.dataset.walineReady = "true";
@@ -68,7 +65,7 @@ export default function WalineComments({
       <div className="waline-comments__header">
         <h2 className="waline-comments__title">{heading}</h2>
         <p className="waline-comments__hint">
-          使用 Waline 承载站点评论；段落锚点仅继续服务阅读侧栏与注释定位。
+          围绕整篇文章留下想法，补充阅读线索，或提出还想继续追问的问题。
         </p>
       </div>
 

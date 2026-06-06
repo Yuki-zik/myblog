@@ -2,6 +2,19 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 准确修复视觉审查发现的问题：覆盖搜索裁切/焦点、移动归档/concept overflow、文章 rail、阅读断点、raw slug、轮播滚轮、主题 toggle、back-to-top、Waline 语气与截图复核 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 对博客进行视觉检查：用真实浏览器检查首页、discover 页面、文章阅读页、归档/作者页、主题切换、搜索和响应式布局，输出视觉问题清单 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 深度解决全面审查发现的混乱点：修 Node/CI engine、Waline RLS LOGIN 契约、CSP allowlist、audit 门禁、未用依赖、README 版本、格式噪声和 E2E 并发导航超时 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 全面审查当前仓库还剩哪些混乱点：覆盖分支/upstream、dirty worktree、文档记录、配置/锁文件、未跟踪文件和误推风险 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 整理 Git 分支树：对齐本地 main 到 origin/main，梳理 review-fixes / origin/review-fixes / 当前未提交改动关系，并沉淀分支地图 | ✅ | AI Assistant | 2026-06-03 |
+| 中 | 创建一个基于用户偏好的 Codex pet：可爱的二次元高额头女孩，带知识博客/研究工程气质，并产出可安装宠物包或明确生成阻塞点 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 并行阅读当前项目内容：先粗扫仓库结构、依赖、运行时与验证入口，再用多 agent 深读页面/runtime、内容/Markdown/评论、测试/部署边界并汇总架构地图 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 修复不同宽高比下 header 搜索栏被压缩/溢出的问题：复现 824px 低高视口，搜索打开后占完整行并保持导航/主题按钮在视口内 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 实施审查修复计划：修 CI/SITE_URL、Waline server 安全与 smoke、RLS 专用角色、reading/discover 视觉边界、搜索/轮播交互、endpoint/footnote 测试与 audit 门禁 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 全面代码审查当前博客项目：并行覆盖前端视觉/后端/Waline/数据库/安全/性能/测试，输出分级问题、修复示例与优先级路线图 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 更新当前项目到远端最新状态，并阅读仓库结构、核心链路与待办风险 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 对当前项目进行深度 review：并行审查架构、前端运行时、内容管线、测试工程与安全/部署边界，输出真实问题与风险清单 | ✅ | AI Assistant | 2026-04-29 |
+| 高 | 修复 review 发现的全部问题：SITE_URL fail-fast、.gitignore 补全、Waline RLS 安全网、WalineComments 错误信息隐藏、robots.txt 动态绝对 URL、search-index 安全头与缓存 | ✅ | AI Assistant | 2026-04-29 |
 | 高 | 对最新一轮 code review 的 5 项问题做全面修复：还原依赖、把 `pnpm build` 与 GitHub CI 接入统一验证入口、修复非首页 discover 与 Waline 在 `system + OS dark` 下未跟随暗色的问题、补 waline-server 最小 smoke、并新增非首页 system-dark 回归 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ⏳ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”轮播的快速连续点击交互：取消必须等待单次动画结束的输入丢失与反馈迟滞 | ✅ | AI Assistant | 2026-04-12 |

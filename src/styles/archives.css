@@ -401,6 +401,15 @@
 }
 
 @media (max-width: 760px) {
+  .archive-year-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .archive-year-content {
+    min-width: 0;
+  }
+
   .archive-year-tile span {
     font-size: clamp(1.8rem, 10vw, 2.8rem);
   }
@@ -409,6 +418,12 @@
     grid-template-columns: 96px minmax(0, 1fr);
     gap: 0.72rem;
     padding: 0.65rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .archive-post-link {
+    grid-template-columns: 96px minmax(0, 1fr);
   }
 }
 

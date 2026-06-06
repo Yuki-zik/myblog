@@ -140,7 +140,7 @@ export function buildSearchIndex(
     .map((post) => ({
       type: "post",
       title: post.data.title,
-      url: `/posts/${post.slug}`,
+      url: `/posts/${post.id}`,
       summary: post.data.summary,
       keywords: compactStrings([...(post.data.topics ?? []), ...(post.data.concepts ?? [])]),
       date: post.data.date,
@@ -150,7 +150,7 @@ export function buildSearchIndex(
   const topicItems: SearchIndexItem[] = topics.map((topic) => ({
     type: "topic",
     title: topic.data.title,
-    url: `/topics/${topic.slug}`,
+    url: `/topics/${topic.id}`,
     summary: topic.data.summary,
     keywords: compactStrings([...(topic.data.relatedTopics ?? []), ...(topic.data.entryPosts ?? [])])
   }));
@@ -158,7 +158,7 @@ export function buildSearchIndex(
   const conceptItems: SearchIndexItem[] = concepts.map((concept) => ({
     type: "concept",
     title: concept.data.title,
-    url: `/concepts/${concept.slug}`,
+    url: `/concepts/${concept.id}`,
     summary: concept.data.summary,
     keywords: compactStrings([...(concept.data.tags ?? []), ...(concept.data.related ?? [])])
   }));

@@ -1,7 +1,29 @@
-import type { Element, Root } from "hast";
+import type { Element, Root, RootContent } from "hast";
 import Slugger from "github-slugger";
+import { defaultSchema, sanitize } from "hast-util-sanitize";
+import { toHtml } from "hast-util-to-html";
 import { toString } from "hast-util-to-string";
 import { visitParents } from "unist-util-visit-parents";
+
+// Footnote bodies originate from trusted Markdown today, but they are emitted
+// via `set:html` in `PostScholarRail.astro` so any future contributor (or
+// imported third-party Markdown) could land XSS in the rail. We sanitize with
+// the GitHub schema plus an explicit allowlist of attributes Tufte needs.
+const FOOTNOTE_SANITIZE_SCHEMA: typeof defaultSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    "*": [...((defaultSchema.attributes && defaultSchema.attributes["*"]) ?? []), "className"],
+    a: [
+      ...((defaultSchema.attributes && defaultSchema.attributes.a) ?? []),
+      "rel",
+      "target",
+      ["target", "_blank", "_self"],
+      "dataFootnoteRef",
+      "dataFootnoteRailTarget"
+    ]
+  }
+};
 
 type HastNode = {
   type?: string;
@@ -52,7 +74,7 @@ function getProperty(properties: Record<string, unknown> | undefined, key: strin
 
 function hasTruthyDataProperty(element: Element, key: string): boolean {
   const value = getProperty(element.properties as Record<string, unknown> | undefined, key);
-  return value === true || value === "" || value === "true" || value === 1;
+  return value === true;
 }
 
 function toClassList(value: unknown): string[] {
@@ -275,7 +297,7 @@ function ensureAstroFrontmatterStore(file: VFileLike): Record<string, unknown> {
 }
 
 function cloneNode<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
+  return structuredClone(value);
 }
 
 function escapeHtml(value: string): string {
@@ -285,46 +307,6 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-
-function propertyNameToAttrName(key: string): string {
-  if (key === "className") {
-    return "class";
-  }
-  return key.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
-}
-
-function serializeAttributes(properties: Record<string, unknown> | undefined): string {
-  if (!properties) {
-    return "";
-  }
-
-  const entries = Object.entries(properties)
-    .filter(([key]) => key !== "id")
-    .flatMap(([key, value]) => {
-      if (value === undefined || value === null || value === false) {
-        return [];
-      }
-
-      const attrName = propertyNameToAttrName(key);
-      if (value === true) {
-        return [[attrName, ""] as const];
-      }
-
-      if (Array.isArray(value)) {
-        return [[attrName, value.map((item) => String(item)).join(" ")] as const];
-      }
-
-      return [[attrName, String(value)] as const];
-    });
-
-  if (entries.length === 0) {
-    return "";
-  }
-
-  return entries
-    .map(([name, value]) => (value === "" ? ` ${name}` : ` ${name}="${escapeHtml(value)}"`))
-    .join("");
 }
 
 function serializeHastNode(node: unknown): string {
@@ -340,18 +322,51 @@ function serializeHastNode(node: unknown): string {
   }
 
   if (type === "root") {
-    const children = Array.isArray(candidate.children) ? candidate.children : [];
-    return children.map((child) => serializeHastNode(child)).join("");
+    const children = (Array.isArray(candidate.children) ? candidate.children : []) as RootContent[];
+    const sanitized = sanitize({ type: "root", children }, FOOTNOTE_SANITIZE_SCHEMA) as Root;
+    secureBlankTargetLinks(sanitized);
+    return toHtml(sanitized);
   }
 
-  if (!isElementNode(candidate)) {
-    return "";
+  if (isElementNode(candidate)) {
+    const sanitized = sanitize(candidate, FOOTNOTE_SANITIZE_SCHEMA) as Element;
+    secureBlankTargetLinks(sanitized);
+    return toHtml(sanitized);
   }
 
-  const tagName = candidate.tagName;
-  const attrs = serializeAttributes(candidate.properties as Record<string, unknown> | undefined);
-  const children = (candidate.children ?? []).map((child) => serializeHastNode(child)).join("");
-  return `<${tagName}${attrs}>${children}</${tagName}>`;
+  return "";
+}
+
+function mergeRelTokens(existing: unknown, requiredTokens: string[]): string[] {
+  const relTokens = new Set(toClassList(existing));
+  requiredTokens.forEach((token) => relTokens.add(token));
+  return Array.from(relTokens);
+}
+
+function secureBlankTargetLinks(node: Root | Element): void {
+  const children = "children" in node && Array.isArray(node.children) ? node.children : [];
+
+  if (isElementNode(node) && String(node.tagName) === "a") {
+    const target = getProperty(node.properties as Record<string, unknown> | undefined, "target");
+    if (target === "_blank") {
+      node.properties ??= {};
+      (node.properties as Record<string, unknown>).rel = mergeRelTokens(
+        getProperty(node.properties as Record<string, unknown>, "rel"),
+        ["noopener", "noreferrer"]
+      );
+    }
+  }
+
+  children.forEach((child) => {
+    if (isElementNode(child)) {
+      secureBlankTargetLinks(child);
+      return;
+    }
+
+    if (child && typeof child === "object" && (child as { type?: unknown }).type === "root") {
+      secureBlankTargetLinks(child as unknown as Root);
+    }
+  });
 }
 
 function stripBackrefs(node: unknown): unknown | null {
@@ -540,11 +555,15 @@ export function rehypeTufteFootnotes() {
     const frontmatter = ensureAstroFrontmatterStore(file);
     frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] = footnotes;
 
-    if (footnotes.length === 0) {
-      return;
+    // Always remove the GFM-rendered footnote container from the article body
+    // for post content. The footnotes are surfaced via the Tufte rail; leaving
+    // the container in place would render the same content twice. We do this
+    // even when `footnotes.length === 0` (e.g. extraction failed for an
+    // unexpected list shape) to avoid leaking the raw GFM section into the
+    // article body.
+    if (footnotes.length > 0) {
+      rewriteFootnoteRefTargetsForRail(tree);
     }
-
-    rewriteFootnoteRefTargetsForRail(tree);
     removeFootnoteContainerFromTree(tree);
   };
 }

@@ -41,16 +41,56 @@ process.env.PG_PASSWORD ||= "smoke";
 process.env.PG_PREFIX ||= "wl_";
 process.env.PG_SSL ||= "false";
 
-let entry;
-try {
-  entry = require(path.resolve(__dirname, "index.cjs"));
-} catch (error) {
-  fail("could not require ./index.cjs", error);
+async function main() {
+  let entry;
+  const capturedErrors = [];
+  const originalConsoleLog = console.log;
+  const originalConsoleWarn = console.warn;
+  const originalConsoleError = console.error;
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+
+  try {
+    console.log = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleLog(...args);
+    };
+    console.warn = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleWarn(...args);
+    };
+    console.error = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleError(...args);
+    };
+    process.stderr.write = (chunk, encoding, callback) => {
+      capturedErrors.push(Buffer.isBuffer(chunk) ? chunk.toString("utf8") : String(chunk));
+      return originalStderrWrite(chunk, encoding, callback);
+    };
+
+    entry = require(path.resolve(__dirname, "index.cjs"));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  } catch (error) {
+    fail("could not require ./index.cjs", error);
+  } finally {
+    console.log = originalConsoleLog;
+    console.warn = originalConsoleWarn;
+    console.error = originalConsoleError;
+    process.stderr.write = originalStderrWrite;
+  }
+
+  const runtimeError = capturedErrors.find((message) =>
+    /could not locate the bindings file|native binding|error:/i.test(message)
+  );
+  if (runtimeError) {
+    fail("Waline emitted a runtime dependency error while loading ./index.cjs", runtimeError);
+  }
+
+  if (typeof entry !== "function") {
+    fail(`index.cjs export is not a request handler (got ${typeof entry})`);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log("[waline-server smoke] OK: index.cjs exports a Waline handler.");
 }
 
-if (typeof entry !== "function") {
-  fail(`index.cjs export is not a request handler (got ${typeof entry})`);
-}
-
-// eslint-disable-next-line no-console
-console.log("[waline-server smoke] OK: index.cjs exports a Waline handler.");
+void main();

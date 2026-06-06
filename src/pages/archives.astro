@@ -23,7 +23,7 @@ const archivesDescription = "按年月浏览全部文章，像时间账本一样
       actions={[
         latestPost
           ? {
-              href: `/posts/${latestPost.slug}`,
+              href: `/posts/${latestPost.id}`,
               label: `阅读《${latestPost.data.title}》`,
               variant: "primary",
               icon: "arrow"

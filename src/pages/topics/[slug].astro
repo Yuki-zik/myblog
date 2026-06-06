@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import { getCollection, getEntry, render, type CollectionEntry } from "astro:content";
 import DiscoverShell from "../../components/discover/DiscoverShell.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
 import PageHero from "../../components/discover/PageHero.astro";
@@ -15,17 +15,17 @@ interface Props {
 export async function getStaticPaths() {
   const topics = await getCollection("topics");
   return topics.map((topic) => ({
-    params: { slug: topic.slug },
+    params: { slug: topic.id },
     props: { topic }
   }));
 }
 
 const { topic } = Astro.props;
-const { Content } = await topic.render();
+const { Content } = await render(topic);
 
 const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const topicPosts = allPosts
-  .filter((post) => post.data.topics.includes(topic.slug))
+  .filter((post) => post.data.topics.includes(topic.id))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 const entryPosts = (
@@ -60,7 +60,7 @@ const topicDescription = `${topic.data.summary} ${topic.data.why}`;
       actions={[
         primaryEntry
           ? {
-              href: `/posts/${primaryEntry.slug}`,
+              href: `/posts/${primaryEntry.id}`,
               label: `从《${primaryEntry.data.title}》开始`,
               variant: "primary",
               icon: "arrow"
@@ -126,7 +126,7 @@ const topicDescription = `${topic.data.summary} ${topic.data.why}`;
       {
         primaryEntry ? (
           <div class="discover-stream-list">
-            <a href={`/posts/${primaryEntry.slug}`} class="discover-surface discover-stream-item">
+            <a href={`/posts/${primaryEntry.id}`} class="discover-surface discover-stream-item">
               <span class="discover-stream-item__eyebrow">Primary Entry</span>
               <div class="discover-stream-item__row">
                 <h3 class="discover-stream-item__title">{primaryEntry.data.title}</h3>
@@ -136,7 +136,7 @@ const topicDescription = `${topic.data.summary} ${topic.data.why}`;
             </a>
 
             {additionalEntryPosts.map((post) => (
-              <a href={`/posts/${post.slug}`} class="discover-surface discover-stream-item">
+              <a href={`/posts/${post.id}`} class="discover-surface discover-stream-item">
                 <span class="discover-stream-item__eyebrow">Entry Extension</span>
                 <div class="discover-stream-item__row">
                   <h3 class="discover-stream-item__title">{post.data.title}</h3>
@@ -183,7 +183,7 @@ const topicDescription = `${topic.data.summary} ${topic.data.why}`;
         ) : (
           <div class="discover-mini-grid" data-ux-stagger>
             {relatedConcepts.map((concept) => (
-              <a href={`/concepts/${concept.slug}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+              <a href={`/concepts/${concept.id}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
                 <span class="discover-mini-card__meta">Concept</span>
                 <h3>{concept.data.title}</h3>
                 <p>{concept.data.summary}</p>
@@ -207,7 +207,7 @@ const topicDescription = `${topic.data.summary} ${topic.data.why}`;
         ) : (
           <div class="discover-mini-grid" data-ux-stagger>
             {relatedTopics.map((entry) => (
-              <a href={`/topics/${entry.slug}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+              <a href={`/topics/${entry.id}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
                 <span class="discover-mini-card__meta">Topic</span>
                 <h3>{entry.data.title}</h3>
                 <p>{entry.data.summary}</p>
