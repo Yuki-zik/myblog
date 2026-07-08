@@ -19,6 +19,8 @@ import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 import { buildPostToc } from "../../lib/posts/toc";
 import { getPostPath } from "../../lib/posts/urls";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildBlogPostingGraph } from "../../lib/seo/jsonLd";
+import { getRelatedPosts } from "../../lib/knowledge/relatedPosts";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -54,6 +56,24 @@ const [allPosts, allTopics] = await Promise.all([
 ]);
 const siblings = getPostSiblings(allPosts, post.id);
 const topicTitleBySlug = new Map(allTopics.map((topic) => [topic.id, topic.data.title]));
+const relatedPosts = getRelatedPosts(
+  {
+    id: post.id,
+    title: post.data.title,
+    summary: post.data.summary,
+    date: post.data.date,
+    topics: post.data.topics,
+    concepts: post.data.concepts
+  },
+  allPosts.map((entry) => ({
+    id: entry.id,
+    title: entry.data.title,
+    summary: entry.data.summary,
+    date: entry.data.date,
+    topics: entry.data.topics,
+    concepts: entry.data.concepts
+  }))
+);
 const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY])
   ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
   : [];
@@ -112,6 +132,38 @@ const headerStats = [
         }
       : null
 ] as Array<HeaderStatItem | null>;
+
+// JSON-LD: BlogPosting graph. Topics are rendered as visible chips → `about`;
+// concepts are only surfaced as a count (not named) so we omit `mentions`.
+const canonicalPath = post.data.canonical ?? getPostPath(post.id);
+const site = Astro.site;
+const structuredData = site
+  ? buildBlogPostingGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL(canonicalPath, site).toString(),
+      title: post.data.title,
+      description: post.data.summary,
+      datePublished: post.data.date,
+      dateModified: post.data.updated,
+      imageUrl: post.data.cover?.src.src
+        ? new URL(post.data.cover.src.src, site).toString()
+        : undefined,
+      topics: post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug),
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "主题", url: new URL("/topics", site).toString() },
+        ...(post.data.topics[0]
+          ? [
+              {
+                name: topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0],
+                url: new URL(`/topics/${post.data.topics[0]}`, site).toString()
+              }
+            ]
+          : []),
+        { name: post.data.title }
+      ]
+    })
+  : undefined;
 ---
 
 <BaseLayout
@@ -122,9 +174,10 @@ const headerStats = [
   metaType="article"
   publishedTime={post.data.date}
   modifiedTime={post.data.updated}
-  openGraphImage={post.data.cover?.src.src}
+  openGraphImage={`/og/posts/${post.id}.png`}
   runtime="reading"
   mainClass="shell--article-reading"
+  structuredData={structuredData}
 >
   <div class="post-reading-page">
     <DiscoverAmbient />
@@ -228,6 +281,24 @@ const headerStats = [
             <Content />
           </section>
         </article>
+
+        {relatedPosts.length > 0 ? (
+          <section class="post-related-notes" aria-label="相关笔记">
+            <h2 class="post-related-notes-title">相关笔记</h2>
+            <ul class="post-related-notes-list">
+              {relatedPosts.map((related) => (
+                <li class="post-related-notes-item">
+                  <a class="post-related-notes-link" href={getPostPath(related.id)}>
+                    {related.title}
+                  </a>
+                  {related.summary ? (
+                    <p class="post-related-notes-summary">{related.summary}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <section class="post-waline-comments-section" aria-label="评论">
           <WalineComments client:visible path={getPostPath(post.id)} />

@@ -1916,3 +1916,56 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
 
   .post-pager { grid-template-columns: 1fr; }
 }
+
+/* ── Related notes (frontmatter-derived knowledge links, end of article) ──── */
+.post-related-notes {
+  margin: 2.6rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--reading-rule) 70%, transparent 30%);
+}
+
+.post-related-notes-title {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-ui, var(--font-mono));
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-meta);
+}
+
+.post-related-notes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.95rem;
+}
+
+.post-related-notes-item {
+  margin: 0;
+}
+
+.post-related-notes-link {
+  font-family: var(--font-reading, inherit);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--reading-ink);
+  text-decoration: none;
+  text-decoration-color: color-mix(in srgb, var(--reading-accent) 32%, transparent 68%);
+}
+
+.post-related-notes-link:hover,
+.post-related-notes-link:focus-visible {
+  color: var(--reading-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.post-related-notes-summary {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+

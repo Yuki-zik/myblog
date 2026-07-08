@@ -7,6 +7,7 @@ import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
 import { formatPostDisplayDate } from "../../lib/posts/date";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
   topic: CollectionEntry<"topics">;
@@ -37,19 +38,47 @@ const relatedConcepts = (
   await Promise.all(relatedConceptSlugs.map((slug) => getEntry("concepts", slug)))
 ).filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
 
-const relatedTopics = (
+// "相关主题" is presented as bidirectional: outbound = this topic's own
+// relatedTopics[]; inbound = other topics that name THIS topic in theirs
+// (relatedTopics[] is a one-way frontmatter edge, so reciprocity is explicit
+// and de-duplicated, not assumed symmetric).
+const allTopicEntries = await getCollection("topics");
+const outboundRelatedTopics = (
   await Promise.all((topic.data.relatedTopics ?? []).map((slug) => getEntry("topics", slug)))
 ).filter((entry): entry is CollectionEntry<"topics"> => Boolean(entry));
+const outboundTopicIds = new Set([topic.id, ...outboundRelatedTopics.map((entry) => entry.id)]);
+const inboundRelatedTopics = allTopicEntries.filter(
+  (entry) =>
+    (entry.data.relatedTopics ?? []).includes(topic.id) && !outboundTopicIds.has(entry.id)
+);
+const relatedTopics = [...outboundRelatedTopics, ...inboundRelatedTopics];
 
 const primaryEntry = entryPosts[0] ?? topicPosts[0] ?? null;
 const additionalEntryPosts = entryPosts.slice(1);
 const topicDescription = `${topic.data.summary} ${topic.data.why}`;
+
+const site = Astro.site;
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL(`/topics/${topic.id}`, site).toString(),
+      title: topic.data.title,
+      description: topic.data.summary,
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "主题", url: new URL("/topics", site).toString() },
+        { name: topic.data.title }
+      ]
+    })
+  : undefined;
 ---
 
 <BaseLayout
   title={`${topic.data.title} | 主题地图`}
   description={topicDescription}
   runtime="discover"
+  openGraphImage={`/og/topics/${topic.id}.png`}
+  structuredData={structuredData}
 >
   <DiscoverShell>
     <PageHero

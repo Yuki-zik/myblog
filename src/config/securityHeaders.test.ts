@@ -23,4 +23,18 @@ describe("deployment security headers", () => {
     expect(csp).toContain("connect-src 'self' https://api.swo.moe");
     expect(csp).not.toMatch(/connect-src[^;]*\shttps:\s*(?:;|$)/);
   });
+
+  it("marks raw .md mirrors as noindex (X-Robots-Tag) so they are not indexed as duplicates", () => {
+    const config = JSON.parse(readFileSync(join(process.cwd(), "vercel.json"), "utf8")) as {
+      headers?: Array<{ source?: string; headers?: Array<{ key: string; value: string }> }>;
+    };
+
+    const mdRule = (config.headers ?? []).find((entry) => entry.source === "/(.*).md");
+    expect(mdRule, "vercel.json must carry an X-Robots-Tag rule for /(.*).md").toBeDefined();
+
+    const robotsTag = (mdRule?.headers ?? []).find(
+      (header) => header.key.toLowerCase() === "x-robots-tag"
+    );
+    expect(robotsTag?.value).toContain("noindex");
+  });
 });

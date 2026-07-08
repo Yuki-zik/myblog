@@ -1,7 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { describe, expect, it } from "vitest";
 import type { SearchIndexItem } from "./index";
-import { buildSearchIndex, scoreSearchMatch, searchIndexItems } from "./index";
+import { buildSearchIndex, extractSearchableText, scoreSearchMatch, searchIndexItems } from "./index";
 
 function createPost(
   slug: string,
@@ -140,5 +140,69 @@ describe("search index helpers", () => {
       "/topics/feed-reading",
       "/concepts/anchor-id"
     ]);
+  });
+});
+
+describe("full-content search (D4)", () => {
+  it("strips Markdown to searchable plain text", () => {
+    const text = extractSearchableText(
+      [
+        "## 标题",
+        "正文里提到 [Supabase RLS](https://x) 和 `code`。",
+        "```ts",
+        "const secret = 1;",
+        "```",
+        "> 引用块",
+        "- 列表项 **粗体**",
+        ":::spoiler[结局]",
+        "隐藏内容",
+        ":::",
+        "脚注引用[^a]",
+        "[^a]: 脚注正文"
+      ].join("\n")
+    );
+    expect(text).toContain("Supabase RLS");
+    expect(text).toContain("隐藏内容");
+    expect(text).toContain("脚注正文");
+    expect(text).not.toContain("const secret"); // fenced code dropped
+    expect(text).not.toContain("```");
+    expect(text).not.toContain("[^a]");
+    expect(text).not.toContain("**");
+  });
+
+  it("finds an item that matches only in the body, scored below summary", () => {
+    const item: SearchIndexItem = {
+      type: "post",
+      title: "无关标题",
+      url: "/posts/x",
+      summary: "无关摘要",
+      keywords: [],
+      body: "正文深处讨论了 supabase 行级安全策略的实现细节"
+    };
+    const score = scoreSearchMatch(item, "supabase");
+    expect(score).toBe(100);
+    expect(score).toBeLessThan(scoreSearchMatch({ ...item, summary: "supabase" }, "supabase"));
+  });
+
+  it("buildSearchIndex populates body from raw post markdown", () => {
+    const [post] = buildSearchIndex(
+      [createPost("p", { title: "P" })],
+      [],
+      []
+    );
+    // createPost uses body:"" by default, so override via a fresh entry.
+    const withBody = buildSearchIndex(
+      [
+        {
+          ...createPost("p2", { title: "P2" }),
+          body: "## H\n这是可被检索的正文 keyword-xyz。"
+        } as CollectionEntry<"posts">
+      ],
+      [],
+      []
+    )[0];
+    expect(post.body).toBe("");
+    expect(withBody.body).toContain("可被检索的正文 keyword-xyz");
+    expect(searchIndexItems([withBody], "keyword-xyz").map((i) => i.url)).toEqual(["/posts/p2"]);
   });
 });

@@ -8,6 +8,8 @@ export interface SearchIndexItem {
   url: string;
   summary?: string;
   keywords: readonly string[];
+  /** Normalized plain-text body for full-content matching (not displayed). */
+  body?: string;
   date?: string;
   updated?: string;
 }
@@ -43,6 +45,31 @@ export function normalizeSearchText(value: string): string {
   return value
     .normalize("NFKC")
     .toLocaleLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Strip Markdown to plain text for full-content search indexing. Drops fenced
+ * code, resolves links/images to their text, removes footnote/anchor markers,
+ * directive syntax (`:::spoiler`), emphasis, heading/list/quote markers and
+ * raw HTML. Best-effort — tuned for recall, not perfect rendering.
+ */
+export function extractSearchableText(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^\[\^[^\]]+\]:\s?/gm, "")
+    .replace(/\[\^[^\]]+\]/g, " ")
+    .replace(/:::\w+(?:\[([^\]]*)\])?/g, "$1")
+    .replace(/:(\w+)\[([^\]]*)\]/g, "$2")
+    .replace(/`+/g, " ")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^\s*[>\-*+]\s+/gm, "")
+    .replace(/[*_~]/g, "")
+    .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -85,6 +112,13 @@ export function scoreSearchMatch(item: SearchIndexItem, queryInput: string): num
 
   if (summary.includes(query)) {
     score = Math.max(score, 140);
+  }
+
+  if (item.body) {
+    const body = normalizeSearchText(item.body);
+    if (body.includes(query)) {
+      score = Math.max(score, 100);
+    }
   }
 
   return score;
@@ -143,6 +177,7 @@ export function buildSearchIndex(
       url: `/posts/${post.id}`,
       summary: post.data.summary,
       keywords: compactStrings([...(post.data.topics ?? []), ...(post.data.concepts ?? [])]),
+      body: extractSearchableText(post.body ?? ""),
       date: post.data.date,
       updated: post.data.updated
     }));
@@ -152,7 +187,8 @@ export function buildSearchIndex(
     title: topic.data.title,
     url: `/topics/${topic.id}`,
     summary: topic.data.summary,
-    keywords: compactStrings([...(topic.data.relatedTopics ?? []), ...(topic.data.entryPosts ?? [])])
+    keywords: compactStrings([...(topic.data.relatedTopics ?? []), ...(topic.data.entryPosts ?? [])]),
+    body: extractSearchableText([topic.data.why ?? "", topic.body ?? ""].join("\n"))
   }));
 
   const conceptItems: SearchIndexItem[] = concepts.map((concept) => ({
@@ -160,7 +196,8 @@ export function buildSearchIndex(
     title: concept.data.title,
     url: `/concepts/${concept.id}`,
     summary: concept.data.summary,
-    keywords: compactStrings([...(concept.data.tags ?? []), ...(concept.data.related ?? [])])
+    keywords: compactStrings([...(concept.data.tags ?? []), ...(concept.data.related ?? [])]),
+    body: extractSearchableText(concept.body ?? "")
   }));
 
   return [...postItems, ...topicItems, ...conceptItems];

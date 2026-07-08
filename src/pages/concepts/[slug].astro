@@ -7,6 +7,7 @@ import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
 import { collectReferencedTopicsForConcept } from "../../lib/content/concepts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
   concept: CollectionEntry<"concepts">;
@@ -40,12 +41,28 @@ const relatedConcepts = (concept.data.related ?? [])
 
 const primaryPost = referencedPosts[0] ?? null;
 const conceptDescription = `${concept.data.summary} 从概念返回引用它的文章与主题网络。`;
+
+const site = Astro.site;
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL(`/concepts/${concept.id}`, site).toString(),
+      title: concept.data.title,
+      description: concept.data.summary,
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: concept.data.title }
+      ]
+    })
+  : undefined;
 ---
 
 <BaseLayout
   title={`${concept.data.title} | 概念`}
   description={conceptDescription}
   runtime="discover"
+  openGraphImage={`/og/concepts/${concept.id}.png`}
+  structuredData={structuredData}
 >
   <DiscoverShell>
     <PageHero
