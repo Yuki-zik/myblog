@@ -3,6 +3,9 @@ const ACTIVE_OFFSET = 24;
 const ACTIVE_VIEWPORT_RATIO = 0.32;
 const MAX_ACTIVATION_LEAD = 220;
 const MIN_INDICATOR_HEIGHT = 44;
+const SETTLE_EPSILON = 0.5;
+const SETTLE_STABLE_FRAMES = 2;
+const SETTLE_MAX_FRAMES = 30;
 const ACTIVE_CLASS = "is-active";
 const MOBILE_TOC_MEDIA = "(max-width: 1180px)";
 const HEADING_SCROLL_MARGIN_TOP = "calc(var(--site-header-offset, 6.5rem) + 1rem)";
@@ -71,6 +74,21 @@ function createActiveIdResolver(headings: HTMLElement[]) {
       lockedId = id;
       lockedUntil = window.performance.now() + MANUAL_ACTIVE_LOCK_MS;
     },
+    /*
+     * Extend the lock while a click-initiated smooth scroll is still running.
+     *
+     * A fixed expiry is a bet on how long the browser takes to settle, and it
+     * loses whenever the machine is loaded. Refreshing it on every scroll tick
+     * ties the lock to the scroll actually being in progress instead.
+     */
+    keepAlive(): void {
+      if (lockedId) {
+        lockedUntil = window.performance.now() + MANUAL_ACTIVE_LOCK_MS;
+      }
+    },
+    isLocked(): boolean {
+      return lockedId !== "";
+    },
     resolve(): string {
       if (lockedId) {
         const lockedHeading = headings.find((heading) => heading.id === lockedId);
@@ -102,6 +120,27 @@ function ensureHeadingScrollMargin(heading: HTMLElement): void {
 
   heading.dataset.tocBound = "true";
   heading.style.scrollMarginTop = HEADING_SCROLL_MARGIN_TOP;
+}
+
+/*
+ * Scroll a heading to just under the sticky header.
+ *
+ * `heading.scrollIntoView()` honours `scroll-margin-top`, but only when the
+ * browser decides a scroll is needed at all. Clicking a TOC entry whose anchor
+ * is already the current hash — or whose heading is merely off-screen *above*
+ * the header — could therefore leave the heading parked underneath the header,
+ * which in turn let the active-section resolver hand the highlight to the
+ * following section as soon as the manual lock expired. Computing the target
+ * position explicitly makes the landing position deterministic.
+ */
+function scrollHeadingIntoReadingPosition(heading: HTMLElement): void {
+  const styles = window.getComputedStyle(heading);
+  const margin = Number.parseFloat(styles.scrollMarginTop);
+  const offset = Number.isFinite(margin) ? margin : HEADER_OFFSET;
+  const target = heading.getBoundingClientRect().top + window.scrollY - offset;
+  const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+
+  window.scrollTo({ top: Math.min(Math.max(target, 0), maxScroll), behavior: "smooth" });
 }
 
 function collectTocLinkEntries(root: HTMLElement): TocLinkEntry[] {
@@ -174,7 +213,7 @@ function bindTocLinkClicks(
 
       onActivate(entry.id);
       window.history.replaceState(null, "", `#${entry.id}`);
-      entry.heading.scrollIntoView({ behavior: "smooth", block: "start" });
+      scrollHeadingIntoReadingPosition(entry.heading);
       afterSelect?.();
     };
 
@@ -210,6 +249,39 @@ function createSyncScheduler(sync: () => void): { requestSync: () => void; cance
   };
 }
 
+/*
+ * Pending settle loops, keyed by the progress element so a sidebar can never
+ * run two of them at once.
+ */
+const settleHandles = new WeakMap<HTMLElement, number>();
+
+/*
+ * `scrollIntoView({ block: "nearest" })` equivalent that is scoped to a single
+ * container: it never touches the page scroll or any other ancestor.
+ */
+function scrollItemIntoViewWithin(container: HTMLElement, item: HTMLElement): void {
+  const containerRect = container.getBoundingClientRect();
+  const itemRect = item.getBoundingClientRect();
+
+  if (itemRect.top < containerRect.top) {
+    container.scrollTop -= containerRect.top - itemRect.top;
+    return;
+  }
+
+  if (itemRect.bottom > containerRect.bottom) {
+    container.scrollTop += itemRect.bottom - containerRect.bottom;
+  }
+}
+
+function cancelSettle(progressLine: HTMLElement): void {
+  const handle = settleHandles.get(progressLine);
+  if (handle !== undefined) {
+    window.cancelAnimationFrame(handle);
+    settleHandles.delete(progressLine);
+    delete progressLine.dataset.instant;
+  }
+}
+
 function updateProgress(
   entries: TocEntry[],
   activeId: string,
@@ -219,14 +291,16 @@ function updateProgress(
 ): void {
   const activeEntry = entries.find((entry) => entry.id === activeId) ?? entries[0];
 
+  cancelSettle(progressLine);
+
   if (!activeEntry) {
+    delete progressLine.dataset.instant;
     progressLine.style.height = "0px";
     progressLine.style.transform = "translateY(0px)";
     return;
   }
 
-  const bodyRect = scrollBody.getBoundingClientRect();
-  const renderProgress = () => {
+  const renderProgress = (): number => {
     const trackRect = trackLine.getBoundingClientRect();
     const activeRect = activeEntry.link.getBoundingClientRect();
     const desiredHeight = Math.min(Math.max(activeRect.height - 6, MIN_INDICATOR_HEIGHT), trackRect.height);
@@ -238,28 +312,69 @@ function updateProgress(
     progressLine.style.transform = `translateY(${offset}px)`;
     progressLine.style.height = `${desiredHeight}px`;
     scrollBody.dataset.activeId = activeEntry.id;
+    return offset;
   };
 
-  const activeRect = activeEntry.link.getBoundingClientRect();
-  const isOutsideViewport = activeRect.top < bodyRect.top || activeRect.bottom > bodyRect.bottom;
-  if (isOutsideViewport) {
-    let renderedAfterScroll = false;
-    const handleScrollSettle = () => {
-      renderedAfterScroll = true;
-      renderProgress();
-    };
+  const scrollTopBefore = scrollBody.scrollTop;
+  /*
+   * Only the TOC's own scroller may move here.
+   *
+   * `scrollIntoView` walks every scrollable ancestor, so on a TOC link click it
+   * also nudged the page — which then fought the smooth `heading.scrollIntoView`
+   * that `bindTocLinkClicks` performs immediately afterwards, leaving the target
+   * heading under the sticky header. Scrolling the container directly keeps the
+   * catch-up local.
+   */
+  scrollItemIntoViewWithin(scrollBody, activeEntry.item);
 
-    scrollBody.addEventListener("scroll", handleScrollSettle, { passive: true, once: true });
-    activeEntry.item.scrollIntoView({ block: "nearest" });
-    window.setTimeout(() => {
-      if (!renderedAfterScroll) {
-        renderProgress();
-      }
-    }, 140);
-    return;
+  /*
+   * `scrollIntoView` on this container is synchronous (the TOC body resolves to
+   * `scroll-behavior: auto`), so comparing scrollTop here tells us whether this
+   * update is a catch-up that moved the list under the indicator.
+   */
+  const tocScrolled = Math.abs(scrollBody.scrollTop - scrollTopBefore) > 0.5;
+  if (tocScrolled) {
+    progressLine.dataset.instant = "true";
   }
 
-  renderProgress();
+  /*
+   * Re-measure until the sticky sidebar, the page scroll and the TOC's own
+   * scroll have all settled.
+   *
+   * Measuring once right after scrollIntoView() is not enough. While the
+   * layout is still in flight the active link can measure *above* the track,
+   * which drives `activeCenter` negative and clamps the indicator to offset 0
+   * — so jumping to the end of a long article made the rail visibly snap to
+   * the top before sliding back down. The previous implementation tried to
+   * cover that with a one-shot scroll listener plus a fixed 140ms timer; the
+   * listener never fires when scrollIntoView() is a no-op, and 140ms is a
+   * guess that loses on a slow frame.
+   */
+  let previous = renderProgress();
+  let stableFrames = 0;
+  let frames = 0;
+
+  const finish = () => {
+    delete progressLine.dataset.instant;
+  };
+
+  const step = () => {
+    settleHandles.delete(progressLine);
+
+    const next = renderProgress();
+    frames += 1;
+    stableFrames = Math.abs(next - previous) <= SETTLE_EPSILON ? stableFrames + 1 : 0;
+    previous = next;
+
+    if (stableFrames >= SETTLE_STABLE_FRAMES || frames >= SETTLE_MAX_FRAMES) {
+      finish();
+      return;
+    }
+
+    settleHandles.set(progressLine, window.requestAnimationFrame(step));
+  };
+
+  settleHandles.set(progressLine, window.requestAnimationFrame(step));
 }
 
 function applySidebarState(
@@ -325,7 +440,16 @@ export function initTocSidebar(root: Element): (() => void) | void {
   });
 
   const onResize = () => requestSync();
-  const onScroll = () => requestSync();
+  /*
+   * Scroll events keep the manual lock alive, so a click-initiated smooth
+   * scroll holds the reader's selection for as long as it is actually running
+   * rather than for a fixed guess. The lock still expires normally once the
+   * page stops moving.
+   */
+  const onScroll = () => {
+    activeResolver.keepAlive();
+    requestSync();
+  };
   const onHashChange = () => requestSync();
 
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -342,6 +466,7 @@ export function initTocSidebar(root: Element): (() => void) | void {
     window.removeEventListener("resize", onResize);
     window.removeEventListener("hashchange", onHashChange);
     window.removeEventListener("site-header-framechange", onResize);
+    cancelSettle(progressLine);
     cancel();
   };
 }

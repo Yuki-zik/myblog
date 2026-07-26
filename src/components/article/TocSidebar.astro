@@ -142,6 +142,18 @@ function sectionLabel(index: number): string {
       opacity 320ms var(--ease-out, ease);
   }
 
+  /*
+   * While the TOC list itself is scrolling to bring the active item into view,
+   * the indicator's coordinate system is moving under it. Animating toward a
+   * target expressed in that frame just renders the rail lagging behind the
+   * list. `toc-client.ts` sets this flag only for that catch-up case and clears
+   * it once the geometry settles, so ordinary reading scroll keeps the 320ms
+   * ease.
+   */
+  .toc-sidebar__progress[data-instant] {
+    transition: none;
+  }
+
   /* `.toc-sidebar__list` / `.toc-sidebar__children` list reset, grid and spacing are
      utilities in the markup above; only the child rail border stays here. */
   .toc-sidebar__children {
