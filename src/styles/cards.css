@@ -201,13 +201,13 @@
 
 .post-cover-grid {
   background-image:
-    linear-gradient(to right, rgba(230, 236, 251, 0.24) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(230, 236, 251, 0.24) 1px, transparent 1px);
+    linear-gradient(to right, var(--cover-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cover-grid-line) 1px, transparent 1px);
   background-size: 34px 34px;
 }
 
 .post-cover-fallback[data-pattern="stripes"] .post-cover-grid {
-  background-image: repeating-linear-gradient(-30deg, rgba(230, 236, 251, 0.18) 0 9px, rgba(230, 236, 251, 0) 9px 24px);
+  background-image: repeating-linear-gradient(-30deg, var(--cover-grid-stripe) 0 9px, transparent 9px 24px);
   background-size: auto;
 }
 

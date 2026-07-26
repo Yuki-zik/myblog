@@ -153,6 +153,14 @@
   --shadow-xl: 0 24px 50px rgba(24, 37, 64, 0.1), 0 6px 16px rgba(24, 37, 64, 0.06);
   --shadow-glow: 0 0 0 4px var(--focus-ring);
 
+  /* Bespoke chrome drop-shadow tint + decorative line overlays, routed through
+     the foundations so each one follows data-color-scheme instead of freezing a
+     literal. Light values reproduce the previous literals exactly. */
+  --shadow-tint: var(--c-midnight);
+  --page-grid-line: color-mix(in srgb, var(--c-navy) 1.8%, transparent);
+  --cover-grid-line: color-mix(in srgb, var(--c-lace) 24%, transparent);
+  --cover-grid-stripe: color-mix(in srgb, var(--c-lace) 18%, transparent);
+
   --font-ui: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-display: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-reading: "Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif;
@@ -373,6 +381,13 @@
     --shadow-xl: 0 28px 54px rgba(0, 0, 0, 0.42), 0 6px 16px rgba(0, 0, 0, 0.3);
     --shadow-glow: 0 0 0 4px var(--focus-ring);
 
+    /* Dark: drop-shadow tint flips to black, matching the --shadow-* dark
+       precedent (negligible on the dark chrome). The page grid flips from navy
+       — invisible on the near-black page — to a faint lace line so the
+       texture stays perceptible in dark mode. */
+    --shadow-tint: black;
+    --page-grid-line: color-mix(in srgb, var(--c-lace) 4%, transparent);
+
     --chrome-bg: color-mix(in srgb, var(--surface-primary) 80%, var(--surface-elevated) 20%);
     --chrome-bg-strong: color-mix(in srgb, var(--surface-primary) 64%, var(--surface-elevated) 36%);
     --chrome-hover: color-mix(in srgb, var(--state-hover) 86%, var(--selected-bg) 14%);
@@ -491,6 +506,13 @@
   --shadow-lg: 0 20px 38px rgba(0, 0, 0, 0.38), 0 4px 12px rgba(0, 0, 0, 0.28);
   --shadow-xl: 0 28px 54px rgba(0, 0, 0, 0.42), 0 6px 16px rgba(0, 0, 0, 0.3);
   --shadow-glow: 0 0 0 4px var(--focus-ring);
+
+  /* Dark: drop-shadow tint flips to black, matching the --shadow-* dark
+     precedent (negligible on the dark chrome). The page grid flips from navy
+     — invisible on the near-black page — to a faint lace line so the
+     texture stays perceptible in dark mode. */
+  --shadow-tint: black;
+  --page-grid-line: color-mix(in srgb, var(--c-lace) 4%, transparent);
 
   --chrome-bg: color-mix(in srgb, var(--surface-primary) 80%, var(--surface-elevated) 20%);
   --chrome-bg-strong: color-mix(in srgb, var(--surface-primary) 64%, var(--surface-elevated) 36%);

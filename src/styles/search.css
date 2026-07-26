@@ -28,7 +28,7 @@
   color: color-mix(in srgb, var(--chrome-text) 90%, white 10%);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 16%, transparent 84%),
-    0 10px 24px rgba(24, 37, 64, 0.03);
+    0 10px 24px color-mix(in srgb, var(--shadow-tint) 3%, transparent);
   backdrop-filter: blur(14px) saturate(1.1);
   transition:
     border-color var(--duration-fast) var(--ease-out),
@@ -47,7 +47,7 @@
   transform: translateY(-0.5px);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 22%, transparent 78%),
-    0 14px 26px rgba(24, 37, 64, 0.05);
+    0 14px 26px color-mix(in srgb, var(--shadow-tint) 5%, transparent);
 }
 
 .header-search-trigger-icon,
@@ -70,7 +70,7 @@
     color-mix(in srgb, var(--chrome-bg) 46%, transparent 54%);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 16%, transparent 84%),
-    0 14px 28px rgba(24, 37, 64, 0.05);
+    0 14px 28px color-mix(in srgb, var(--shadow-tint) 5%, transparent);
   backdrop-filter: blur(10px) saturate(1.08);
 }
 
