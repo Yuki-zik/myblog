@@ -95,13 +95,13 @@ a:hover {
 }
 
 :where(.brand, .site-nav a, .pill-list a, .post-card-cover-link,
-       .post-card-title a, .meta-list a, .author-links a,
-       .header-search-result-link, .site-footer a,
+       .post-card-title a, .meta-list a,
+       .header-search-result-link,
        .archive-post-link, .archive-entry-button,
        .home-hero-btn, .home-hero-link,
        .author-post-title, .post-body a, .post-body--scholarly a,
        .post-toc-link, .post-header-topic-item a, .card h3 a,
-       .site-footer-mark, .post-pager-link) {
+       .post-pager-link) {
   text-decoration: none;
 }
 

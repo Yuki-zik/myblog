@@ -1390,12 +1390,14 @@ body[data-runtime="reading"]::before { opacity: 0; }
    Comments, Pager, Progress Bar
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── 29. Waline comments section ─────────────────────────────────── */
+/* ── 29. Waline comments section — layout only ───────────────────────
+   Width + horizontal centering live here; the tri-layout query below
+   widens this to 52rem alongside the pager. Vertical rhythm
+   (margin-top / padding-top / border-top) is owned by waline.css, which
+   loads after article.css and wins at equal specificity. */
 .post-waline-comments-section {
   max-width: 49rem;
-  margin: 3.15rem auto 0;
-  padding-top: 1.35rem;
-  border-top: 1px solid var(--article-rule);
+  margin-inline: auto;
 }
 
 /* ── 30. Pager (prev / next article) ─────────────────────────────── */
