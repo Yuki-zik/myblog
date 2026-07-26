@@ -32,7 +32,6 @@
   .archive-entry-button,
   .archive-post-link,
   .pill-list a,
-  .author-links a,
   .home-hero-link,
   .home-hero-btn,
   .post-pager-link):focus-visible {
@@ -49,8 +48,7 @@
   .post-toc-mobile-summary,
   .waline-comments .wl-content a,
   .waline-comments .wl-meta a,
-  .waline-comments .wl-login-info,
-  .site-footer a):focus-visible {
+  .waline-comments .wl-login-info):focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 38%, transparent 62%);
   border-radius: 10px;
@@ -70,7 +68,6 @@
   .archive-entry-button,
   .archive-post-link,
   .pill-list a,
-  .author-links a,
   .home-hero-link,
   .home-hero-btn,
   .post-pager-link):focus-visible {
