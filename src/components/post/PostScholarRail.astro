@@ -499,6 +499,21 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
     window.addEventListener("resize", layoutFloatingMarginalia);
     window.addEventListener("load", layoutFloatingMarginalia);
 
+    /*
+     * Re-run once webfonts have swapped in.
+     *
+     * Marginalia are positioned against the body coordinates of the paragraph
+     * that references them. The site loads its reading and UI faces from Google
+     * Fonts with the default `font-display: swap`, so first layout happens in
+     * fallback metrics and the real faces shift text afterwards. The
+     * ResizeObserver below only catches that when the swap also changes the
+     * body's box size, which it does not when line counts happen to stay the
+     * same — leaving notes anchored to stale positions until the next resize.
+     */
+    if (document.fonts && typeof document.fonts.ready?.then === "function") {
+      document.fonts.ready.then(layoutFloatingMarginalia);
+    }
+
     if ("ResizeObserver" in window) {
       const ro = new ResizeObserver(() => layoutFloatingMarginalia());
       const body = document.querySelector("[data-post-body]");

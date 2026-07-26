@@ -104,7 +104,24 @@ test("design manual toc follows the spoiler section before the heading reaches t
   await expect
     .poll(async () => page.evaluate(() => window.scrollY), { timeout: 2000 })
     .toBeGreaterThanOrEqual(targetScrollTop - 2);
-  await page.waitForTimeout(120);
+
+  /*
+   * The sidebar recomputes its active section from a rAF-scheduled scroll
+   * handler, so poll for it instead of sleeping a fixed amount — under load the
+   * handler can land well after any arbitrary delay.
+   */
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(
+          () =>
+            document
+              .querySelector("[data-toc-sidebar] [data-toc-link].is-active .toc-sidebar__title")
+              ?.textContent?.trim() ?? null
+        ),
+      { timeout: 5000 }
+    )
+    .toContain("Spoiler（剧透遮罩）");
 
   const metrics = await page.evaluate(() => {
     const heading = Array.from(document.querySelectorAll("h3")).find((node) =>
