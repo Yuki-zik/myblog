@@ -1,0 +1,125 @@
+/*
+ * Tailwind CSS v4 entry.
+ *
+ * Two deliberate decisions are encoded here:
+ *
+ * 1. Preflight is NOT imported. Article bodies rely on the browser default
+ *    `list-style` (see article.css `.post-body ul/ol`), and base.css already
+ *    owns the site reset. Importing preflight would strip body list markers.
+ *
+ * 2. Utilities live in `@layer utilities`, while every existing module in
+ *    src/styles is unlayered. Unlayered CSS always outranks layered CSS, so
+ *    legacy rules keep winning until a batch deletes them. That makes the
+ *    migration reversible one component at a time instead of big-bang.
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "../";
+
+/*
+ * Static scales. Radius literals are mirrored from tokens.css because Tailwind
+ * owns the `--radius-*` namespace; `tailwindTheme.test.ts` asserts the two
+ * definitions never drift apart.
+ */
+@theme {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+}
+
+/*
+ * Runtime-switched theme. `inline` keeps the generated utilities pointing at
+ * the semantic variables from tokens.css, so `bg-surface` follows the tri-state
+ * theme (data-theme + data-color-scheme) without Tailwind emitting a second,
+ * frozen copy of the palette.
+ */
+@theme inline {
+  --color-page: var(--page-bg);
+  --color-surface: var(--surface-primary);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-strong: var(--surface-strong);
+
+  --color-ink: var(--text-primary);
+  --color-ink-muted: var(--text-secondary);
+  --color-ink-meta: var(--text-meta);
+  --color-ink-on-dark: var(--text-on-dark);
+
+  --color-edge: var(--border-default);
+  --color-edge-strong: var(--border-strong);
+  --color-rule: var(--divider);
+  --color-rule-strong: var(--divider-strong);
+
+  --color-accent: var(--brand-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-focus: var(--focus-ring);
+
+  --color-state-hover: var(--state-hover);
+  --color-state-active: var(--state-active);
+  --color-selected: var(--selected-bg);
+  --color-selected-edge: var(--selected-border);
+
+  --color-chrome: var(--chrome-bg);
+  --color-chrome-strong: var(--chrome-bg-strong);
+  --color-chrome-line: var(--chrome-line);
+  --color-chrome-ink: var(--chrome-text);
+  --color-chrome-ink-muted: var(--chrome-text-muted);
+
+  --color-reading-ink: var(--reading-ink);
+  --color-reading-ink-subtle: var(--reading-ink-subtle);
+  --color-reading-rule: var(--reading-rule);
+  --color-reading-surface: var(--reading-surface);
+
+  --color-tag: var(--tag-bg);
+  --color-tag-edge: var(--tag-border);
+  --color-tag-ink: var(--tag-text);
+  --color-code: var(--code-bg);
+  --color-code-ink: var(--code-text);
+  --color-notice: var(--notice-bg);
+  --color-notice-edge: var(--notice-border);
+  --color-empty: var(--empty-bg);
+  --color-empty-edge: var(--empty-border);
+
+  --color-fab: var(--fab-bg);
+  --color-fab-hover: var(--fab-bg-hover);
+  --color-fab-edge: var(--fab-border);
+  --color-fab-icon: var(--fab-icon);
+  --color-fab-icon-hover: var(--fab-icon-hover);
+  --shadow-fab: var(--fab-shadow);
+
+  --font-ui: var(--font-ui);
+  --font-display: var(--font-display);
+  --font-reading: var(--font-reading);
+  --font-mono: var(--font-mono);
+
+  --text-display: var(--type-display);
+  --text-h1: var(--type-h1);
+  --text-h2: var(--type-h2);
+  --text-h3: var(--type-h3);
+  --text-body: var(--type-body);
+  --text-body-lg: var(--type-body-lg);
+  --text-meta: var(--type-meta);
+  --text-label: var(--type-label);
+
+  --shadow-elev-1: var(--shadow-sm);
+  --shadow-elev-2: var(--shadow-md);
+  --shadow-elev-3: var(--shadow-lg);
+  --shadow-elev-4: var(--shadow-xl);
+
+  --spacing-2xs: var(--space-2xs);
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-sm);
+  --spacing-md: var(--space-md);
+  --spacing-lg: var(--space-lg);
+  --spacing-xl: var(--space-xl);
+  --spacing-2xl: var(--space-2xl);
+  --spacing-3xl: var(--space-3xl);
+}

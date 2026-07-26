@@ -73,22 +73,26 @@ const homeDescription =
   title="MyBlog | Editorial Home"
   description={homeDescription}
   runtime="discover"
-  mainClass="shell--home-reference"
+  mainClass="shell--home-reference relative"
   footerVariant="none"
 >
-  <div class="home-reference" data-home-reference-root>
-    <div class="home-reference__ambient" aria-hidden="true">
-      <div class="home-reference__grid"></div>
-      <div class="home-reference__grain"></div>
-      <div class="home-reference__orb home-reference__orb--blue"></div>
-      <div class="home-reference__orb home-reference__orb--amber"></div>
+  <div class="home-reference relative min-h-screen" data-home-reference-root>
+    <div class="home-reference__ambient fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      <div class="home-reference__grid absolute inset-0"></div>
+      <div class="home-reference__grain absolute inset-0"></div>
+      <div class="home-reference__orb home-reference__orb--blue absolute rounded-full"></div>
+      <div class="home-reference__orb home-reference__orb--amber absolute rounded-full"></div>
     </div>
 
-    <div class="home-reference__body">
-      <section class="home-reference-hero" aria-label="首页视觉主叙事" data-ux-stagger>
-        <div class="home-reference-hero__copy" data-ux-reveal="fade-up">
-          <div class="home-reference-hero__kicker">
-            <span class="home-reference-hero__kicker-dot" aria-hidden="true"></span>
+    <div class="home-reference__body relative z-[1] mx-auto flex w-full max-w-[80rem] flex-col gap-20 px-6 pt-12 pb-0">
+      <section
+        class="home-reference-hero relative grid grid-cols-12 items-start gap-8"
+        aria-label="首页视觉主叙事"
+        data-ux-stagger
+      >
+        <div class="home-reference-hero__copy col-span-7 flex flex-col gap-8" data-ux-reveal="fade-up">
+          <div class="home-reference-hero__kicker inline-flex items-center gap-3 font-(family-name:--hr-font-mono) text-[0.75rem] font-bold tracking-[0.22em] uppercase">
+            <span class="home-reference-hero__kicker-dot size-2 rounded-full bg-current" aria-hidden="true"></span>
             <span>Vol. {heroIssueNumber} — 持续构建中</span>
           </div>
 
@@ -97,32 +101,35 @@ const homeDescription =
             <br />
             安全研究
             <br />
-            <span class="home-reference-hero__title-tail">
-              <span class="home-reference-hero__title-accent">&amp;</span> 工程笔记.
+            <span class="home-reference-hero__title-tail inline">
+              <span class="home-reference-hero__title-accent font-light italic">&amp;</span> 工程笔记.
             </span>
           </h1>
 
-          <p class="home-reference-hero__description">
+          <p class="home-reference-hero__description max-w-[36rem] text-[1.125rem] leading-[1.8]">
             {SITE_AUTHOR_PROFILE.mission}
             {" "}
             {SITE_AUTHOR_PROFILE.intro}
           </p>
 
-          <div class="home-reference-hero__actions">
-            <a href={primaryCta.href} class="home-reference-hero__button home-reference-hero__button--primary">
+          <div class="home-reference-hero__actions flex flex-wrap items-center gap-4">
+            <a
+              href={primaryCta.href}
+              class="home-reference-hero__button home-reference-hero__button--primary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--hr-font-mono) text-[0.875rem] leading-none font-medium"
+            >
               <span>{primaryCta.label}</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>
                 <path d="m12 5 7 7-7 7"></path>
               </svg>
             </a>
             <a
               href={secondaryCta.href}
-              class="home-reference-hero__button home-reference-hero__button--secondary"
+              class="home-reference-hero__button home-reference-hero__button--secondary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--hr-font-mono) text-[0.875rem] leading-none font-medium"
               target={secondaryCta.external ? "_blank" : undefined}
               rel={secondaryCta.external ? "noreferrer noopener" : undefined}
             >
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="6" cy="6" r="2"></circle>
                 <circle cx="18" cy="6" r="2"></circle>
                 <circle cx="12" cy="18" r="2"></circle>
@@ -135,8 +142,8 @@ const homeDescription =
           </div>
         </div>
 
-        <div class="home-reference-terminal-wrap" data-ux-reveal="fade-up">
-          <div class="home-reference-card home-reference-terminal">
+        <div class="home-reference-terminal-wrap sticky top-28 z-10 col-span-5 self-start" data-ux-reveal="fade-up">
+          <div class="home-reference-card home-reference-terminal relative p-1.5">
             <div class="home-reference-terminal__shell" data-home-reference-terminal>
               <div class="home-reference-terminal__header">
                 <div class="home-reference-terminal__lights" aria-hidden="true">
@@ -181,16 +188,16 @@ const homeDescription =
       </section>
 
       <section data-home-domains data-controller="domains-carousel" data-ux-stagger>
-        <div class="home-reference-section-head" data-ux-reveal="fade-up">
+        <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4" data-ux-reveal="fade-up">
           <h2>关注领域</h2>
-          <div class="home-reference-domain-toolbar">
+          <div class="home-reference-domain-toolbar inline-flex items-center gap-[0.9rem]">
             <span>{String(sortedTopics.length).padStart(2, "0")} 活跃中</span>
             {
               homeDomainsLoopable ? (
-                <div class="home-reference-domain-nav" data-home-domains-nav>
+                <div class="home-reference-domain-nav inline-flex items-center gap-[0.45rem]" data-home-domains-nav>
                   <button
                     type="button"
-                    class="home-reference-domain-nav__button"
+                    class="home-reference-domain-nav__button inline-flex size-8 items-center justify-center rounded-full disabled:cursor-default disabled:opacity-[0.36]"
                     data-home-domains-prev
                     aria-label="查看上一组主题"
                   >
@@ -198,7 +205,7 @@ const homeDescription =
                   </button>
                   <button
                     type="button"
-                    class="home-reference-domain-nav__button"
+                    class="home-reference-domain-nav__button inline-flex size-8 items-center justify-center rounded-full disabled:cursor-default disabled:opacity-[0.36]"
                     data-home-domains-next
                     aria-label="查看下一组主题"
                   >
@@ -228,12 +235,12 @@ const homeDescription =
                   data-ux-reveal="fade-up"
                   aria-label={`进入主题：${topic.data.title}`}
                 >
-                  <div class="home-reference-card home-reference-domain-card">
-                    <div class="home-reference-domain-card__head">
+                  <div class="home-reference-card home-reference-domain-card relative flex h-full flex-col p-5">
+                    <div class="home-reference-domain-card__head mb-[1.2rem] flex items-start justify-between">
                       <span class="home-reference-domain-card__glyph" aria-hidden="true">
                         {
                           index === 0 ? (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                               <rect x="4" y="4" width="16" height="16" rx="3"></rect>
                               <path d="M9 9h6v6H9z"></path>
                               <path d="M9 2v2"></path>
@@ -242,13 +249,13 @@ const homeDescription =
                               <path d="M15 20v2"></path>
                             </svg>
                           ) : index === 1 ? (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                               <ellipse cx="12" cy="6" rx="7" ry="3"></ellipse>
                               <path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"></path>
                               <path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path>
                             </svg>
                           ) : index === 2 ? (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                               <circle cx="6" cy="12" r="2"></circle>
                               <circle cx="18" cy="6" r="2"></circle>
                               <circle cx="18" cy="18" r="2"></circle>
@@ -256,7 +263,7 @@ const homeDescription =
                               <path d="m8 13 8 4"></path>
                             </svg>
                           ) : (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M4 6h16"></path>
                               <path d="M7 12h10"></path>
                               <path d="M9 18h6"></path>
@@ -264,12 +271,12 @@ const homeDescription =
                           )
                         }
                       </span>
-                      <span class="home-reference-domain-card__id" data-home-domain-id>{cardNumber}</span>
+                      <span class="home-reference-domain-card__id font-(family-name:--hr-font-mono) text-[0.75rem]" data-home-domain-id>{cardNumber}</span>
                     </div>
 
                     <h3 data-home-domain-title>{topic.data.title}</h3>
-                    <p data-home-domain-summary>{topic.data.summary}</p>
-                    <p class="home-reference-domain-card__meta" data-home-domain-meta>
+                    <p class="text-[0.875rem] leading-[1.6]" data-home-domain-summary>{topic.data.summary}</p>
+                    <p class="home-reference-domain-card__meta text-[0.875rem] leading-[1.6]" data-home-domain-meta>
                       相关文章 {postCountByTopic[topic.slug] ?? 0} 篇
                     </p>
                   </div>
@@ -280,16 +287,16 @@ const homeDescription =
         </div>
       </section>
 
-      <section class="home-reference-publishing-grid" data-ux-stagger>
-        <div data-home-featured-post data-ux-reveal="fade-up">
-          <div class="home-reference-section-head">
+      <section class="home-reference-publishing-grid grid grid-cols-3 gap-8" data-ux-stagger>
+        <div class="col-span-1" data-home-featured-post data-ux-reveal="fade-up">
+          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4">
             <h2>近期得意之作</h2>
           </div>
 
           {
             featuredPost ? (
-              <a href={`/posts/${featuredPost.slug}`} class="home-reference-card home-reference-featured-card">
-                <div class="home-featured-cover-stack post-cover post-cover--featured" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
+              <a href={`/posts/${featuredPost.slug}`} class="home-reference-card home-reference-featured-card relative block p-4">
+                <div class="home-featured-cover-stack post-cover post-cover--featured mb-6" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
                   {
                     featuredPost.data.cover?.src ? (
                       <>
@@ -316,31 +323,31 @@ const homeDescription =
                         />
                       </>
                     ) : (
-                      <div class="home-featured-cover-fallback">Featured Note</div>
+                      <div class="home-featured-cover-fallback relative z-[1] grid h-full w-full place-items-center rounded-[0.75rem] font-(family-name:--hr-font-mono) text-[0.75rem] tracking-[0.12em] uppercase">Featured Note</div>
                     )
                   }
                 </div>
 
-                <div class="home-reference-featured-card__body">
-                  <div class="home-reference-featured-card__eyebrow">{featuredTopicLabel}</div>
+                <div class="home-reference-featured-card__body flex flex-col gap-3">
+                  <div class="home-reference-featured-card__eyebrow inline-flex items-center gap-[0.35rem] font-(family-name:--hr-font-mono) text-[0.625rem] tracking-[0.16em] uppercase">{featuredTopicLabel}</div>
                   <h3 class="home-reference-featured-card__title">{featuredPost.data.title}</h3>
                   {featuredPost.data.summary ? (
-                    <p class="home-reference-featured-card__summary">{featuredPost.data.summary}</p>
+                    <p class="home-reference-featured-card__summary text-[0.875rem] leading-[1.7]">{featuredPost.data.summary}</p>
                   ) : null}
                 </div>
               </a>
             ) : (
-              <p class="home-reference-empty">暂时还没有可展示的精选文章。</p>
+              <p class="home-reference-empty rounded-[1rem] px-5 py-6 text-[0.95rem]">暂时还没有可展示的精选文章。</p>
             )
           }
         </div>
 
-        <div data-home-recent-posts data-ux-reveal="fade-up">
-          <div class="home-reference-section-head">
+        <div class="col-span-2" data-home-recent-posts data-ux-reveal="fade-up">
+          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4">
             <h2>近期碎片</h2>
-            <a href="/archives" class="home-reference-section-link">
+            <a href="/archives" class="home-reference-section-link inline-flex items-center gap-1">
               <span>查看全部</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="h-3 w-3" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>
                 <path d="m12 5 7 7-7 7"></path>
               </svg>
@@ -348,20 +355,23 @@ const homeDescription =
           </div>
 
           {recentPosts.length === 0 ? (
-            <p class="home-reference-empty">暂时还没有更多文章。</p>
+            <p class="home-reference-empty rounded-[1rem] px-5 py-6 text-[0.95rem]">暂时还没有更多文章。</p>
           ) : (
-            <div class="home-reference-recent-list">
+            <div class="home-reference-recent-list flex flex-col gap-3">
               {recentPosts.map((post) => (
-                <a href={`/posts/${post.slug}`} class="home-reference-card home-reference-recent-item" data-home-recent-item>
-                  <div class="home-reference-recent-item__meta">
-                    <span class="home-reference-recent-item__date">{getPostDateISO(post.data.date)}</span>
-                    <span class="home-reference-recent-item__tag">
+                <a href={`/posts/${post.slug}`} class="home-reference-card home-reference-recent-item group relative flex items-center gap-6 overflow-hidden p-5" data-home-recent-item>
+                  <div class="home-reference-recent-item__meta flex w-48 shrink-0 items-center gap-4">
+                    <span class="home-reference-recent-item__date font-(family-name:--hr-font-mono) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
+                    <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center rounded-full px-2.5 py-1 font-(family-name:--hr-font-mono) text-[0.625rem] leading-none">
                       {topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}
                     </span>
                   </div>
-                  <h3 class="home-reference-recent-item__title">{post.data.title}</h3>
-                  <span class="home-reference-recent-item__arrow" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <h3 class="home-reference-recent-item__title flex-auto pr-8">{post.data.title}</h3>
+                  <span
+                    class="home-reference-recent-item__arrow absolute top-1/2 right-5 opacity-0 group-hover:opacity-100"
+                    aria-hidden="true"
+                  >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M5 12h14"></path>
                       <path d="m12 5 7 7-7 7"></path>
                     </svg>

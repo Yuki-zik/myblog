@@ -97,7 +97,89 @@ function hasBannedVarRef(source: string, token: string): boolean {
   return pattern.test(source);
 }
 
+function extractBalanced(source: string, openIndex: number): string {
+  // openIndex points at the "(" of the call. Returns the argument text.
+  let depth = 0;
+  for (let i = openIndex; i < source.length; i += 1) {
+    if (source[i] === "(") depth += 1;
+    if (source[i] === ")") {
+      depth -= 1;
+      if (depth === 0) return source.slice(openIndex + 1, i);
+    }
+  }
+  return "";
+}
+
+function splitTopLevel(args: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let current = "";
+
+  for (const char of args) {
+    if (char === "(") depth += 1;
+    if (char === ")") depth -= 1;
+    if (char === "," && depth === 0) {
+      parts.push(current.trim());
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+
+  if (current.trim()) parts.push(current.trim());
+  return parts;
+}
+
+function findOverloadedColorMix(source: string): string[] {
+  const offenders: string[] = [];
+  const needle = "color-mix(";
+  let index = source.indexOf(needle);
+
+  while (index !== -1) {
+    const args = extractBalanced(source, index + needle.length - 1);
+    // First top-level argument is the <color-interpolation-method>; the rest
+    // are colour stops. CSS Color 5 allows exactly two colour stops.
+    const colorStops = splitTopLevel(args).length - 1;
+    if (colorStops > 2) {
+      offenders.push(`color-mix(${args})`);
+    }
+    index = source.indexOf(needle, index + needle.length);
+  }
+
+  return offenders;
+}
+
 describe("theme token contract", () => {
+  it("never passes more than two colours to color-mix()", () => {
+    // A three-colour color-mix() is invalid, so the whole declaration becomes
+    // invalid at computed-value time and silently falls back to transparent /
+    // inherited. Seven light-mode tokens shipped this way for months; verified
+    // in-browser that CSS.supports() returns false and the computed value is
+    // rgba(0, 0, 0, 0). Nest two-colour mixes instead.
+    cssFiles.forEach((file) => {
+      const source = readFileSync(path.join(stylesDir, file), "utf8");
+      expect(findOverloadedColorMix(source), `${file} has an invalid color-mix()`).toEqual([]);
+    });
+  });
+
+  it("does not let scroll-reveal animations retain their end transform", () => {
+    // `animation-fill-mode: both` keeps the `to` frame after the reveal ends,
+    // and the animation origin outranks author declarations — which silently
+    // kills every :hover transform on a revealed element. `backwards` still
+    // covers the stagger delay without pinning the settled state.
+    const baseCss = readFileSync(path.join(stylesDir, "base.css"), "utf8");
+    const revealRules = baseCss.match(/\[data-ux-reveal[^\]]*\][^{]*\{[^}]*\}/g) ?? [];
+
+    expect(revealRules.length, "reveal rules should exist in base.css").toBeGreaterThan(0);
+    revealRules
+      .filter((rule) => rule.includes("animation:"))
+      .forEach((rule) => {
+        expect(rule, "reveal animation must not use fill-mode both").not.toMatch(
+          /animation:[^;]*\bboth\b/
+        );
+      });
+  });
+
   it("defines the semantic token contract in tokens.css", () => {
     requiredTokens.forEach((token) => {
       expect(hasTokenDefinition(tokensCss, token), `${token} should be defined`).toBe(true);

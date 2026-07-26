@@ -8,10 +8,15 @@ interface Props {
 const { bodyClass } = Astro.props;
 ---
 
-<div class="discover-page" data-discover-page>
+<div class="discover-page relative min-h-screen" data-discover-page>
   <DiscoverAmbient />
 
-  <div class:list={["discover-page__body", bodyClass]}>
+  <div
+    class:list={[
+      "discover-page__body relative z-[1] mx-auto flex w-full max-w-[80rem] flex-col gap-20 px-6 pt-12 pb-0",
+      bodyClass
+    ]}
+  >
     <slot />
   </div>
 </div>

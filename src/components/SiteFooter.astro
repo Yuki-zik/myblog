@@ -4,26 +4,32 @@ import { SITE_AUTHOR_PROFILE } from "../lib/site";
 const year = new Date().getFullYear();
 const github = SITE_AUTHOR_PROFILE.socials?.github;
 const footerNote = SITE_AUTHOR_PROFILE.bioShort ?? "AI / 技术 / 知识网络";
+
+const navLink =
+  "inline-flex items-center min-h-[1.9rem] rounded-full py-[0.22rem] px-[0.5rem] text-[0.82rem]";
 ---
 
-<footer class="site-footer">
-  <div class="shell site-footer-inner">
-    <div class="site-footer-brand">
-      <a href="/" class="site-footer-mark">MyBlog</a>
-      <p class="site-footer-note">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
+<footer class="site-footer bg-transparent text-ink-muted">
+  <div class="shell site-footer-inner grid items-center gap-x-[1.25rem] gap-y-[0.8rem] pt-4">
+    <div class="site-footer-brand grid gap-[0.22rem]">
+      <a href="/" class="site-footer-mark font-display text-[1rem] font-[650] tracking-[-0.04em]">MyBlog</a>
+      <p class="site-footer-note text-[0.8rem] text-ink-muted">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
     </div>
-    <nav class="site-footer-nav" aria-label="页脚导航">
-      <a href="/">首页</a>
-      <a href="/topics">主题</a>
-      <a href="/archives">归档</a>
-      <a href="/author">作者</a>
+    <nav
+      class="site-footer-nav flex flex-wrap items-center justify-center gap-x-[0.3rem] gap-y-[0.2rem]"
+      aria-label="页脚导航"
+    >
+      <a href="/" class={navLink}>首页</a>
+      <a href="/topics" class={navLink}>主题</a>
+      <a href="/archives" class={navLink}>归档</a>
+      <a href="/author" class={navLink}>作者</a>
       {github ? (
         <a
           href={`https://github.com/${github}`}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="在 GitHub 上查看"
-          class="site-footer-github"
+          class:list={["site-footer-github", navLink]}
         >
           <svg
             aria-hidden="true"
@@ -38,7 +44,7 @@ const footerNote = SITE_AUTHOR_PROFILE.bioShort ?? "AI / 技术 / 知识网络";
         </a>
       ) : null}
     </nav>
-    <p class="site-footer-copy">
+    <p class="site-footer-copy justify-self-end text-[0.8rem] text-ink-muted">
       © {year} {SITE_AUTHOR_PROFILE.name}
     </p>
   </div>

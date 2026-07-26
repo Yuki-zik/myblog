@@ -1131,11 +1131,8 @@ body[data-runtime="reading"]::before { opacity: 0; }
 
 /* ── 23. TOC rail container ──────────────────────────────────────── */
 .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
-  top: 5.35rem;
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
   position: sticky;
+  top: 5.35rem;
   align-self: start;
   max-height: none;
   overflow: visible;
@@ -1143,109 +1140,11 @@ body[data-runtime="reading"]::before { opacity: 0; }
   transition: opacity var(--motion-duration-base) var(--motion-ease-standard);
 }
 
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail {
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary {
-  display: block;
-  padding: 0 0 0.88rem;
-  color: var(--article-ink-faint);
-  font-size: 0.68rem;
-  font-weight: 680;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  cursor: default;
-  list-style: none;
-}
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary::-webkit-details-marker { display: none; }
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-body { padding: 0; }
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-list,
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-list--rail {
-  gap: 0.18rem;
-}
-
-/* ── 24. TOC links in left rail ──────────────────────────────────── */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link {
-  position: relative;
-  padding: 0.25rem 0.24rem 0.25rem 0.56rem;
-  gap: 0.42rem;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: color-mix(in srgb, var(--article-ink) 48%, white 52%);
-  font-size: 0.84rem;
-  transition:
-    color var(--motion-duration-fast) var(--motion-ease-standard),
-    background-color var(--motion-duration-fast) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-base) var(--motion-ease-standard);
-}
-
-/* Accent bar pseudo-element */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link::before {
-  left: 0.08rem;
-  top: 0.2rem;
-  bottom: 0.2rem;
-  width: 1.5px;
-  border-radius: 999px;
-}
-
-/* Hover: no translateX shift, just color + bg */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link:hover {
-  background: color-mix(in srgb, white 28%, var(--article-paper) 72%);
-  color: color-mix(in srgb, var(--article-ink) 78%, white 22%);
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-number {
-  min-width: 1.25ch;
-  color: color-mix(in srgb, var(--article-ink) 38%, white 62%);
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-text {
-  font-size: 0.84rem;
-  line-height: 1.46;
-}
-
-/* Depth-2 links */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-2 > .post-toc-link {
-  padding-left: 0.82rem;
-}
-
-/* Depth-3 links */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link {
-  padding-left: 1.34rem;
-  color: color-mix(in srgb, var(--article-ink) 44%, white 56%);
-}
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-item--depth-3 > .post-toc-link .post-toc-number {
-  color: color-mix(in srgb, var(--article-ink) 36%, white 64%);
-}
-
-/* Active state */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link.is-active {
-  background: color-mix(in srgb, white 24%, var(--article-paper-deep) 76%);
-  color: color-mix(in srgb, var(--article-ink) 92%, white 8%);
-  font-weight: 620;
-  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--article-accent) 64%, transparent 36%);
-}
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link.is-active::before {
-  background: color-mix(in srgb, var(--article-accent) 58%, transparent 42%);
-}
-.post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail .post-toc-link.is-active .post-toc-number {
-  color: color-mix(in srgb, var(--article-accent) 82%, var(--article-ink) 18%);
-}
-
-/* Desktop: always open */
-@media (min-width: 1181px) {
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel[open] > .post-reading-toc-summary { pointer-events: none; }
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel[open] > .post-reading-toc-body { display: block !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1272,25 +1171,6 @@ body[data-runtime="reading"]::before { opacity: 0; }
   max-height: none;
   overflow: visible;
   gap: 0.86rem;
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-section {
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-section-summary {
-  padding: 0 0 0.56rem;
-  color: var(--article-ink-faint);
-  font-size: 0.69rem;
-  letter-spacing: 0.13em;
-}
-
-/* Desktop: force scholar sections open */
-@media (min-width: 1101px) {
-  .post-scholar-section > .post-scholar-section-body { display: block !important; }
-  .post-scholar-section > .post-scholar-section-summary { display: block; pointer-events: none; cursor: default; }
 }
 
 /* ── 26. Sidenote items (left-border style, no card) ─────────────── */
@@ -1388,8 +1268,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 
 /* ── 28. Sidenote text body ──────────────────────────────────────── */
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item-content p,
-.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-footnote-body :where(p),
-.post-reading-layout--scholarly .comment-thread-panel--rail {
+.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-footnote-body :where(p) {
   font-size: 0.92rem;
   line-height: 1.72;
 }
@@ -1495,14 +1374,6 @@ body[data-runtime="reading"]::before { opacity: 0; }
   object-fit: contain;
   border-radius: 2px;
   border: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
-}
-
-/* Reader notes section */
-.post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--reader-notes {
-  position: relative;
-  margin-top: 1.2rem;
-  padding-top: 1rem;
-  border-top: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
 }
 
 /* Floating marginalia positioning */
@@ -1621,17 +1492,13 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
 
 /* ── 32. Dark mode surface resets ────────────────────────────────── */
 :root[data-color-scheme="dark"] .post-reading-article,
-:root[data-color-scheme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
-:root[data-color-scheme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail,
-:root[data-color-scheme="dark"] .post-article-comments-collapsible {
+:root[data-color-scheme="dark"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail {
   background: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="system"] .post-reading-article,
-  :root[data-theme="system"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel,
-  :root[data-theme="system"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail,
-  :root[data-theme="system"] .post-article-comments-collapsible {
+  :root[data-theme="system"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-rail {
     background: transparent;
   }
 }
@@ -1741,21 +1608,6 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
   .post-reading-layout--scholarly.post-reading-layout--tri .post-toc-mobile-container .post-toc-mobile { display: block; margin: 1.5rem 0 2.5rem; }
   .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-main { order: 1; grid-column: 1 / -1; }
   .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-rail { order: 2; margin-top: 1.05rem; grid-column: 1 / -1; }
-
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel {
-    border: 1px solid var(--article-rule);
-    border-radius: 14px;
-    background: color-mix(in srgb, white 16%, var(--article-paper) 84%);
-  }
-
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-summary {
-    cursor: pointer;
-    padding: 0.74rem 0.9rem;
-  }
-
-  .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-panel[open] .post-reading-toc-body {
-    padding: 0 0.72rem 0.82rem;
-  }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly > * {
     max-width: 100%;

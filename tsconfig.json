@@ -18,8 +18,6 @@
     "dist",
     "node_modules",
     "test-results",
-    "playwright-report",
-    "patch.js",
-    "patch_timeline.js"
+    "playwright-report"
   ]
 }

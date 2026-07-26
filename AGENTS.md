@@ -169,6 +169,20 @@ When browser review is triggered, keep it scoped:
 
 ## 9) Frontend Rewrite Guardrails
 
+### 9.0 Styling stack: Tailwind CSS v4 (authoritative)
+
+The site now uses Tailwind CSS v4 via `@tailwindcss/vite`. `src/styles/tailwind.css` is the entry and is imported first by `BaseLayout.astro`. Three rules are load-bearing — breaking any of them causes silent, site-wide visual damage:
+
+- **Do not import preflight.** Only `tailwindcss/theme.css` (`layer theme`) and `tailwindcss/utilities.css` (`layer utilities`) are imported. Article bodies rely on the browser default `list-style` (`.post-body ul/ol` in `article.css` only sets padding), so preflight would silently delete every bullet and number in every post. Never change this to `@import "tailwindcss";`.
+- **Utilities are layered, legacy CSS is not.** Everything in `src/styles/*.css` is unlayered, and unlayered CSS always outranks `@layer utilities`. A Tailwind class therefore has no effect until the competing legacy declaration is deleted. This is intentional: it makes the migration reversible one component at a time. When migrating, always pair "add utility" with "delete the old declaration" — never leave both.
+- **Theme tokens are bridged by reference, not by value.** `@theme inline` points `--color-*`, `--font-*`, `--text-*`, `--shadow-elev-*` and `--spacing-*` back at `tokens.css`. Hard-coding a literal there freezes the light palette and breaks dark mode. `tokens.css` remains the single runtime source of truth.
+
+Related invariants:
+
+- Dark mode is selected by `html[data-color-scheme="dark"]`, never `html[data-theme="dark"]` — the latter is inert whenever the user is on `system`, which is the default.
+- Tailwind owns the `--radius-*` namespace, so those literals are mirrored in both `tailwind.css` and `tokens.css`; `src/styles/tailwindTheme.test.ts` fails if they drift.
+- `src/styles/themeContract.test.ts` still scans every `.css` file in `src/styles`, including `tailwind.css`.
+
 - Treat the repo as **two runtimes**: the shared editorial shell (`src/layouts/BaseLayout.astro` + global chrome/styles) and the article-specific scholarly reader (`src/pages/posts/[slug].astro` + TOC/rail/comments runtime). Do not plan the rewrite as “all pages same difficulty”.
 - The home route remains the most reference-faithful page (`src/pages/index.astro` + `src/styles/home-reference.css` + `src/components/home/HomeReferenceFooter.astro` + `src/lib/home/selectors.ts`), but non-article discover routes now share a common runtime shell via `src/components/discover/*`, `src/styles/discover.css`, and `runtime="discover"` on `BaseLayout`. Treat homepage-specific classes as refinements on top of the shared discover family, not a separate ad-hoc island.
 - `src/layouts/BaseLayout.astro` now emits explicit `body/main[data-runtime]` and `footerVariant`; `src/components/UiControllers.astro` owns reveal/theme/header/back-to-top/domains-carousel/social-stats/reading-progress initialization. Do not reintroduce page-scoped inline scripts unless the user explicitly approves breaking that controller boundary.

@@ -1,110 +1,47 @@
-.archives-page {
-  display: grid;
-  gap: 1.35rem;
-}
-
-.archives-hero {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  min-height: 220px;
-  padding: clamp(1.3rem, 3vw, 2rem);
-  border-radius: var(--radius-xl);
-  border: 1px solid rgba(230, 236, 251, 0.12);
-  background: linear-gradient(160deg, rgba(24, 37, 64, 0.96) 0%, rgba(52, 73, 115, 0.92) 100%);
-  box-shadow: var(--shadow-lg);
-  color: #f5f8ff;
-}
-
-.archives-hero-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.32;
-}
-
-.archives-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(24, 37, 64, 0.24) 0%, rgba(24, 37, 64, 0.74) 100%),
-    radial-gradient(circle at top right, rgba(255, 122, 91, 0.22) 0%, transparent 34%);
-}
-
-.archives-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 36rem;
-}
-
-.archives-hero-content h1 {
-  color: white;
-  margin-bottom: 0.32rem;
-}
-
-.archives-hero-content p {
-  color: rgba(230, 236, 251, 0.8);
-  line-height: 1.7;
-}
+/**
+ * Archives ledger.
+ *
+ * Grid / flex / spacing / sizing now live on archives.astro and
+ * ArchivePostTile.astro as Tailwind utilities. What stays here:
+ *   - the `.archive-post-tile` hover (transform + shadow) and the
+ *     `.archive-post-content h3` hover colour, both measured by
+ *     tests/e2e/archives.spec.ts
+ *   - gradients, the scaleX month rule reveal, and the `::after` arrow
+ *   - theme-driven colours (dark mode is html[data-color-scheme="dark"],
+ *     which Tailwind's `dark:` variant cannot express)
+ *   - responsive `grid-template-columns`, which reads better as a query
+ *
+ * Removed as dead: the whole `.archives-hero*` poster family and
+ * `.archive-post-overlay*`, plus media-query declarations that were already
+ * inert because the 2026-03-15 override block re-declared them later.
+ */
 
 .archive-year-section {
   display: grid;
-  grid-template-columns: minmax(112px, 168px) minmax(0, 1fr);
-  gap: 1rem 1.3rem;
+  grid-template-columns: minmax(96px, 124px) minmax(0, 1fr);
+  gap: 0.9rem 1.1rem;
   align-items: start;
 }
 
-.archive-year-tile {
-  position: sticky;
-  top: 5rem;
-}
-
 .archive-year-tile span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.2rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: var(--radius-full);
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-default);
-  color: color-mix(in srgb, var(--text-secondary) 72%, var(--text-primary) 28%);
+  color: color-mix(in srgb, var(--text-primary) 12%, var(--page-bg) 88%);
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.archive-year-content {
-  display: grid;
-  gap: 1rem;
-}
-
-.archive-month-group {
-  display: grid;
-  gap: 0.8rem;
-}
-
-.archive-month-node {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  line-height: 0.92;
+  letter-spacing: -0.08em;
 }
 
 .archive-month-label {
-  color: var(--foreground-strong);
+  color: var(--text-secondary);
   font-family: var(--font-display);
-  font-size: 0.92rem;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .archive-month-line {
-  width: 100%;
-  height: 1px;
   background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 20%, var(--border) 80%) 0%, transparent 90%);
   transform-origin: left center;
   transform: scaleX(0);
@@ -115,182 +52,10 @@
   transform: scaleX(1);
 }
 
-.archive-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
 .archive-post-tile {
-  margin: 0;
-  overflow: visible;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  background: var(--surface-panel);
-  box-shadow: var(--shadow-sm);
-}
-
-.archive-post-link {
-  display: block;
-  position: relative;
-  aspect-ratio: 1 / 1;
-  color: inherit;
-}
-
-.archive-post-link > .post-cover--archive-square {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.archive-post-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(24, 37, 64, 0.02) 10%, rgba(24, 37, 64, 0.82) 100%);
-}
-
-.archive-post-overlay {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 2.8rem;
-  z-index: 1;
-  padding: 0.86rem;
-}
-
-.archive-post-kicker {
-  margin: 0 0 0.32rem;
-  color: rgba(230, 236, 251, 0.74);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.archive-post-overlay h3 {
-  color: #f7f9ff;
-  font-size: clamp(1rem, 1vw + 0.9rem, 1.22rem);
-  line-height: 1.28;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.archive-post-meta {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 2;
-  margin: 0;
-  padding: 0.68rem 0.86rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 0.48rem;
-  color: rgba(230, 236, 251, 0.86);
-  font-size: 0.75rem;
-  background: linear-gradient(180deg, rgba(24, 37, 64, 0.12) 0%, rgba(24, 37, 64, 0.82) 100%);
-}
-
-@media (max-width: 1060px) {
-  .archive-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .archive-year-section {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
-  }
-
-  .archive-year-tile {
-    position: static;
-  }
-
-  .archive-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 2026-03-15: shift archives from poster wall to ledger */
-.archives-page {
-  gap: 1.1rem;
-}
-
-.archives-hero {
-  min-height: 184px;
-  padding: clamp(1.1rem, 2.6vw, 1.55rem);
-  border-radius: 22px;
-  border-color: color-mix(in srgb, var(--border-default) 72%, transparent 28%);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 94%, transparent 6%) 0%, color-mix(in srgb, var(--surface-elevated) 92%, transparent 8%) 100%);
-  box-shadow: none;
-  color: var(--text-primary);
-}
-
-.archives-hero-image {
-  opacity: 0.12;
-}
-
-.archives-hero::after {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 10%, transparent 90%) 0%, color-mix(in srgb, var(--surface-elevated) 28%, transparent 72%) 100%),
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 36%, transparent 64%) 0%, transparent 38%);
-}
-
-.archives-hero-content h1 {
-  color: var(--text-primary);
-}
-
-.archives-hero-content p {
-  color: var(--text-secondary);
-}
-
-.archive-year-section {
-  grid-template-columns: minmax(96px, 124px) minmax(0, 1fr);
-  gap: 0.9rem 1.1rem;
-}
-
-.archive-year-tile span {
-  min-height: auto;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: color-mix(in srgb, var(--text-primary) 12%, var(--page-bg) 88%);
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
-  line-height: 0.92;
-  letter-spacing: -0.08em;
-}
-
-.archive-year-content,
-.archive-month-group {
-  gap: 0.72rem;
-}
-
-.archive-month-node {
-  gap: 0.62rem;
-}
-
-.archive-month-label {
-  font-size: 0.84rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.archive-grid {
-  grid-template-columns: 1fr;
-  gap: 0.7rem;
-}
-
-.archive-post-tile {
   border-radius: 18px;
   background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
-  box-shadow: none;
   transition:
     transform var(--duration-base) var(--ease-out),
     box-shadow var(--duration-base) var(--ease-out),
@@ -306,24 +71,14 @@
 }
 
 .archive-post-link {
-  display: grid;
   grid-template-columns: 136px minmax(0, 1fr);
-  gap: 0.9rem;
-  aspect-ratio: auto;
-  align-items: stretch;
-  padding: 0.78rem;
-  border-radius: inherit;
+  color: inherit;
   background-color: transparent;
   transition: background-color var(--duration-base) var(--ease-out);
 }
 
 .archive-post-link:hover {
   background-color: color-mix(in srgb, var(--surface-subtle) 78%, var(--surface-primary) 22%);
-}
-
-.archive-post-media {
-  position: relative;
-  overflow: visible;
 }
 
 .archive-post-media > .post-cover--archive-square {
@@ -334,25 +89,9 @@
   overflow: visible;
 }
 
-.archive-post-link::after,
-.archive-post-overlay {
-  display: none;
-}
-
-.archive-post-content {
-  display: grid;
-  align-content: center;
-  gap: 0.42rem;
-  min-width: 0;
-}
-
 .archive-post-meta {
-  position: static;
-  padding: 0;
-  gap: 0.3rem 0.56rem;
   color: var(--text-secondary);
   font-size: 0.74rem;
-  background: transparent;
 }
 
 .archive-post-content h3 {
@@ -367,7 +106,6 @@
 }
 
 .archive-post-summary {
-  margin: 0;
   color: color-mix(in srgb, var(--text-primary) 74%, var(--text-secondary) 26%);
   line-height: 1.65;
   transition: color var(--duration-base) var(--ease-out);
@@ -378,15 +116,7 @@
 }
 
 .archive-post-kicker {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
   color: color-mix(in srgb, var(--brand-accent) 72%, var(--text-primary) 28%);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
 }
 
 .archive-post-kicker::after {
@@ -401,6 +131,10 @@
 }
 
 @media (max-width: 760px) {
+  .archive-year-tile {
+    position: static;
+  }
+
   .archive-year-tile span {
     font-size: clamp(1.8rem, 10vw, 2.8rem);
   }

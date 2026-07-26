@@ -24,7 +24,7 @@
   --waline-code-bg-color: var(--code-bg);
   --waline-bq-color: var(--blockquote-bg);
   display: grid;
-  gap: 1rem;
+  gap: 0.8rem;
   color: var(--reading-ink);
 }
 
@@ -36,7 +36,7 @@
 .waline-comments__title {
   margin: 0;
   font-family: var(--reading-serif);
-  font-size: clamp(1.18rem, 1.03rem + 0.24vw, 1.34rem);
+  font-size: clamp(1.12rem, 1rem + 0.2vw, 1.24rem);
   font-weight: 600;
   color: var(--reading-ink);
 }
@@ -51,8 +51,8 @@
 
 .waline-comments__config {
   border: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
-  background: color-mix(in srgb, var(--surface-primary) 78%, transparent 22%);
-  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-subtle) 74%, transparent 26%);
+  border-radius: 14px;
   padding: 0.8rem 0.95rem;
 }
 
@@ -61,13 +61,17 @@
 }
 
 .waline-comments .wl-card,
-.waline-comments .wl-panel {
-  border-radius: 18px;
+.waline-comments .wl-panel,
+.waline-comments .wl-preview,
+.waline-comments .wl-editor,
+.waline-comments .wl-header label,
+.waline-comments .wl-input {
+  border-radius: 14px;
 }
 
 .waline-comments .wl-editor,
 .waline-comments .wl-card {
-  background: transparent;
+  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
 }
 
 .waline-comments .wl-editor,
@@ -79,7 +83,7 @@
 .waline-comments .wl-logout-btn,
 .waline-comments .wl-action,
 .waline-comments .wl-btn {
-  border-color: color-mix(in srgb, var(--reading-rule) 70%, transparent 30%);
+  border-color: color-mix(in srgb, var(--reading-rule) 74%, transparent 26%);
 }
 
 .waline-comments .wl-editor,
@@ -103,7 +107,7 @@
 .waline-comments .wl-preview,
 .waline-comments .wl-content,
 .waline-comments .wl-input {
-  background: color-mix(in srgb, var(--surface-primary) 85%, transparent 15%);
+  background: color-mix(in srgb, var(--surface-primary) 92%, transparent 8%);
 }
 
 .waline-comments .wl-header input:focus,
@@ -130,11 +134,8 @@
 .waline-comments .wl-meta,
 .waline-comments .wl-power,
 .waline-comments .wl-count,
+.waline-comments .wl-rss,
 .waline-comments .wl-sort li {
-  color: var(--reading-ink-subtle);
-}
-
-.waline-comments .wl-rss {
   color: var(--reading-ink-subtle);
 }
 
@@ -148,52 +149,4 @@
     margin-top: 1.55rem;
     padding-top: 0.9rem;
   }
-}
-
-/* 2026-03-15: align Waline with article shell */
-.waline-comments {
-  gap: 0.8rem;
-}
-
-.waline-comments__title {
-  font-size: clamp(1.12rem, 1rem + 0.2vw, 1.24rem);
-}
-
-.waline-comments__config {
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--surface-subtle) 74%, transparent 26%);
-}
-
-.waline-comments .wl-card,
-.waline-comments .wl-panel,
-.waline-comments .wl-preview,
-.waline-comments .wl-editor,
-.waline-comments .wl-header label,
-.waline-comments .wl-input {
-  border-radius: 14px;
-}
-
-.waline-comments .wl-editor,
-.waline-comments .wl-card,
-.waline-comments .wl-preview {
-  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
-}
-
-.waline-comments .wl-editor,
-.waline-comments .wl-card,
-.waline-comments .wl-preview,
-.waline-comments .wl-input,
-.waline-comments .wl-sort,
-.waline-comments .wl-info,
-.waline-comments .wl-logout-btn,
-.waline-comments .wl-action,
-.waline-comments .wl-btn {
-  border-color: color-mix(in srgb, var(--reading-rule) 74%, transparent 26%);
-}
-
-.waline-comments .wl-header label,
-.waline-comments .wl-preview,
-.waline-comments .wl-content,
-.waline-comments .wl-input {
-  background: color-mix(in srgb, var(--surface-primary) 92%, transparent 8%);
 }

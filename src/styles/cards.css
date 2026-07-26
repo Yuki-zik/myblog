@@ -1,79 +1,25 @@
-.grid {
-  display: grid;
-  gap: 1.2rem;
-}
-
-.topic-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.post-card-grid {
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.35rem;
-}
-
-.card {
-  position: relative;
-  display: grid;
-  gap: 0.85rem;
-  min-height: 100%;
-  padding: 1.28rem;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-elevated) 100%);
-  box-shadow: var(--shadow-sm);
-  transition:
-    transform var(--duration-base) var(--ease-out),
-    box-shadow var(--duration-base) var(--ease-out),
-    border-color var(--duration-base) var(--ease-out);
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  inset-inline: 1.28rem;
-  top: 0.95rem;
-  height: 1px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 26%, transparent 74%), transparent 86%);
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--accent) 24%, var(--border) 76%);
-  box-shadow: var(--shadow-lg);
-}
-
-.card h3 {
-  margin-top: 0.4rem;
-  font-size: 1.15rem;
-}
-
-.card p {
-  color: var(--subtle);
-  line-height: 1.65;
-}
-
-.card h3 a {
-  color: var(--foreground-strong);
-}
-
-.meta-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.68rem;
-}
-
-.meta-list a {
-  color: var(--foreground-strong);
-}
+/**
+ * Card family: pill lists, post cards, and the shared "manual cover stack".
+ *
+ * Layout / spacing / typography that used to live here now sits on the
+ * components as Tailwind utilities (PostCard.astro, PostCover.astro,
+ * ArchivePostTile.astro). What deliberately stays in CSS:
+ *   - the ghost/main cover stack (layered same-source images, blur, and the
+ *     hover coupling) whose geometry is asserted by e2e/post-covers.spec.ts
+ *   - theme-conditional colours: dark mode is html[data-color-scheme="dark"],
+ *     so Tailwind's prefers-color-scheme `dark:` variant cannot express it
+ *   - gradients, pseudo elements, and responsive overrides
+ *
+ * Removed as dead: `.topic-grid`, `.post-card-grid`, `.card*`, `.meta-list*`,
+ * `.post-cover-image`, `.post-header > .subtle`. `.grid` was removed for the
+ * same reason plus a hard conflict: it shadowed Tailwind's own `grid` utility
+ * and forced `gap: 1rem` onto every element using it.
+ */
 
 .pill-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.48rem;
-  margin: 0;
+  gap: 0.42rem;
   padding: 0;
   list-style: none;
 }
@@ -82,13 +28,13 @@
 .pill-list li {
   display: inline-flex;
   align-items: center;
-  min-height: 1.95rem;
-  padding: 0.22rem 0.62rem;
+  min-height: 1.75rem;
+  padding: 0.16rem 0.52rem;
   border-radius: var(--radius-full);
-  border: 1px solid var(--tag-border);
-  background: var(--tag-bg);
+  border: 1px solid color-mix(in srgb, var(--tag-border) 86%, transparent 14%);
+  background: color-mix(in srgb, var(--tag-bg) 82%, var(--surface-primary) 18%);
   color: var(--tag-text);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   line-height: 1.25;
   transition:
     transform var(--duration-fast) var(--ease-out),
@@ -105,14 +51,15 @@
   color: var(--tag-selected-text);
 }
 
+/*
+ * `.discover-page .post-card` in discover.css owns the card surface (border,
+ * radius, background, shadow, transition, hover) at higher specificity; only
+ * the shared fallback surface stays here.
+ */
 .post-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  overflow: hidden;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--surface-primary) 0%, var(--surface-elevated) 100%);
+  border-radius: calc(var(--radius-xl) + 4px);
+  background: linear-gradient(180deg, var(--surface-primary) 0%, color-mix(in srgb, var(--surface-elevated) 94%, var(--surface-primary) 6%) 100%);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -121,267 +68,33 @@
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
-  border-color: color-mix(in srgb, var(--accent) 26%, var(--border) 74%);
-  box-shadow: var(--shadow-lg);
-}
-
-.post-card-cover-link,
-.post-card-title a {
-  color: inherit;
-}
-
-.post-card-body {
-  display: grid;
-  gap: 0.78rem;
-  padding: 1rem 1rem 1.08rem;
-}
-
-.post-card-date {
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.post-card-title {
-  margin: 0;
-  font-size: 1.22rem;
-  line-height: 1.22;
-}
-
-.post-card-title a {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.post-card-summary {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  color: color-mix(in srgb, var(--foreground) 74%, var(--muted) 26%);
-  line-height: 1.7;
-}
-
-.post-card-footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.post-card-topics {
-  flex: 1 1 auto;
-}
-
-.post-card-more {
-  flex: 0 0 auto;
-  color: color-mix(in srgb, var(--accent) 80%, var(--foreground) 20%);
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.post-cover {
-  margin: 0;
-  position: relative;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent 12%);
-}
-
-.post-cover--hero {
-  aspect-ratio: 16 / 9;
-  border: 1px solid var(--border-default);
-  border-radius: calc(var(--radius-lg) + 2px);
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 1.4rem;
-}
-
-.post-cover--card {
-  aspect-ratio: 16 / 9;
-  border: 0;
-  border-radius: 0;
-}
-
-.post-cover--archive-square {
-  aspect-ratio: 1 / 1;
-  border: 0;
-  border-radius: 0;
-}
-
-.post-cover-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.001);
-  transition: transform var(--duration-slow) var(--ease-out);
-}
-
-.post-card:hover .post-cover-image,
-.archive-post-link:hover .post-cover-image {
-  transform: scale(1.04);
-}
-
-.post-cover-fallback {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0.4rem;
-  padding: 1.1rem;
-  color: color-mix(in srgb, white 92%, var(--chrome-text) 8%);
-  background: linear-gradient(138deg, var(--cover-c1) 0%, var(--cover-c2) 58%, var(--cover-c3) 100%);
-}
-
-.post-cover-grid {
-  position: absolute;
-  inset: 0;
-  opacity: 0.2;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, rgba(230, 236, 251, 0.24) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(230, 236, 251, 0.24) 1px, transparent 1px);
-  background-size: 34px 34px;
-}
-
-.post-cover-fallback[data-pattern="stripes"] .post-cover-grid {
-  background-image: repeating-linear-gradient(-30deg, rgba(230, 236, 251, 0.18) 0 9px, rgba(230, 236, 251, 0) 9px 24px);
-  background-size: auto;
-}
-
-.post-cover-fallback[data-pattern="beams"] .post-cover-grid {
-  background-image: linear-gradient(108deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(255, 255, 255, 0) 64%);
-  background-size: auto;
-}
-
-/* 2026-03-15: calmer card language */
-.grid {
-  gap: 1rem;
-}
-
-.post-card-grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(1.5rem, 2.6vw, 2.25rem);
-  max-width: min(100%, 56rem);
-  margin-inline: auto;
-}
-
-.card {
-  gap: 0.72rem;
-  padding: 1.1rem 1.12rem;
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--surface-primary) 92%, var(--surface-subtle) 8%);
-  box-shadow: none;
-}
-
-.card::before {
-  display: none;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--selected-border) 72%, transparent 28%);
-  box-shadow: var(--shadow-sm);
-}
-
-.card h3 {
-  margin-top: 0;
-  font-size: 1.06rem;
-}
-
-.card p {
-  color: var(--text-secondary);
-}
-
-.pill-list {
-  gap: 0.42rem;
-}
-
-.pill-list a,
-.pill-list li {
-  min-height: 1.75rem;
-  padding: 0.16rem 0.52rem;
-  border-color: color-mix(in srgb, var(--tag-border) 86%, transparent 14%);
-  background: color-mix(in srgb, var(--tag-bg) 82%, var(--surface-primary) 18%);
-  font-size: 0.74rem;
-}
-
-.post-card {
-  display: grid;
-  gap: 0;
-  overflow: visible;
-  border-radius: calc(var(--radius-xl) + 4px);
-  background: linear-gradient(180deg, var(--surface-primary) 0%, color-mix(in srgb, var(--surface-elevated) 94%, var(--surface-primary) 6%) 100%);
-  box-shadow: var(--shadow-sm);
-}
-
-.post-card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--selected-border) 76%, transparent 24%);
   box-shadow: var(--shadow-md);
 }
 
-.post-card-cover-link {
-  display: block;
-  padding: clamp(0.95rem, 1.5vw, 1.18rem) clamp(0.95rem, 1.5vw, 1.18rem) 0.4rem;
-}
-
 .post-card-cover-link,
 .post-card-title a {
   color: inherit;
 }
 
-.post-card .post-cover--card {
-  aspect-ratio: 16 / 9;
-  border-radius: calc(var(--radius-xl) - 2px);
-  background: transparent;
-  overflow: visible;
-  --post-cover-radius: calc(var(--radius-xl) - 2px);
-  --post-cover-main-border: #e2e8f0;
-  --post-cover-main-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --post-cover-main-hover-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --post-cover-main-lift: -0.25rem;
-  --post-cover-ghost-opacity: 0.34;
-  --post-cover-ghost-offset-y: 0.75rem;
-  --post-cover-ghost-scale: 0.95;
-  --post-cover-ghost-blur: 24px;
-  --post-cover-ghost-hover-opacity: 0.5;
-  --post-cover-ghost-hover-offset-y: 1rem;
-  --post-cover-ghost-hover-scale: 0.95;
-  --post-cover-ghost-hover-blur: 24px;
+.post-card-cover-link {
+  padding: clamp(0.95rem, 1.5vw, 1.18rem) clamp(0.95rem, 1.5vw, 1.18rem) 0.4rem;
 }
 
 .post-card-body {
-  display: grid;
   gap: clamp(0.82rem, 1.5vw, 1.08rem);
   padding: clamp(1.08rem, 1.85vw, 1.38rem) clamp(1.14rem, 2vw, 1.46rem) clamp(1.24rem, 2.1vw, 1.58rem);
 }
 
 .post-card-meta-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.36rem 0.72rem;
-  margin: 0;
   color: var(--text-meta);
   font-size: 0.82rem;
   line-height: 1.45;
 }
 
-.post-card-meta-item,
-.post-card-stat {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.34rem;
-}
-
 .post-card-meta-icon,
 .post-card-stat-icon {
-  flex: 0 0 auto;
   color: color-mix(in srgb, var(--brand-accent) 38%, var(--text-meta) 62%);
 }
 
@@ -403,29 +116,11 @@
 }
 
 .post-card-summary {
-  margin: 0;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  max-width: 58ch;
   color: color-mix(in srgb, var(--text-primary) 76%, var(--text-secondary) 24%);
-  font-size: 1rem;
-  line-height: 1.78;
-}
-
-.post-card-stats-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  padding-top: 0.08rem;
-}
-
-.post-card-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.42rem 0.72rem;
 }
 
 .post-card-stat {
@@ -436,10 +131,6 @@
 
 .post-card-more {
   color: color-mix(in srgb, var(--brand-accent) 74%, var(--text-primary) 26%);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
 }
 
 .post-card-more::after {
@@ -448,6 +139,7 @@
   color: var(--text-secondary);
 }
 
+/* `.pill-list { padding: 0 }` is unlayered, so this cannot become a utility. */
 .post-card-topics {
   gap: 0.42rem;
   padding-top: 0.12rem;
@@ -471,20 +163,78 @@
 }
 
 .post-card-endmark {
-  width: min(7.4rem, 26%);
-  height: 1px;
-  margin-top: 0.62rem;
   background: linear-gradient(90deg, color-mix(in srgb, var(--divider-strong) 78%, transparent 22%) 0%, transparent 100%);
 }
 
+/* Kept in CSS: `/` (off-limits) applies `.post-cover .post-cover--featured` to a
+   hand-written stack, so this positioning context cannot live on markup utilities. */
 .post-cover {
+  position: relative;
+  overflow: hidden;
   background: color-mix(in srgb, var(--surface-subtle) 82%, transparent 18%);
 }
 
 .post-cover--hero {
-  border-color: color-mix(in srgb, var(--border-default) 82%, transparent 18%);
+  aspect-ratio: 16 / 9;
+  border: 1px solid color-mix(in srgb, var(--border-default) 82%, transparent 18%);
   border-radius: 20px;
   box-shadow: none;
+  margin-bottom: 1.4rem;
+}
+
+.post-cover--card {
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 0;
+}
+
+.post-cover--archive-square {
+  aspect-ratio: 1 / 1;
+  border: 0;
+  border-radius: 0;
+}
+
+.post-cover-fallback {
+  color: color-mix(in srgb, white 92%, var(--chrome-text) 8%);
+  background: linear-gradient(138deg, var(--cover-c1) 0%, var(--cover-c2) 58%, var(--cover-c3) 100%);
+}
+
+.post-cover-grid {
+  background-image:
+    linear-gradient(to right, rgba(230, 236, 251, 0.24) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(230, 236, 251, 0.24) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+.post-cover-fallback[data-pattern="stripes"] .post-cover-grid {
+  background-image: repeating-linear-gradient(-30deg, rgba(230, 236, 251, 0.18) 0 9px, rgba(230, 236, 251, 0) 9px 24px);
+  background-size: auto;
+}
+
+.post-cover-fallback[data-pattern="beams"] .post-cover-grid {
+  background-image: linear-gradient(108deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(255, 255, 255, 0) 64%);
+  background-size: auto;
+}
+
+/* 2026-03-15: calmer card language */
+.post-card .post-cover--card {
+  aspect-ratio: 16 / 9;
+  border-radius: calc(var(--radius-xl) - 2px);
+  background: transparent;
+  overflow: visible;
+  --post-cover-radius: calc(var(--radius-xl) - 2px);
+  --post-cover-main-border: #e2e8f0;
+  --post-cover-main-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-hover-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --post-cover-main-lift: -0.25rem;
+  --post-cover-ghost-opacity: 0.34;
+  --post-cover-ghost-offset-y: 0.75rem;
+  --post-cover-ghost-scale: 0.95;
+  --post-cover-ghost-blur: 24px;
+  --post-cover-ghost-hover-opacity: 0.5;
+  --post-cover-ghost-hover-offset-y: 1rem;
+  --post-cover-ghost-hover-scale: 0.95;
+  --post-cover-ghost-hover-blur: 24px;
 }
 
 .post-cover--archive-square {
@@ -611,44 +361,14 @@ html[data-color-scheme="dark"] .post-cover--featured {
   will-change: transform, box-shadow;
 }
 
-.post-cover-fallback {
-  gap: 0.3rem;
-}
-
 .post-cover-shape {
-  position: absolute;
-  width: 64%;
-  aspect-ratio: 1 / 1;
-  top: -32%;
-  right: -18%;
   border-radius: 18% 74% 42% 60%;
   background: radial-gradient(circle at 22% 26%, color-mix(in srgb, var(--cover-accent) 86%, #ffffff 14%) 0%, transparent 72%);
   transform: rotate(var(--cover-tilt));
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.post-cover-kicker,
-.post-cover-title {
-  margin: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.post-cover-kicker {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.94;
 }
 
 .post-cover-title {
   font-family: var(--font-display);
-  font-size: 1rem;
-  line-height: 1.3;
-  max-width: 20ch;
-  font-weight: 600;
 }
 
 .post-cover--hero .post-cover-fallback {
@@ -691,16 +411,7 @@ html[data-color-scheme="dark"] .post-cover--featured {
   }
 }
 
-.post-header > .subtle {
-  margin-top: 0;
-}
-
 @media (max-width: 900px) {
-  .topic-grid,
-  .post-card-grid {
-    grid-template-columns: 1fr;
-  }
-
   .post-card-cover-link {
     padding: 0.92rem 0.92rem 0;
   }
@@ -723,14 +434,3 @@ html[data-color-scheme="dark"] .post-cover--featured {
   }
 }
 
-/* ── Large desktop: expand card grid ─────────────────────────────── */
-@media (min-width: 1441px) {
-  .post-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: min(100%, 72rem);
-  }
-
-  .topic-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}

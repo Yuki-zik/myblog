@@ -176,24 +176,44 @@ main.shell {
   opacity: 0;
 }
 
+/*
+ * These reveals use `backwards`, not `both`, on purpose.
+ *
+ * With `both`, animation-fill-mode retains the `to` frame after the reveal
+ * finishes, and the CSS animation origin outranks normal author declarations.
+ * Every keyframe below ends on `transform: translateY(0)` / `translateX(0)` /
+ * `scale(1)`, so `both` permanently pinned `transform` on any revealed element
+ * and silently killed every `:hover` lift underneath it (post cards, archive
+ * tiles, ...). Verified in-browser: `both` computes `matrix(1,0,0,1,0,0)` on a
+ * hovered element that asks for `translateY(-4px)`, `backwards` computes
+ * `matrix(1,0,0,1,0,-4)`.
+ *
+ * `backwards` still holds the `from` frame through the stagger delay, so the
+ * entrance is unchanged; the settled end state is expressed as the plain
+ * declaration below instead of being held by the animation.
+ */
+[data-ux-reveal].ux-revealed {
+  opacity: 1;
+}
+
 [data-ux-reveal="fade-up"].ux-revealed {
-  animation: ux-fade-up var(--duration-enter) var(--ease-out) both;
+  animation: ux-fade-up var(--duration-enter) var(--ease-out) backwards;
 }
 
 [data-ux-reveal="fade-in"].ux-revealed {
-  animation: ux-fade-in var(--duration-enter) var(--ease-out) both;
+  animation: ux-fade-in var(--duration-enter) var(--ease-out) backwards;
 }
 
 [data-ux-reveal="slide-left"].ux-revealed {
-  animation: ux-slide-left var(--duration-enter) var(--ease-out) both;
+  animation: ux-slide-left var(--duration-enter) var(--ease-out) backwards;
 }
 
 [data-ux-reveal="slide-right"].ux-revealed {
-  animation: ux-slide-right var(--duration-enter) var(--ease-out) both;
+  animation: ux-slide-right var(--duration-enter) var(--ease-out) backwards;
 }
 
 [data-ux-reveal="scale-pop"].ux-revealed {
-  animation: ux-scale-pop var(--duration-enter) var(--ease-out) both;
+  animation: ux-scale-pop var(--duration-enter) var(--ease-out) backwards;
 }
 
 .no-js [data-ux-reveal] {

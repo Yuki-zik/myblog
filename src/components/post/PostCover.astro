@@ -60,16 +60,16 @@ const coverSizes =
       </div>
     ) : (
       <div
-        class="post-cover-fallback"
+        class="post-cover-fallback relative flex h-full w-full flex-col justify-end gap-[0.3rem] p-[1.1rem]"
         style={fallbackStyle}
         data-pattern={tokens.pattern}
         role="img"
         aria-label={`${post.data.title} fallback cover`}
       >
-        <div class="post-cover-grid" aria-hidden="true"></div>
-        <div class="post-cover-shape" aria-hidden="true"></div>
-        <p class="post-cover-kicker">{tokens.badge}</p>
-        <p class="post-cover-title">{post.data.title}</p>
+        <div class="post-cover-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true"></div>
+        <div class="post-cover-shape pointer-events-none absolute top-[-32%] right-[-18%] aspect-square w-[64%] opacity-50" aria-hidden="true"></div>
+        <p class="post-cover-kicker relative z-[1] text-[0.72rem] font-bold uppercase tracking-[0.14em] opacity-[0.94]">{tokens.badge}</p>
+        <p class="post-cover-title relative z-[1] max-w-[20ch] text-base font-semibold leading-[1.3]">{post.data.title}</p>
       </div>
     )
   }

@@ -7,24 +7,36 @@ interface Props {
 }
 
 const { items, variant = "standalone" } = Astro.props;
+
+const listClass = "post-toc-list list-none m-0 p-0 grid gap-[0.18rem]";
+const itemClass = "post-toc-item m-0";
+const linkClass =
+  "post-toc-link relative grid grid-cols-[auto_1fr] items-start gap-[0.62rem] px-[0.46rem] py-[0.28rem] border border-transparent rounded-[10px] bg-transparent text-[0.98rem]";
+const numberClass =
+  "post-toc-number min-w-[1.4ch] text-right tabular-nums text-[0.92rem] font-[620] leading-[1.45]";
+const textClass = "post-toc-text text-[0.97rem] leading-[1.46] text-pretty";
 ---
 
-<div class:list={["post-toc", variant === "rail" && "post-toc--rail"]} data-post-toc data-post-toc-variant={variant}>
+<div
+  class:list={["post-toc grid gap-[0.55rem]", variant === "rail" && "post-toc--rail"]}
+  data-post-toc
+  data-post-toc-variant={variant}
+>
   {
     variant === "rail" ? (
-      <ol class="post-toc-list post-toc-list--rail">
+      <ol class={`${listClass} post-toc-list--rail`}>
         {
           items.map((item) => (
-            <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+            <li class={`${itemClass} post-toc-item--depth-${item.depth}`}>
               <a
                 href={`#${item.slug}`}
-                class="post-toc-link"
+                class={linkClass}
                 data-toc-link
                 data-target-id={item.slug}
                 data-toc-depth={item.depth}
               >
-                <span class="post-toc-number">{item.numberLabel}</span>
-                <span class="post-toc-text">{item.text}</span>
+                <span class={numberClass}>{item.numberLabel}</span>
+                <span class={textClass}>{item.text}</span>
               </a>
             </li>
           ))
@@ -33,21 +45,24 @@ const { items, variant = "standalone" } = Astro.props;
     ) : (
       <>
         {variant !== "mobileOnly" && (
-          <section class="post-toc-card post-toc-card--desktop" aria-label="文章目录">
+          <section
+            class="post-toc-card post-toc-card--desktop border-none bg-transparent p-0 mt-0"
+            aria-label="文章目录"
+          >
             <h2 class="post-toc-title">目录</h2>
-            <ol class="post-toc-list">
+            <ol class={listClass}>
               {
                 items.map((item) => (
-                  <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+                  <li class={`${itemClass} post-toc-item--depth-${item.depth}`}>
                     <a
                       href={`#${item.slug}`}
-                      class="post-toc-link"
+                      class={linkClass}
                       data-toc-link
                       data-target-id={item.slug}
                       data-toc-depth={item.depth}
                     >
-                      <span class="post-toc-number">{item.numberLabel}</span>
-                      <span class="post-toc-text">{item.text}</span>
+                      <span class={numberClass}>{item.numberLabel}</span>
+                      <span class={textClass}>{item.text}</span>
                     </a>
                   </li>
                 ))
@@ -56,22 +71,22 @@ const { items, variant = "standalone" } = Astro.props;
           </section>
         )}
 
-        <details class="post-toc-mobile" data-post-toc-mobile>
-          <summary class="post-toc-mobile-summary">目录</summary>
-          <ol class="post-toc-list post-toc-list--mobile">
+        <details class="post-toc-mobile hidden rounded-2xl" data-post-toc-mobile>
+          <summary class="post-toc-mobile-summary cursor-pointer list-none px-[0.9rem] py-3 text-[0.84rem] font-[720]">目录</summary>
+          <ol class={`${listClass} post-toc-list--mobile`}>
 
             {
               items.map((item) => (
-                <li class={`post-toc-item post-toc-item--depth-${item.depth}`}>
+                <li class={`${itemClass} post-toc-item--depth-${item.depth}`}>
                   <a
                     href={`#${item.slug}`}
-                    class="post-toc-link"
+                    class={linkClass}
                     data-toc-link
                     data-target-id={item.slug}
                     data-toc-depth={item.depth}
                   >
-                    <span class="post-toc-number">{item.numberLabel}</span>
-                    <span class="post-toc-text">{item.text}</span>
+                    <span class={numberClass}>{item.numberLabel}</span>
+                    <span class={textClass}>{item.text}</span>
                   </a>
                 </li>
               ))

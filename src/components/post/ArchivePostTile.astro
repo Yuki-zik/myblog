@@ -11,23 +11,23 @@ interface Props {
 const { post, author, dateLabel } = Astro.props;
 ---
 
-<article class="archive-post-tile" data-archive-card data-ux-reveal="fade-up">
+<article class="archive-post-tile overflow-visible" data-archive-card data-ux-reveal="fade-up">
   <a
     href={`/posts/${post.slug}`}
-    class="archive-post-link"
+    class="archive-post-link relative grid items-stretch gap-[0.9rem] rounded-[inherit] p-[0.78rem]"
     aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
   >
-    <div class="archive-post-media">
+    <div class="archive-post-media relative overflow-visible">
       <PostCover post={post} variant="archive-square" />
     </div>
-    <div class="archive-post-content">
-      <p class="archive-post-meta">
+    <div class="archive-post-content grid min-w-0 content-center gap-[0.42rem]">
+      <p class="archive-post-meta flex flex-wrap gap-x-[0.56rem] gap-y-[0.3rem]">
         <span data-archive-date>{dateLabel}</span>
         <span data-archive-author>By {author}</span>
       </p>
       <h3>{post.data.title}</h3>
       {post.data.summary ? <p class="archive-post-summary">{post.data.summary}</p> : null}
-      <p class="archive-post-kicker">阅读文章</p>
+      <p class="archive-post-kicker inline-flex items-center gap-[0.3rem] text-[0.76rem] font-semibold normal-case tracking-[0.02em]">阅读文章</p>
     </div>
   </a>
 </article>

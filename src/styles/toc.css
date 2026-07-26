@@ -15,24 +15,11 @@
   min-width: 0;
 }
 
-.post-toc-column {
-  position: sticky;
-  top: 92px;
-}
-
 /* ── 2. TOC card & title ─────────────────────────────────────────── */
-.post-toc {
-  display: grid;
-  gap: 0.55rem;
-}
+/* `.post-toc` / `.post-toc-card` layout+reset now live as utilities in PostToc.astro. */
 
-.post-toc-card {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin-top: 0;
-}
-
+/* `.post-toc-title` stays in CSS: `base.css` styles `h1..h6` and `h2` with unlayered
+   element selectors, which beat layered utilities for margin/color/font/letter-spacing/size. */
 .post-toc-title {
   margin: 0 0 0.85rem;
   font-size: 0.78rem;
@@ -43,31 +30,14 @@
 }
 
 /* ── 3. TOC list & items ─────────────────────────────────────────── */
-.post-toc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.18rem;
-}
-
-.post-toc-item {
-  margin: 0;
-}
+/* `.post-toc-list` / `.post-toc-item` reset+grid now live as utilities in PostToc.astro. */
 
 /* ── 4. TOC link — the main interactive element ──────────────────── */
+/* Layout/box utilities live in PostToc.astro. `color`, `text-decoration` and `transition`
+   stay here because `base.css a { color; text-decoration; transition }` is unlayered
+   and would otherwise win over layered utilities. */
 .post-toc-link {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  gap: 0.62rem;
-  padding: 0.28rem 0.46rem;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  background: transparent;
   color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 88%, var(--text-primary) 12%);
-  font-size: 0.98rem;
   text-decoration: none;
   /* Unified transition using motion tokens */
   transition:
@@ -101,27 +71,14 @@
 }
 
 /* ── 5. Number & text ────────────────────────────────────────────── */
+/* Only `color` remains: it is overridden by depth/active rules below. */
 .post-toc-number {
-  min-width: 1.4ch;
   color: color-mix(in srgb, var(--toc-num, var(--text-secondary)) 86%, transparent 14%);
-  font-size: 0.92rem;
-  font-weight: 620;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.45;
-  text-align: right;
 }
 
-.post-toc-text {
-  font-size: 0.97rem;
-  line-height: 1.46;
-  text-wrap: pretty;
-}
+/* `.post-toc-text` sizing now lives as utilities in PostToc.astro. */
 
 /* ── 6. Depth indentation ────────────────────────────────────────── */
-.post-toc-item--depth-1 .post-toc-link {
-  padding-left: 0.46rem;
-}
-
 .post-toc-item--depth-2 .post-toc-link {
   padding-left: 0.9rem;
 }
@@ -134,16 +91,6 @@
 
 .post-toc-item--depth-3 .post-toc-number {
   color: color-mix(in srgb, var(--toc-num) 80%, transparent 20%);
-}
-
-.post-toc-item--depth-4 .post-toc-link {
-  padding-left: 2rem;
-  font-size: 0.8rem;
-  color: color-mix(in srgb, var(--toc-text, var(--text-secondary)) 60%, transparent 40%);
-}
-
-.post-toc-item--depth-4 .post-toc-number {
-  color: color-mix(in srgb, var(--toc-num) 60%, transparent 40%);
 }
 
 /* ── 7. Active state ─────────────────────────────────────────────── */
@@ -165,19 +112,11 @@
 }
 
 /* ── 8. Mobile TOC ───────────────────────────────────────────────── */
+/* `display` + `border-radius` are utilities in PostToc.astro; the `<=1180px` rule in
+   article.css (specificity 0,4,0, unlayered) still flips it to `display: block`. */
 .post-toc-mobile {
-  display: none;
   border: 1px solid color-mix(in srgb, var(--border-default) 76%, transparent 24%);
-  border-radius: 16px;
   background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
-}
-
-.post-toc-mobile-summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.75rem 0.9rem;
-  font-size: 0.84rem;
-  font-weight: 720;
 }
 
 .post-toc-mobile-summary::-webkit-details-marker {
@@ -309,121 +248,7 @@
   padding-right: 0.15rem;
 }
 
-.post-scholar-section {
-  border: 1px solid color-mix(in srgb, var(--reading-rule) 84%, transparent 16%);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--reading-rail-bg) 90%, var(--reading-paper-surface) 10%);
-  box-shadow: 0 10px 22px rgba(32, 22, 13, 0.05);
-}
-
-.post-scholar-section-summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 0.72rem 0.85rem;
-  font-size: 0.84rem;
-  font-weight: 720;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--reading-ink-subtle) 82%, var(--reading-ink) 18%);
-}
-
-.post-scholar-section-summary::-webkit-details-marker {
-  display: none;
-}
-
-.post-scholar-section[open] .post-scholar-section-summary {
-  border-bottom: 1px solid color-mix(in srgb, var(--reading-rule) 72%, transparent 28%);
-}
-
-.post-scholar-section-body {
-  padding: 0.72rem 0.85rem 0.85rem;
-}
-
-.post-scholar-section-body :where(ol, ul) {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.post-scholar-section-body p {
-  margin: 0.32rem 0 0;
-  color: color-mix(in srgb, var(--reading-ink) 92%, var(--reading-ink-subtle) 8%);
-  line-height: 1.65;
-}
-
-.post-scholar-section-body a {
-  color: color-mix(in srgb, var(--reading-accent) 86%, #3f2b1c 14%);
-}
-
-/* ── 15. Scholar item header / jump / meta ───────────────────────── */
-.post-scholar-item-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.post-scholar-item-header strong {
-  color: var(--reading-ink);
-  font-size: 0.94rem;
-  line-height: 1.35;
-}
-
-.post-scholar-jump {
-  flex: 0 0 auto;
-  text-decoration: none;
-  font-size: 0.75rem;
-  color: var(--reading-ink-subtle);
-  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.post-scholar-jump:hover {
-  color: var(--reading-accent);
-}
-
-.post-scholar-meta {
-  margin-top: 0.26rem;
-  color: var(--reading-ink-subtle);
-  font-size: 0.78rem;
-}
-
-.post-scholar-meta code {
-  font-size: 0.9em;
-  border: 1px solid color-mix(in srgb, var(--reading-rule) 70%, transparent 30%);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--reading-paper-surface) 92%, transparent 8%);
-  padding: 0.05rem 0.22rem;
-}
-
-/* ── 16. Scholar lists (annotations / references / figures) ──────── */
-.post-scholar-annotation-list,
-.post-scholar-reference-list,
-.post-scholar-figure-list {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.post-scholar-annotation-item,
-.post-scholar-reference-item,
-.post-scholar-figure-item {
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--reading-rule) 70%, transparent 30%);
-  background: color-mix(in srgb, var(--reading-paper-surface) 90%, transparent 10%);
-  padding: 0.62rem 0.66rem;
-}
-
-.post-scholar-reference-label {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--reading-rule-strong) 78%, transparent 22%);
-  background: color-mix(in srgb, var(--reading-paper-bg) 90%, transparent 10%);
-  color: var(--reading-ink-subtle);
-  font-size: 0.72rem;
-  font-weight: 650;
-  padding: 0.08rem 0.36rem;
-}
-
+/* ── 15. Scholar figure preview ──────────────────────────────────── */
 .post-scholar-figure-preview {
   margin: 0.5rem 0 0;
   display: grid;
@@ -444,28 +269,7 @@
   line-height: 1.45;
 }
 
-.post-scholar-figure-summary {
-  font-family: var(--reading-serif);
-}
-
-.post-scholar-source-links {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.34rem;
-  margin-left: 0.22rem;
-}
-
-.post-scholar-source-links a {
-  text-decoration: none;
-}
-
-.post-scholar-source-links a + a::before {
-  content: "、";
-  color: var(--reading-ink-subtle);
-  margin-right: 0.34rem;
-}
-
-/* ── 17. Scholar rail TOC ────────────────────────────────────────── */
+/* ── 16. Scholar rail TOC ────────────────────────────────────────── */
 .post-scholar-rail .post-toc {
   gap: 0;
 }
@@ -488,24 +292,4 @@
 .post-scholar-rail .post-toc-text {
   font-size: 0.88rem;
   line-height: 1.4;
-}
-
-/* ── 18. Scholar reader notes ────────────────────────────────────── */
-.post-scholar-section--reader-notes .comment-thread-panel {
-  margin-top: 0;
-}
-
-.post-scholar-section--reader-notes .comments-global-error {
-  margin: 0 0 0.6rem;
-}
-
-/* ── 19. Desktop: force scholar sections open ────────────────────── */
-@media (min-width: 1101px) {
-  .post-scholar-section > .post-scholar-section-body {
-    display: block !important;
-  }
-
-  .post-scholar-section > .post-scholar-section-summary {
-    display: none;
-  }
 }

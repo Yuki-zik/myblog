@@ -1,19 +1,24 @@
+/*
+ * Back-to-top control.
+ *
+ * Position, size, radius, border, surface, icon colour, elevation, flex
+ * centring and cursor live as Tailwind utilities on the button in
+ * `src/layouts/BaseLayout.astro` (`bg-fab border-fab-edge text-fab-icon
+ * shadow-fab`).
+ *
+ * The `--fab-*` family is deliberately INVERTED against the page rather than
+ * tracking chrome: dark pill on the light page, light pill on the dark page.
+ * This control floats over article content, so a surface that follows the page
+ * would vanish into it — which is exactly what the previous hardcoded
+ * `rgba(24, 37, 64, 0.92)` did in dark mode, where it sat ~2% off `--page-bg`.
+ *
+ * What remains here is the show/hide state machine. Its `transform` must stay
+ * unlayered: a layered `translate-*` utility would lose to the unlayered
+ * `.back-to-top.is-visible`. Hover lives alongside it so all three hover
+ * properties (surface, icon, lift) stay expressed in one place.
+ */
+
 .back-to-top {
-  position: fixed;
-  right: 1.3rem;
-  bottom: 1.35rem;
-  z-index: 60;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  border: 1px solid rgba(230, 236, 251, 0.14);
-  border-radius: 999px;
-  background: rgba(24, 37, 64, 0.92);
-  color: color-mix(in srgb, var(--accent) 82%, white 18%);
-  box-shadow: 0 22px 44px rgba(12, 17, 31, 0.2), 0 4px 12px rgba(12, 17, 31, 0.12);
-  cursor: pointer;
   opacity: 0;
   pointer-events: none;
   transform: translateY(10px);
@@ -31,8 +36,8 @@
 }
 
 .back-to-top:hover {
-  background: rgba(24, 37, 64, 0.98);
-  color: #fff1ec;
+  background: var(--fab-bg-hover);
+  color: var(--fab-icon-hover);
   transform: translateY(-2px);
 }
 
