@@ -9,43 +9,68 @@ import { expect, test, type Page } from "@playwright/test";
  * for the actual end state instead, so the assertions keep their original
  * thresholds without depending on how fast the animation happens to run.
  *
- * Stability is measured in wall-clock time rather than in animation frames.
+ * Stability is measured in wall-clock time rather than in animation frames, and
+ * a minimum wait is enforced before any quiet period counts.
+ *
  * `window.scrollTo({ behavior: "smooth" })` does not begin moving on the next
  * frame — measured on this suite it can idle for 120-300ms first, and under
- * load that gap grows. A frame-counting version treats that dead time as "the
- * scroll has finished" and reports the position from *before* the click, which
- * is what made the TOC click assertions intermittently read a stale offset. A
- * quiet-period long enough to cover the start latency cannot be fooled that
- * way.
+ * load that gap grows. Any implementation that only looks for "the position
+ * stopped changing" treats that dead time as "the scroll has finished" and
+ * reports the position from *before* the scroll, which is what made the TOC
+ * click assertions intermittently read a stale offset. Requiring a minimum
+ * elapsed time before accepting stillness rules that out; the quiet period on
+ * top of it then catches the actual end of the movement.
  */
 const SCROLL_QUIET_MS = 400;
+const SCROLL_MIN_WAIT_MS = 500;
 
 async function waitForScrollSettled(
   page: Page,
   quietMs = SCROLL_QUIET_MS,
+  minWaitMs = SCROLL_MIN_WAIT_MS,
 ): Promise<void> {
   await page.waitForFunction(
-    (needed) => {
+    ({ quiet, minWait }) => {
       const w = window as typeof window & {
-        __scrollSettle?: { y: number; since: number };
+        __scrollSettle?: { y: number; since: number; started: number };
       };
       const y = window.scrollY;
       const now = performance.now();
-      const state = w.__scrollSettle;
+      let state = w.__scrollSettle;
 
-      if (!state || Math.abs(state.y - y) > 0.5) {
-        w.__scrollSettle = { y, since: now };
+      if (!state) {
+        state = { y, since: now, started: now };
+        w.__scrollSettle = state;
         return false;
       }
 
-      return now - state.since >= needed;
+      if (Math.abs(state.y - y) > 0.5) {
+        state.y = y;
+        state.since = now;
+        return false;
+      }
+
+      return now - state.started >= minWait && now - state.since >= quiet;
     },
-    quietMs,
+    { quiet: quietMs, minWait: minWaitMs },
     { timeout: 8000, polling: "raf" },
   );
   await page.evaluate(() => {
     delete (window as typeof window & { __scrollSettle?: unknown })
       .__scrollSettle;
+  });
+}
+
+/*
+ * Make programmatic scrolling instant.
+ *
+ * The site opts into `scroll-behavior: smooth`, so every `window.scrollTo` in a
+ * test animates. Tests that only need the viewport to *be* somewhere — rather
+ * than to observe the journey — are far more deterministic without it.
+ */
+async function disableSmoothScroll(page: Page): Promise<void> {
+  await page.addStyleTag({
+    content: "html { scroll-behavior: auto !important; }",
   });
 }
 
@@ -1055,7 +1080,7 @@ test("desktop article toc collapses with a real height animation and remembers t
    *
    * Sampling on rAF, polling `getComputedTiming().progress`, or taking
    * screenshots all fail here: frames are throttled under load and a single
-   * screenshot costs longer than the whole 380ms collapse. Driving
+   * screenshot costs longer than the whole collapse. Driving
    * `currentTime` to fixed offsets and reading layout back is deterministic,
    * and it tests the property that actually matters — that the height
    * interpolates instead of snapping shut.
@@ -1072,9 +1097,10 @@ test("desktop article toc collapses with a real height animation and remembers t
     );
 
     const anim = animations[0];
+    const duration = Number(anim?.effect?.getTiming().duration ?? 0);
     const samples = [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
       if (!anim) return null;
-      anim.currentTime = fraction * 380;
+      anim.currentTime = fraction * duration;
       return vp.getBoundingClientRect().height;
     });
 
@@ -1082,10 +1108,11 @@ test("desktop article toc collapses with a real height animation and remembers t
     return { durations, samples };
   });
 
+  // Long enough to read as a fold rather than a snap.
   expect(
     collapse.durations,
     "a keyframe animation should drive the collapse",
-  ).toEqual([380]);
+  ).toEqual([520]);
 
   const heights = collapse.samples as number[];
   expect(heights[0]).toBeGreaterThan(openHeight * 0.9);
@@ -1096,12 +1123,22 @@ test("desktop article toc collapses with a real height animation and remembers t
       `sample ${index} should not grow back`,
     ).toBeLessThanOrEqual(heights[index - 1] + 1);
   }
-  // The midpoint proves interpolation: a snap would already read ~0 here.
+  /*
+   * The midpoint proves two things.
+   *
+   * That it is part-open at all rules out a snap. That it is near half the open
+   * height rules out a front-loaded curve: the site default `--ease-out` was
+   * 76% done at a quarter of the duration and a decelerate curve was 78% done
+   * here, both of which read as a jump followed by a stall rather than a fold.
+   */
+  const midpoint = heights[2];
+  expect(midpoint, "midway through, the rail should be part-open").toBeGreaterThan(
+    openHeight * 0.35,
+  );
   expect(
-    heights[2],
-    "midway through, the rail should be part-open",
-  ).toBeGreaterThan(20);
-  expect(heights[2]).toBeLessThan(openHeight - 20);
+    midpoint,
+    "the fold should not spend most of its travel in the first half",
+  ).toBeLessThan(openHeight * 0.65);
 
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   expect((await viewport.boundingBox())?.height ?? 0).toBeLessThan(4);
@@ -1130,11 +1167,19 @@ test("header chrome animates only composited properties so scrolling stays smoot
   await page.goto("/posts/paragraph-anchor-design");
 
   /*
-   * The header used to transition `padding`, `width`, `min-height`, `gap` and
-   * `backdrop-filter`. Each of those forces layout (or a fresh blur pass) on
-   * every frame of a transition that fires while the reader is scrolling, which
-   * is what made the state change stutter. Only transform/opacity/paint
-   * properties belong here.
+   * Every property in a header transition is paid on each frame of a state
+   * change, and those state changes fire while the reader is scrolling.
+   *
+   * Two classes are banned. Layout properties (`padding`, `width`,
+   * `min-height`, `gap`) re-run layout for the header subtree each frame.
+   * Expensive paint properties re-rasterize large layers each frame: `filter`
+   * and `backdrop-filter` redo a blur, and `border-radius` re-clips the blurred
+   * backdrop to a changing corner. All of them switch between states instead,
+   * leaving `transform` and `opacity` to carry the motion on the compositor.
+   *
+   * `background` and `box-shadow` are allowed: their gradient and shadow counts
+   * differ between the three states, so they resolve discretely there and only
+   * interpolate between hover variants of a single state.
    */
   const LAYOUT_PROPERTIES = [
     "padding",
@@ -1145,12 +1190,17 @@ test("header chrome animates only composited properties so scrolling stays smoot
     "margin",
     "inset",
   ];
+  const EXPENSIVE_PAINT_PROPERTIES = [
+    "filter",
+    "backdrop-filter",
+    "border-radius",
+  ];
 
   const transitions = await page.evaluate(() => {
-    const read = (selector: string) => {
+    const read = (selector: string, pseudo?: string) => {
       const node = document.querySelector(selector);
       if (!node) return null;
-      return getComputedStyle(node)
+      return getComputedStyle(node, pseudo)
         .transitionProperty.split(",")
         .map((value) => value.trim())
         .filter(Boolean);
@@ -1160,21 +1210,33 @@ test("header chrome animates only composited properties so scrolling stays smoot
       header: read(".site-header"),
       inner: read(".site-header-inner"),
       shell: read(".site-header .shell"),
+      innerBefore: read(".site-header-inner", "::before"),
+      innerAfter: read(".site-header-inner", "::after"),
     };
   });
+
+  // Guard against the selectors silently going stale.
+  expect(transitions.inner, "the header console should be present").not.toBeNull();
+  expect(
+    transitions.innerBefore,
+    "the header caustic layers should be present",
+  ).not.toBeNull();
 
   for (const [name, properties] of Object.entries(transitions)) {
     if (!properties) continue;
     for (const property of properties) {
+      const matches = (list: string[]) =>
+        list.some(
+          (banned) => property === banned || property.startsWith(`${banned}-`),
+        );
+
       expect(
-        LAYOUT_PROPERTIES.some(
-          (layout) => property === layout || property.startsWith(`${layout}-`),
-        ),
+        matches(LAYOUT_PROPERTIES),
         `${name} should not transition the layout property "${property}"`,
       ).toBe(false);
       expect(
-        property.startsWith("backdrop-filter"),
-        `${name} should not transition backdrop-filter`,
+        EXPENSIVE_PAINT_PROPERTIES.includes(property),
+        `${name} should not transition the expensive paint property "${property}"`,
       ).toBe(false);
     }
   }
@@ -1185,6 +1247,15 @@ test("article header transitions through top, compact, hidden, and restores on u
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
+  /*
+   * This test is about how the state machine reacts to scroll direction and
+   * travel, not about the scroll animation itself. With the site's smooth
+   * scrolling left on, each `scrollTo` is still in flight when the next step
+   * runs — traced under load, a scroll to 96px read 0-3px and a scroll back to
+   * the top read 682px — so the machine was being asked about a position the
+   * viewport had not reached yet.
+   */
+  await disableSmoothScroll(page);
 
   const header = page.locator(".site-header");
   await expect(header).toHaveAttribute("data-header-state", "top");
@@ -1197,31 +1268,35 @@ test("article header transitions through top, compact, hidden, and restores on u
    * loaded machine two `scrollTo` calls issued a fixed 250ms apart can be
    * coalesced into a single handler run — the machine then sees one combined
    * movement, picks the wrong state, and stays there, which no amount of
-   * assertion retrying can recover from. Waiting for each scroll to actually
-   * settle guarantees the handler has processed it before the next one starts.
+   * assertion retrying can recover from.
    */
-  await page.evaluate(() => {
-    window.scrollTo(0, 96);
-  });
-  await waitForScrollSettled(page);
+  const scrollTo = async (to: number | "bottomish" | -280) => {
+    await page.evaluate((target) => {
+      if (target === "bottomish") {
+        window.scrollTo(0, document.body.scrollHeight * 0.68);
+      } else if (target === -280) {
+        window.scrollBy(0, -280);
+      } else {
+        window.scrollTo(0, target as number);
+      }
+    }, to);
+    await waitForScrollSettled(page);
+  };
+
+  await scrollTo(96);
+  // Confirm the viewport actually got there before asking about the state,
+  // so a scroll failure cannot masquerade as a state-machine failure.
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(60);
   await expect(header).toHaveAttribute("data-header-state", "compact");
 
-  await page.evaluate(() => {
-    window.scrollTo(0, document.body.scrollHeight * 0.68);
-  });
-  await waitForScrollSettled(page);
+  await scrollTo("bottomish");
   await expect(header).toHaveAttribute("data-header-state", "hidden");
 
-  await page.evaluate(() => {
-    window.scrollBy(0, -280);
-  });
-  await waitForScrollSettled(page);
+  await scrollTo(-280);
   await expect(header).toHaveAttribute("data-header-state", "compact");
 
-  await page.evaluate(() => {
-    window.scrollTo(0, 0);
-  });
-  await waitForScrollSettled(page);
+  await scrollTo(0);
+  expect(await page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(10);
   await expect(header).toHaveAttribute("data-header-state", "top");
 });
 
@@ -1229,10 +1304,21 @@ test("article reading layout keeps restrained desktop proportions", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
+  /*
+   * The theme preference is stored under `theme-preference` (see the inline
+   * bootstrap in `BaseLayout.astro`), not `theme`. Writing the wrong key left
+   * this test running in `system` mode, which only resolved to light because
+   * headless Chromium reports no dark preference — so it was passing by luck
+   * rather than pinning a theme.
+   */
   await page.addInitScript(() => {
-    localStorage.setItem("theme", "light");
+    localStorage.setItem("theme-preference", "light");
   });
   await page.goto("/posts/paragraph-anchor-design");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-color-scheme",
+    "light",
+  );
 
   await expect(page.locator(".post-title-card")).toBeVisible();
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();

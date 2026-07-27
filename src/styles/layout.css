@@ -31,16 +31,21 @@
  * stutter. Those properties now snap between states while `transform` carries
  * the motion, so the browser can run the whole thing on the compositor.
  *
- * `backdrop-filter` is deliberately excluded too: interpolating it re-runs the
- * backdrop blur every frame, and it is the single most expensive thing in this
- * component. It switches instantly between states, which is imperceptible
- * because `background` and `box-shadow` carry the surface change.
+ * `backdrop-filter` and `border-radius` are excluded for the same reason at the
+ * paint level. This element blurs whatever is behind it, so interpolating
+ * either one forces the browser to redo that blur — and re-clip it to a
+ * changing corner radius — on every frame of the transition. Both switch
+ * instantly instead, which is coherent with `width` already snapping.
+ *
+ * `background` and `box-shadow` remain: between the three states their gradient
+ * and shadow counts differ, so they resolve discretely and cost nothing per
+ * frame. They only interpolate between the hover-clarity variants of a single
+ * state, which never coincides with scrolling.
  */
 .site-header-inner {
   will-change: transform;
   transition:
     transform var(--header-motion-surface) var(--header-ease-geometry),
-    border-radius 420ms var(--header-ease-geometry),
     border-color 420ms var(--header-ease-surface),
     background 520ms var(--header-ease-surface),
     box-shadow 620ms var(--header-ease-surface);
@@ -137,10 +142,17 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
+  /*
+   * `filter` is deliberately not transitioned.
+   *
+   * These two layers each paint six stacked gradients, and interpolating a
+   * filter on them re-rasterizes the whole layer every frame for the length of
+   * the transition. Opacity and transform are composited, so the same visual
+   * settle costs nothing per frame.
+   */
   transition:
     opacity 460ms var(--header-ease-surface),
-    transform 620ms var(--header-ease-surface),
-    filter 520ms var(--header-ease-surface);
+    transform 620ms var(--header-ease-surface);
 }
 
 .site-header .site-header-inner::before {
@@ -445,7 +457,6 @@
       color-mix(in srgb, white 12%, transparent 88%) 0%,
       transparent 56%
     );
-  filter: blur(0.2px);
   transform: translateY(-1px) scale(1.008);
 }
 

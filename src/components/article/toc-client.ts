@@ -437,14 +437,23 @@ function applySidebarState(
  * to dismiss it every time.
  */
 const TOC_COLLAPSE_KEY = "toc-collapsed";
-const TOC_COLLAPSE_MS = 380;
 /*
- * A gentler curve than the site's default `--ease-out`
- * (cubic-bezier(0.22, 1, 0.36, 1)), which is tuned for small movements: applied
- * to a several-hundred-pixel height change it dumps most of the distance in the
- * first quarter of the duration and reads as a snap followed by a crawl.
+ * Deliberately unhurried. Folding away a whole column of links is a large
+ * movement, and at the original 380ms it read as a snap rather than a fold.
  */
-const TOC_COLLAPSE_EASE = "cubic-bezier(0.4, 0.02, 0.2, 1)";
+const TOC_COLLAPSE_MS = 520;
+/*
+ * A symmetric ease-in-out, not the site's default `--ease-out`
+ * (cubic-bezier(0.22, 1, 0.36, 1)) and not a decelerate curve.
+ *
+ * Both of those are tuned for small movements. Measured over this several
+ * hundred pixel fold, `--ease-out` was 76% done at a quarter of the duration
+ * and a decelerate curve was 78% done at the halfway point, so most of the
+ * travel happened up front and the rest crawled — which reads as a jump
+ * followed by a stall rather than as a smooth fold. An even curve spends the
+ * distance at a steady rate.
+ */
+const TOC_COLLAPSE_EASE = "cubic-bezier(0.45, 0.05, 0.55, 0.95)";
 
 function readCollapsedPreference(): boolean {
   try {
@@ -497,6 +506,9 @@ function bindCollapseToggle(
    */
   const animateTo = (collapsed: boolean) => {
     animation?.cancel();
+    // A cancelled run never reaches its `finished` handler, so drop the hint
+    // here rather than leaving a compositing layer alive for the whole page.
+    viewport.style.willChange = "";
 
     if (prefersReducedMotion()) {
       setState(collapsed);
@@ -511,6 +523,10 @@ function bindCollapseToggle(
     viewport.style.height = "";
     const to = collapsed ? 0 : viewport.getBoundingClientRect().height;
 
+    // Tell the browser what is about to change, and withdraw the hint as soon
+    // as it stops being true rather than leaving the layer alive for the page.
+    viewport.style.willChange = "height";
+
     animation = viewport.animate(
       [{ height: `${from}px` }, { height: `${to}px` }],
       {
@@ -523,6 +539,7 @@ function bindCollapseToggle(
     animation.finished
       .then(() => {
         viewport.style.height = "";
+        viewport.style.willChange = "";
         if (!collapsed) {
           onChange();
         }
@@ -550,6 +567,7 @@ function bindCollapseToggle(
   toggle.addEventListener("click", onClick);
   return () => {
     animation?.cancel();
+    viewport.style.willChange = "";
     toggle.removeEventListener("click", onClick);
   };
 }

@@ -2,6 +2,7 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 二轮收敛顶部栏与目录动画：移除逐帧重栅格的 `filter`/`border-radius`/`blur(0.2px)`，把折叠改为匀速 520ms，并修复平滑滚动与主题存储键两处测试仪器缺陷 | ✅ | AI Assistant | 2026-07-27 |
 | 高 | 修复顶部栏三态切换卡顿（改为只动合成属性），并为文章页目录加可收起交互：带真实高度插值动画、localStorage 记忆、`aria-expanded` 与 reduced-motion 支持 | ✅ | AI Assistant | 2026-07-27 |
 | 高 | 引入 Tailwind CSS v4 并分批全量迁移四个样式簇（shell / discover / reading / home+author），保 DOM 与类名契约；同时修复迁移中暴露的既有缺陷与 8 项存量问题，并把 e2e 的固定等待改为等真实稳定态 | ✅ | AI Assistant | 2026-07-26 |
 | 高 | Tailwind v4 迁移后死代码清理与 CSS 归属澄清：逐条核验四条主张，删除不可达的 `SiteFooter.astro`/`footer.css` 与悬空 `.site-footer`/`.author-links` 选择器，拆分 `.post-waline-comments-section` 单一归属，并对证伪/判断题项给出保留理由，全程零渲染变化 | ✅ | AI Assistant | 2026-07-26 |
