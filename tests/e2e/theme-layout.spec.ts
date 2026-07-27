@@ -1153,3 +1153,48 @@ test("full-screen reading layout keeps the toc close to the body container", asy
   expect(metrics.railToTocGap).toBeGreaterThanOrEqual(24);
   expect(metrics.railToTocGap).toBeLessThanOrEqual(60);
 });
+
+/*
+ * The reading composition must sit evenly between the two viewport edges.
+ *
+ * The tri-layout grid used to declare a leading gutter (column 1) with no
+ * trailing counterpart, so the TOC in column 6 ended flush with the shell.
+ * Nothing asserted the outer symmetry, and the result shipped for a long time:
+ * at 1440 the TOC sat 16px from the right edge while the reading column had
+ * 92px on the left. Assert the balance directly, at several widths, since the
+ * grid is redefined per breakpoint and each branch can drift on its own.
+ */
+test("article reading layout stays balanced between both viewport edges", async ({ page }) => {
+  for (const width of [1440, 1728, 1920, 2560]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/posts/why-topic-first");
+    await waitForFontsSettled(page);
+
+    const metrics = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const main = document.querySelector(".post-reading-main");
+      const toc = document.querySelector(".post-reading-toc-rail");
+      const paragraph = document.querySelector(".post-body--scholarly > p");
+
+      return {
+        leftGutter: main ? main.getBoundingClientRect().left : 0,
+        rightGutter: toc ? vw - toc.getBoundingClientRect().right : 0,
+        paragraphWidth: paragraph ? paragraph.getBoundingClientRect().width : 0
+      };
+    });
+
+    const { leftGutter, rightGutter } = metrics;
+
+    // Both edges must keep real breathing room...
+    expect(leftGutter, `left gutter at ${width}`).toBeGreaterThanOrEqual(40);
+    expect(rightGutter, `right gutter at ${width}`).toBeGreaterThanOrEqual(40);
+
+    // ...and neither may be more than a third larger than the other.
+    const larger = Math.max(leftGutter, rightGutter);
+    const smaller = Math.min(leftGutter, rightGutter);
+    expect(larger / smaller, `gutter ratio at ${width}`).toBeLessThanOrEqual(1.35);
+
+    // Balancing must not be paid for out of the reading measure.
+    expect(metrics.paragraphWidth, `reading measure at ${width}`).toBeGreaterThanOrEqual(700);
+  }
+});

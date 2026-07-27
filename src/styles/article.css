@@ -73,15 +73,34 @@ body[data-runtime="reading"]::before { opacity: 0; }
   --article-title-rail-bleed: clamp(278px, 21.8vw, 344px);
   --article-content-shift: clamp(0px, 0.28vw, 6px);
   --article-content-right-shift: clamp(8px, 0.9vw, 16px);
+  /*
+   * Columns 1 and 7 split one gutter budget between the two edges.
+   *
+   * Column 6 (the TOC) used to be the last track, so it ended flush with the
+   * shell: at 1440 it sat 16px from the viewport edge while the reading column
+   * had 92px on the left. The fix is to halve the leading gutter and give the
+   * other half to the trailing edge rather than to take width from column 3 —
+   * the reading measure here has almost no slack (`theme-layout.spec.ts`
+   * requires the body paragraph to stay above 720px at this breakpoint).
+   */
   grid-template-columns:
-    minmax(24px, 56px)
+    minmax(12px, 24px)
     minmax(var(--article-content-shift), var(--article-content-shift))
     minmax(0, 958px)
     minmax(268px, 336px)
     minmax(var(--article-content-right-shift), var(--article-content-right-shift))
-    minmax(156px, 194px);
+    minmax(156px, 194px)
+    minmax(12px, 24px);
   gap: 0 clamp(0.34rem, 0.56vw, 0.6rem);
   align-items: start;
+  /*
+   * Only bites on very wide viewports. Column 3 is capped at 996px, so past
+   * ~2100px the tracks stop filling the shell and the slack would otherwise
+   * all pile up after the TOC; centring splits it between the two edges.
+   * Below that the reading column flexes to fit exactly, so there is no slack
+   * and this has no effect.
+   */
+  justify-content: center;
 }
 
 /* Unified paper card behind main + rail (columns 2–3) */
@@ -1519,13 +1538,20 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
     --article-content-shift: clamp(44px, 4.8vw, 108px);
     --article-content-right-shift: clamp(24px, 1.3vw, 34px);
     --article-title-rail-bleed: clamp(332px, 15vw, 396px);
+    /*
+     * The leading offset here is columns 1 + 2 together, so the trailing
+     * gutter mirrors both. Column 3 is already at its 996px cap at this
+     * breakpoint with space left over, so widening the trailing track spends
+     * that slack instead of narrowing the reading measure.
+     */
     grid-template-columns:
-      minmax(28px, 72px)
+      minmax(20px, 36px)
       minmax(var(--article-content-shift), var(--article-content-shift))
       minmax(0, 996px)
       clamp(312px, 13.8vw, 388px)
       minmax(var(--article-content-right-shift), var(--article-content-right-shift))
-      clamp(198px, 9.4vw, 236px);
+      clamp(198px, 9.4vw, 236px)
+      minmax(20px, calc(36px + var(--article-content-shift)));
     gap: 0 clamp(0.46rem, 0.72vw, 0.78rem);
   }
 
@@ -1589,12 +1615,13 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
     --article-content-shift: 0px;
     --article-content-right-shift: clamp(28px, 3vw, 52px);
     grid-template-columns:
-      minmax(20px, 42px)
+      minmax(12px, 21px)
       minmax(var(--article-content-shift), var(--article-content-shift))
       minmax(0, 1fr)
       minmax(240px, 294px)
       minmax(var(--article-content-right-shift), var(--article-content-right-shift))
-      minmax(162px, 204px);
+      minmax(162px, 204px)
+      minmax(12px, 21px);
     gap: clamp(0.48rem, 0.78vw, 0.82rem);
   }
 }
