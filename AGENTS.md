@@ -100,6 +100,12 @@ Build-time vars:
 - `pnpm test:e2e`
 - `pnpm build`
 
+`pnpm test:e2e` owns its production server: `playwright.config.ts` runs
+`pnpm build && pnpm preview`. Do not switch it back to `pnpm dev` or pre-start a
+dev server on port 4173. The same commit has previously reported 55/55 against
+dev and 53/55 against the built output; the build exposed the real
+layout/timing failures.
+
 ### 5.2 Recommended manual checks
 
 1. On `/posts/paragraph-anchor-design`, confirm Waline can load and submit against the configured server.

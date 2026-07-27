@@ -97,7 +97,30 @@ test("archive cards lift as full tiles instead of only animating the cover", asy
   });
 
   await link.hover();
-  await page.waitForTimeout(180);
+
+  /*
+   * Wait for the hover transition to change the tile rather than guessing at
+   * its duration. A fixed 180ms catches different frames on loaded and idle
+   * machines, while the product contract here is simply that the whole tile
+   * (not only its image) starts reacting.
+   */
+  await expect
+    .poll(
+      () =>
+        tile.evaluate((el, baseline) => {
+          const tileStyles = getComputedStyle(el);
+          const titleEl = el.querySelector(".archive-post-content h3") as HTMLElement | null;
+          const titleColor = titleEl ? getComputedStyle(titleEl).color : "";
+          return (
+            tileStyles.transform !== "none" &&
+            tileStyles.transform !== baseline.transform &&
+            tileStyles.boxShadow !== baseline.boxShadow &&
+            titleColor !== baseline.titleColor
+          );
+        }, before),
+      { timeout: 3000 }
+    )
+    .toBe(true);
 
   const after = await tile.evaluate((el) => {
     const tileStyles = getComputedStyle(el);

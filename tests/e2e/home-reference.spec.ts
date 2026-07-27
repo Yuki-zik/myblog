@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { waitForEntranceAnimations } from "./helpers/page-state";
 
 async function waitForThemeSettled(page: Page) {
   await page.waitForFunction(() => !document.documentElement.classList.contains("theme-transitioning"));
@@ -297,7 +298,7 @@ test("home reference primary CTA matches the reference button colors in light th
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   await waitForThemeSettled(page);
-  await page.waitForTimeout(650);
+  await waitForEntranceAnimations(page);
 
   const primaryButton = page.locator(".home-reference-hero__button--primary");
   await expect(primaryButton).toBeVisible();
@@ -341,7 +342,7 @@ test("home reference primary CTA matches the reference button colors in dark the
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   await waitForThemeSettled(page);
-  await page.waitForTimeout(650);
+  await waitForEntranceAnimations(page);
 
   const primaryButton = page.locator(".home-reference-hero__button--primary");
   await expect(primaryButton).toBeVisible();
