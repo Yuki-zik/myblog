@@ -202,17 +202,36 @@
       void ensureSearchIndexLoaded().catch(() => undefined);
     }
 
-    function closeSearch(): void {
+    function closeSearch(options?: { restoreFocus?: boolean }): void {
+      /*
+       * Explicit dismissals hand focus back to the trigger.
+       *
+       * Without this, closing the field drops focus on <body>: keyboard users
+       * lose their place in the header and have to tab in from the top again.
+       * It also makes the post-close focus target deterministic, which matters
+       * because the `/` shortcut deliberately ignores keystrokes aimed at an
+       * editable element.
+       *
+       * Dismissal by clicking elsewhere deliberately opts out — the user is
+       * already moving focus somewhere of their own choosing, and pulling it
+       * back to the trigger would fight them.
+       */
+      const restoreFocus = options?.restoreFocus === true && rootEl.contains(document.activeElement);
+
       rootEl.classList.remove("is-open");
       triggerEl.hidden = false;
       inputEl.value = "";
       closePanel();
       renderStatus("");
       clearResults();
+
+      if (restoreFocus) {
+        triggerEl.focus();
+      }
     }
 
     triggerEl.addEventListener("click", openSearch);
-    closeBtnEl.addEventListener("click", closeSearch);
+    closeBtnEl.addEventListener("click", () => closeSearch({ restoreFocus: true }));
 
     function isEditableTarget(target: EventTarget | null): boolean {
       if (!(target instanceof HTMLElement)) {
@@ -350,7 +369,7 @@
 
     inputEl.addEventListener("keydown", (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        closeSearch();
+        closeSearch({ restoreFocus: true });
         return;
       }
 

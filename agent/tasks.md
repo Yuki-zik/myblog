@@ -6,7 +6,7 @@
 | 高 | Tailwind v4 迁移后死代码清理与 CSS 归属澄清：逐条核验四条主张，删除不可达的 `SiteFooter.astro`/`footer.css` 与悬空 `.site-footer`/`.author-links` 选择器，拆分 `.post-waline-comments-section` 单一归属，并对证伪/判断题项给出保留理由，全程零渲染变化 | ✅ | AI Assistant | 2026-07-26 |
 | 中 | 通读当前项目：梳理双 runtime、内容模型、Markdown 管线、客户端控制器、主题 token、测试/CI 与部署现状，并输出文档漂移与风险清单 | ✅ | AI Assistant | 2026-07-26 |
 | 高 | 对最新一轮 code review 的 5 项问题做全面修复：还原依赖、把 `pnpm build` 与 GitHub CI 接入统一验证入口、修复非首页 discover 与 Waline 在 `system + OS dark` 下未跟随暗色的问题、补 waline-server 最小 smoke、并新增非首页 system-dark 回归 | ✅ | AI Assistant | 2026-04-12 |
-| 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ⏳ | AI Assistant | 2026-04-12 |
+| 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”轮播的快速连续点击交互：取消必须等待单次动画结束的输入丢失与反馈迟滞 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”卡片纵向比例：在上一轮基础上再缩短一点，并保持四卡窗口、hover 与轮播节奏不变 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”卡片纵向比例：降低过高卡片高度并重平衡标题/描述/底部统计的垂直分配 | ✅ | AI Assistant | 2026-04-11 |
@@ -29,7 +29,7 @@
 | 中 | 补 cross-collection integrity 测试并收紧文章 heading contract，防止坏 slug、orphan h3 与 h4-h6 静默进入线上 | ✅ | AI Assistant | 2026-04-01 |
 | 中 | 收紧 TypeScript 检查边界，避免根目录临时脚本被 `astro check` 纳入诊断范围 | ✅ | AI Assistant | 2026-04-01 |
 | 高 | 对博客项目进行正式 code review：并行审查核心模块、页面、数据流、状态管理、构建配置和公共组件，输出真实问题与高风险设计清单 | ✅ | AI Assistant | 2026-03-30 |
-| 高 | 审计并收紧首页“关注领域”的 light / dark / system 主题行为：补足链接外层约束并新增主题切换回归 | ⏳ | AI Assistant | 2026-03-29 |
+| 高 | 审计并收紧首页“关注领域”的 light / dark / system 主题行为：补足链接外层约束并新增主题切换回归 | ✅ | AI Assistant | 2026-03-29 |
 | 高 | 收紧文章页正文 measure 与分割线：缩短桌面端正文列宽，并同步收回标题 divider 与 `SECTION` 横线长度 | ✅ | AI Assistant | 2026-03-30 |
 | 高 | 继续精修首页“关注领域”循环列表：消除底部轻微裁切，并修正左右切换动画不对称/单侧触发异常 | ✅ | AI Assistant | 2026-03-29 |
 | 高 | 精修首页“关注领域”循环列表：让切换动画更优雅，并修复轮播切换压制卡片 hover 上浮的问题 | ✅ | AI Assistant | 2026-03-28 |
@@ -169,7 +169,7 @@
 | 中 | 将现有博客全站 UI（desktop/mobile + light/dark）复现到 Figma 文件 | ✅ | AI Assistant | 2026-03-09 |
 | 中 | 向现有 Figma 文件追加 `00 Foundations` / `01 Components` / `02~05` 结构页 | ✅ | AI Assistant | 2026-03-09 |
 | 中 | 在 Figma 内手工重命名现有页面、归组并抽取真实可复用组件实例 | ⏳ | AI Assistant | - |
-| 中 | 为搜索 / TOC / author 页面补充 E2E 测试 | ⏳ | AI Assistant | - |
+| 中 | 为搜索 / TOC / author 页面补充 E2E 测试 | ✅ | AI Assistant | - |
 | 低 | 添加管理员内容审核工作流（评论默认 pending + DB 策略） | ⏳ | AI Assistant | - |
 | 低 | 添加服务端限流 / 反垃圾基础防护 | ⏳ | AI Assistant | - |
 | 低 | Telegram 真实登录桥接（文章评论 GitHub/Telegram 入口） | 📋 Backlog | - | - |

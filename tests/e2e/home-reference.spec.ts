@@ -608,26 +608,73 @@ test("home domains catch up to rapid multi-click input instead of replaying ever
 
   const before = await readMetrics();
   const clickCount = 6;
+  // The in-page timing below spends one baseline click before the burst, so the
+  // window ends up advanced by that step plus the whole burst.
+  const totalSteps = clickCount + 1;
   const expectedAfterRapidBurst = Array.from({ length: 4 }, (_, index) => {
-    return before.allTitles[(index + clickCount) % before.allTitles.length];
+    return before.allTitles[(index + totalSteps) % before.allTitles.length];
   });
 
-  const startedAt = Date.now();
-  await page.evaluate(async ({ count }) => {
+  /*
+   * This test's claim is relative — a burst must not replay every step
+   * serially — so it is measured relative to a single step on the same machine.
+   *
+   * A wall-clock budget measured from the Node side was the wrong instrument:
+   * most of it was CDP round-trips, the deliberate 60ms click spacing and the
+   * 50ms waitForFunction polling granularity, so it tipped over on a loaded
+   * runner while the carousel itself was fine. Timing both runs in-page and
+   * comparing them cancels the machine out.
+   */
+  const timings = await page.evaluate(async ({ count }) => {
     const button = document.querySelector("[data-home-domains-next]");
-    if (!(button instanceof HTMLButtonElement)) {
-      throw new Error("home domains next button missing");
+    const viewport = document.querySelector("[data-home-domains-viewport]") as HTMLElement | null;
+    if (!(button instanceof HTMLButtonElement) || !viewport) {
+      throw new Error("home domains carousel missing");
     }
 
     const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+    /*
+     * `animating` is only written once the controller has run at least one
+     * animation, so before the first interaction the attribute is absent.
+     * Treat "not true" as idle rather than waiting for a literal "false" that
+     * never arrives on a pristine page.
+     */
+    const isIdle = () => viewport.dataset.animating !== "true";
+    const settled = async () => {
+      for (let frame = 0; frame < 600; frame += 1) {
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        if (isIdle()) {
+          return true;
+        }
+      }
+      return false;
+    };
 
+    // Baseline: one step, start to settle.
+    if (!isIdle()) {
+      await settled();
+    }
+    const singleStart = performance.now();
+    button.click();
+    const singleSettled = await settled();
+    const singleMs = performance.now() - singleStart;
+
+    // Burst: the same number of steps requested back to back.
+    const burstStart = performance.now();
     for (let index = 0; index < count; index += 1) {
       button.click();
       if (index < count - 1) {
         await wait(60);
       }
     }
+    const burstSettled = await settled();
+    const burstMs = performance.now() - burstStart;
+
+    return { singleMs, burstMs, singleSettled, burstSettled };
   }, { count: clickCount });
+
+  expect(timings.singleSettled).toBe(true);
+  expect(timings.burstSettled).toBe(true);
 
   await page.waitForFunction(
     ({ expectedTitles }) => {
@@ -650,12 +697,19 @@ test("home domains catch up to rapid multi-click input instead of replaying ever
     },
     { expectedTitles: expectedAfterRapidBurst },
     {
-      timeout: 1800,
+      timeout: 5000,
       polling: 50
     }
   );
 
-  expect(Date.now() - startedAt).toBeLessThan(1800);
+  /*
+   * 6 steps replayed serially would cost 6 single-step animations plus the
+   * 300ms of click spacing. Requiring the burst to land under half of that
+   * proves the queue is collapsed into a multi-step move rather than played
+   * back one step at a time.
+   */
+  const serialEquivalentMs = timings.singleMs * clickCount + 60 * (clickCount - 1);
+  expect(timings.burstMs).toBeLessThan(serialEquivalentMs * 0.5);
 });
 
 test("home domain cards still lift vertically on hover after the carousel animation refactor", async ({ page }) => {
