@@ -8,27 +8,44 @@ import { expect, test, type Page } from "@playwright/test";
  * on an idle machine and catches a mid-flight frame on a loaded one. This waits
  * for the actual end state instead, so the assertions keep their original
  * thresholds without depending on how fast the animation happens to run.
+ *
+ * Stability is measured in wall-clock time rather than in animation frames.
+ * `window.scrollTo({ behavior: "smooth" })` does not begin moving on the next
+ * frame — measured on this suite it can idle for 120-300ms first, and under
+ * load that gap grows. A frame-counting version treats that dead time as "the
+ * scroll has finished" and reports the position from *before* the click, which
+ * is what made the TOC click assertions intermittently read a stale offset. A
+ * quiet-period long enough to cover the start latency cannot be fooled that
+ * way.
  */
-async function waitForScrollSettled(page: Page, stableFrames = 3): Promise<void> {
+const SCROLL_QUIET_MS = 400;
+
+async function waitForScrollSettled(
+  page: Page,
+  quietMs = SCROLL_QUIET_MS,
+): Promise<void> {
   await page.waitForFunction(
-    (framesNeeded) => {
-      const w = window as typeof window & { __scrollSettle?: { y: number; stable: number } };
+    (needed) => {
+      const w = window as typeof window & {
+        __scrollSettle?: { y: number; since: number };
+      };
       const y = window.scrollY;
+      const now = performance.now();
       const state = w.__scrollSettle;
 
       if (!state || Math.abs(state.y - y) > 0.5) {
-        w.__scrollSettle = { y, stable: 0 };
+        w.__scrollSettle = { y, since: now };
         return false;
       }
 
-      state.stable += 1;
-      return state.stable >= framesNeeded;
+      return now - state.since >= needed;
     },
-    stableFrames,
-    { timeout: 5000, polling: "raf" }
+    quietMs,
+    { timeout: 8000, polling: "raf" },
   );
   await page.evaluate(() => {
-    delete (window as typeof window & { __scrollSettle?: unknown }).__scrollSettle;
+    delete (window as typeof window & { __scrollSettle?: unknown })
+      .__scrollSettle;
   });
 }
 
@@ -69,7 +86,7 @@ async function waitForEntranceAnimations(page: Page): Promise<void> {
     });
 
     await Promise.all(
-      finite.map((animation) => animation.finished.catch(() => undefined))
+      finite.map((animation) => animation.finished.catch(() => undefined)),
     );
     await new Promise<void>((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
@@ -104,9 +121,9 @@ async function mockSupabase(page: Page) {
             role: "authenticated",
             app_metadata: { provider: "anonymous", providers: ["anonymous"] },
             user_metadata: { is_anonymous: true },
-            created_at: new Date().toISOString()
-          }
-        })
+            created_at: new Date().toISOString(),
+          },
+        }),
       });
     }
 
@@ -114,7 +131,7 @@ async function mockSupabase(page: Page) {
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify([])
+        body: JSON.stringify([]),
       });
     }
 
@@ -126,8 +143,8 @@ async function mockSupabase(page: Page) {
         body: JSON.stringify({
           ...payload,
           id: 1,
-          created_at: new Date().toISOString()
-        })
+          created_at: new Date().toISOString(),
+        }),
       });
     }
 
@@ -154,8 +171,8 @@ async function mockSubstats(page: Page) {
           source,
           key,
           failed: false,
-          count: 6
-        })
+          count: 6,
+        }),
       });
     }
 
@@ -167,8 +184,8 @@ async function mockSubstats(page: Page) {
           source,
           key,
           failed: false,
-          count: 0
-        })
+          count: 0,
+        }),
       });
     }
 
@@ -178,8 +195,8 @@ async function mockSubstats(page: Page) {
       body: JSON.stringify({
         source,
         key,
-        failed: true
-      })
+        failed: true,
+      }),
     });
   });
 }
@@ -189,23 +206,35 @@ test.beforeEach(async ({ page }) => {
   await mockSubstats(page);
 });
 
-test("home reference hero and header stay structured on desktop", async ({ page }) => {
+test("home reference hero and header stay structured on desktop", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
 
   await expect(page.locator(".home-reference-hero__title")).toBeVisible();
   await expect(page.locator(".home-reference-hero__actions a")).toHaveCount(2);
   await expect(page.locator("[data-home-reference-terminal]")).toBeVisible();
-  expect(await page.locator("[data-home-domains] [data-home-domain-card]").count()).toBeGreaterThan(4);
+  expect(
+    await page.locator("[data-home-domains] [data-home-domain-card]").count(),
+  ).toBeGreaterThan(4);
   await expect(page.locator("[data-home-reference-footer]")).toBeVisible();
 
   const metrics = await page.evaluate(() => {
     const brand = document.querySelector(".brand") as HTMLElement | null;
-    const search = document.querySelector("[data-search-trigger]") as HTMLElement | null;
+    const search = document.querySelector(
+      "[data-search-trigger]",
+    ) as HTMLElement | null;
     const nav = document.querySelector(".site-nav-links") as HTMLElement | null;
-    const heroCopy = document.querySelector(".home-reference-hero__copy") as HTMLElement | null;
-    const terminal = document.querySelector(".home-reference-terminal-wrap") as HTMLElement | null;
-    const domainCards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
+    const heroCopy = document.querySelector(
+      ".home-reference-hero__copy",
+    ) as HTMLElement | null;
+    const terminal = document.querySelector(
+      ".home-reference-terminal-wrap",
+    ) as HTMLElement | null;
+    const domainCards = Array.from(
+      document.querySelectorAll("[data-home-domain-card]"),
+    ) as HTMLElement[];
 
     return {
       scrollWidth: document.documentElement.scrollWidth,
@@ -216,7 +245,7 @@ test("home reference hero and header stay structured on desktop", async ({ page 
       heroCopyBox: heroCopy?.getBoundingClientRect() ?? null,
       terminalBox: terminal?.getBoundingClientRect() ?? null,
       terminalPosition: terminal ? getComputedStyle(terminal).position : "",
-      domainTops: domainCards.map((card) => card.getBoundingClientRect().top)
+      domainTops: domainCards.map((card) => card.getBoundingClientRect().top),
     };
   });
 
@@ -226,29 +255,57 @@ test("home reference hero and header stay structured on desktop", async ({ page 
   expect(metrics.navBox).not.toBeNull();
   expect(metrics.heroCopyBox).not.toBeNull();
   expect(metrics.terminalBox).not.toBeNull();
-  expect(metrics.searchBox!.x).toBeGreaterThan(metrics.brandBox!.x + metrics.brandBox!.width);
-  expect(metrics.searchBox!.x + metrics.searchBox!.width).toBeLessThan(metrics.navBox!.x);
+  expect(metrics.searchBox!.x).toBeGreaterThan(
+    metrics.brandBox!.x + metrics.brandBox!.width,
+  );
+  expect(metrics.searchBox!.x + metrics.searchBox!.width).toBeLessThan(
+    metrics.navBox!.x,
+  );
   expect(metrics.terminalPosition).toBe("sticky");
-  expect(metrics.terminalBox!.x).toBeGreaterThan(metrics.heroCopyBox!.x + metrics.heroCopyBox!.width * 0.72);
-  expect(Math.abs(metrics.terminalBox!.y - metrics.heroCopyBox!.y)).toBeLessThan(80);
-  expect(Math.max(...metrics.domainTops) - Math.min(...metrics.domainTops)).toBeLessThan(12);
+  expect(metrics.terminalBox!.x).toBeGreaterThan(
+    metrics.heroCopyBox!.x + metrics.heroCopyBox!.width * 0.72,
+  );
+  expect(
+    Math.abs(metrics.terminalBox!.y - metrics.heroCopyBox!.y),
+  ).toBeLessThan(80);
+  expect(
+    Math.max(...metrics.domainTops) - Math.min(...metrics.domainTops),
+  ).toBeLessThan(12);
 });
 
-test("home recent notes keep the reference list rhythm and hover arrow interaction", async ({ page }) => {
+test("home recent notes keep the reference list rhythm and hover arrow interaction", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
 
   const firstItem = page.locator("[data-home-recent-item]").first();
-  await expect(firstItem.locator(".home-reference-recent-item__date")).toBeVisible();
-  await expect(firstItem.locator(".home-reference-recent-item__tag")).toBeVisible();
-  await expect(firstItem.locator(".home-reference-recent-item__title")).toBeVisible();
+  await expect(
+    firstItem.locator(".home-reference-recent-item__date"),
+  ).toBeVisible();
+  await expect(
+    firstItem.locator(".home-reference-recent-item__tag"),
+  ).toBeVisible();
+  await expect(
+    firstItem.locator(".home-reference-recent-item__title"),
+  ).toBeVisible();
 
   const metrics = await page.evaluate(() => {
-    const item = document.querySelector("[data-home-recent-item]") as HTMLElement | null;
-    const meta = document.querySelector(".home-reference-recent-item__meta") as HTMLElement | null;
-    const title = document.querySelector(".home-reference-recent-item__title") as HTMLElement | null;
-    const arrow = document.querySelector(".home-reference-recent-item__arrow") as HTMLElement | null;
-    const tag = document.querySelector(".home-reference-recent-item__tag") as HTMLElement | null;
+    const item = document.querySelector(
+      "[data-home-recent-item]",
+    ) as HTMLElement | null;
+    const meta = document.querySelector(
+      ".home-reference-recent-item__meta",
+    ) as HTMLElement | null;
+    const title = document.querySelector(
+      ".home-reference-recent-item__title",
+    ) as HTMLElement | null;
+    const arrow = document.querySelector(
+      ".home-reference-recent-item__arrow",
+    ) as HTMLElement | null;
+    const tag = document.querySelector(
+      ".home-reference-recent-item__tag",
+    ) as HTMLElement | null;
 
     return {
       itemWidth: item?.getBoundingClientRect().width ?? 0,
@@ -257,15 +314,19 @@ test("home recent notes keep the reference list rhythm and hover arrow interacti
       titleLeft: title?.getBoundingClientRect().left ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
       metaTop: meta?.getBoundingClientRect().top ?? 0,
-      arrowOpacity: arrow ? Number.parseFloat(getComputedStyle(arrow).opacity) : 0,
+      arrowOpacity: arrow
+        ? Number.parseFloat(getComputedStyle(arrow).opacity)
+        : 0,
       arrowTransform: arrow ? getComputedStyle(arrow).transform : "",
-      tagBackground: tag ? getComputedStyle(tag).backgroundColor : ""
+      tagBackground: tag ? getComputedStyle(tag).backgroundColor : "",
     };
   });
 
   expect(metrics.itemWidth).toBeGreaterThan(700);
   expect(metrics.metaWidth).toBeGreaterThan(180);
-  expect(metrics.titleLeft).toBeGreaterThan(metrics.metaLeft + metrics.metaWidth - 12);
+  expect(metrics.titleLeft).toBeGreaterThan(
+    metrics.metaLeft + metrics.metaWidth - 12,
+  );
   expect(Math.abs(metrics.metaTop - metrics.titleTop)).toBeLessThan(24);
   expect(metrics.arrowOpacity).toBe(0);
   expect(metrics.arrowTransform).not.toBe("none");
@@ -281,69 +342,95 @@ test("home recent notes keep the reference list rhythm and hover arrow interacti
   const arrow = firstItem.locator(".home-reference-recent-item__arrow");
   await expect
     .poll(
-      async () => arrow.evaluate((node) => Number.parseFloat(getComputedStyle(node).opacity)),
-      { timeout: 5000 }
+      async () =>
+        arrow.evaluate((node) =>
+          Number.parseFloat(getComputedStyle(node).opacity),
+        ),
+      { timeout: 5000 },
     )
     .toBeGreaterThan(0.7);
 });
 
-test("post pages use the article summary for both dek and meta description", async ({ page }) => {
+test("post pages use the article summary for both dek and meta description", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/ant-ai-coding-review");
 
-  const expectedSummary = "记录一次蚂蚁 AI Coding 笔试中的准备过程、现场执行情况、踩坑点与时间线复盘。";
+  const expectedSummary =
+    "记录一次蚂蚁 AI Coding 笔试中的准备过程、现场执行情况、踩坑点与时间线复盘。";
   await expect(page.locator(".post-header-dek")).toHaveText(expectedSummary);
 
-  const metaDescription = await page.locator('meta[name="description"]').getAttribute("content");
-  const ogDescription = await page.locator('meta[property="og:description"]').getAttribute("content");
-  const twitterDescription = await page.locator('meta[name="twitter:description"]').getAttribute("content");
+  const metaDescription = await page
+    .locator('meta[name="description"]')
+    .getAttribute("content");
+  const ogDescription = await page
+    .locator('meta[property="og:description"]')
+    .getAttribute("content");
+  const twitterDescription = await page
+    .locator('meta[name="twitter:description"]')
+    .getAttribute("content");
 
   expect(metaDescription).toBe(expectedSummary);
   expect(ogDescription).toBe(expectedSummary);
   expect(twitterDescription).toBe(expectedSummary);
 });
 
-test("post pages emit article metadata when SITE_URL is configured", async ({ page }) => {
+test("post pages emit article metadata when SITE_URL is configured", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
-  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
-  await expect(page.locator('meta[property="article:published_time"]')).toHaveAttribute(
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
     "content",
-    "2026-02-20T11:00:00+08:00"
+    "article",
   );
+  await expect(
+    page.locator('meta[property="article:published_time"]'),
+  ).toHaveAttribute("content", "2026-02-20T11:00:00+08:00");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "https://myblog.example/posts/paragraph-anchor-design"
+    "https://myblog.example/posts/paragraph-anchor-design",
   );
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
     "content",
-    "https://myblog.example/posts/paragraph-anchor-design"
+    "https://myblog.example/posts/paragraph-anchor-design",
   );
 
-  const ogImage = await page.locator('meta[property="og:image"]').getAttribute("content");
-  const twitterImage = await page.locator('meta[name="twitter:image"]').getAttribute("content");
-  const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute("content");
+  const ogImage = await page
+    .locator('meta[property="og:image"]')
+    .getAttribute("content");
+  const twitterImage = await page
+    .locator('meta[name="twitter:image"]')
+    .getAttribute("content");
+  const twitterCard = await page
+    .locator('meta[name="twitter:card"]')
+    .getAttribute("content");
 
   expect(ogImage).toMatch(/^https:\/\/myblog\.example\//);
   expect(twitterImage).toBe(ogImage);
   expect(twitterCard).toBe("summary_large_image");
 });
 
-test("discover routes provide route-specific meta descriptions", async ({ page }) => {
+test("discover routes provide route-specific meta descriptions", async ({
+  page,
+}) => {
   const routes = [
     "/",
     "/topics",
     "/topics/knowledge-network",
     "/concepts/anchor-id",
     "/archives",
-    "/author"
+    "/author",
   ];
   const descriptions: string[] = [];
 
   for (const route of routes) {
     await page.goto(route);
-    const description = await page.locator('meta[name="description"]').getAttribute("content");
+    const description = await page
+      .locator('meta[name="description"]')
+      .getAttribute("content");
     expect(description, route).toBeTruthy();
     descriptions.push(description ?? "");
   }
@@ -351,17 +438,37 @@ test("discover routes provide route-specific meta descriptions", async ({ page }
   expect(new Set(descriptions).size).toBe(descriptions.length);
 });
 
-test("post footnotes keep their original reference numbers after rail reordering", async ({ page }) => {
+test("post footnotes keep their original reference numbers after rail reordering", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/ant-ai-coding-review");
 
-  await expect(page.locator('a.tufte-footnote-ref[data-footnote-rail-target="note-5"]').first()).toHaveText("5");
-  await expect(page.locator('[data-footnote-rail-item="note-5"] .post-scholar-footnote-number-button')).toHaveText("5");
-  await expect(page.locator('a.tufte-footnote-ref[data-footnote-rail-target="note-6"]').first()).toHaveText("6");
-  await expect(page.locator('[data-footnote-rail-item="note-6"] .post-scholar-footnote-number-button')).toHaveText("6");
+  await expect(
+    page
+      .locator('a.tufte-footnote-ref[data-footnote-rail-target="note-5"]')
+      .first(),
+  ).toHaveText("5");
+  await expect(
+    page.locator(
+      '[data-footnote-rail-item="note-5"] .post-scholar-footnote-number-button',
+    ),
+  ).toHaveText("5");
+  await expect(
+    page
+      .locator('a.tufte-footnote-ref[data-footnote-rail-target="note-6"]')
+      .first(),
+  ).toHaveText("6");
+  await expect(
+    page.locator(
+      '[data-footnote-rail-item="note-6"] .post-scholar-footnote-number-button',
+    ),
+  ).toHaveText("6");
 });
 
-test("list-item footnotes float near their list section instead of sinking to the rail tail", async ({ page }) => {
+test("list-item footnotes float near their list section instead of sinking to the rail tail", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/ant-ai-coding-review");
 
@@ -375,7 +482,7 @@ test("list-item footnotes float near their list section instead of sinking to th
       note5Top: topOf('[data-footnote-rail-item="note-5"]'),
       note6Top: topOf('[data-footnote-rail-item="note-6"]'),
       note7Top: topOf('[data-footnote-rail-item="note-7"]'),
-      note8Top: topOf('[data-footnote-rail-item="note-8"]')
+      note8Top: topOf('[data-footnote-rail-item="note-8"]'),
     };
   });
 
@@ -384,7 +491,9 @@ test("list-item footnotes float near their list section instead of sinking to th
   expect(positions.note5Top).toBeLessThan(positions.note6Top);
 });
 
-test("paragraph-anchor article floats typed sidenotes by first body reference and keeps type distinctions visible", async ({ page }) => {
+test("paragraph-anchor article floats typed sidenotes by first body reference and keeps type distinctions visible", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
@@ -393,25 +502,30 @@ test("paragraph-anchor article floats typed sidenotes by first body reference an
       const node = document.querySelector(selector) as HTMLElement | null;
       return node?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
     };
-    const labels = Array.from(document.querySelectorAll(".post-scholar-footnote-number-button")).map((node) =>
-      (node.textContent || "").trim()
-    );
-    const typeTags = Array.from(document.querySelectorAll(".post-scholar-item-type-tag")).map((node) =>
-      (node.textContent || "").trim()
-    );
+    const labels = Array.from(
+      document.querySelectorAll(".post-scholar-footnote-number-button"),
+    ).map((node) => (node.textContent || "").trim());
+    const typeTags = Array.from(
+      document.querySelectorAll(".post-scholar-item-type-tag"),
+    ).map((node) => (node.textContent || "").trim());
 
     return {
-      anchorContractTop: topOf('[data-footnote-rail-item="note-anchor-contract"]'),
+      anchorContractTop: topOf(
+        '[data-footnote-rail-item="note-anchor-contract"]',
+      ),
       supabaseTop: topOf('[data-footnote-rail-item="ref-supabase-rls"]'),
       tufteTop: topOf('[data-footnote-rail-item="ref-tufte-css"]'),
       warmupTop: topOf('[data-footnote-rail-item="note-warmup"]'),
-      optimisticTradeoffTop: topOf('[data-footnote-rail-item="note-optimistic-tradeoff"]'),
-      referenceCount: document.querySelectorAll('[data-note-type="reference"]').length,
+      optimisticTradeoffTop: topOf(
+        '[data-footnote-rail-item="note-optimistic-tradeoff"]',
+      ),
+      referenceCount: document.querySelectorAll('[data-note-type="reference"]')
+        .length,
       noteCount: document.querySelectorAll('[data-note-type="note"]').length,
-      figureCount: document.querySelectorAll('[data-note-type="figure"]').length,
-      labels
-      ,
-      typeTags
+      figureCount: document.querySelectorAll('[data-note-type="figure"]')
+        .length,
+      labels,
+      typeTags,
     };
   });
 
@@ -422,7 +536,9 @@ test("paragraph-anchor article floats typed sidenotes by first body reference an
   expect(positions.supabaseTop).toBeLessThan(Number.POSITIVE_INFINITY);
   expect(positions.tufteTop).toBeLessThan(Number.POSITIVE_INFINITY);
   expect(positions.warmupTop).toBeLessThan(Number.POSITIVE_INFINITY);
-  expect(positions.optimisticTradeoffTop).toBeLessThan(Number.POSITIVE_INFINITY);
+  expect(positions.optimisticTradeoffTop).toBeLessThan(
+    Number.POSITIVE_INFINITY,
+  );
   expect(positions.anchorContractTop).toBeLessThan(positions.supabaseTop);
   expect(positions.supabaseTop).toBeLessThan(positions.tufteTop);
   expect(positions.supabaseTop).toBeLessThan(positions.warmupTop);
@@ -441,23 +557,27 @@ test("paragraph-anchor article floats typed sidenotes by first body reference an
     "7",
     "8",
     "9",
-    "10"
+    "10",
   ]);
 });
 
-test("paragraph-anchor figure sources can point to footnote-backed bibliography items", async ({ page }) => {
+test("paragraph-anchor figure sources can point to footnote-backed bibliography items", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
   const figureSourceLink = page.locator(
-    '[data-note-key="figure:anchor-diagram"] a[href="#marginalia-footnote-ref-supabase-rls"]'
+    '[data-note-key="figure:anchor-diagram"] a[href="#marginalia-footnote-ref-supabase-rls"]',
   );
 
   await expect(figureSourceLink).toBeVisible();
   await expect(figureSourceLink).toHaveText(/\[\d+\]/);
 });
 
-test("paragraph-anchor article keeps the rollback note between the warmup note and later engineering-boundary notes", async ({ page }) => {
+test("paragraph-anchor article keeps the rollback note between the warmup note and later engineering-boundary notes", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
@@ -469,20 +589,31 @@ test("paragraph-anchor article keeps the rollback note between the warmup note a
 
     return {
       warmupTop: topOfNote('[data-footnote-rail-item="note-warmup"]'),
-      optimisticFootnoteTop: topOfNote('[data-footnote-rail-item="note-optimistic-tradeoff"]'),
-      selectionBoundaryTop: topOfNote('[data-footnote-rail-item="note-selection-caveat"]')
+      optimisticFootnoteTop: topOfNote(
+        '[data-footnote-rail-item="note-optimistic-tradeoff"]',
+      ),
+      selectionBoundaryTop: topOfNote(
+        '[data-footnote-rail-item="note-selection-caveat"]',
+      ),
     };
   });
 
   expect(positions.warmupTop).toBeLessThan(positions.optimisticFootnoteTop);
-  expect(positions.optimisticFootnoteTop).toBeLessThan(positions.selectionBoundaryTop);
+  expect(positions.optimisticFootnoteTop).toBeLessThan(
+    positions.selectionBoundaryTop,
+  );
 });
 
-test("topic pages adopt the discover detail runtime with poster hero and two-column post grid", async ({ page }) => {
+test("topic pages adopt the discover detail runtime with poster hero and two-column post grid", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/topics/knowledge-network");
 
-  await expect(page.locator("body")).toHaveAttribute("data-runtime", "discover");
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-runtime",
+    "discover",
+  );
   await expect(page.locator("[data-discover-hero]")).toBeVisible();
   const grid = page.locator("[data-topic-posts] .discover-post-grid");
   const firstCard = grid.locator(".post-card").first();
@@ -490,7 +621,9 @@ test("topic pages adopt the discover detail runtime with poster hero and two-col
   await expect(firstCard).toBeVisible();
 
   const metrics = await page.evaluate(() => {
-    const gridEl = document.querySelector("[data-topic-posts] .discover-post-grid") as HTMLElement | null;
+    const gridEl = document.querySelector(
+      "[data-topic-posts] .discover-post-grid",
+    ) as HTMLElement | null;
     const cardEl = gridEl?.querySelector(".post-card") as HTMLElement | null;
     const gridStyle = gridEl ? getComputedStyle(gridEl) : null;
     const gridBox = gridEl?.getBoundingClientRect();
@@ -505,7 +638,7 @@ test("topic pages adopt the discover detail runtime with poster hero and two-col
       gridColumns: gridStyle?.gridTemplateColumns ?? "",
       leftGap,
       rightGap,
-      viewportWidth
+      viewportWidth,
     };
   });
 
@@ -517,7 +650,9 @@ test("topic pages adopt the discover detail runtime with poster hero and two-col
   expect(metrics.rightGap).toBeGreaterThan(24);
 });
 
-test("archives page stays readable without mobile overflow", async ({ page }) => {
+test("archives page stays readable without mobile overflow", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/archives");
 
@@ -528,43 +663,82 @@ test("archives page stays readable without mobile overflow", async ({ page }) =>
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
-    viewportWidth: window.innerWidth
+    viewportWidth: window.innerWidth,
   }));
 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
 });
 
-test("author page presents a structured research profile without mobile overflow", async ({ page }) => {
+test("author page presents a structured research profile without mobile overflow", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/author");
 
-  await expect(page.locator("body")).toHaveAttribute("data-runtime", "discover");
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-runtime",
+    "discover",
+  );
   await expect(page.locator("[data-discover-hero]")).toBeVisible();
   await expect(page.locator(".author-avatar")).toBeVisible();
-  await expect(page.locator("[data-discover-hero] .discover-hero__panel-copy").getByText("AI 安全 USTC 硕士｜专注大模型系统与安全")).toBeVisible();
-  await expect(page.locator("[data-discover-hero] .discover-hero__panel-copy").getByText("把大模型从“能回答问题”变成“能完成任务的系统”")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "研究 / 技术方向" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "项目 / 实践" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "当前关注与博客定位" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "联系方式 / 外链" })).toBeVisible();
-  await expect(page.locator(".author-post-grid .post-card").first()).toBeVisible();
-  await expect(page.locator(".author-social-card", { hasText: "GitHub" })).toContainText("0");
-  await expect(page.locator(".author-social-card", { hasText: "小红书" })).toContainText("652");
-  await expect(page.locator(".author-social-card", { hasText: "Telegram" })).toContainText("6");
-  await expect(page.locator(".author-social-card", { hasText: "知乎" })).toContainText("--");
-  await expect(page.getByRole("link", { name: /I\.OVE@outlook\.com/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /github\.com\/yuki-zik/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /scholar\.google\.com/ })).toBeVisible();
+  await expect(
+    page
+      .locator("[data-discover-hero] .discover-hero__panel-copy")
+      .getByText("AI 安全 USTC 硕士｜专注大模型系统与安全"),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator("[data-discover-hero] .discover-hero__panel-copy")
+      .getByText("把大模型从“能回答问题”变成“能完成任务的系统”"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "研究 / 技术方向" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "项目 / 实践" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "当前关注与博客定位" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "联系方式 / 外链" }),
+  ).toBeVisible();
+  await expect(
+    page.locator(".author-post-grid .post-card").first(),
+  ).toBeVisible();
+  await expect(
+    page.locator(".author-social-card", { hasText: "GitHub" }),
+  ).toContainText("0");
+  await expect(
+    page.locator(".author-social-card", { hasText: "小红书" }),
+  ).toContainText("652");
+  await expect(
+    page.locator(".author-social-card", { hasText: "Telegram" }),
+  ).toContainText("6");
+  await expect(
+    page.locator(".author-social-card", { hasText: "知乎" }),
+  ).toContainText("--");
+  await expect(
+    page.getByRole("link", { name: /I\.OVE@outlook\.com/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /github\.com\/yuki-zik/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /scholar\.google\.com/ }),
+  ).toBeVisible();
 
   const metrics = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
-    viewportWidth: window.innerWidth
+    viewportWidth: window.innerWidth,
   }));
 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
 });
 
-test("runtime matrix marks discover and reading routes explicitly", async ({ page }) => {
+test("runtime matrix marks discover and reading routes explicitly", async ({
+  page,
+}) => {
   const cases = [
     { path: "/", runtime: "discover" },
     { path: "/topics", runtime: "discover" },
@@ -572,20 +746,28 @@ test("runtime matrix marks discover and reading routes explicitly", async ({ pag
     { path: "/concepts/anchor-id", runtime: "discover" },
     { path: "/author", runtime: "discover" },
     { path: "/archives", runtime: "discover" },
-    { path: "/posts/paragraph-anchor-design", runtime: "reading" }
+    { path: "/posts/paragraph-anchor-design", runtime: "reading" },
   ];
 
   for (const item of cases) {
     await page.goto(item.path);
-    await expect(page.locator("body")).toHaveAttribute("data-runtime", item.runtime);
-    await expect(page.locator("main")).toHaveAttribute("data-runtime", item.runtime);
+    await expect(page.locator("body")).toHaveAttribute(
+      "data-runtime",
+      item.runtime,
+    );
+    await expect(page.locator("main")).toHaveAttribute(
+      "data-runtime",
+      item.runtime,
+    );
   }
 
   await page.goto("/posts/paragraph-anchor-design");
   await expect(page.locator(".discover-page__ambient")).toBeVisible();
 });
 
-test("non-home discover routes follow dark OS when theme stays on system", async ({ page }) => {
+test("non-home discover routes follow dark OS when theme stays on system", async ({
+  page,
+}) => {
   const routes = ["/topics", "/archives", "/author"];
 
   for (const route of routes) {
@@ -596,17 +778,29 @@ test("non-home discover routes follow dark OS when theme stays on system", async
 
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto(route);
-    await page.waitForFunction(() => !document.documentElement.classList.contains("theme-transitioning"));
+    await page.waitForFunction(
+      () => !document.documentElement.classList.contains("theme-transitioning"),
+    );
 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "system");
-    await expect(page.locator("html")).toHaveAttribute("data-color-scheme", "dark");
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-color-scheme",
+      "dark",
+    );
 
-    const bodyBackground = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bodyBackground, `${route} should show the dark discover background under system+dark OS`).toBe("rgb(11, 15, 25)");
+    const bodyBackground = await page.evaluate(
+      () => getComputedStyle(document.body).backgroundColor,
+    );
+    expect(
+      bodyBackground,
+      `${route} should show the dark discover background under system+dark OS`,
+    ).toBe("rgb(11, 15, 25)");
   }
 });
 
-test("post page collapses to a single mobile column and shows follow-up navigation", async ({ page }) => {
+test("post page collapses to a single mobile column and shows follow-up navigation", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/posts/paragraph-anchor-design");
 
@@ -615,10 +809,18 @@ test("post page collapses to a single mobile column and shows follow-up navigati
   await expect(page.locator(".post-pager")).toBeVisible();
 
   const metrics = await page.evaluate(() => {
-    const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
-    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
-    const tocRail = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
-    const article = document.querySelector(".post-reading-article") as HTMLElement | null;
+    const layout = document.querySelector(
+      ".post-reading-layout--tri",
+    ) as HTMLElement | null;
+    const rail = document.querySelector(
+      ".post-reading-rail",
+    ) as HTMLElement | null;
+    const tocRail = document.querySelector(
+      ".post-reading-toc-rail",
+    ) as HTMLElement | null;
+    const article = document.querySelector(
+      ".post-reading-article",
+    ) as HTMLElement | null;
     const layoutStyles = layout ? getComputedStyle(layout) : null;
 
     return {
@@ -629,7 +831,7 @@ test("post page collapses to a single mobile column and shows follow-up navigati
       railWidth: rail?.getBoundingClientRect().width ?? 0,
       tocTop: tocRail?.getBoundingClientRect().top ?? 0,
       articleTop: article?.getBoundingClientRect().top ?? 0,
-      railTop: rail?.getBoundingClientRect().top ?? 0
+      railTop: rail?.getBoundingClientRect().top ?? 0,
     };
   });
 
@@ -641,32 +843,45 @@ test("post page collapses to a single mobile column and shows follow-up navigati
   expect(metrics.railTop).toBeGreaterThan(metrics.articleTop);
 });
 
-test("article toc sidebar tracks active sections and keeps a progress rail", async ({ page }) => {
+test("article toc sidebar tracks active sections and keeps a progress rail", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
   const sidebar = page.locator("[data-toc-sidebar]");
   await expect(sidebar).toBeVisible();
-  await expect(sidebar.locator("[data-toc-link].is-active")).toContainText("锚点规则");
+  await expect(sidebar.locator("[data-toc-link].is-active")).toContainText(
+    "锚点规则",
+  );
 
   await page.evaluate(() => {
-    const heading = Array.from(document.querySelectorAll("h2")).find((node) => node.textContent?.includes("工程边界"));
+    const heading = Array.from(document.querySelectorAll("h2")).find((node) =>
+      node.textContent?.includes("工程边界"),
+    );
     if (!(heading instanceof HTMLElement)) {
       return;
     }
 
-    const targetTop = heading.getBoundingClientRect().top + window.scrollY - 120;
+    const targetTop =
+      heading.getBoundingClientRect().top + window.scrollY - 120;
     window.scrollTo({ top: targetTop, behavior: "instant" });
   });
   await page.waitForTimeout(400);
 
   const activeMetrics = await page.evaluate(() => {
-    const active = document.querySelector("[data-toc-link].is-active") as HTMLElement | null;
-    const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
-    const track = document.querySelector(".toc-sidebar__track") as HTMLElement | null;
-    const heading = Array.from(document.querySelectorAll("h2")).find((node) => node.textContent?.includes("工程边界")) as
-      | HTMLElement
-      | undefined;
+    const active = document.querySelector(
+      "[data-toc-link].is-active",
+    ) as HTMLElement | null;
+    const progress = document.querySelector(
+      "[data-toc-progress]",
+    ) as HTMLElement | null;
+    const track = document.querySelector(
+      ".toc-sidebar__track",
+    ) as HTMLElement | null;
+    const heading = Array.from(document.querySelectorAll("h2")).find((node) =>
+      node.textContent?.includes("工程边界"),
+    ) as HTMLElement | undefined;
     const progressRect = progress?.getBoundingClientRect();
     const trackRect = track?.getBoundingClientRect();
     return {
@@ -677,7 +892,7 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
         !!progressRect &&
         !!trackRect &&
         progressRect.top >= trackRect.top - 1 &&
-        progressRect.bottom <= trackRect.bottom + 1
+        progressRect.bottom <= trackRect.bottom + 1,
     };
   });
 
@@ -687,22 +902,31 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
   expect(activeMetrics.headingTop).toBeLessThan(180);
   expect(activeMetrics.progressWithinTrack).toBe(true);
 
-  await sidebar.locator("[data-toc-link]").filter({ hasText: "状态与回滚" }).click();
+  await sidebar
+    .locator("[data-toc-link]")
+    .filter({ hasText: "状态与回滚" })
+    .click();
   await page.waitForFunction(
     () => {
-      const active = document.querySelector("[data-toc-sidebar] [data-toc-link].is-active");
+      const active = document.querySelector(
+        "[data-toc-sidebar] [data-toc-link].is-active",
+      );
       return active?.textContent?.includes("状态与回滚") ?? false;
     },
-    { timeout: 5000 }
+    { timeout: 5000 },
   );
   await waitForScrollSettled(page);
 
   const clickMetrics = await page.evaluate(() => {
-    const active = document.querySelector("[data-toc-link].is-active") as HTMLElement | null;
-    const heading = Array.from(document.querySelectorAll("h3")).find((node) => node.textContent?.includes("状态与回滚")) as HTMLElement | undefined;
+    const active = document.querySelector(
+      "[data-toc-link].is-active",
+    ) as HTMLElement | null;
+    const heading = Array.from(document.querySelectorAll("h3")).find((node) =>
+      node.textContent?.includes("状态与回滚"),
+    ) as HTMLElement | undefined;
     return {
       activeText: active?.textContent ?? "",
-      top: heading?.getBoundingClientRect().top ?? 0
+      top: heading?.getBoundingClientRect().top ?? 0,
     };
   });
 
@@ -712,18 +936,23 @@ test("article toc sidebar tracks active sections and keeps a progress rail", asy
 });
 
 test("article toc sidebar keeps the last section visible and the progress rail intact near the bottom", async ({
-  page
+  page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 760 });
   await page.goto("/posts/myblog-design-manual");
 
   await page.evaluate(() => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    });
   });
 
   await page.waitForFunction(() => {
     const active = document.querySelector("[data-toc-link].is-active");
-    const body = document.querySelector("[data-toc-sidebar-body]") as HTMLElement | null;
+    const body = document.querySelector(
+      "[data-toc-sidebar-body]",
+    ) as HTMLElement | null;
     return (
       (active?.textContent?.includes("References") ?? false) &&
       !!body &&
@@ -734,10 +963,18 @@ test("article toc sidebar keeps the last section visible and the progress rail i
   await page.waitForTimeout(400);
 
   const metrics = await page.evaluate(() => {
-    const body = document.querySelector("[data-toc-sidebar-body]") as HTMLElement | null;
-    const track = document.querySelector(".toc-sidebar__track") as HTMLElement | null;
-    const progress = document.querySelector("[data-toc-progress]") as HTMLElement | null;
-    const active = document.querySelector("[data-toc-sidebar] [data-toc-link].is-active") as HTMLElement | null;
+    const body = document.querySelector(
+      "[data-toc-sidebar-body]",
+    ) as HTMLElement | null;
+    const track = document.querySelector(
+      ".toc-sidebar__track",
+    ) as HTMLElement | null;
+    const progress = document.querySelector(
+      "[data-toc-progress]",
+    ) as HTMLElement | null;
+    const active = document.querySelector(
+      "[data-toc-sidebar] [data-toc-link].is-active",
+    ) as HTMLElement | null;
     const item = active?.closest("[data-toc-item]") as HTMLElement | null;
     const bodyRect = body?.getBoundingClientRect();
     const itemRect = item?.getBoundingClientRect();
@@ -758,9 +995,14 @@ test("article toc sidebar keeps the last section visible and the progress rail i
         !!progressRect &&
         progressRect.top >= trackRect.top - 1 &&
         progressRect.bottom <= trackRect.bottom + 1,
-      progressBottomDelta: trackRect && progressRect ? progressRect.bottom - trackRect.bottom : 0,
-      progressTopVsActiveTop: progressRect && activeRect ? progressRect.top - activeRect.top : 0,
-      progressBottomVsActiveBottom: progressRect && activeRect ? progressRect.bottom - activeRect.bottom : 0
+      progressBottomDelta:
+        trackRect && progressRect ? progressRect.bottom - trackRect.bottom : 0,
+      progressTopVsActiveTop:
+        progressRect && activeRect ? progressRect.top - activeRect.top : 0,
+      progressBottomVsActiveBottom:
+        progressRect && activeRect
+          ? progressRect.bottom - activeRect.bottom
+          : 0,
     };
   });
 
@@ -770,10 +1012,14 @@ test("article toc sidebar keeps the last section visible and the progress rail i
   expect(metrics.progressWithinTrack).toBe(true);
   expect(metrics.progressBottomDelta).toBeLessThanOrEqual(1);
   expect(Math.abs(metrics.progressTopVsActiveTop)).toBeLessThanOrEqual(24);
-  expect(Math.abs(metrics.progressBottomVsActiveBottom)).toBeLessThanOrEqual(24);
+  expect(Math.abs(metrics.progressBottomVsActiveBottom)).toBeLessThanOrEqual(
+    24,
+  );
 });
 
-test("mobile article toc closes after selecting a heading on tablet widths", async ({ page }) => {
+test("mobile article toc closes after selecting a heading on tablet widths", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("/posts/paragraph-anchor-design");
 
@@ -782,44 +1028,206 @@ test("mobile article toc closes after selecting a heading on tablet widths", asy
   await mobileToc.evaluate((node) => {
     (node as HTMLDetailsElement).open = true;
   });
-  await mobileToc.locator("[data-toc-link]").filter({ hasText: "工程边界" }).click();
+  await mobileToc
+    .locator("[data-toc-link]")
+    .filter({ hasText: "工程边界" })
+    .click();
 
   await expect(mobileToc).not.toHaveAttribute("open", "");
 });
 
-test("article header transitions through top, compact, hidden, and restores on upward scroll", async ({ page }) => {
+test("desktop article toc collapses with a real height animation and remembers the choice", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1600, height: 950 });
+  await page.goto("/posts/paragraph-anchor-design");
+  await waitForFontsSettled(page);
+
+  const viewport = page.locator(".toc-sidebar__viewport");
+  const toggle = page.locator("[data-toc-toggle]");
+
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  const openHeight = (await viewport.boundingBox())!.height;
+  expect(openHeight).toBeGreaterThan(200);
+
+  /*
+   * Seek the animation rather than racing it.
+   *
+   * Sampling on rAF, polling `getComputedTiming().progress`, or taking
+   * screenshots all fail here: frames are throttled under load and a single
+   * screenshot costs longer than the whole 380ms collapse. Driving
+   * `currentTime` to fixed offsets and reading layout back is deterministic,
+   * and it tests the property that actually matters — that the height
+   * interpolates instead of snapping shut.
+   */
+  const collapse = await page.evaluate(() => {
+    const vp = document.querySelector(".toc-sidebar__viewport") as HTMLElement;
+    const btn = document.querySelector("[data-toc-toggle]") as HTMLElement;
+
+    btn.click();
+
+    const animations = vp.getAnimations();
+    const durations = animations.map(
+      (animation) => animation.effect?.getTiming().duration ?? null,
+    );
+
+    const anim = animations[0];
+    const samples = [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
+      if (!anim) return null;
+      anim.currentTime = fraction * 380;
+      return vp.getBoundingClientRect().height;
+    });
+
+    anim?.finish();
+    return { durations, samples };
+  });
+
+  expect(
+    collapse.durations,
+    "a keyframe animation should drive the collapse",
+  ).toEqual([380]);
+
+  const heights = collapse.samples as number[];
+  expect(heights[0]).toBeGreaterThan(openHeight * 0.9);
+  expect(heights[heights.length - 1]).toBeLessThan(4);
+  for (let index = 1; index < heights.length; index += 1) {
+    expect(
+      heights[index],
+      `sample ${index} should not grow back`,
+    ).toBeLessThanOrEqual(heights[index - 1] + 1);
+  }
+  // The midpoint proves interpolation: a snap would already read ~0 here.
+  expect(
+    heights[2],
+    "midway through, the rail should be part-open",
+  ).toBeGreaterThan(20);
+  expect(heights[2]).toBeLessThan(openHeight - 20);
+
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  expect((await viewport.boundingBox())?.height ?? 0).toBeLessThan(4);
+
+  // The preference survives a reload, and restores without an opening flash.
+  await page.reload();
+  await waitForFontsSettled(page);
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  expect((await viewport.boundingBox())?.height ?? 0).toBeLessThan(4);
+
+  await toggle.click();
+  await page.waitForFunction(
+    (minimum) => {
+      const node = document.querySelector(".toc-sidebar__viewport");
+      return !!node && node.getBoundingClientRect().height > minimum;
+    },
+    openHeight * 0.9,
+    { timeout: 3000 },
+  );
+});
+
+test("header chrome animates only composited properties so scrolling stays smooth", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  /*
+   * The header used to transition `padding`, `width`, `min-height`, `gap` and
+   * `backdrop-filter`. Each of those forces layout (or a fresh blur pass) on
+   * every frame of a transition that fires while the reader is scrolling, which
+   * is what made the state change stutter. Only transform/opacity/paint
+   * properties belong here.
+   */
+  const LAYOUT_PROPERTIES = [
+    "padding",
+    "width",
+    "height",
+    "min-height",
+    "gap",
+    "margin",
+    "inset",
+  ];
+
+  const transitions = await page.evaluate(() => {
+    const read = (selector: string) => {
+      const node = document.querySelector(selector);
+      if (!node) return null;
+      return getComputedStyle(node)
+        .transitionProperty.split(",")
+        .map((value) => value.trim())
+        .filter(Boolean);
+    };
+
+    return {
+      header: read(".site-header"),
+      inner: read(".site-header-inner"),
+      shell: read(".site-header .shell"),
+    };
+  });
+
+  for (const [name, properties] of Object.entries(transitions)) {
+    if (!properties) continue;
+    for (const property of properties) {
+      expect(
+        LAYOUT_PROPERTIES.some(
+          (layout) => property === layout || property.startsWith(`${layout}-`),
+        ),
+        `${name} should not transition the layout property "${property}"`,
+      ).toBe(false);
+      expect(
+        property.startsWith("backdrop-filter"),
+        `${name} should not transition backdrop-filter`,
+      ).toBe(false);
+    }
+  }
+});
+
+test("article header transitions through top, compact, hidden, and restores on upward scroll", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
 
   const header = page.locator(".site-header");
   await expect(header).toHaveAttribute("data-header-state", "top");
 
+  /*
+   * Settle between steps instead of sleeping a fixed amount.
+   *
+   * The header state machine derives `compact` / `hidden` from the direction
+   * and size of each scroll it observes. Its handler is rAF-throttled, so on a
+   * loaded machine two `scrollTo` calls issued a fixed 250ms apart can be
+   * coalesced into a single handler run — the machine then sees one combined
+   * movement, picks the wrong state, and stays there, which no amount of
+   * assertion retrying can recover from. Waiting for each scroll to actually
+   * settle guarantees the handler has processed it before the next one starts.
+   */
   await page.evaluate(() => {
     window.scrollTo(0, 96);
   });
-  await page.waitForTimeout(250);
+  await waitForScrollSettled(page);
   await expect(header).toHaveAttribute("data-header-state", "compact");
 
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight * 0.68);
   });
-  await page.waitForTimeout(320);
+  await waitForScrollSettled(page);
   await expect(header).toHaveAttribute("data-header-state", "hidden");
 
   await page.evaluate(() => {
     window.scrollBy(0, -280);
   });
-  await page.waitForTimeout(260);
+  await waitForScrollSettled(page);
   await expect(header).toHaveAttribute("data-header-state", "compact");
 
   await page.evaluate(() => {
     window.scrollTo(0, 0);
   });
-  await page.waitForTimeout(260);
+  await waitForScrollSettled(page);
   await expect(header).toHaveAttribute("data-header-state", "top");
 });
 
-test("article reading layout keeps restrained desktop proportions", async ({ page }) => {
+test("article reading layout keeps restrained desktop proportions", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.addInitScript(() => {
     localStorage.setItem("theme", "light");
@@ -828,8 +1236,12 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
 
   await expect(page.locator(".post-title-card")).toBeVisible();
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
-  await expect(page.locator('.post-title-card [data-meta-icon="calendar"]')).toBeVisible();
-  await expect(page.locator('.post-title-card [data-meta-icon="clock"]')).toBeVisible();
+  await expect(
+    page.locator('.post-title-card [data-meta-icon="calendar"]'),
+  ).toBeVisible();
+  await expect(
+    page.locator('.post-title-card [data-meta-icon="clock"]'),
+  ).toBeVisible();
   await expect(page.locator(".post-reading-toc-rail")).toBeVisible();
   await expect(page.locator(".post-cover--hero")).toBeVisible();
   await expect(page.locator(".post-header-stats-row")).toBeVisible();
@@ -837,28 +1249,66 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   await waitForEntranceAnimations(page);
 
   const metrics = await page.evaluate(() => {
-    const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
-    const body = document.querySelector(".post-body--scholarly") as HTMLElement | null;
-    const firstParagraph = body?.querySelector("p[data-anchor]") as HTMLElement | null;
-    const cover = document.querySelector(".post-cover--hero") as HTMLElement | null;
-    const coverImg = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
-    const titleCard = document.querySelector(".post-title-card") as HTMLElement | null;
-    const meta = document.querySelector(".post-title-card .post-header-meta") as HTMLElement | null;
-    const title = document.querySelector(".post-title-card .post-header--scholarly h1") as HTMLElement | null;
-    const dek = document.querySelector(".post-header-dek") as HTMLElement | null;
-    const stats = document.querySelector(".post-header-stats-row") as HTMLElement | null;
-    const topics = document.querySelector(".post-title-card .post-header-topics") as HTMLElement | null;
-    const divider = document.querySelector(".post-title-card .post-header-divider") as HTMLElement | null;
-    const tocRail = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
-    const article = document.querySelector(".post-reading-article") as HTMLElement | null;
-    const scholarRail = document.querySelector(".post-reading-rail") as HTMLElement | null;
-    const scholarNote = document.querySelector(".post-scholar-item--bubble") as HTMLElement | null;
-    const scholarNoteBody = document.querySelector(".post-scholar-footnote-body p") as HTMLElement | null;
-    const titleGroup = document.querySelector(".post-header--scholarly") as HTMLElement | null;
+    const layout = document.querySelector(
+      ".post-reading-layout--tri",
+    ) as HTMLElement | null;
+    const body = document.querySelector(
+      ".post-body--scholarly",
+    ) as HTMLElement | null;
+    const firstParagraph = body?.querySelector(
+      "p[data-anchor]",
+    ) as HTMLElement | null;
+    const cover = document.querySelector(
+      ".post-cover--hero",
+    ) as HTMLElement | null;
+    const coverImg = document.querySelector(
+      ".post-title-card .post-cover-img--main",
+    ) as HTMLElement | null;
+    const titleCard = document.querySelector(
+      ".post-title-card",
+    ) as HTMLElement | null;
+    const meta = document.querySelector(
+      ".post-title-card .post-header-meta",
+    ) as HTMLElement | null;
+    const title = document.querySelector(
+      ".post-title-card .post-header--scholarly h1",
+    ) as HTMLElement | null;
+    const dek = document.querySelector(
+      ".post-header-dek",
+    ) as HTMLElement | null;
+    const stats = document.querySelector(
+      ".post-header-stats-row",
+    ) as HTMLElement | null;
+    const topics = document.querySelector(
+      ".post-title-card .post-header-topics",
+    ) as HTMLElement | null;
+    const divider = document.querySelector(
+      ".post-title-card .post-header-divider",
+    ) as HTMLElement | null;
+    const tocRail = document.querySelector(
+      ".post-reading-toc-rail",
+    ) as HTMLElement | null;
+    const article = document.querySelector(
+      ".post-reading-article",
+    ) as HTMLElement | null;
+    const scholarRail = document.querySelector(
+      ".post-reading-rail",
+    ) as HTMLElement | null;
+    const scholarNote = document.querySelector(
+      ".post-scholar-item--bubble",
+    ) as HTMLElement | null;
+    const scholarNoteBody = document.querySelector(
+      ".post-scholar-footnote-body p",
+    ) as HTMLElement | null;
+    const titleGroup = document.querySelector(
+      ".post-header--scholarly",
+    ) as HTMLElement | null;
     const firstH2 = body?.querySelector("h2") as HTMLElement | null;
     const firstH3 = body?.querySelector("h3") as HTMLElement | null;
 
-    const layoutBandStyles = layout ? getComputedStyle(layout, "::after") : null;
+    const layoutBandStyles = layout
+      ? getComputedStyle(layout, "::after")
+      : null;
     const bodyStyles = body ? getComputedStyle(body) : null;
     const titleCardStyles = titleCard ? getComputedStyle(titleCard) : null;
     const metaStyles = meta ? getComputedStyle(meta) : null;
@@ -867,13 +1317,21 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
     const statsStyles = stats ? getComputedStyle(stats) : null;
     const coverStyles = cover ? getComputedStyle(cover) : null;
     const coverImgStyles = coverImg ? getComputedStyle(coverImg) : null;
-    const coverGhost = document.querySelector(".post-title-card .post-cover-img--ghost") as HTMLElement | null;
+    const coverGhost = document.querySelector(
+      ".post-title-card .post-cover-img--ghost",
+    ) as HTMLElement | null;
     const coverGhostStyles = coverGhost ? getComputedStyle(coverGhost) : null;
     const tocStyles = tocRail ? getComputedStyle(tocRail) : null;
     const articleStyles = article ? getComputedStyle(article) : null;
-    const scholarRailStyles = scholarRail ? getComputedStyle(scholarRail) : null;
-    const h2BeforeStyles = firstH2 ? getComputedStyle(firstH2, "::before") : null;
-    const h3BeforeStyles = firstH3 ? getComputedStyle(firstH3, "::before") : null;
+    const scholarRailStyles = scholarRail
+      ? getComputedStyle(scholarRail)
+      : null;
+    const h2BeforeStyles = firstH2
+      ? getComputedStyle(firstH2, "::before")
+      : null;
+    const h3BeforeStyles = firstH3
+      ? getComputedStyle(firstH3, "::before")
+      : null;
     return {
       scrollWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
@@ -881,22 +1339,38 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       bodyLineHeight: bodyStyles ? Number.parseFloat(bodyStyles.lineHeight) : 0,
       firstParagraphWidth: firstParagraph?.getBoundingClientRect().width ?? 0,
       titleCardWidth: titleCard?.getBoundingClientRect().width ?? 0,
-      titleCardRadius: titleCardStyles ? Number.parseFloat(titleCardStyles.borderTopLeftRadius) : 0,
+      titleCardRadius: titleCardStyles
+        ? Number.parseFloat(titleCardStyles.borderTopLeftRadius)
+        : 0,
       titleCardShadow: titleCardStyles?.boxShadow ?? "",
       titleCardBackgroundImage: titleCardStyles?.backgroundImage ?? "",
-      coverRadius: coverStyles ? Number.parseFloat(coverStyles.borderTopLeftRadius) : 0,
-      coverBorderWidth: coverStyles ? Number.parseFloat(coverStyles.borderTopWidth) : 0,
+      coverRadius: coverStyles
+        ? Number.parseFloat(coverStyles.borderTopLeftRadius)
+        : 0,
+      coverBorderWidth: coverStyles
+        ? Number.parseFloat(coverStyles.borderTopWidth)
+        : 0,
       coverShadow: coverStyles?.boxShadow ?? "",
-      coverImageRadius: coverImgStyles ? Number.parseFloat(coverImgStyles.borderTopLeftRadius) : 0,
+      coverImageRadius: coverImgStyles
+        ? Number.parseFloat(coverImgStyles.borderTopLeftRadius)
+        : 0,
       coverImageFilter: coverImgStyles?.filter ?? "",
       coverImageShadow: coverImgStyles?.boxShadow ?? "",
-      coverImageBorderWidth: coverImgStyles ? Number.parseFloat(coverImgStyles.borderTopWidth) : 0,
-      coverImageOpacity: coverImgStyles ? Number.parseFloat(coverImgStyles.opacity) : 0,
+      coverImageBorderWidth: coverImgStyles
+        ? Number.parseFloat(coverImgStyles.borderTopWidth)
+        : 0,
+      coverImageOpacity: coverImgStyles
+        ? Number.parseFloat(coverImgStyles.opacity)
+        : 0,
       coverGhostFilter: coverGhostStyles?.filter ?? "",
-      coverGhostOpacity: coverGhostStyles ? Number.parseFloat(coverGhostStyles.opacity) : 0,
+      coverGhostOpacity: coverGhostStyles
+        ? Number.parseFloat(coverGhostStyles.opacity)
+        : 0,
       coverGhostPosition: coverGhostStyles?.position ?? "",
       coverGhostTransform: coverGhostStyles?.transform ?? "",
-      coverGhostCount: document.querySelectorAll(".post-title-card .post-cover-img--ghost").length,
+      coverGhostCount: document.querySelectorAll(
+        ".post-title-card .post-cover-img--ghost",
+      ).length,
       coverTop: cover?.getBoundingClientRect().top ?? 0,
       metaTop: meta?.getBoundingClientRect().top ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
@@ -912,15 +1386,23 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       dekFontStyle: dekStyles?.fontStyle ?? "",
       statsFontSize: statsStyles ? Number.parseFloat(statsStyles.fontSize) : 0,
       tocOpacity: tocStyles ? Number.parseFloat(tocStyles.opacity) : 0,
-      articleRadius: articleStyles ? Number.parseFloat(articleStyles.borderTopLeftRadius) : 0,
+      articleRadius: articleStyles
+        ? Number.parseFloat(articleStyles.borderTopLeftRadius)
+        : 0,
       articleShadow: articleStyles?.boxShadow ?? "",
       articleBackgroundImage: articleStyles?.backgroundImage ?? "",
       articleBackgroundColor: articleStyles?.backgroundColor ?? "",
       paperBandBackgroundImage: layoutBandStyles?.backgroundImage ?? "",
       paperBandShadow: layoutBandStyles?.boxShadow ?? "",
-      paperBandRadius: layoutBandStyles ? Number.parseFloat(layoutBandStyles.borderTopLeftRadius) : 0,
-      scholarRailPaddingLeft: scholarRailStyles ? Number.parseFloat(scholarRailStyles.paddingLeft) : 0,
-      scholarRailPaddingRight: scholarRailStyles ? Number.parseFloat(scholarRailStyles.paddingRight) : 0,
+      paperBandRadius: layoutBandStyles
+        ? Number.parseFloat(layoutBandStyles.borderTopLeftRadius)
+        : 0,
+      scholarRailPaddingLeft: scholarRailStyles
+        ? Number.parseFloat(scholarRailStyles.paddingLeft)
+        : 0,
+      scholarRailPaddingRight: scholarRailStyles
+        ? Number.parseFloat(scholarRailStyles.paddingRight)
+        : 0,
       scholarNoteWidth: scholarNote?.getBoundingClientRect().width ?? 0,
       scholarNoteBodyWidth: scholarNoteBody?.getBoundingClientRect().width ?? 0,
       scholarNoteLeft: scholarNote?.getBoundingClientRect().left ?? 0,
@@ -930,16 +1412,25 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
       firstH2Counter: h2BeforeStyles?.content ?? "",
       firstH2CounterColor: h2BeforeStyles?.color ?? "",
       firstH2CounterFontFamily: h2BeforeStyles?.fontFamily ?? "",
-      firstH2CounterFontSize: h2BeforeStyles ? Number.parseFloat(h2BeforeStyles.fontSize) : 0,
-      firstH2PaddingLeft: firstH2 ? Number.parseFloat(getComputedStyle(firstH2).paddingLeft) : 0,
+      firstH2CounterFontSize: h2BeforeStyles
+        ? Number.parseFloat(h2BeforeStyles.fontSize)
+        : 0,
+      firstH2PaddingLeft: firstH2
+        ? Number.parseFloat(getComputedStyle(firstH2).paddingLeft)
+        : 0,
       firstH3Counter: h3BeforeStyles?.content ?? "",
       firstH3CounterFontFamily: h3BeforeStyles?.fontFamily ?? "",
-      firstH3CounterFontSize: h3BeforeStyles ? Number.parseFloat(h3BeforeStyles.fontSize) : 0,
-      firstH3PaddingLeft: firstH3 ? Number.parseFloat(getComputedStyle(firstH3).paddingLeft) : 0,
+      firstH3CounterFontSize: h3BeforeStyles
+        ? Number.parseFloat(h3BeforeStyles.fontSize)
+        : 0,
+      firstH3PaddingLeft: firstH3
+        ? Number.parseFloat(getComputedStyle(firstH3).paddingLeft)
+        : 0,
       titleToBodyGap:
         body && titleGroup
-          ? body.getBoundingClientRect().top - titleGroup.getBoundingClientRect().bottom
-          : 0
+          ? body.getBoundingClientRect().top -
+            titleGroup.getBoundingClientRect().bottom
+          : 0,
     };
   });
 
@@ -967,8 +1458,12 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.scholarRailPaddingRight).toBeLessThanOrEqual(14);
   expect(metrics.scholarNoteWidth).toBeGreaterThanOrEqual(268);
   expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(275);
-  expect(metrics.scholarNoteLeft - metrics.firstParagraphRight).toBeLessThanOrEqual(78);
-  expect(metrics.scholarRailRight - metrics.scholarNoteRight).toBeGreaterThanOrEqual(6);
+  expect(
+    metrics.scholarNoteLeft - metrics.firstParagraphRight,
+  ).toBeLessThanOrEqual(78);
+  expect(
+    metrics.scholarRailRight - metrics.scholarNoteRight,
+  ).toBeGreaterThanOrEqual(6);
   expect(metrics.coverTop).toBeLessThan(metrics.metaTop);
   expect(metrics.coverBorderWidth).toBe(0);
   expect(metrics.coverShadow).toBe("none");
@@ -976,8 +1471,12 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.titleTop).toBeLessThan(metrics.dekTop);
   expect(metrics.titleTop).toBeLessThan(metrics.statsTop);
   expect(metrics.statsTop).toBeLessThan(metrics.topicsTop);
-  expect(Math.abs(metrics.statsLeft - metrics.firstParagraphRight)).toBeLessThanOrEqual(72);
-  expect(metrics.statsRight).toBeLessThanOrEqual(metrics.firstParagraphRight + 240);
+  expect(
+    Math.abs(metrics.statsLeft - metrics.firstParagraphRight),
+  ).toBeLessThanOrEqual(72);
+  expect(metrics.statsRight).toBeLessThanOrEqual(
+    metrics.firstParagraphRight + 240,
+  );
   expect(metrics.dekTop).toBeLessThan(metrics.topicsTop);
   expect(metrics.topicsTop).toBeLessThan(metrics.dividerTop);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
@@ -1011,7 +1510,9 @@ test("article reading layout keeps restrained desktop proportions", async ({ pag
   expect(metrics.tocOpacity).toBeLessThanOrEqual(1);
 });
 
-test("article markdown blocks stay within the same reading measure", async ({ page }) => {
+test("article markdown blocks stay within the same reading measure", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/ant-ai-coding-review");
 
@@ -1027,23 +1528,33 @@ test("article markdown blocks stay within the same reading measure", async ({ pa
 
       const srgbMatch = value.match(/^color\(srgb ([^ ]+) ([^ ]+) ([^ )/]+)/);
       if (srgbMatch) {
-        return srgbMatch.slice(1, 4).map((part) => Number.parseFloat(part) * 255);
+        return srgbMatch
+          .slice(1, 4)
+          .map((part) => Number.parseFloat(part) * 255);
       }
 
       return [0, 0, 0];
     };
 
-    const body = document.querySelector(".post-body--scholarly") as HTMLElement | null;
-    const paragraph = body?.querySelector("p[data-anchor], p") as HTMLElement | null;
+    const body = document.querySelector(
+      ".post-body--scholarly",
+    ) as HTMLElement | null;
+    const paragraph = body?.querySelector(
+      "p[data-anchor], p",
+    ) as HTMLElement | null;
     const list = body?.querySelector("ul, ol") as HTMLElement | null;
     const firstListItem = list?.querySelector("li") as HTMLElement | null;
     const readableBlocks = Array.from(body?.children ?? []).filter((node) =>
-      node.matches("ul, ol, pre, table, blockquote, figure")
+      node.matches("ul, ol, pre, table, blockquote, figure"),
     ) as HTMLElement[];
     const rule = body?.querySelector("hr") as HTMLElement | null;
-    const selectionStyles = paragraph ? getComputedStyle(paragraph, "::selection") : null;
+    const selectionStyles = paragraph
+      ? getComputedStyle(paragraph, "::selection")
+      : null;
     const bodyBackground = getComputedStyle(document.body).backgroundColor;
-    const [selectionR, selectionG, selectionB] = parseColor(selectionStyles?.backgroundColor ?? "");
+    const [selectionR, selectionG, selectionB] = parseColor(
+      selectionStyles?.backgroundColor ?? "",
+    );
     const [bodyR, bodyG, bodyB] = parseColor(bodyBackground);
 
     return {
@@ -1051,41 +1562,70 @@ test("article markdown blocks stay within the same reading measure", async ({ pa
       listWidth: list?.getBoundingClientRect().width ?? 0,
       listTextInset:
         paragraph && firstListItem
-          ? firstListItem.getBoundingClientRect().left - paragraph.getBoundingClientRect().left
+          ? firstListItem.getBoundingClientRect().left -
+            paragraph.getBoundingClientRect().left
           : 0,
       widestReadableWidth: readableBlocks.reduce(
         (max, node) => Math.max(max, node.getBoundingClientRect().width),
-        0
+        0,
       ),
       ruleWidth: rule?.getBoundingClientRect().width ?? 0,
-      selectionContrastFromBody: Math.hypot(selectionR - bodyR, selectionG - bodyG, selectionB - bodyB)
+      selectionContrastFromBody: Math.hypot(
+        selectionR - bodyR,
+        selectionG - bodyG,
+        selectionB - bodyB,
+      ),
     };
   });
 
   expect(metrics.paragraphWidth).toBeGreaterThanOrEqual(720);
   expect(metrics.listWidth).toBeLessThanOrEqual(metrics.paragraphWidth - 120);
   expect(metrics.listTextInset).toBeLessThanOrEqual(32);
-  expect(metrics.widestReadableWidth).toBeLessThanOrEqual(metrics.paragraphWidth + 1);
-  expect(metrics.ruleWidth).toBeGreaterThanOrEqual(metrics.widestReadableWidth - 12);
+  expect(metrics.widestReadableWidth).toBeLessThanOrEqual(
+    metrics.paragraphWidth + 1,
+  );
+  expect(metrics.ruleWidth).toBeGreaterThanOrEqual(
+    metrics.widestReadableWidth - 12,
+  );
   expect(metrics.ruleWidth).toBeLessThanOrEqual(metrics.paragraphWidth + 1);
   expect(metrics.selectionContrastFromBody).toBeGreaterThan(28);
 });
 
-test("article layout expands on ultra-wide screens without oversized gutters", async ({ page }) => {
+test("article layout expands on ultra-wide screens without oversized gutters", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 2560, height: 1440 });
   await page.goto("/posts/paragraph-anchor-design");
   await waitForFontsSettled(page);
 
   const metrics = await page.evaluate(() => {
-    const shell = document.querySelector(".shell--article-reading") as HTMLElement | null;
-    const layout = document.querySelector(".post-reading-layout--tri") as HTMLElement | null;
-    const toc = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
-    const main = document.querySelector(".post-reading-main") as HTMLElement | null;
-    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
-    const titleCard = document.querySelector(".post-title-card") as HTMLElement | null;
-    const firstParagraph = document.querySelector(".post-body--scholarly > p") as HTMLElement | null;
-    const scholarNoteBody = document.querySelector(".post-scholar-footnote-body p") as HTMLElement | null;
-    const firstNote = document.querySelector(".post-scholar-item--bubble") as HTMLElement | null;
+    const shell = document.querySelector(
+      ".shell--article-reading",
+    ) as HTMLElement | null;
+    const layout = document.querySelector(
+      ".post-reading-layout--tri",
+    ) as HTMLElement | null;
+    const toc = document.querySelector(
+      ".post-reading-toc-rail",
+    ) as HTMLElement | null;
+    const main = document.querySelector(
+      ".post-reading-main",
+    ) as HTMLElement | null;
+    const rail = document.querySelector(
+      ".post-reading-rail",
+    ) as HTMLElement | null;
+    const titleCard = document.querySelector(
+      ".post-title-card",
+    ) as HTMLElement | null;
+    const firstParagraph = document.querySelector(
+      ".post-body--scholarly > p",
+    ) as HTMLElement | null;
+    const scholarNoteBody = document.querySelector(
+      ".post-scholar-footnote-body p",
+    ) as HTMLElement | null;
+    const firstNote = document.querySelector(
+      ".post-scholar-item--bubble",
+    ) as HTMLElement | null;
 
     return {
       viewportWidth: window.innerWidth,
@@ -1102,7 +1642,7 @@ test("article layout expands on ultra-wide screens without oversized gutters", a
       bodyWidth: firstParagraph?.getBoundingClientRect().width ?? 0,
       scholarNoteBodyWidth: scholarNoteBody?.getBoundingClientRect().width ?? 0,
       titleBottom: titleCard?.getBoundingClientRect().bottom ?? 0,
-      firstNoteTop: firstNote?.getBoundingClientRect().top ?? 0
+      firstNoteTop: firstNote?.getBoundingClientRect().top ?? 0,
     };
   });
 
@@ -1126,25 +1666,40 @@ test("article layout expands on ultra-wide screens without oversized gutters", a
    */
   expect(metrics.scholarNoteBodyWidth).toBeGreaterThanOrEqual(286);
   expect(metrics.firstNoteTop).toBeGreaterThan(metrics.titleBottom);
-  expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeGreaterThanOrEqual(180);
-  expect((metrics.shellLeft + metrics.shellWidth) - metrics.tocRight).toBeLessThanOrEqual(260);
-  expect((metrics.shellLeft + metrics.shellWidth) - metrics.railRight).toBeGreaterThanOrEqual(220);
+  expect(
+    metrics.shellLeft + metrics.shellWidth - metrics.tocRight,
+  ).toBeGreaterThanOrEqual(180);
+  expect(
+    metrics.shellLeft + metrics.shellWidth - metrics.tocRight,
+  ).toBeLessThanOrEqual(260);
+  expect(
+    metrics.shellLeft + metrics.shellWidth - metrics.railRight,
+  ).toBeGreaterThanOrEqual(220);
   expect(metrics.mainLeft).toBeGreaterThanOrEqual(metrics.shellLeft + 170);
 });
 
-test("full-screen reading layout keeps the toc close to the body container", async ({ page }) => {
+test("full-screen reading layout keeps the toc close to the body container", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1920, height: 1200 });
   await page.goto("/posts/paragraph-anchor-design");
 
   const metrics = await page.evaluate(() => {
-    const toc = document.querySelector(".post-reading-toc-rail") as HTMLElement | null;
-    const rail = document.querySelector(".post-reading-rail") as HTMLElement | null;
+    const toc = document.querySelector(
+      ".post-reading-toc-rail",
+    ) as HTMLElement | null;
+    const rail = document.querySelector(
+      ".post-reading-rail",
+    ) as HTMLElement | null;
 
     return {
       railToTocGap:
-        toc && rail ? toc.getBoundingClientRect().left - rail.getBoundingClientRect().right : 0,
+        toc && rail
+          ? toc.getBoundingClientRect().left -
+            rail.getBoundingClientRect().right
+          : 0,
       tocWidth: toc?.getBoundingClientRect().width ?? 0,
-      railWidth: rail?.getBoundingClientRect().width ?? 0
+      railWidth: rail?.getBoundingClientRect().width ?? 0,
     };
   });
 
@@ -1164,7 +1719,9 @@ test("full-screen reading layout keeps the toc close to the body container", asy
  * 92px on the left. Assert the balance directly, at several widths, since the
  * grid is redefined per breakpoint and each branch can drift on its own.
  */
-test("article reading layout stays balanced between both viewport edges", async ({ page }) => {
+test("article reading layout stays balanced between both viewport edges", async ({
+  page,
+}) => {
   for (const width of [1440, 1728, 1920, 2560]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto("/posts/why-topic-first");
@@ -1179,7 +1736,7 @@ test("article reading layout stays balanced between both viewport edges", async 
       return {
         leftGutter: main ? main.getBoundingClientRect().left : 0,
         rightGutter: toc ? vw - toc.getBoundingClientRect().right : 0,
-        paragraphWidth: paragraph ? paragraph.getBoundingClientRect().width : 0
+        paragraphWidth: paragraph ? paragraph.getBoundingClientRect().width : 0,
       };
     });
 
@@ -1192,9 +1749,14 @@ test("article reading layout stays balanced between both viewport edges", async 
     // ...and neither may be more than a third larger than the other.
     const larger = Math.max(leftGutter, rightGutter);
     const smaller = Math.min(leftGutter, rightGutter);
-    expect(larger / smaller, `gutter ratio at ${width}`).toBeLessThanOrEqual(1.35);
+    expect(larger / smaller, `gutter ratio at ${width}`).toBeLessThanOrEqual(
+      1.35,
+    );
 
     // Balancing must not be paid for out of the reading measure.
-    expect(metrics.paragraphWidth, `reading measure at ${width}`).toBeGreaterThanOrEqual(700);
+    expect(
+      metrics.paragraphWidth,
+      `reading measure at ${width}`,
+    ).toBeGreaterThanOrEqual(700);
   }
 });

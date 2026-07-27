@@ -8,11 +8,12 @@ const SETTLE_STABLE_FRAMES = 2;
 const SETTLE_MAX_FRAMES = 30;
 const ACTIVE_CLASS = "is-active";
 const MOBILE_TOC_MEDIA = "(max-width: 1180px)";
-const HEADING_SCROLL_MARGIN_TOP = "calc(var(--site-header-offset, 6.5rem) + 1rem)";
+const HEADING_SCROLL_MARGIN_TOP =
+  "calc(var(--site-header-offset, 6.5rem) + 1rem)";
 const MANUAL_ACTIVE_LOCK_MS = 900;
 const OBSERVER_OPTIONS: IntersectionObserverInit = {
   rootMargin: `-${HEADER_OFFSET}px 0px -20% 0px`,
-  threshold: [0, 0.35, 0.6, 1]
+  threshold: [0, 0.35, 0.6, 1],
 };
 
 type TocLinkEntry = {
@@ -28,8 +29,11 @@ type TocEntry = TocLinkEntry & {
 
 function getActivationLine(): number {
   return Math.min(
-    Math.max(Math.round(window.innerHeight * ACTIVE_VIEWPORT_RATIO), HEADER_OFFSET + ACTIVE_OFFSET),
-    HEADER_OFFSET + MAX_ACTIVATION_LEAD
+    Math.max(
+      Math.round(window.innerHeight * ACTIVE_VIEWPORT_RATIO),
+      HEADER_OFFSET + ACTIVE_OFFSET,
+    ),
+    HEADER_OFFSET + MAX_ACTIVATION_LEAD,
   );
 }
 
@@ -40,7 +44,8 @@ function resolveActiveId(headings: HTMLElement[]): string {
 
   const scrollRoot = document.documentElement;
   const isAtDocumentEnd =
-    window.scrollY + window.innerHeight >= scrollRoot.scrollHeight - Math.max(window.innerHeight * 0.08, 48);
+    window.scrollY + window.innerHeight >=
+    scrollRoot.scrollHeight - Math.max(window.innerHeight * 0.08, 48);
 
   if (isAtDocumentEnd) {
     return headings[headings.length - 1]?.id ?? "";
@@ -91,7 +96,9 @@ function createActiveIdResolver(headings: HTMLElement[]) {
     },
     resolve(): string {
       if (lockedId) {
-        const lockedHeading = headings.find((heading) => heading.id === lockedId);
+        const lockedHeading = headings.find(
+          (heading) => heading.id === lockedId,
+        );
         const lockExpired = window.performance.now() > lockedUntil;
 
         if (!lockedHeading || lockExpired) {
@@ -109,7 +116,7 @@ function createActiveIdResolver(headings: HTMLElement[]) {
       }
 
       return resolveActiveId(headings);
-    }
+    },
   };
 }
 
@@ -138,9 +145,15 @@ function scrollHeadingIntoReadingPosition(heading: HTMLElement): void {
   const margin = Number.parseFloat(styles.scrollMarginTop);
   const offset = Number.isFinite(margin) ? margin : HEADER_OFFSET;
   const target = heading.getBoundingClientRect().top + window.scrollY - offset;
-  const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+  const maxScroll = Math.max(
+    document.documentElement.scrollHeight - window.innerHeight,
+    0,
+  );
 
-  window.scrollTo({ top: Math.min(Math.max(target, 0), maxScroll), behavior: "smooth" });
+  window.scrollTo({
+    top: Math.min(Math.max(target, 0), maxScroll),
+    behavior: "smooth",
+  });
 }
 
 function collectTocLinkEntries(root: HTMLElement): TocLinkEntry[] {
@@ -173,7 +186,7 @@ function collectSidebarEntries(root: HTMLElement): TocEntry[] {
       return {
         ...entry,
         item,
-        parentId: item.dataset.parentId ?? null
+        parentId: item.dataset.parentId ?? null,
       } satisfies TocEntry;
     })
     .filter((entry): entry is TocEntry => entry !== null);
@@ -191,7 +204,10 @@ function applyLinkState(entries: TocLinkEntry[], activeId: string): void {
   });
 }
 
-function observeHeadings(headings: HTMLElement[], requestSync: () => void): IntersectionObserver {
+function observeHeadings(
+  headings: HTMLElement[],
+  requestSync: () => void,
+): IntersectionObserver {
   const observer = new IntersectionObserver(() => {
     requestSync();
   }, OBSERVER_OPTIONS);
@@ -203,7 +219,7 @@ function observeHeadings(headings: HTMLElement[], requestSync: () => void): Inte
 function bindTocLinkClicks(
   entries: TocLinkEntry[],
   onActivate: (id: string) => void,
-  afterSelect?: () => void
+  afterSelect?: () => void,
 ): () => void {
   const cleanup: Array<() => void> = [];
 
@@ -226,7 +242,10 @@ function bindTocLinkClicks(
   };
 }
 
-function createSyncScheduler(sync: () => void): { requestSync: () => void; cancel: () => void } {
+function createSyncScheduler(sync: () => void): {
+  requestSync: () => void;
+  cancel: () => void;
+} {
   let rafId = 0;
 
   return {
@@ -245,7 +264,7 @@ function createSyncScheduler(sync: () => void): { requestSync: () => void; cance
       }
       window.cancelAnimationFrame(rafId);
       rafId = 0;
-    }
+    },
   };
 }
 
@@ -259,7 +278,10 @@ const settleHandles = new WeakMap<HTMLElement, number>();
  * `scrollIntoView({ block: "nearest" })` equivalent that is scoped to a single
  * container: it never touches the page scroll or any other ancestor.
  */
-function scrollItemIntoViewWithin(container: HTMLElement, item: HTMLElement): void {
+function scrollItemIntoViewWithin(
+  container: HTMLElement,
+  item: HTMLElement,
+): void {
   const containerRect = container.getBoundingClientRect();
   const itemRect = item.getBoundingClientRect();
 
@@ -287,9 +309,10 @@ function updateProgress(
   activeId: string,
   trackLine: HTMLElement,
   progressLine: HTMLElement,
-  scrollBody: HTMLElement
+  scrollBody: HTMLElement,
 ): void {
-  const activeEntry = entries.find((entry) => entry.id === activeId) ?? entries[0];
+  const activeEntry =
+    entries.find((entry) => entry.id === activeId) ?? entries[0];
 
   cancelSettle(progressLine);
 
@@ -303,7 +326,10 @@ function updateProgress(
   const renderProgress = (): number => {
     const trackRect = trackLine.getBoundingClientRect();
     const activeRect = activeEntry.link.getBoundingClientRect();
-    const desiredHeight = Math.min(Math.max(activeRect.height - 6, MIN_INDICATOR_HEIGHT), trackRect.height);
+    const desiredHeight = Math.min(
+      Math.max(activeRect.height - 6, MIN_INDICATOR_HEIGHT),
+      trackRect.height,
+    );
     const activeCenter = activeRect.top - trackRect.top + activeRect.height / 2;
     const rawOffset = Math.max(activeCenter - desiredHeight / 2, 0);
     const maxOffset = Math.max(trackRect.height - desiredHeight, 0);
@@ -363,7 +389,8 @@ function updateProgress(
 
     const next = renderProgress();
     frames += 1;
-    stableFrames = Math.abs(next - previous) <= SETTLE_EPSILON ? stableFrames + 1 : 0;
+    stableFrames =
+      Math.abs(next - previous) <= SETTLE_EPSILON ? stableFrames + 1 : 0;
     previous = next;
 
     if (stableFrames >= SETTLE_STABLE_FRAMES || frames >= SETTLE_MAX_FRAMES) {
@@ -383,7 +410,7 @@ function applySidebarState(
   itemById: Map<string, HTMLElement>,
   trackLine: HTMLElement,
   progressLine: HTMLElement,
-  scrollBody: HTMLElement
+  scrollBody: HTMLElement,
 ): void {
   applyLinkState(entries, activeId);
 
@@ -400,6 +427,131 @@ function applySidebarState(
   }
 
   updateProgress(entries, activeId, trackLine, progressLine, scrollBody);
+}
+
+/*
+ * Collapse state, remembered across navigations.
+ *
+ * Reading a long article is a repeated activity, so a reader who folds the
+ * contents away expects it to stay folded on the next post rather than having
+ * to dismiss it every time.
+ */
+const TOC_COLLAPSE_KEY = "toc-collapsed";
+const TOC_COLLAPSE_MS = 380;
+/*
+ * A gentler curve than the site's default `--ease-out`
+ * (cubic-bezier(0.22, 1, 0.36, 1)), which is tuned for small movements: applied
+ * to a several-hundred-pixel height change it dumps most of the distance in the
+ * first quarter of the duration and reads as a snap followed by a crawl.
+ */
+const TOC_COLLAPSE_EASE = "cubic-bezier(0.4, 0.02, 0.2, 1)";
+
+function readCollapsedPreference(): boolean {
+  try {
+    return window.localStorage.getItem(TOC_COLLAPSE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function writeCollapsedPreference(collapsed: boolean): void {
+  try {
+    window.localStorage.setItem(TOC_COLLAPSE_KEY, collapsed ? "true" : "false");
+  } catch {
+    /* Private mode or blocked storage: the toggle still works for this page. */
+  }
+}
+
+function prefersReducedMotion(): boolean {
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+  );
+}
+
+function bindCollapseToggle(
+  root: HTMLElement,
+  onChange: () => void,
+): (() => void) | void {
+  const toggle = root.querySelector<HTMLButtonElement>("[data-toc-toggle]");
+  const viewport = root.querySelector<HTMLElement>(".toc-sidebar__viewport");
+  if (!toggle || !viewport) {
+    return;
+  }
+
+  let animation: Animation | null = null;
+
+  const setState = (collapsed: boolean) => {
+    root.dataset.collapsed = collapsed ? "true" : "false";
+    toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  };
+
+  /*
+   * Animate an explicit height rather than a CSS `grid-template-rows`
+   * transition.
+   *
+   * The grid `1fr -> 0fr` technique registers a transition here but does not
+   * interpolate — measured with forced frames, the height jumps straight from
+   * full to zero — because the row resolves against a capped container. Driving
+   * the height directly is predictable, and `finished` gives a reliable hook
+   * for clearing the inline style afterwards.
+   */
+  const animateTo = (collapsed: boolean) => {
+    animation?.cancel();
+
+    if (prefersReducedMotion()) {
+      setState(collapsed);
+      viewport.style.height = "";
+      return;
+    }
+
+    const from = viewport.getBoundingClientRect().height;
+    setState(collapsed);
+    // Measure the target after the state flips so the open height reflects the
+    // real content rather than a guess.
+    viewport.style.height = "";
+    const to = collapsed ? 0 : viewport.getBoundingClientRect().height;
+
+    animation = viewport.animate(
+      [{ height: `${from}px` }, { height: `${to}px` }],
+      {
+        duration: TOC_COLLAPSE_MS,
+        easing: TOC_COLLAPSE_EASE,
+        fill: "backwards",
+      },
+    );
+
+    animation.finished
+      .then(() => {
+        viewport.style.height = "";
+        if (!collapsed) {
+          onChange();
+        }
+      })
+      .catch(() => {
+        /* Cancelled by a newer toggle; that run owns the cleanup. */
+      });
+  };
+
+  // Restore the stored preference without animating on first paint: a reader
+  // who left the contents folded should find them already folded, not watch
+  // them close.
+  root.dataset.tocMotion = "off";
+  setState(readCollapsedPreference());
+  requestAnimationFrame(() => {
+    delete root.dataset.tocMotion;
+  });
+
+  const onClick = () => {
+    const next = root.dataset.collapsed !== "true";
+    animateTo(next);
+    writeCollapsedPreference(next);
+  };
+
+  toggle.addEventListener("click", onClick);
+  return () => {
+    animation?.cancel();
+    toggle.removeEventListener("click", onClick);
+  };
 }
 
 export function initTocSidebar(root: Element): (() => void) | void {
@@ -429,14 +581,28 @@ export function initTocSidebar(root: Element): (() => void) | void {
       return;
     }
     activeId = nextActiveId;
-    applySidebarState(entries, activeId, itemById, trackLine, progressLine, scrollBody);
+    applySidebarState(
+      entries,
+      activeId,
+      itemById,
+      trackLine,
+      progressLine,
+      scrollBody,
+    );
   });
 
   const observer = observeHeadings(headings, requestSync);
   const removeClickHandlers = bindTocLinkClicks(entries, (id) => {
     activeResolver.lock(id);
     activeId = id;
-    applySidebarState(entries, activeId, itemById, trackLine, progressLine, scrollBody);
+    applySidebarState(
+      entries,
+      activeId,
+      itemById,
+      trackLine,
+      progressLine,
+      scrollBody,
+    );
   });
 
   const onResize = () => requestSync();
@@ -457,11 +623,14 @@ export function initTocSidebar(root: Element): (() => void) | void {
   window.addEventListener("hashchange", onHashChange);
   window.addEventListener("site-header-framechange", onResize);
 
+  const removeCollapseToggle = bindCollapseToggle(root, requestSync);
+
   requestSync();
 
   return () => {
     observer.disconnect();
     removeClickHandlers();
+    removeCollapseToggle?.();
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
     window.removeEventListener("hashchange", onHashChange);
@@ -484,7 +653,9 @@ export function initPostToc(root: Element): (() => void) | void {
 
   const headings = entries.map((entry) => entry.heading);
   const activeResolver = createActiveIdResolver(headings);
-  const mobileDetails = root.querySelector<HTMLDetailsElement>("[data-post-toc-mobile]");
+  const mobileDetails = root.querySelector<HTMLDetailsElement>(
+    "[data-post-toc-mobile]",
+  );
 
   const { requestSync, cancel } = createSyncScheduler(() => {
     applyLinkState(entries, activeResolver.resolve());
@@ -507,7 +678,7 @@ export function initPostToc(root: Element): (() => void) | void {
       window.setTimeout(() => {
         mobileDetails.open = false;
       }, 40);
-    }
+    },
   );
 
   const onResize = () => requestSync();

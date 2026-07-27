@@ -11,7 +11,6 @@
  */
 
 .site-header {
-  --header-motion-geometry: 520ms;
   --header-motion-surface: 620ms;
   --header-motion-opacity: 360ms;
   --header-ease-geometry: cubic-bezier(0.22, 0.86, 0.24, 1);
@@ -19,31 +18,38 @@
   --header-ease-exit: cubic-bezier(0.32, 0.06, 0.2, 1);
   will-change: transform, opacity;
   transition:
-    padding var(--header-motion-geometry) var(--header-ease-geometry),
     transform var(--header-motion-surface) var(--header-ease-surface),
     opacity var(--header-motion-opacity) var(--header-ease-exit);
 }
 
+/*
+ * Only composited properties are animated here.
+ *
+ * The three states also change `padding`, `width`, `min-height` and `gap`, but
+ * transitioning those animates layout: every frame re-runs layout for the
+ * header subtree and repaints it, which is what made the top -> compact change
+ * stutter. Those properties now snap between states while `transform` carries
+ * the motion, so the browser can run the whole thing on the compositor.
+ *
+ * `backdrop-filter` is deliberately excluded too: interpolating it re-runs the
+ * backdrop blur every frame, and it is the single most expensive thing in this
+ * component. It switches instantly between states, which is imperceptible
+ * because `background` and `box-shadow` carry the surface change.
+ */
 .site-header-inner {
-  will-change: width, transform, backdrop-filter, box-shadow, border-radius;
+  will-change: transform;
   transition:
-    width var(--header-motion-surface) var(--header-ease-geometry),
     transform var(--header-motion-surface) var(--header-ease-geometry),
     border-radius 420ms var(--header-ease-geometry),
     border-color 420ms var(--header-ease-surface),
     background 520ms var(--header-ease-surface),
-    backdrop-filter 560ms var(--header-ease-surface),
     box-shadow 620ms var(--header-ease-surface);
 }
 
 .site-header .shell {
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem) minmax(0, 1fr);
   gap: clamp(0.8rem, 1vw, 1.1rem);
-  transition:
-    min-height 440ms var(--header-ease-geometry),
-    padding var(--header-motion-geometry) var(--header-ease-geometry),
-    gap 420ms var(--header-ease-surface),
-    transform var(--header-motion-surface) var(--header-ease-geometry);
+  transition: transform var(--header-motion-surface) var(--header-ease-geometry);
 }
 
 .brand {
@@ -73,7 +79,11 @@
   bottom: 0.24rem;
   height: 1.5px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--brand-accent) 84%, var(--chrome-text) 16%);
+  background: color-mix(
+    in srgb,
+    var(--brand-accent) 84%,
+    var(--chrome-text) 16%
+  );
 }
 
 @media (max-width: 1100px) {
@@ -144,22 +154,87 @@
 .site-header[data-header-state="top"] .site-header-inner::before {
   opacity: 0.88;
   background:
-    radial-gradient(110% 142% at 0% -62%, color-mix(in srgb, white 36%, transparent 64%) 0%, transparent 24%),
-    radial-gradient(34% 92% at 18% 18%, color-mix(in srgb, white 11%, transparent 89%) 0%, transparent 50%),
-    radial-gradient(38% 70% at 78% 6%, color-mix(in srgb, var(--brand-accent) 10%, transparent 90%) 0%, transparent 56%),
-    radial-gradient(118% 154% at 104% -64%, color-mix(in srgb, var(--brand-accent) 18%, transparent 82%) 0%, transparent 30%),
-    linear-gradient(102deg, transparent 0%, color-mix(in srgb, white 7%, transparent 93%) 12%, transparent 18%, color-mix(in srgb, white 22%, transparent 78%) 28%, transparent 36%, color-mix(in srgb, white 10%, transparent 90%) 45%, transparent 52%, color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 61%, transparent 70%, color-mix(in srgb, white 13%, transparent 87%) 82%, transparent 100%),
-    linear-gradient(128deg, transparent 4%, color-mix(in srgb, white 12%, transparent 88%) 18%, transparent 26%, color-mix(in srgb, white 18%, transparent 82%) 34%, transparent 42%, color-mix(in srgb, white 9%, transparent 91%) 50%, transparent 58%, color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 72%, transparent 100%);
+    radial-gradient(
+      110% 142% at 0% -62%,
+      color-mix(in srgb, white 36%, transparent 64%) 0%,
+      transparent 24%
+    ),
+    radial-gradient(
+      34% 92% at 18% 18%,
+      color-mix(in srgb, white 11%, transparent 89%) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      38% 70% at 78% 6%,
+      color-mix(in srgb, var(--brand-accent) 10%, transparent 90%) 0%,
+      transparent 56%
+    ),
+    radial-gradient(
+      118% 154% at 104% -64%,
+      color-mix(in srgb, var(--brand-accent) 18%, transparent 82%) 0%,
+      transparent 30%
+    ),
+    linear-gradient(
+      102deg,
+      transparent 0%,
+      color-mix(in srgb, white 7%, transparent 93%) 12%,
+      transparent 18%,
+      color-mix(in srgb, white 22%, transparent 78%) 28%,
+      transparent 36%,
+      color-mix(in srgb, white 10%, transparent 90%) 45%,
+      transparent 52%,
+      color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 61%,
+      transparent 70%,
+      color-mix(in srgb, white 13%, transparent 87%) 82%,
+      transparent 100%
+    ),
+    linear-gradient(
+      128deg,
+      transparent 4%,
+      color-mix(in srgb, white 12%, transparent 88%) 18%,
+      transparent 26%,
+      color-mix(in srgb, white 18%, transparent 82%) 34%,
+      transparent 42%,
+      color-mix(in srgb, white 9%, transparent 91%) 50%,
+      transparent 58%,
+      color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 72%,
+      transparent 100%
+    );
   transform: translateY(0) scale(1.014);
 }
 
 .site-header[data-header-state="top"] .site-header-inner::after {
   opacity: 0.82;
   background:
-    linear-gradient(180deg, color-mix(in srgb, white 30%, transparent 70%) 0%, color-mix(in srgb, white 8%, transparent 92%) 16%, transparent 40%),
-    linear-gradient(94deg, transparent 0%, color-mix(in srgb, white 10%, transparent 90%) 10%, transparent 18%, color-mix(in srgb, white 24%, transparent 76%) 28%, transparent 34%, transparent 56%, color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 68%, transparent 78%, color-mix(in srgb, white 12%, transparent 88%) 90%, transparent 100%),
-    radial-gradient(28% 86% at 14% 12%, color-mix(in srgb, white 12%, transparent 88%) 0%, transparent 58%),
-    radial-gradient(32% 76% at 72% 10%, color-mix(in srgb, white 10%, transparent 90%) 0%, transparent 60%);
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 30%, transparent 70%) 0%,
+      color-mix(in srgb, white 8%, transparent 92%) 16%,
+      transparent 40%
+    ),
+    linear-gradient(
+      94deg,
+      transparent 0%,
+      color-mix(in srgb, white 10%, transparent 90%) 10%,
+      transparent 18%,
+      color-mix(in srgb, white 24%, transparent 76%) 28%,
+      transparent 34%,
+      transparent 56%,
+      color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 68%,
+      transparent 78%,
+      color-mix(in srgb, white 12%, transparent 88%) 90%,
+      transparent 100%
+    ),
+    radial-gradient(
+      28% 86% at 14% 12%,
+      color-mix(in srgb, white 12%, transparent 88%) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      32% 76% at 72% 10%,
+      color-mix(in srgb, white 10%, transparent 90%) 0%,
+      transparent 60%
+    );
   transform: translateY(-1px) scale(1.008);
 }
 
@@ -168,15 +243,44 @@
   border-top: 0;
   border-left: 0;
   border-right: 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--chrome-line) 26%, transparent 74%);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--chrome-line) 26%, transparent 74%);
   border-radius: 0;
   background:
-    radial-gradient(154% 196% at 2% -46%, color-mix(in srgb, white 28%, transparent 72%) 0%, transparent 28%),
-    radial-gradient(92% 128% at 20% 6%, color-mix(in srgb, white 7%, transparent 93%) 0%, transparent 42%),
-    radial-gradient(130% 170% at 102% -60%, color-mix(in srgb, var(--brand-accent) 16%, transparent 84%) 0%, transparent 34%),
-    linear-gradient(108deg, transparent 8%, color-mix(in srgb, white 6%, transparent 94%) 18%, transparent 28%, color-mix(in srgb, var(--brand-accent) 5%, transparent 95%) 74%, transparent 100%),
-    linear-gradient(180deg, color-mix(in srgb, white 14%, transparent 86%) 0%, color-mix(in srgb, white 4%, transparent 96%) 24%, transparent 46%),
-    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 74%, transparent 26%) 0%, color-mix(in srgb, var(--chrome-bg-strong) 68%, transparent 32%) 100%);
+    radial-gradient(
+      154% 196% at 2% -46%,
+      color-mix(in srgb, white 28%, transparent 72%) 0%,
+      transparent 28%
+    ),
+    radial-gradient(
+      92% 128% at 20% 6%,
+      color-mix(in srgb, white 7%, transparent 93%) 0%,
+      transparent 42%
+    ),
+    radial-gradient(
+      130% 170% at 102% -60%,
+      color-mix(in srgb, var(--brand-accent) 16%, transparent 84%) 0%,
+      transparent 34%
+    ),
+    linear-gradient(
+      108deg,
+      transparent 8%,
+      color-mix(in srgb, white 6%, transparent 94%) 18%,
+      transparent 28%,
+      color-mix(in srgb, var(--brand-accent) 5%, transparent 95%) 74%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 14%, transparent 86%) 0%,
+      color-mix(in srgb, white 4%, transparent 96%) 24%,
+      transparent 46%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--chrome-bg) 74%, transparent 26%) 0%,
+      color-mix(in srgb, var(--chrome-bg-strong) 68%, transparent 32%) 100%
+    );
   backdrop-filter: blur(18px) saturate(1.22) brightness(1.03);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 22%, transparent 78%),
@@ -208,17 +312,36 @@
   inset: 0.16rem -0.24rem;
   border-radius: 999px;
   background:
-    linear-gradient(102deg, transparent 2%, color-mix(in srgb, white 7%, transparent 93%) 16%, transparent 26%, color-mix(in srgb, white 16%, transparent 84%) 36%, transparent 44%, color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 66%, transparent 100%),
-    radial-gradient(42% 140% at 16% 18%, color-mix(in srgb, white 9%, transparent 91%) 0%, transparent 58%),
-    radial-gradient(34% 120% at 82% 8%, color-mix(in srgb, var(--brand-accent) 8%, transparent 92%) 0%, transparent 60%);
+    linear-gradient(
+      102deg,
+      transparent 2%,
+      color-mix(in srgb, white 7%, transparent 93%) 16%,
+      transparent 26%,
+      color-mix(in srgb, white 16%, transparent 84%) 36%,
+      transparent 44%,
+      color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 66%,
+      transparent 100%
+    ),
+    radial-gradient(
+      42% 140% at 16% 18%,
+      color-mix(in srgb, white 9%, transparent 91%) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      34% 120% at 82% 8%,
+      color-mix(in srgb, var(--brand-accent) 8%, transparent 92%) 0%,
+      transparent 60%
+    );
   filter: blur(16px);
   opacity: 0.64;
   pointer-events: none;
   z-index: -1;
 }
 
-.site-header[data-header-clarity="hover"][data-header-state="top"] .site-header-inner::before,
-.site-header[data-header-clarity="hover"][data-header-state="top"] .site-header-inner::after {
+.site-header[data-header-clarity="hover"][data-header-state="top"]
+  .site-header-inner::before,
+.site-header[data-header-clarity="hover"][data-header-state="top"]
+  .site-header-inner::after {
   opacity: 0.94;
 }
 
@@ -240,40 +363,134 @@
   opacity: 1;
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner::before {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .site-header-inner::before {
   opacity: 0.96;
   background:
-    radial-gradient(156% 192% at -10% -84%, color-mix(in srgb, white 42%, transparent 58%) 0%, transparent 40%),
-    radial-gradient(46% 72% at 20% 18%, color-mix(in srgb, white 10%, transparent 90%) 0%, transparent 50%),
-    radial-gradient(126% 176% at 108% -94%, color-mix(in srgb, var(--brand-accent) 24%, transparent 76%) 0%, transparent 36%),
-    radial-gradient(84% 98% at 52% -54%, color-mix(in srgb, white 16%, transparent 84%) 0%, transparent 58%),
-    linear-gradient(106deg, transparent 2%, color-mix(in srgb, white 12%, transparent 88%) 14%, transparent 22%, color-mix(in srgb, white 24%, transparent 76%) 31%, transparent 40%, color-mix(in srgb, white 11%, transparent 89%) 48%, transparent 56%, color-mix(in srgb, var(--brand-accent) 11%, transparent 89%) 66%, transparent 76%, color-mix(in srgb, white 10%, transparent 90%) 88%, transparent 100%),
-    linear-gradient(130deg, transparent 8%, color-mix(in srgb, white 16%, transparent 84%) 24%, transparent 32%, color-mix(in srgb, white 10%, transparent 90%) 40%, transparent 48%, color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 74%, transparent 100%);
+    radial-gradient(
+      156% 192% at -10% -84%,
+      color-mix(in srgb, white 42%, transparent 58%) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      46% 72% at 20% 18%,
+      color-mix(in srgb, white 10%, transparent 90%) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      126% 176% at 108% -94%,
+      color-mix(in srgb, var(--brand-accent) 24%, transparent 76%) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      84% 98% at 52% -54%,
+      color-mix(in srgb, white 16%, transparent 84%) 0%,
+      transparent 58%
+    ),
+    linear-gradient(
+      106deg,
+      transparent 2%,
+      color-mix(in srgb, white 12%, transparent 88%) 14%,
+      transparent 22%,
+      color-mix(in srgb, white 24%, transparent 76%) 31%,
+      transparent 40%,
+      color-mix(in srgb, white 11%, transparent 89%) 48%,
+      transparent 56%,
+      color-mix(in srgb, var(--brand-accent) 11%, transparent 89%) 66%,
+      transparent 76%,
+      color-mix(in srgb, white 10%, transparent 90%) 88%,
+      transparent 100%
+    ),
+    linear-gradient(
+      130deg,
+      transparent 8%,
+      color-mix(in srgb, white 16%, transparent 84%) 24%,
+      transparent 32%,
+      color-mix(in srgb, white 10%, transparent 90%) 40%,
+      transparent 48%,
+      color-mix(in srgb, var(--brand-accent) 9%, transparent 91%) 74%,
+      transparent 100%
+    );
   transform: translateY(-1px) scale(1.016);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner::after {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .site-header-inner::after {
   opacity: 0.84;
   background:
-    linear-gradient(180deg, color-mix(in srgb, white 42%, transparent 58%) 0%, color-mix(in srgb, white 12%, transparent 88%) 22%, transparent 44%),
-    linear-gradient(94deg, color-mix(in srgb, white 8%, transparent 92%) 0%, transparent 10%, color-mix(in srgb, white 18%, transparent 82%) 20%, transparent 28%, transparent 54%, color-mix(in srgb, var(--brand-accent) 11%, transparent 89%) 66%, transparent 76%, color-mix(in srgb, white 16%, transparent 84%) 100%),
-    radial-gradient(30% 70% at 14% 14%, color-mix(in srgb, white 10%, transparent 90%) 0%, transparent 58%),
-    radial-gradient(28% 72% at 80% 10%, color-mix(in srgb, white 12%, transparent 88%) 0%, transparent 56%);
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 42%, transparent 58%) 0%,
+      color-mix(in srgb, white 12%, transparent 88%) 22%,
+      transparent 44%
+    ),
+    linear-gradient(
+      94deg,
+      color-mix(in srgb, white 8%, transparent 92%) 0%,
+      transparent 10%,
+      color-mix(in srgb, white 18%, transparent 82%) 20%,
+      transparent 28%,
+      transparent 54%,
+      color-mix(in srgb, var(--brand-accent) 11%, transparent 89%) 66%,
+      transparent 76%,
+      color-mix(in srgb, white 16%, transparent 84%) 100%
+    ),
+    radial-gradient(
+      30% 70% at 14% 14%,
+      color-mix(in srgb, white 10%, transparent 90%) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      28% 72% at 80% 10%,
+      color-mix(in srgb, white 12%, transparent 88%) 0%,
+      transparent 56%
+    );
   filter: blur(0.2px);
   transform: translateY(-1px) scale(1.008);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .site-header-inner {
   width: min(1180px, calc(100vw - 1.2rem));
   border: 1px solid color-mix(in srgb, white 8%, transparent 92%);
   border-radius: 20px;
   background:
-    radial-gradient(148% 186% at -8% -78%, color-mix(in srgb, white 35%, transparent 65%) 0%, transparent 42%),
-    radial-gradient(94% 126% at 18% 6%, color-mix(in srgb, white 9%, transparent 91%) 0%, transparent 48%),
-    radial-gradient(136% 174% at 108% -86%, color-mix(in srgb, var(--brand-accent) 19%, transparent 81%) 0%, transparent 38%),
-    linear-gradient(108deg, transparent 8%, color-mix(in srgb, white 8%, transparent 92%) 18%, transparent 28%, color-mix(in srgb, white 14%, transparent 86%) 36%, transparent 46%, color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 74%, transparent 100%),
-    linear-gradient(180deg, color-mix(in srgb, white 24%, transparent 76%) 0%, color-mix(in srgb, white 10%, transparent 90%) 32%, transparent 100%),
-    linear-gradient(180deg, color-mix(in srgb, var(--chrome-bg) 54%, transparent 46%) 0%, color-mix(in srgb, var(--chrome-bg-strong) 48%, transparent 52%) 100%);
+    radial-gradient(
+      148% 186% at -8% -78%,
+      color-mix(in srgb, white 35%, transparent 65%) 0%,
+      transparent 42%
+    ),
+    radial-gradient(
+      94% 126% at 18% 6%,
+      color-mix(in srgb, white 9%, transparent 91%) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      136% 174% at 108% -86%,
+      color-mix(in srgb, var(--brand-accent) 19%, transparent 81%) 0%,
+      transparent 38%
+    ),
+    linear-gradient(
+      108deg,
+      transparent 8%,
+      color-mix(in srgb, white 8%, transparent 92%) 18%,
+      transparent 28%,
+      color-mix(in srgb, white 14%, transparent 86%) 36%,
+      transparent 46%,
+      color-mix(in srgb, var(--brand-accent) 7%, transparent 93%) 74%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 24%, transparent 76%) 0%,
+      color-mix(in srgb, white 10%, transparent 90%) 32%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--chrome-bg) 54%, transparent 46%) 0%,
+      color-mix(in srgb, var(--chrome-bg-strong) 48%, transparent 52%) 100%
+    );
   backdrop-filter: blur(30px) saturate(1.42) brightness(1.06);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 22%, transparent 78%),
@@ -283,7 +500,11 @@
   transform: translateY(0) scale(0.986);
 }
 
-.site-header[data-header-clarity="hover"]:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner {
+.site-header[data-header-clarity="hover"]:is(
+    [data-header-state="compact"],
+    [data-header-state="hidden"]
+  )
+  .site-header-inner {
   backdrop-filter: blur(34px) saturate(1.5) brightness(1.08);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 24%, transparent 76%),
@@ -292,7 +513,8 @@
     0 6px 18px color-mix(in srgb, var(--shadow-tint) 7%, transparent);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .shell {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .shell {
   width: 100%;
   min-height: 56px;
   padding: 0.44rem 0.85rem;
@@ -337,8 +559,16 @@
 .site-header[data-header-state="top"] .theme-toggle {
   border-color: color-mix(in srgb, white 8%, transparent 92%);
   background:
-    radial-gradient(120% 180% at 50% -80%, color-mix(in srgb, white 12%, transparent 88%) 0%, transparent 56%),
-    linear-gradient(180deg, color-mix(in srgb, white 16%, transparent 84%) 0%, color-mix(in srgb, white 4%, transparent 96%) 100%),
+    radial-gradient(
+      120% 180% at 50% -80%,
+      color-mix(in srgb, white 12%, transparent 88%) 0%,
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 16%, transparent 84%) 0%,
+      color-mix(in srgb, white 4%, transparent 96%) 100%
+    ),
     color-mix(in srgb, var(--chrome-bg) 28%, transparent 72%);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 18%, transparent 82%),
@@ -351,31 +581,49 @@
   color: color-mix(in srgb, var(--chrome-text-muted) 88%, white 12%);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .header-search-trigger,
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .header-search-field {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .header-search-trigger,
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .header-search-field {
   border-color: color-mix(in srgb, white 8%, transparent 92%);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .theme-toggle {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .theme-toggle {
   border-color: color-mix(in srgb, white 6%, transparent 94%);
   background:
-    radial-gradient(120% 180% at 12% -58%, color-mix(in srgb, white 12%, transparent 88%) 0%, transparent 42%),
-    linear-gradient(180deg, color-mix(in srgb, white 16%, transparent 84%) 0%, transparent 48%),
+    radial-gradient(
+      120% 180% at 12% -58%,
+      color-mix(in srgb, white 12%, transparent 88%) 0%,
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, white 16%, transparent 84%) 0%,
+      transparent 48%
+    ),
     color-mix(in srgb, var(--chrome-bg) 34%, transparent 66%);
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 18%, transparent 82%),
     inset 0 0 0 0.75px color-mix(in srgb, white 4%, transparent 96%);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .header-search-trigger-text,
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .header-search-input,
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .theme-toggle,
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .brand,
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-nav a {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .header-search-trigger-text,
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .header-search-input,
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .theme-toggle,
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .brand,
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .site-nav
+  a {
   color: color-mix(in srgb, var(--chrome-text) 94%, white 6%);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .header-search-trigger-shortcut {
+.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+  .header-search-trigger-shortcut {
   border-color: color-mix(in srgb, white 16%, transparent 84%);
   background: color-mix(in srgb, white 12%, transparent 88%);
   color: color-mix(in srgb, var(--chrome-text-muted) 82%, white 18%);
@@ -431,14 +679,16 @@
     padding: 0.4rem 0.45rem 0;
   }
 
-  .site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner {
+  .site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+    .site-header-inner {
     width: min(100%, calc(100vw - 0.9rem));
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;
     border-radius: 18px;
   }
 
-  .site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .shell {
+  .site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+    .shell {
     min-height: 54px;
     padding: 0.48rem 0.65rem 0.56rem;
   }
@@ -449,11 +699,13 @@
     padding-inline: 0.36rem;
   }
 
-  .site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .site-header-inner {
+  .site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+    .site-header-inner {
     width: min(100%, calc(100vw - 0.72rem));
   }
 
-  .site-header:is([data-header-state="compact"], [data-header-state="hidden"]) .shell {
+  .site-header:is([data-header-state="compact"], [data-header-state="hidden"])
+    .shell {
     padding-inline: 0.56rem;
   }
 }

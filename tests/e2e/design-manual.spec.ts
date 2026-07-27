@@ -101,9 +101,37 @@ test("design manual toc follows the spoiler section before the heading reaches t
     document.documentElement.scrollTop = top;
     document.body.scrollTop = top;
   }, targetScrollTop);
+  /*
+   * Poll against the reachable maximum, not the requested offset.
+   *
+   * `.site-header` is sticky, so it occupies document flow and its height
+   * changes with `data-header-state` — measured at 1440px it is 69px at the top
+   * of the page and 65.36px once compact, which shortens the document by ~3px.
+   * `targetScrollTop` is derived from a measurement taken at scroll 0 while the
+   * header is still tall, so near the end of a long article it can name an
+   * offset the page can no longer reach once the header compacts. Clamping the
+   * expectation the way the browser clamps the scroll keeps this precondition
+   * honest instead of relying on catching the document mid-shrink.
+   *
+   * The remaining tolerance absorbs that same few-pixel churn while the header
+   * state and the sticky layout settle. This check only needs to establish that
+   * the viewport is parked at the intended reading position; the assertion that
+   * matters — which section the sidebar highlights — is polled separately
+   * below.
+   */
   await expect
-    .poll(async () => page.evaluate(() => window.scrollY), { timeout: 2000 })
-    .toBeGreaterThanOrEqual(targetScrollTop - 2);
+    .poll(
+      async () =>
+        page.evaluate((requested) => {
+          const maxScroll = Math.max(
+            document.documentElement.scrollHeight - window.innerHeight,
+            0,
+          );
+          return window.scrollY - Math.min(requested, maxScroll);
+        }, targetScrollTop),
+      { timeout: 2000 },
+    )
+    .toBeGreaterThanOrEqual(-12);
 
   /*
    * The sidebar recomputes its active section from a rAF-scheduled scroll
