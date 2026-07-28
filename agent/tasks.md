@@ -2,6 +2,7 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 三轮收敛顶部栏：改用隔离 View Transition 做 top↔compact 几何 morph（760ms），补 FLIP 回退与 reduced-motion 直切，并把 compact 最小停留提到 820ms 以免快速滚动截断动画 | ✅ | AI Assistant | 2026-07-28 |
 | 高 | 修复 E2E 假绿链路：强制 Playwright/CI 使用 production build，自建共享稳定态 helper，移除无语义固定等待，并把阅读进度测试强化为两段真实滚动与双边区间断言 | ✅ | AI Assistant | 2026-07-28 |
 | 高 | 二轮收敛顶部栏与目录动画：移除逐帧重栅格的 `filter`/`border-radius`/`blur(0.2px)`，把折叠改为匀速 520ms，并修复平滑滚动与主题存储键两处测试仪器缺陷 | ✅ | AI Assistant | 2026-07-27 |
 | 高 | 修复顶部栏三态切换卡顿（改为只动合成属性），并为文章页目录加可收起交互：带真实高度插值动画、localStorage 记忆、`aria-expanded` 与 reduced-motion 支持 | ✅ | AI Assistant | 2026-07-27 |
