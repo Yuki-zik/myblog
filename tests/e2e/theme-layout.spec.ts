@@ -1144,219 +1144,174 @@ test("header chrome animates only composited properties so scrolling stays smoot
   }
 });
 
-test("header top-to-compact geometry uses a slow isolated view transition", async ({
+test("header geometry is a continuous function of scroll offset", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
-  await page.addInitScript(() => {
-    const doc = document as Document & {
-      startViewTransition?: (callback: () => void) => {
-        finished: Promise<void>;
-      };
-    };
-    const nativeStart = doc.startViewTransition?.bind(document);
-    (window as typeof window & { __headerViewTransitionCount?: number })
-      .__headerViewTransitionCount = 0;
-
-    if (nativeStart) {
-      doc.startViewTransition = (callback) => {
-        const state = window as typeof window & {
-          __headerViewTransitionCount?: number;
-        };
-        state.__headerViewTransitionCount =
-          (state.__headerViewTransitionCount ?? 0) + 1;
-        return nativeStart(callback);
-      };
-    }
-  });
   await page.goto("/posts/paragraph-anchor-design");
   await disableSmoothScroll(page);
 
-  const supportsViewTransitions = await page.evaluate(
-    () => typeof document.startViewTransition === "function",
+  const supportsScrollTimeline = await page.evaluate(() =>
+    CSS.supports("animation-timeline: scroll()"),
   );
   test.skip(
-    !supportsViewTransitions,
-    "Chromium must support the View Transition API for this assertion",
+    !supportsScrollTimeline,
+    "the browser must support scroll-driven animations",
   );
 
-  await page.evaluate(() => {
-    window.scrollTo(0, 96);
-  });
+  /*
+   * Sample the surface at fixed scroll offsets rather than at points in time.
+   * The collapse is driven by the scroll timeline, so its geometry is a pure
+   * function of position: there is no duration to wait out and no animation to
+   * race, which is exactly the property that makes it feel continuous.
+   */
+  const readSurface = () =>
+    page.evaluate(() => {
+      const surface = document.querySelector(".site-header-inner");
+      if (!surface) return null;
+      const rect = surface.getBoundingClientRect();
+      return {
+        width: Math.round(rect.width),
+        top: Math.round(rect.top),
+      };
+    });
 
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () =>
-          (window as typeof window & {
-            __headerViewTransitionCount?: number;
-          }).__headerViewTransitionCount ?? 0,
-      ),
-    )
-    .toBe(1);
-
-  const header = page.locator(".site-header");
-  await expect(header).toHaveAttribute("data-header-state", "compact");
-  await expect(header).toHaveAttribute("data-header-morphing", "true");
-
-  const motion = await page.evaluate(() => {
-    const inner = document.querySelector(".site-header-inner");
-    const rootStyles = getComputedStyle(document.documentElement);
-    const innerStyles = inner ? getComputedStyle(inner) : null;
-    const groupStyles = getComputedStyle(
-      document.documentElement,
-      "::view-transition-group(site-header)",
+  const samples: Array<{ y: number; width: number; top: number }> = [];
+  for (const y of [0, 24, 48, 72, 96]) {
+    await page.evaluate((offset) => {
+      window.scrollTo(0, offset);
+    }, y);
+    // One frame is enough: the timeline is sampled during style resolution.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
     );
-    const oldStyles = getComputedStyle(
-      document.documentElement,
-      "::view-transition-old(site-header)",
-    );
-    const newStyles = getComputedStyle(
-      document.documentElement,
-      "::view-transition-new(site-header)",
-    );
-    const duration = groupStyles.animationDuration.trim();
-    const durationMs = duration.endsWith("ms")
-      ? Number.parseFloat(duration)
-      : Number.parseFloat(duration) * 1000;
+    const surface = await readSurface();
+    expect(surface).not.toBeNull();
+    samples.push({ y, ...surface! });
+  }
 
-    return {
-      rootTransitionName: rootStyles.viewTransitionName,
-      headerTransitionName: innerStyles?.viewTransitionName ?? "",
-      durationMs,
-      easing: groupStyles.animationTimingFunction,
-      oldAnimationName: oldStyles.animationName,
-      oldOpacity: oldStyles.opacity,
-      newAnimationName: newStyles.animationName,
-      newOpacity: newStyles.opacity,
-    };
-  });
+  const widths = samples.map((sample) => sample.width);
 
-  expect(motion.rootTransitionName).toBe("none");
-  expect(motion.headerTransitionName).toBe("site-header");
-  expect(motion.durationMs).toBeGreaterThanOrEqual(700);
-  expect(motion.durationMs).toBeLessThanOrEqual(850);
-  expect(motion.easing).toBe("cubic-bezier(0.45, 0.05, 0.55, 0.95)");
-  expect(motion.oldAnimationName).toBe("none");
-  expect(motion.oldOpacity).toBe("0");
-  expect(motion.newAnimationName).toBe("none");
-  expect(motion.newOpacity).toBe("1");
+  // Fully expanded at the top: wider than the viewport, so its rounded corners
+  // and side borders fall outside the visible area.
+  expect(widths[0]).toBeGreaterThan(1440);
 
-  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
-    timeout: 3000,
-  });
+  // Fully collapsed to the pill by the end of the range.
+  expect(widths[widths.length - 1]).toBeLessThanOrEqual(1180);
 
-  await page.evaluate(() => {
-    window.scrollTo(0, 0);
-  });
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () =>
-          (window as typeof window & {
-            __headerViewTransitionCount?: number;
-          }).__headerViewTransitionCount ?? 0,
-      ),
-    )
-    .toBe(2);
-  await expect(header).toHaveAttribute("data-header-state", "top");
-  await expect(header).toHaveAttribute("data-header-morphing", "true");
-  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
-    timeout: 3000,
-  });
+  // Strictly monotonic in between: every scroll increment moves the geometry,
+  // which is what rules out a threshold-triggered jump.
+  for (let index = 1; index < widths.length; index += 1) {
+    expect(
+      widths[index],
+      `width at scrollY=${samples[index].y} should be under the previous sample`,
+    ).toBeLessThan(widths[index - 1]);
+  }
+
+  // The midpoint must be genuinely intermediate, not snapped to either end.
+  const midpoint = widths[2];
+  expect(midpoint).toBeLessThan(widths[0] - 40);
+  expect(midpoint).toBeGreaterThan(widths[widths.length - 1] + 40);
 });
 
-test("header geometry uses a compositor FLIP fallback without View Transitions", async ({
+test("header surface keeps one material across the state threshold", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  /*
+   * Geometry is continuous, but the surface used to carry two different
+   * materials that swapped when `data-header-state` flipped at 60px. Measured
+   * across that boundary the backdrop jumped from blur(18px) to blur(30px) and
+   * the gradient stack changed outright, so the console popped mid-collapse
+   * even though nothing moved discontinuously. The material must now be
+   * identical on both sides; only the transform differs.
+   */
+  const readMaterial = async (scrollY: number) => {
+    await page.evaluate((offset) => {
+      window.scrollTo(0, offset);
+    }, scrollY);
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
+    return page.evaluate(() => {
+      const surface = document.querySelector(".site-header-inner");
+      if (!surface) return null;
+      const styles = getComputedStyle(surface);
+      const caustic = getComputedStyle(surface, "::before");
+      return {
+        state:
+          document
+            .querySelector(".site-header")
+            ?.getAttribute("data-header-state") ?? null,
+        backdropFilter: styles.backdropFilter,
+        backgroundImage: styles.backgroundImage,
+        causticImage: caustic.backgroundImage,
+        causticOpacity: caustic.opacity,
+      };
+    });
+  };
+
+  const beforeThreshold = await readMaterial(56);
+  const afterThreshold = await readMaterial(64);
+
+  expect(beforeThreshold?.state).toBe("top");
+  expect(afterThreshold?.state).toBe("compact");
+
+  expect(afterThreshold?.backdropFilter).toBe(beforeThreshold?.backdropFilter);
+  expect(afterThreshold?.backgroundImage).toBe(beforeThreshold?.backgroundImage);
+  expect(afterThreshold?.causticImage).toBe(beforeThreshold?.causticImage);
+  expect(afterThreshold?.causticOpacity).toBe(beforeThreshold?.causticOpacity);
+});
+
+test("header content stays put while the surface collapses", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
-  await page.addInitScript(() => {
-    Object.defineProperty(document, "startViewTransition", {
-      configurable: true,
-      value: undefined,
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  /*
+   * The surface is a sibling of the content, so collapsing it must not move or
+   * scale the brand, search field or nav. Text that rides a scale factor is
+   * what made earlier attempts look blurred and doubled mid-transition.
+   */
+  const readContent = () =>
+    page.evaluate(() => {
+      const brand = document.querySelector(".site-header .brand");
+      const nav = document.querySelector(".site-header .site-nav");
+      const shell = document.querySelector(".site-header .shell");
+      return {
+        brandX: brand ? Math.round(brand.getBoundingClientRect().x) : null,
+        navRight: nav ? Math.round(nav.getBoundingClientRect().right) : null,
+        shellWidth: shell ? Math.round(shell.getBoundingClientRect().width) : null,
+        shellScale: shell ? getComputedStyle(shell).scale : null,
+      };
     });
-  });
-  await page.goto("/posts/paragraph-anchor-design");
-  await disableSmoothScroll(page);
+
+  const atTop = await readContent();
 
   await page.evaluate(() => {
     window.scrollTo(0, 96);
   });
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
+  );
+  const collapsed = await readContent();
 
-  const header = page.locator(".site-header");
-  await expect(header).toHaveAttribute("data-header-state", "compact");
-  await expect(header).toHaveAttribute("data-header-morphing", "true");
-
-  const fallback = await page.evaluate(() => {
-    const inner = document.querySelector(".site-header-inner");
-    const animation = inner
-      ?.getAnimations()
-      .find((candidate) => candidate.id === "site-header-geometry-fallback");
-    const keyframes =
-      animation?.effect instanceof KeyframeEffect
-        ? animation.effect.getKeyframes()
-        : [];
-    return {
-      duration: Number(animation?.effect?.getTiming().duration ?? 0),
-      easing: animation?.effect?.getTiming().easing ?? "",
-      keyframes,
-    };
-  });
-
-  expect(fallback.duration).toBeGreaterThanOrEqual(700);
-  expect(fallback.duration).toBeLessThanOrEqual(850);
-  expect(fallback.easing).toBe("cubic-bezier(0.45, 0.05, 0.55, 0.95)");
-  expect(fallback.keyframes).toHaveLength(2);
-  expect(fallback.keyframes[0]?.scale).not.toBe("1");
-  expect(fallback.keyframes[1]?.scale).toBe("1");
-
-  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
-    timeout: 3000,
-  });
-});
-
-test("header geometry morph is bypassed for reduced motion", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 1440, height: 960 });
-  await page.addInitScript(() => {
-    const doc = document as Document & {
-      startViewTransition?: (callback: () => void) => {
-        finished: Promise<void>;
-      };
-    };
-    const nativeStart = doc.startViewTransition?.bind(document);
-    (window as typeof window & { __headerViewTransitionCount?: number })
-      .__headerViewTransitionCount = 0;
-
-    if (nativeStart) {
-      doc.startViewTransition = (callback) => {
-        const state = window as typeof window & {
-          __headerViewTransitionCount?: number;
-        };
-        state.__headerViewTransitionCount =
-          (state.__headerViewTransitionCount ?? 0) + 1;
-        return nativeStart(callback);
-      };
-    }
-  });
-  await page.goto("/posts/paragraph-anchor-design");
-  await disableSmoothScroll(page);
-
-  await page.evaluate(() => {
-    window.scrollTo(0, 96);
-  });
-
-  const header = page.locator(".site-header");
-  await expect(header).toHaveAttribute("data-header-state", "compact");
-  await expect(header).not.toHaveAttribute("data-header-morphing");
-  expect(
-    await page.evaluate(
-      () =>
-        (window as typeof window & {
-          __headerViewTransitionCount?: number;
-        }).__headerViewTransitionCount ?? 0,
-    ),
-  ).toBe(0);
+  expect(collapsed).toEqual(atTop);
+  expect(atTop.shellScale === "none" || atTop.shellScale === "1").toBe(true);
 });
 
 test("header theme icon uses a non-overshooting rotation", async ({ page }) => {

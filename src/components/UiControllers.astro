@@ -171,10 +171,6 @@
       var HOVER_ZONE = 108;
       var clarity = "normal";
       var hoverReveal = false;
-      var motionReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-      var headerTransition = null;
-      var headerFallbackAnimation = null;
-      var headerTransitionVersion = 0;
       var compactSince = 0;
       var hideTimer = null;
 
@@ -195,26 +191,31 @@
         notifyHeaderFrameChange();
       }
 
-      function cleanupHeaderMorph(version) {
-        if (version !== headerTransitionVersion) return;
-        document.documentElement.classList.remove("is-header-morphing");
-        delete header.dataset.headerMorphing;
-        headerTransition = null;
-        if (headerFallbackAnimation) {
-          var animation = headerFallbackAnimation;
-          headerFallbackAnimation = null;
-          if (animation.playState !== "finished") {
-            animation.cancel();
-          }
-        }
-      }
+      /*
+       * The surface is scaled up to cover the viewport at the top of the page.
+       * CSS cannot divide one length by another, so the factor is computed here
+       * and written once per resize. `offsetWidth` and `offsetHeight` report the
+       * untransformed layout box, so reading them while the scroll-driven
+       * animation is mid-flight still yields the pill's real size.
+       */
+      function syncHeaderScale() {
+        var surface = header.querySelector(".site-header-inner");
+        if (!(surface instanceof HTMLElement)) return;
 
-      function shouldMorphGeometry(previousState, nextState) {
-        if (motionReduced.matches) return false;
-        return (
-          (previousState === "top" && nextState === "compact") ||
-          (previousState === "compact" && nextState === "top")
+        var pillWidth = surface.offsetWidth;
+        var pillHeight = surface.offsetHeight;
+        if (pillWidth <= 0 || pillHeight <= 0) return;
+
+        var band = header.offsetHeight || pillHeight;
+        // Overscan so the pill's rounded corners and side borders finish
+        // outside the viewport, which is what reads as a full-bleed bar.
+        var overscan = 96;
+
+        header.style.setProperty(
+          "--header-expand-x",
+          String((window.innerWidth + overscan) / pillWidth)
         );
+        header.style.setProperty("--header-expand-y", String(band / pillHeight));
       }
 
       function scheduleHideAfterDwell() {
@@ -236,110 +237,11 @@
         }, remaining);
       }
 
-      function startFallbackMorph(nextState, version) {
-        var inner = header.querySelector(".site-header-inner");
-        if (!(inner instanceof HTMLElement)) {
-          writeState(nextState);
-          cleanupHeaderMorph(version);
-          return;
-        }
-
-        header.dataset.headerMorphing = "true";
-        var first = inner.getBoundingClientRect();
-        writeState(nextState);
-        var last = inner.getBoundingClientRect();
-        var firstCenterX = first.left + first.width / 2;
-        var firstCenterY = first.top + first.height / 2;
-        var lastCenterX = last.left + last.width / 2;
-        var lastCenterY = last.top + last.height / 2;
-        var scaleX = last.width > 0 ? first.width / last.width : 1;
-        var scaleY = last.height > 0 ? first.height / last.height : 1;
-
-        headerFallbackAnimation = inner.animate(
-          [
-            {
-              translate:
-                firstCenterX - lastCenterX + "px " +
-                (firstCenterY - lastCenterY) + "px",
-              scale: scaleX + " " + scaleY
-            },
-            {
-              translate: "0px 0px",
-              scale: "1 1"
-            }
-          ],
-          {
-            duration: 760,
-            easing: "cubic-bezier(0.45, 0.05, 0.55, 0.95)",
-            fill: "both"
-          }
-        );
-        headerFallbackAnimation.id = "site-header-geometry-fallback";
-        headerFallbackAnimation.finished.then(
-          function () {
-            cleanupHeaderMorph(version);
-          },
-          function () {
-            cleanupHeaderMorph(version);
-          }
-        );
-      }
-
       function applyState(nextState) {
         if (state === nextState && header.dataset.headerState === nextState) return;
-        var previousState = state;
         state = nextState;
         clearHideTimer();
-        if (nextState === "compact") {
-          // The View Transition update callback commits the new DOM after the
-          // old snapshot is captured. Start the dwell clock in `writeState`,
-          // not here, so the user receives the full visible compact interval.
-          compactSince = 0;
-        }
-        headerTransitionVersion += 1;
-        var version = headerTransitionVersion;
-
-        if (headerTransition) {
-          headerTransition.skipTransition();
-          headerTransition = null;
-        }
-        if (headerFallbackAnimation) {
-          var animation = headerFallbackAnimation;
-          headerFallbackAnimation = null;
-          animation.cancel();
-        }
-
-        if (!shouldMorphGeometry(previousState, nextState)) {
-          cleanupHeaderMorph(version);
-          writeState(nextState);
-          return;
-        }
-
-        if (typeof document.startViewTransition !== "function") {
-          startFallbackMorph(nextState, version);
-          return;
-        }
-
-        document.documentElement.classList.add("is-header-morphing");
-        header.dataset.headerMorphing = "true";
-
-        try {
-          headerTransition = document.startViewTransition(function () {
-            if (version !== headerTransitionVersion) return;
-            writeState(nextState);
-          });
-          headerTransition.finished.then(
-            function () {
-              cleanupHeaderMorph(version);
-            },
-            function () {
-              cleanupHeaderMorph(version);
-            }
-          );
-        } catch (_error) {
-          cleanupHeaderMorph(version);
-          writeState(nextState);
-        }
+        writeState(nextState);
       }
 
       function applyClarity(nextClarity) {
@@ -369,8 +271,6 @@
         header.classList.toggle("is-scrolled", state !== "top");
         header.classList.toggle("is-hidden", state === "hidden");
         header.classList.remove("is-hover-revealed");
-        document.documentElement.classList.remove("is-header-morphing");
-        delete header.dataset.headerMorphing;
         notifyHeaderFrameChange();
       }
 
@@ -451,6 +351,9 @@
         applyHoverReveal(false);
       });
 
+      window.addEventListener("resize", syncHeaderScale, { passive: true });
+
+      syncHeaderScale();
       syncInitialState();
     }
 

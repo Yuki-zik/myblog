@@ -115,7 +115,15 @@ export async function waitForEntranceAnimations(page: Page): Promise<void> {
   await page.evaluate(async () => {
     const finite = document.getAnimations().filter((animation) => {
       const iterations = animation.effect?.getTiming().iterations ?? 1;
-      return Number.isFinite(iterations);
+      if (!Number.isFinite(iterations)) return false;
+
+      /*
+       * Scroll-driven animations never finish. They are attached to a scroll
+       * timeline rather than the document timeline, so their progress is a
+       * function of scroll position and `finished` stays pending for as long as
+       * the element exists. Awaiting one hangs the whole helper.
+       */
+      return animation.timeline === document.timeline;
     });
 
     await Promise.all(finite.map((animation) => animation.finished.catch(() => undefined)));

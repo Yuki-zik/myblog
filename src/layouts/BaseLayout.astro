@@ -148,51 +148,52 @@ const themeInitScript = `(function () {
   </head>
   <body data-runtime={runtime}>
     <header class="site-header sticky top-0 z-80" data-header-state="top">
-      <div class="site-header-inner relative isolate mx-auto overflow-hidden origin-top text-chrome-ink">
-        <div class="shell grid items-center origin-top">
-          <a href="/" class="brand justify-self-start font-display font-[650] leading-none tracking-[-0.03em]">MyBlog</a>
-          <div class="site-header-search-slot w-full min-w-0" data-header-search-slot>
-            <HeaderSearch />
-          </div>
-          <nav class="site-nav justify-self-end flex items-center min-w-0 gap-[0.65rem]">
-            <div class="site-nav-links flex items-center min-w-0 gap-[0.12rem]">
-              {navItems.map((item) => (
-                <a
-                  href={item.href}
-                  class="inline-flex items-center min-h-8 rounded-full py-[0.36rem] px-[0.62rem] text-[0.84rem] font-[560] tracking-[-0.02em]"
-                  aria-current={currentSection === item.section ? "page" : undefined}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-            <div class="site-nav-tools flex items-center gap-[0.36rem]">
-              <button
-                id="theme-toggle"
-                type="button"
-                class="theme-toggle inline-flex items-center justify-center flex-none size-[2.28rem] rounded-full border p-0 cursor-pointer"
-                aria-label="切换主题（当前：跟随系统）"
-                aria-live="polite"
-                title="切换主题"
-              >
-                <span class="theme-toggle-icon inline-flex items-center justify-center size-[0.92rem]" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="4.1"></circle>
-                    <path d="M12 2.8v2.3"></path>
-                    <path d="M12 18.9v2.3"></path>
-                    <path d="M4.8 4.8l1.6 1.6"></path>
-                    <path d="M17.6 17.6l1.6 1.6"></path>
-                    <path d="M2.8 12h2.3"></path>
-                    <path d="M18.9 12h2.3"></path>
-                    <path d="M4.8 19.2l1.6-1.6"></path>
-                    <path d="M17.6 6.4l1.6-1.6"></path>
-                  </svg>
-                </span>
-                <span class="theme-toggle-label sr-only">系统</span>
-              </button>
-            </div>
-          </nav>
+      <div class="site-header-surface-clip" aria-hidden="true">
+        <div class="site-header-inner isolate overflow-hidden origin-top"></div>
+      </div>
+      <div class="shell grid items-center text-chrome-ink">
+        <a href="/" class="brand justify-self-start font-display font-[650] leading-none tracking-[-0.03em]">MyBlog</a>
+        <div class="site-header-search-slot w-full min-w-0" data-header-search-slot>
+          <HeaderSearch />
         </div>
+        <nav class="site-nav justify-self-end flex items-center min-w-0 gap-[0.65rem]">
+          <div class="site-nav-links flex items-center min-w-0 gap-[0.12rem]">
+            {navItems.map((item) => (
+              <a
+                href={item.href}
+                class="inline-flex items-center min-h-8 rounded-full py-[0.36rem] px-[0.62rem] text-[0.84rem] font-[560] tracking-[-0.02em]"
+                aria-current={currentSection === item.section ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+          <div class="site-nav-tools flex items-center gap-[0.36rem]">
+            <button
+              id="theme-toggle"
+              type="button"
+              class="theme-toggle inline-flex items-center justify-center flex-none size-[2.28rem] rounded-full border p-0 cursor-pointer"
+              aria-label="切换主题（当前：跟随系统）"
+              aria-live="polite"
+              title="切换主题"
+            >
+              <span class="theme-toggle-icon inline-flex items-center justify-center size-[0.92rem]" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="4.1"></circle>
+                  <path d="M12 2.8v2.3"></path>
+                  <path d="M12 18.9v2.3"></path>
+                  <path d="M4.8 4.8l1.6 1.6"></path>
+                  <path d="M17.6 17.6l1.6 1.6"></path>
+                  <path d="M2.8 12h2.3"></path>
+                  <path d="M18.9 12h2.3"></path>
+                  <path d="M4.8 19.2l1.6-1.6"></path>
+                  <path d="M17.6 6.4l1.6-1.6"></path>
+                </svg>
+              </span>
+              <span class="theme-toggle-label sr-only">系统</span>
+            </button>
+          </div>
+        </nav>
       </div>
     </header>
 	    <main class:list={["shell", mainClass]} data-runtime={runtime}>

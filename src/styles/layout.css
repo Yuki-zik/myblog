@@ -442,8 +442,17 @@ html.is-header-morphing::view-transition-new(site-header) {
   opacity: 1;
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
-  .site-header-inner::before {
+/*
+ * One surface treatment for every state.
+ *
+ * These declarations used to exist twice, once for `top` and once for
+ * `compact`, and the pair swapped at the 60px threshold. Measured across that
+ * boundary the backdrop jumped from blur(18px) to blur(30px) and the gradient
+ * stack changed outright, so the geometry collapsed continuously while the
+ * material popped. The collapse is now purely geometric; the material is
+ * constant and simply scales with the surface.
+ */
+.site-header[data-header-state] .site-header-inner::before {
   opacity: 0.96;
   background:
     radial-gradient(
@@ -493,8 +502,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transform: translateY(-1px) scale(1.016);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
-  .site-header-inner::after {
+.site-header[data-header-state] .site-header-inner::after {
   opacity: 0.84;
   background:
     linear-gradient(
@@ -527,8 +535,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transform: translateY(-1px) scale(1.008);
 }
 
-.site-header:is([data-header-state="compact"], [data-header-state="hidden"])
-  .site-header-inner {
+.site-header[data-header-state] .site-header-inner {
   width: min(1180px, calc(100vw - 1.2rem));
   border: 1px solid color-mix(in srgb, white 8%, transparent 92%);
   border-radius: 20px;
@@ -786,4 +793,168 @@ html.is-header-morphing::view-transition-new(site-header) {
     .shell {
     padding-inline: 0.56rem;
   }
+}
+
+/* ==========================================================================
+ * Continuous, scroll-driven header geometry
+ *
+ * Earlier passes treated `top` and `compact` as two layouts joined by an
+ * animation. Every version of that failed the same way: the animation owns its
+ * own clock, so once it starts it is no longer related to what the reader is
+ * doing. Slowing it down only made the disconnect easier to see.
+ *
+ * The console geometry is now a continuous function of scroll offset, the way
+ * a collapsing large-title bar works. Scroll a third of the way and the console
+ * is a third collapsed; scroll back and it reverses exactly. There is no
+ * duration to tune and nothing to interrupt.
+ *
+ * Two rules make it cheap enough to run on the compositor:
+ *
+ * 1. Only `translate` and `scale` are animated. Chrome's scroll-driven
+ *    animation guidance is explicit that animating `width` forfeits compositing,
+ *    so the surface keeps one fixed layout box and is scaled instead.
+ * 2. The surface is a sibling of the content, not its parent, so scaling the
+ *    glass never touches the brand, search field or nav. Nothing reflows and no
+ *    text is ever distributed across a scale factor.
+ *
+ * Because the expanded surface is scaled wider than the viewport, its rounded
+ * corners and side borders sit outside the visible area, which is what produces
+ * the full-bleed bar at the top of the page without a second set of rules. One
+ * shadow works for both ends for the same reason: only its bottom edge is on
+ * screen while expanded.
+ *
+ * These rules use `[data-header-state]` (attribute presence) so they carry the
+ * same specificity as the per-state rules above and win by source order.
+ * ========================================================================== */
+
+.site-header[data-header-state] {
+  --header-band: 68px;
+  --header-pill-top: 7px;
+  --header-pill-height: 54px;
+  --header-collapse-end: 96px;
+  /*
+   * Set by `UiControllers.astro` on load and resize. The factor depends on the
+   * viewport width, and CSS cannot divide one length by another.
+   */
+  --header-expand-x: 1;
+  --header-expand-y: 1;
+
+  padding: 0;
+  min-height: var(--header-band);
+}
+
+@keyframes site-header-collapse {
+  from {
+    translate: 0 calc(-1 * var(--header-pill-top));
+    scale: var(--header-expand-x) var(--header-expand-y);
+  }
+
+  to {
+    translate: 0 0;
+    scale: 1 1;
+  }
+}
+
+.site-header[data-header-state] .site-header-inner {
+  position: absolute;
+  inset-block-start: var(--header-pill-top);
+  inset-inline: 0;
+  margin-inline: auto;
+  width: min(1180px, calc(100vw - 1.2rem));
+  height: var(--header-pill-height);
+  border: 1px solid color-mix(in srgb, white 8%, transparent 92%);
+  border-radius: 20px;
+  transform: none;
+  transform-origin: 50% 0;
+  will-change: transform;
+  transition: none;
+  animation: site-header-collapse linear both;
+  animation-timeline: scroll(root block);
+  animation-range: 0 var(--header-collapse-end);
+}
+
+.site-header[data-header-state] .shell {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100vw - 2.4rem));
+  margin-inline: auto;
+  min-height: var(--header-band);
+  padding: 0;
+  transform: none;
+  transition: none;
+}
+
+/*
+ * The caustic layers ride along with the surface, so they need one definition
+ * rather than a per-state pair; swapping gradient stacks mid-scroll would be
+ * the discrete jump this whole section exists to remove.
+ */
+.site-header[data-header-state] .site-header-inner::before,
+.site-header[data-header-state] .site-header-inner::after {
+  transition: opacity 240ms var(--header-ease-surface);
+}
+
+/* Decorative glow that only ever existed in the top state; it would pop in and
+   out now that geometry no longer switches. */
+.site-header[data-header-state] .shell::before {
+  display: none;
+}
+
+@supports not (animation-timeline: scroll()) {
+  /*
+   * Without scroll-driven animations the surface stays at its collapsed pill
+   * geometry. A short transform transition still covers the hide/reveal, and
+   * the layout never depends on the animation having run.
+   */
+  .site-header[data-header-state] .site-header-inner {
+    animation: none;
+    translate: 0 0;
+    scale: 1 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header[data-header-state] .site-header-inner {
+    animation: none;
+    translate: 0 0;
+    scale: 1 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .site-header[data-header-state] {
+    --header-band: 58px;
+    --header-pill-top: 5px;
+    --header-pill-height: 48px;
+    --header-collapse-end: 72px;
+  }
+
+  .site-header[data-header-state] .site-header-inner {
+    width: min(100%, calc(100vw - 0.9rem));
+    border-radius: 18px;
+  }
+
+  .site-header[data-header-state] .shell {
+    width: min(100%, calc(100vw - 1.6rem));
+  }
+}
+/*
+ * Horizontal clip for the expanded surface.
+ *
+ * The surface is deliberately scaled wider than the viewport so its rounded
+ * corners finish off screen, and a transformed box still contributes to the
+ * document's scrollable overflow. Without this the page gains a horizontal
+ * scrollbar at the top of every route.
+ *
+ * Only the inline axis is clipped: `overflow-x: clip` with `overflow-y: visible`
+ * is the one mixed pair the cascade leaves alone, so the pill's drop shadow
+ * still spills below the band.
+ */
+.site-header[data-header-state] .site-header-surface-clip {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+  pointer-events: none;
 }
