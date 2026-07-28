@@ -89,7 +89,8 @@
           if (animate) {
             iconEl.style.animation = "none";
             iconEl.offsetHeight;
-            iconEl.style.animation = "ux-icon-rotate 500ms cubic-bezier(0.34, 1.56, 0.64, 1)";
+            iconEl.style.animation =
+              "ux-icon-rotate 420ms cubic-bezier(0.25, 1, 0.5, 1)";
           } else {
             iconEl.style.animation = "";
           }
@@ -162,21 +163,183 @@
       var ticking = false;
       var TOP_THRESHOLD = 10;
       var COMPACT_THRESHOLD = 60;
-      var HIDE_THRESHOLD = 188;
-      var HIDE_DELTA = 52;
+      var HIDE_THRESHOLD = 240;
+      var HIDE_DELTA = 120;
+      var COMPACT_DWELL_MS = 820;
       var SHOW_DELTA = 38;
       var IGNORE_DELTA = 4;
       var HOVER_ZONE = 108;
       var clarity = "normal";
       var hoverReveal = false;
+      var motionReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+      var headerTransition = null;
+      var headerFallbackAnimation = null;
+      var headerTransitionVersion = 0;
+      var compactSince = 0;
+      var hideTimer = null;
 
-      function applyState(nextState) {
-        if (state === nextState && header.dataset.headerState === nextState) return;
-        state = nextState;
+      function clearHideTimer() {
+        if (hideTimer === null) return;
+        window.clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+
+      function writeState(nextState) {
         header.dataset.headerState = nextState;
         header.classList.toggle("is-scrolled", nextState !== "top");
         header.classList.toggle("is-hidden", nextState === "hidden");
+        if (nextState === "compact") {
+          compactSince = performance.now();
+          scheduleHideAfterDwell();
+        }
         notifyHeaderFrameChange();
+      }
+
+      function cleanupHeaderMorph(version) {
+        if (version !== headerTransitionVersion) return;
+        document.documentElement.classList.remove("is-header-morphing");
+        delete header.dataset.headerMorphing;
+        headerTransition = null;
+        if (headerFallbackAnimation) {
+          var animation = headerFallbackAnimation;
+          headerFallbackAnimation = null;
+          if (animation.playState !== "finished") {
+            animation.cancel();
+          }
+        }
+      }
+
+      function shouldMorphGeometry(previousState, nextState) {
+        if (motionReduced.matches) return false;
+        return (
+          (previousState === "top" && nextState === "compact") ||
+          (previousState === "compact" && nextState === "top")
+        );
+      }
+
+      function scheduleHideAfterDwell() {
+        if (state !== "compact" || hideTimer !== null) return;
+        var elapsed = performance.now() - compactSince;
+        var remaining = Math.max(COMPACT_DWELL_MS - elapsed, 0);
+
+        hideTimer = window.setTimeout(function () {
+          hideTimer = null;
+          var y = Math.max(window.scrollY, 0);
+          if (
+            state === "compact" &&
+            y >= HIDE_THRESHOLD &&
+            downTravel >= HIDE_DELTA
+          ) {
+            applyState("hidden");
+            downTravel = 0;
+          }
+        }, remaining);
+      }
+
+      function startFallbackMorph(nextState, version) {
+        var inner = header.querySelector(".site-header-inner");
+        if (!(inner instanceof HTMLElement)) {
+          writeState(nextState);
+          cleanupHeaderMorph(version);
+          return;
+        }
+
+        header.dataset.headerMorphing = "true";
+        var first = inner.getBoundingClientRect();
+        writeState(nextState);
+        var last = inner.getBoundingClientRect();
+        var firstCenterX = first.left + first.width / 2;
+        var firstCenterY = first.top + first.height / 2;
+        var lastCenterX = last.left + last.width / 2;
+        var lastCenterY = last.top + last.height / 2;
+        var scaleX = last.width > 0 ? first.width / last.width : 1;
+        var scaleY = last.height > 0 ? first.height / last.height : 1;
+
+        headerFallbackAnimation = inner.animate(
+          [
+            {
+              translate:
+                firstCenterX - lastCenterX + "px " +
+                (firstCenterY - lastCenterY) + "px",
+              scale: scaleX + " " + scaleY
+            },
+            {
+              translate: "0px 0px",
+              scale: "1 1"
+            }
+          ],
+          {
+            duration: 760,
+            easing: "cubic-bezier(0.45, 0.05, 0.55, 0.95)",
+            fill: "both"
+          }
+        );
+        headerFallbackAnimation.id = "site-header-geometry-fallback";
+        headerFallbackAnimation.finished.then(
+          function () {
+            cleanupHeaderMorph(version);
+          },
+          function () {
+            cleanupHeaderMorph(version);
+          }
+        );
+      }
+
+      function applyState(nextState) {
+        if (state === nextState && header.dataset.headerState === nextState) return;
+        var previousState = state;
+        state = nextState;
+        clearHideTimer();
+        if (nextState === "compact") {
+          // The View Transition update callback commits the new DOM after the
+          // old snapshot is captured. Start the dwell clock in `writeState`,
+          // not here, so the user receives the full visible compact interval.
+          compactSince = 0;
+        }
+        headerTransitionVersion += 1;
+        var version = headerTransitionVersion;
+
+        if (headerTransition) {
+          headerTransition.skipTransition();
+          headerTransition = null;
+        }
+        if (headerFallbackAnimation) {
+          var animation = headerFallbackAnimation;
+          headerFallbackAnimation = null;
+          animation.cancel();
+        }
+
+        if (!shouldMorphGeometry(previousState, nextState)) {
+          cleanupHeaderMorph(version);
+          writeState(nextState);
+          return;
+        }
+
+        if (typeof document.startViewTransition !== "function") {
+          startFallbackMorph(nextState, version);
+          return;
+        }
+
+        document.documentElement.classList.add("is-header-morphing");
+        header.dataset.headerMorphing = "true";
+
+        try {
+          headerTransition = document.startViewTransition(function () {
+            if (version !== headerTransitionVersion) return;
+            writeState(nextState);
+          });
+          headerTransition.finished.then(
+            function () {
+              cleanupHeaderMorph(version);
+            },
+            function () {
+              cleanupHeaderMorph(version);
+            }
+          );
+        } catch (_error) {
+          cleanupHeaderMorph(version);
+          writeState(nextState);
+        }
       }
 
       function applyClarity(nextClarity) {
@@ -196,6 +359,8 @@
       function syncInitialState() {
         var y = Math.max(window.scrollY, 0);
         state = y <= TOP_THRESHOLD ? "top" : "compact";
+        compactSince = state === "compact" ? performance.now() : 0;
+        clearHideTimer();
         downTravel = 0;
         upTravel = 0;
         lastY = y;
@@ -204,6 +369,8 @@
         header.classList.toggle("is-scrolled", state !== "top");
         header.classList.toggle("is-hidden", state === "hidden");
         header.classList.remove("is-hover-revealed");
+        document.documentElement.classList.remove("is-header-morphing");
+        delete header.dataset.headerMorphing;
         notifyHeaderFrameChange();
       }
 
@@ -233,17 +400,25 @@
         } else {
           upTravel += Math.abs(delta);
           downTravel = 0;
+          clearHideTimer();
         }
 
         if (state === "top" && y >= COMPACT_THRESHOLD) {
           applyState("compact");
-          downTravel = 0;
+          downTravel = Math.max(y - COMPACT_THRESHOLD, 0);
         }
 
         if (state === "compact") {
           if (delta > 0 && y >= HIDE_THRESHOLD && downTravel >= HIDE_DELTA) {
-            applyState("hidden");
-            downTravel = 0;
+            if (
+              compactSince > 0 &&
+              performance.now() - compactSince >= COMPACT_DWELL_MS
+            ) {
+              applyState("hidden");
+              downTravel = 0;
+            } else if (compactSince > 0) {
+              scheduleHideAfterDwell();
+            }
           }
         } else if (state === "hidden") {
           if (upTravel >= SHOW_DELTA) {

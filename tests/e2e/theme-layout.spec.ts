@@ -1144,6 +1144,301 @@ test("header chrome animates only composited properties so scrolling stays smoot
   }
 });
 
+test("header top-to-compact geometry uses a slow isolated view transition", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.addInitScript(() => {
+    const doc = document as Document & {
+      startViewTransition?: (callback: () => void) => {
+        finished: Promise<void>;
+      };
+    };
+    const nativeStart = doc.startViewTransition?.bind(document);
+    (window as typeof window & { __headerViewTransitionCount?: number })
+      .__headerViewTransitionCount = 0;
+
+    if (nativeStart) {
+      doc.startViewTransition = (callback) => {
+        const state = window as typeof window & {
+          __headerViewTransitionCount?: number;
+        };
+        state.__headerViewTransitionCount =
+          (state.__headerViewTransitionCount ?? 0) + 1;
+        return nativeStart(callback);
+      };
+    }
+  });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  const supportsViewTransitions = await page.evaluate(
+    () => typeof document.startViewTransition === "function",
+  );
+  test.skip(
+    !supportsViewTransitions,
+    "Chromium must support the View Transition API for this assertion",
+  );
+
+  await page.evaluate(() => {
+    window.scrollTo(0, 96);
+  });
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as typeof window & {
+            __headerViewTransitionCount?: number;
+          }).__headerViewTransitionCount ?? 0,
+      ),
+    )
+    .toBe(1);
+
+  const header = page.locator(".site-header");
+  await expect(header).toHaveAttribute("data-header-state", "compact");
+  await expect(header).toHaveAttribute("data-header-morphing", "true");
+
+  const motion = await page.evaluate(() => {
+    const inner = document.querySelector(".site-header-inner");
+    const rootStyles = getComputedStyle(document.documentElement);
+    const innerStyles = inner ? getComputedStyle(inner) : null;
+    const groupStyles = getComputedStyle(
+      document.documentElement,
+      "::view-transition-group(site-header)",
+    );
+    const oldStyles = getComputedStyle(
+      document.documentElement,
+      "::view-transition-old(site-header)",
+    );
+    const newStyles = getComputedStyle(
+      document.documentElement,
+      "::view-transition-new(site-header)",
+    );
+    const duration = groupStyles.animationDuration.trim();
+    const durationMs = duration.endsWith("ms")
+      ? Number.parseFloat(duration)
+      : Number.parseFloat(duration) * 1000;
+
+    return {
+      rootTransitionName: rootStyles.viewTransitionName,
+      headerTransitionName: innerStyles?.viewTransitionName ?? "",
+      durationMs,
+      easing: groupStyles.animationTimingFunction,
+      oldAnimationName: oldStyles.animationName,
+      oldOpacity: oldStyles.opacity,
+      newAnimationName: newStyles.animationName,
+      newOpacity: newStyles.opacity,
+    };
+  });
+
+  expect(motion.rootTransitionName).toBe("none");
+  expect(motion.headerTransitionName).toBe("site-header");
+  expect(motion.durationMs).toBeGreaterThanOrEqual(700);
+  expect(motion.durationMs).toBeLessThanOrEqual(850);
+  expect(motion.easing).toBe("cubic-bezier(0.45, 0.05, 0.55, 0.95)");
+  expect(motion.oldAnimationName).toBe("none");
+  expect(motion.oldOpacity).toBe("0");
+  expect(motion.newAnimationName).toBe("none");
+  expect(motion.newOpacity).toBe("1");
+
+  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
+    timeout: 3000,
+  });
+
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+  });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as typeof window & {
+            __headerViewTransitionCount?: number;
+          }).__headerViewTransitionCount ?? 0,
+      ),
+    )
+    .toBe(2);
+  await expect(header).toHaveAttribute("data-header-state", "top");
+  await expect(header).toHaveAttribute("data-header-morphing", "true");
+  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
+    timeout: 3000,
+  });
+});
+
+test("header geometry uses a compositor FLIP fallback without View Transitions", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.addInitScript(() => {
+    Object.defineProperty(document, "startViewTransition", {
+      configurable: true,
+      value: undefined,
+    });
+  });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  await page.evaluate(() => {
+    window.scrollTo(0, 96);
+  });
+
+  const header = page.locator(".site-header");
+  await expect(header).toHaveAttribute("data-header-state", "compact");
+  await expect(header).toHaveAttribute("data-header-morphing", "true");
+
+  const fallback = await page.evaluate(() => {
+    const inner = document.querySelector(".site-header-inner");
+    const animation = inner
+      ?.getAnimations()
+      .find((candidate) => candidate.id === "site-header-geometry-fallback");
+    const keyframes =
+      animation?.effect instanceof KeyframeEffect
+        ? animation.effect.getKeyframes()
+        : [];
+    return {
+      duration: Number(animation?.effect?.getTiming().duration ?? 0),
+      easing: animation?.effect?.getTiming().easing ?? "",
+      keyframes,
+    };
+  });
+
+  expect(fallback.duration).toBeGreaterThanOrEqual(700);
+  expect(fallback.duration).toBeLessThanOrEqual(850);
+  expect(fallback.easing).toBe("cubic-bezier(0.45, 0.05, 0.55, 0.95)");
+  expect(fallback.keyframes).toHaveLength(2);
+  expect(fallback.keyframes[0]?.scale).not.toBe("1");
+  expect(fallback.keyframes[1]?.scale).toBe("1");
+
+  await expect(header).not.toHaveAttribute("data-header-morphing", "true", {
+    timeout: 3000,
+  });
+});
+
+test("header geometry morph is bypassed for reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.addInitScript(() => {
+    const doc = document as Document & {
+      startViewTransition?: (callback: () => void) => {
+        finished: Promise<void>;
+      };
+    };
+    const nativeStart = doc.startViewTransition?.bind(document);
+    (window as typeof window & { __headerViewTransitionCount?: number })
+      .__headerViewTransitionCount = 0;
+
+    if (nativeStart) {
+      doc.startViewTransition = (callback) => {
+        const state = window as typeof window & {
+          __headerViewTransitionCount?: number;
+        };
+        state.__headerViewTransitionCount =
+          (state.__headerViewTransitionCount ?? 0) + 1;
+        return nativeStart(callback);
+      };
+    }
+  });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  await page.evaluate(() => {
+    window.scrollTo(0, 96);
+  });
+
+  const header = page.locator(".site-header");
+  await expect(header).toHaveAttribute("data-header-state", "compact");
+  await expect(header).not.toHaveAttribute("data-header-morphing");
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & {
+          __headerViewTransitionCount?: number;
+        }).__headerViewTransitionCount ?? 0,
+    ),
+  ).toBe(0);
+});
+
+test("header theme icon uses a non-overshooting rotation", async ({ page }) => {
+  await page.goto("/posts/paragraph-anchor-design");
+  await page.locator("#theme-toggle").click();
+
+  const animation = await page
+    .locator(".theme-toggle-icon")
+    .evaluate((node) => (node as HTMLElement).style.animation);
+
+  /*
+   * Assert the parts, not the authored order. The browser reserializes the
+   * `animation` shorthand into canonical order (duration, easing, delay, ...,
+   * name), so the name never appears next to the duration the way it is
+   * written in the source.
+   */
+  expect(animation).toContain("ux-icon-rotate");
+  expect(animation).toContain("420ms");
+  expect(animation).toContain("cubic-bezier(0.25, 1, 0.5, 1)");
+  // The previous curve overshot past 1, which read as a bounce.
+  expect(animation).not.toContain("1.56");
+});
+
+test("header remains compact long enough to finish its geometry morph before hiding", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+  await page.evaluate(() => {
+    const header = document.querySelector(".site-header");
+    const state = window as typeof window & {
+      __headerStateTimeline?: Array<{ state: string | null; at: number }>;
+    };
+    state.__headerStateTimeline = [];
+    if (!header) return;
+
+    new MutationObserver(() => {
+      state.__headerStateTimeline?.push({
+        state: header.getAttribute("data-header-state"),
+        at: performance.now(),
+      });
+    }).observe(header, {
+      attributeFilter: ["data-header-state"],
+    });
+  });
+
+  await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight * 0.68);
+  });
+
+  const header = page.locator(".site-header");
+  await expect(header).toHaveAttribute("data-header-state", "hidden", {
+    timeout: 5000,
+  });
+
+  const dwell = await page.evaluate(() => {
+    const timeline =
+      (window as typeof window & {
+        __headerStateTimeline?: Array<{ state: string | null; at: number }>;
+      }).__headerStateTimeline ?? [];
+    const compact = timeline.find((entry) => entry.state === "compact");
+    const hidden = timeline.find((entry) => entry.state === "hidden");
+    return {
+      timeline,
+      dwellMs:
+        compact && hidden
+          ? Math.round((hidden.at - compact.at) * 10) / 10
+          : 0,
+    };
+  });
+
+  expect(dwell.timeline.map((entry) => entry.state)).toEqual([
+    "compact",
+    "hidden",
+  ]);
+  expect(
+    dwell.dwellMs,
+    "compact must remain visible until the 760ms geometry morph can finish",
+  ).toBeGreaterThanOrEqual(800);
+});
+
 test("article header transitions through top, compact, hidden, and restores on upward scroll", async ({
   page,
 }) => {

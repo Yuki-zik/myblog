@@ -11,10 +11,10 @@
  */
 
 .site-header {
-  --header-motion-surface: 620ms;
-  --header-motion-opacity: 360ms;
-  --header-ease-geometry: cubic-bezier(0.22, 0.86, 0.24, 1);
-  --header-ease-surface: cubic-bezier(0.2, 0.82, 0.22, 1);
+  --header-motion-surface: 720ms;
+  --header-motion-opacity: 520ms;
+  --header-ease-geometry: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --header-ease-surface: cubic-bezier(0.45, 0.05, 0.55, 0.95);
   --header-ease-exit: cubic-bezier(0.32, 0.06, 0.2, 1);
   will-change: transform, opacity;
   transition:
@@ -55,6 +55,73 @@
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem) minmax(0, 1fr);
   gap: clamp(0.8rem, 1vw, 1.1rem);
   transition: transform var(--header-motion-surface) var(--header-ease-geometry);
+}
+
+/*
+ * The top and compact consoles have genuinely different geometry: width,
+ * padding, height and corner treatment all change. Those properties must not
+ * be interpolated on the live sticky subtree, but applying them in one frame
+ * makes the console visibly snap even when its small transform is slow.
+ *
+ * A same-document View Transition solves that exact mismatch. The browser
+ * captures the old and new console as isolated images, then morphs those
+ * snapshots on the compositor for 760ms. The live DOM is already in its final
+ * layout under the snapshot, so the page never performs per-frame reflow or
+ * backdrop-filter re-rasterization.
+ */
+html.is-header-morphing {
+  --header-morph-duration: 760ms;
+  --header-morph-ease: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  view-transition-name: none;
+}
+
+html.is-header-morphing .site-header-inner {
+  view-transition-name: site-header;
+}
+
+html.is-header-morphing::view-transition-group(site-header),
+html.is-header-morphing::view-transition-image-pair(site-header) {
+  animation-duration: var(--header-morph-duration);
+  animation-timing-function: var(--header-morph-ease);
+  animation-fill-mode: both;
+}
+
+html.is-header-morphing::view-transition-image-pair(site-header) {
+  isolation: isolate;
+}
+
+html.is-header-morphing::view-transition-old(site-header),
+html.is-header-morphing::view-transition-new(site-header) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.is-header-morphing::view-transition-old(site-header) {
+  opacity: 0;
+}
+
+html.is-header-morphing::view-transition-new(site-header) {
+  opacity: 1;
+}
+
+/*
+ * Freeze the live header while the snapshots animate. Otherwise its ordinary
+ * hover/transform transitions would start underneath the View Transition and
+ * the final frame would inherit a half-finished live transition.
+ */
+.site-header[data-header-morphing="true"],
+.site-header[data-header-morphing="true"] *,
+.site-header[data-header-morphing="true"] *::before,
+.site-header[data-header-morphing="true"] *::after {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.is-header-morphing::view-transition-group(site-header),
+  html.is-header-morphing::view-transition-old(site-header),
+  html.is-header-morphing::view-transition-new(site-header) {
+    animation-duration: 0.01ms;
+  }
 }
 
 .brand {
