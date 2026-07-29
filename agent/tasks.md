@@ -2,6 +2,7 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 顶部栏第六轮：内容随框收敛（同一 scroll timeline + `@property` 进度值驱动字号/间距/控件尺寸），保持文字不被缩放 | ✅ | AI Assistant | 2026-07-29 |
 | 高 | 顶部栏第五轮：折叠药丸补 26px 内边距、改用 Apple 连续曲率 squircle 圆角、折叠缓动加有界 overshoot，并把几何统一到 token | ✅ | AI Assistant | 2026-07-29 |
 | 高 | 顶部栏第四轮：改为滚动位置驱动的连续折叠（表面与内容拆分、仅动 transform/scale、材质统一），并修掉横向溢出与滚动驱动动画导致的测试挂死 | ✅ | AI Assistant | 2026-07-28 |
 | 高 | 三轮收敛顶部栏：改用隔离 View Transition 做 top↔compact 几何 morph（760ms），补 FLIP 回退与 reduced-motion 直切，并把 compact 最小停留提到 820ms 以免快速滚动截断动画 | ✅ | AI Assistant | 2026-07-28 |
