@@ -1202,19 +1202,114 @@ test("header geometry is a continuous function of scroll offset", async ({
   // Fully collapsed to the pill by the end of the range.
   expect(widths[widths.length - 1]).toBeLessThanOrEqual(1180);
 
-  // Strictly monotonic in between: every scroll increment moves the geometry,
-  // which is what rules out a threshold-triggered jump.
-  for (let index = 1; index < widths.length; index += 1) {
+  /*
+   * Every scroll increment must move the geometry, which is what rules out a
+   * threshold-triggered jump. The collapse is not strictly monotonic, though:
+   * the easing contracts slightly past the resting width and settles back, so
+   * the tail can widen a little. That rebound is bounded and must never undo
+   * the collapse, so the shrink is asserted over the leading samples and the
+   * tail is allowed a small, capped recovery.
+   */
+  const settledWidth = widths[widths.length - 1];
+
+  for (let index = 1; index < widths.length - 1; index += 1) {
     expect(
       widths[index],
       `width at scrollY=${samples[index].y} should be under the previous sample`,
     ).toBeLessThan(widths[index - 1]);
   }
 
+  const minimumWidth = Math.min(...widths);
+  expect(
+    settledWidth - minimumWidth,
+    "the overshoot should settle back by only a few pixels",
+  ).toBeLessThanOrEqual(24);
+  expect(
+    settledWidth,
+    "the rebound must not undo the collapse",
+  ).toBeLessThan(widths[widths.length - 2] + 24);
+
   // The midpoint must be genuinely intermediate, not snapped to either end.
   const midpoint = widths[2];
   expect(midpoint).toBeLessThan(widths[0] - 40);
-  expect(midpoint).toBeGreaterThan(widths[widths.length - 1] + 40);
+  expect(midpoint).toBeGreaterThan(settledWidth - 40);
+});
+
+test("collapsed header keeps its content clear of the pill edge", async ({
+  page,
+}) => {
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  /*
+   * The surface and the content column used to be the same width, so the brand
+   * and the nav sat flush against the pill edge: measured at 1440px the gap on
+   * each side was exactly 0px. The surface must now overhang the content, and
+   * it must do so at every width, since the pill and the column are clamped by
+   * different expressions.
+   */
+  for (const width of [1440, 1280, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => {
+      window.scrollTo(0, 96);
+    });
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
+
+    const gaps = await page.evaluate(() => {
+      const surface = document.querySelector(".site-header-inner");
+      const brand = document.querySelector(".site-header .brand");
+      const nav = document.querySelector(".site-header .site-nav");
+      if (!surface || !brand || !nav) return null;
+      const surfaceRect = surface.getBoundingClientRect();
+      return {
+        left: brand.getBoundingClientRect().left - surfaceRect.left,
+        right: surfaceRect.right - nav.getBoundingClientRect().right,
+      };
+    });
+
+    expect(gaps, `viewport ${width} should expose the header`).not.toBeNull();
+    expect(
+      gaps!.left,
+      `brand should clear the pill edge at ${width}px`,
+    ).toBeGreaterThanOrEqual(12);
+    expect(
+      gaps!.right,
+      `nav should clear the pill edge at ${width}px`,
+    ).toBeGreaterThanOrEqual(12);
+  }
+});
+
+test("collapsed header uses continuous-curvature corners", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/posts/paragraph-anchor-design");
+
+  const supportsSquircle = await page.evaluate(() =>
+    CSS.supports("corner-shape: squircle"),
+  );
+  test.skip(!supportsSquircle, "browser must support corner-shape");
+
+  /*
+   * A circular quadrant jumps from zero curvature to maximum curvature exactly
+   * where it meets the straight edge. A squircle ramps it in, which is what
+   * makes the corner read as shaped rather than clipped.
+   */
+  const corner = await page.evaluate(() => {
+    const surface = document.querySelector(".site-header-inner");
+    if (!surface) return null;
+    const styles = getComputedStyle(surface);
+    return {
+      shape: styles.getPropertyValue("corner-shape").trim(),
+      radius: Number.parseFloat(styles.borderTopLeftRadius),
+    };
+  });
+
+  expect(corner?.shape).toBe("squircle");
+  expect(corner?.radius).toBeGreaterThanOrEqual(20);
 });
 
 test("header surface keeps one material across the state threshold", async ({

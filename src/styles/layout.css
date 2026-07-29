@@ -832,6 +832,27 @@ html.is-header-morphing::view-transition-new(site-header) {
   --header-pill-top: 7px;
   --header-pill-height: 54px;
   --header-collapse-end: 96px;
+  --header-pill-width: 1120px;
+  /* Clearance between the pill edge and the first/last piece of content. */
+  --header-content-inset: 26px;
+  --header-pill-radius: 20px;
+  /*
+   * A squircle of a given radius reads tighter than a circular corner of the
+   * same value, so the superelliptical corner is given more room to work with.
+   */
+  --header-pill-radius-squircle: 26px;
+  /*
+   * Slight overshoot near the end of the collapse.
+   *
+   * A `linear` timeline maps scroll to geometry one-to-one, which is accurate
+   * but inert: the bar simply tracks the finger. Letting the pill contract a
+   * little past its resting width and settle back gives the collapse a sense of
+   * weight without decoupling it from scroll — seek to any offset and the shape
+   * is still a pure function of that offset, so it stays reversible.
+   */
+  --header-collapse-ease: linear(
+    0, 0.28 18%, 0.55 34%, 0.78 50%, 0.94 64%, 1.035 78%, 1.02 88%, 1
+  );
   /*
    * Set by `UiControllers.astro` on load and resize. The factor depends on the
    * viewport width, and CSS cannot divide one length by another.
@@ -860,23 +881,55 @@ html.is-header-morphing::view-transition-new(site-header) {
   inset-block-start: var(--header-pill-top);
   inset-inline: 0;
   margin-inline: auto;
-  width: min(1180px, calc(100vw - 1.2rem));
+  width: min(var(--header-pill-width), calc(100vw - 1.2rem));
   height: var(--header-pill-height);
   border: 1px solid color-mix(in srgb, white 8%, transparent 92%);
-  border-radius: 20px;
+  border-radius: var(--header-pill-radius);
   transform: none;
   transform-origin: 50% 0;
   will-change: transform;
   transition: none;
-  animation: site-header-collapse linear both;
+  animation: site-header-collapse var(--header-collapse-ease) both;
   animation-timeline: scroll(root block);
   animation-range: 0 var(--header-collapse-end);
 }
 
+/*
+ * Continuous-curvature corners, the way Apple shapes hardware and UI.
+ *
+ * A plain `border-radius` draws a circular quadrant, so curvature jumps from
+ * zero to its maximum exactly where the arc meets the straight edge. At this
+ * radius on a wide bar that discontinuity is what reads as a rounded rectangle
+ * rather than a shaped object. A squircle ramps curvature in, so the corner
+ * joins the edge smoothly.
+ *
+ * This degrades on its own: browsers without `corner-shape` keep the plain
+ * rounded corner declared above, which is the previous appearance. The radius
+ * is enlarged alongside it because a squircle reads visually tighter than a
+ * circular corner of the same nominal radius.
+ */
+@supports (corner-shape: squircle) {
+  .site-header[data-header-state] .site-header-inner {
+    corner-shape: squircle;
+    border-radius: var(--header-pill-radius-squircle);
+  }
+}
+
+/*
+ * The content column is deliberately narrower than the surface.
+ *
+ * Both were previously the same width, so the brand and the nav sat flush
+ * against the pill edge with no clearance at all — measured at 1440px the gap
+ * on each side was exactly 0px. The surface now extends past the content on
+ * both sides, and that overhang is the collapsed pill's inner padding.
+ */
 .site-header[data-header-state] .shell {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100vw - 2.4rem));
+  width: min(
+    calc(var(--header-pill-width) - 2 * var(--header-content-inset)),
+    calc(100vw - 1.2rem - 2 * var(--header-content-inset))
+  );
   margin-inline: auto;
   min-height: var(--header-band);
   padding: 0;
@@ -922,20 +975,20 @@ html.is-header-morphing::view-transition-new(site-header) {
 }
 
 @media (max-width: 900px) {
+  /*
+   * Narrow screens drive the same tokens rather than redeclaring geometry, so
+   * the pill width, the content inset and the corner treatment stay in one
+   * place. The inset shrinks because there is far less room to give away.
+   */
   .site-header[data-header-state] {
     --header-band: 58px;
     --header-pill-top: 5px;
     --header-pill-height: 48px;
     --header-collapse-end: 72px;
-  }
-
-  .site-header[data-header-state] .site-header-inner {
-    width: min(100%, calc(100vw - 0.9rem));
-    border-radius: 18px;
-  }
-
-  .site-header[data-header-state] .shell {
-    width: min(100%, calc(100vw - 1.6rem));
+    --header-pill-width: calc(100vw - 0.9rem);
+    --header-content-inset: 14px;
+    --header-pill-radius: 18px;
+    --header-pill-radius-squircle: 23px;
   }
 }
 /*
