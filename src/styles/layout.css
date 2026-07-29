@@ -842,6 +842,19 @@ html.is-header-morphing::view-transition-new(site-header) {
    */
   --header-pill-radius-squircle: 26px;
   /*
+   * Content sizing, expressed as "compact value" + "how much bigger it is when
+   * expanded". The content layer interpolates between the two, so the brand and
+   * the controls contract along with the surface instead of standing still.
+   */
+  --header-brand-size-compact: 1.06rem;
+  --header-brand-size-delta: 0.18rem;
+  --header-nav-size-compact: 0.8rem;
+  --header-nav-size-delta: 0.06rem;
+  --header-nav-gap-compact: 0.5rem;
+  --header-nav-gap-delta: 0.15rem;
+  --header-control-size-compact: 2.1rem;
+  --header-control-size-delta: 0.3rem;
+  /*
    * Slight overshoot near the end of the collapse.
    *
    * A `linear` timeline maps scroll to geometry one-to-one, which is accurate
@@ -989,6 +1002,10 @@ html.is-header-morphing::view-transition-new(site-header) {
     --header-content-inset: 14px;
     --header-pill-radius: 18px;
     --header-pill-radius-squircle: 23px;
+    --header-brand-size-compact: 1rem;
+    --header-brand-size-delta: 0.1rem;
+    --header-control-size-compact: 1.95rem;
+    --header-control-size-delta: 0.2rem;
   }
 }
 /*
@@ -1010,4 +1027,111 @@ html.is-header-morphing::view-transition-new(site-header) {
   overflow-x: clip;
   overflow-y: visible;
   pointer-events: none;
+}
+
+/* ==========================================================================
+ * Content collapse
+ *
+ * The surface shrinks by about a quarter on the way down, but the brand, search
+ * field and nav previously kept their full size throughout: measured at 1440px
+ * the surface went 1536px -> 1120px while the brand's position, width and font
+ * size did not change at all. The frame moved and its contents did not, which
+ * reads as the box sliding over static text rather than one object contracting.
+ *
+ * The content is NOT scaled to fix that. Scaling text resamples glyphs, which is
+ * what made an earlier attempt look doubled and blurred. Instead the same scroll
+ * timeline drives a progress value, and each piece of content converges on its
+ * compact size through real typographic properties, so glyphs are always
+ * rasterized at their true size.
+ *
+ * `--header-collapse-progress` is a registered property; without registration a
+ * custom property animates discretely and the whole effect would snap.
+ * ========================================================================== */
+
+@property --header-collapse-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes site-header-content-collapse {
+  from {
+    --header-collapse-progress: 0;
+  }
+
+  to {
+    --header-collapse-progress: 1;
+  }
+}
+
+.site-header[data-header-state] .shell {
+  /*
+   * Same timeline and range as the surface, so the two stay locked together at
+   * every scroll offset rather than merely ending in the same place. The easing
+   * is shared too, which keeps the content in step through the overshoot.
+   */
+  animation: site-header-content-collapse var(--header-collapse-ease) both;
+  animation-timeline: scroll(root block);
+  animation-range: 0 var(--header-collapse-end);
+
+  /* Interpolated by the progress value above: 1 at the top, 0 when collapsed. */
+  --header-content-expansion: calc(1 - var(--header-collapse-progress));
+}
+
+.site-header[data-header-state] .brand {
+  font-size: calc(
+    var(--header-brand-size-compact) + var(--header-brand-size-delta) *
+      var(--header-content-expansion)
+  );
+}
+
+.site-header[data-header-state] .site-nav a {
+  font-size: calc(
+    var(--header-nav-size-compact) + var(--header-nav-size-delta) *
+      var(--header-content-expansion)
+  );
+}
+
+.site-header[data-header-state] .site-nav {
+  gap: calc(
+    var(--header-nav-gap-compact) + var(--header-nav-gap-delta) *
+      var(--header-content-expansion)
+  );
+}
+
+.site-header[data-header-state] .header-search-trigger,
+.site-header[data-header-state] .header-search-field {
+  min-height: calc(
+    var(--header-control-size-compact) + var(--header-control-size-delta) *
+      var(--header-content-expansion)
+  );
+}
+
+.site-header[data-header-state] .theme-toggle {
+  inline-size: calc(
+    var(--header-control-size-compact) + var(--header-control-size-delta) *
+      var(--header-content-expansion)
+  );
+  block-size: calc(
+    var(--header-control-size-compact) + var(--header-control-size-delta) *
+      var(--header-content-expansion)
+  );
+}
+
+@supports not (animation-timeline: scroll()) {
+  /*
+   * Without a scroll timeline the progress value never advances, so pin the
+   * content at its compact size to match the surface, which is also pinned.
+   */
+  .site-header[data-header-state] .shell {
+    animation: none;
+    --header-collapse-progress: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header[data-header-state] .shell {
+    animation: none;
+    --header-collapse-progress: 1;
+  }
 }

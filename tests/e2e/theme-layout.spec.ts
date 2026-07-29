@@ -1235,6 +1235,71 @@ test("header geometry is a continuous function of scroll offset", async ({
   expect(midpoint).toBeGreaterThan(settledWidth - 40);
 });
 
+test("header content contracts along with the surface", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/posts/paragraph-anchor-design");
+  await disableSmoothScroll(page);
+
+  const supportsScrollTimeline = await page.evaluate(() =>
+    CSS.supports("animation-timeline: scroll()"),
+  );
+  test.skip(!supportsScrollTimeline, "browser must support scroll-driven animations");
+
+  /*
+   * The surface used to shrink by about a quarter while the brand, the controls
+   * and the nav kept their full size, so the frame appeared to slide over static
+   * text. Content now converges on its compact size across the same scroll range.
+   *
+   * Crucially it converges through real typographic properties rather than a
+   * transform: scaled text resamples glyphs, which is what made an earlier
+   * attempt look doubled and blurred. The scale assertion below is what keeps
+   * anyone from "fixing" a future regression by scaling the content again.
+   */
+  const sample = async (scrollY: number) => {
+    await page.evaluate((offset) => {
+      window.scrollTo(0, offset);
+    }, scrollY);
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
+    return page.evaluate(() => {
+      const brand = document.querySelector(".site-header .brand");
+      const toggle = document.querySelector(".site-header .theme-toggle");
+      const surface = document.querySelector(".site-header-inner");
+      if (!brand || !toggle || !surface) return null;
+      return {
+        surfaceWidth: surface.getBoundingClientRect().width,
+        brandFontSize: Number.parseFloat(getComputedStyle(brand).fontSize),
+        brandScale: getComputedStyle(brand).scale,
+        toggleWidth: toggle.getBoundingClientRect().width,
+      };
+    });
+  };
+
+  const expanded = await sample(0);
+  const middle = await sample(48);
+  const collapsed = await sample(96);
+
+  expect(expanded).not.toBeNull();
+
+  // The surface really does contract, so the content has something to follow.
+  expect(collapsed!.surfaceWidth).toBeLessThan(expanded!.surfaceWidth - 200);
+
+  // Type and controls shrink with it, and pass through a genuine midpoint.
+  expect(collapsed!.brandFontSize).toBeLessThan(expanded!.brandFontSize - 1);
+  expect(middle!.brandFontSize).toBeLessThan(expanded!.brandFontSize);
+  expect(middle!.brandFontSize).toBeGreaterThan(collapsed!.brandFontSize);
+  expect(collapsed!.toggleWidth).toBeLessThan(expanded!.toggleWidth - 2);
+
+  // Never by scaling: glyphs must stay rasterized at their true size.
+  for (const state of [expanded, middle, collapsed]) {
+    expect(state!.brandScale === "none" || state!.brandScale === "1").toBe(true);
+  }
+});
+
 test("collapsed header keeps its content clear of the pill edge", async ({
   page,
 }) => {
