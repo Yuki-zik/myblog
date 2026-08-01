@@ -2,6 +2,7 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 调查 PR #1 的 GitHub CI 与 Vercel 失败，安全合并 `origin/main` 到 `feat/optimize-pass`，按根因做最小修复并完成验证、提交与推送 | ⏳ | AI Assistant | 2026-08-01 |
 | 高 | 准确修复视觉审查发现的问题：覆盖搜索裁切/焦点、移动归档/concept overflow、文章 rail、阅读断点、raw slug、轮播滚轮、主题 toggle、back-to-top、Waline 语气与截图复核 | ✅ | AI Assistant | 2026-06-03 |
 | 高 | 对博客进行视觉检查：用真实浏览器检查首页、discover 页面、文章阅读页、归档/作者页、主题切换、搜索和响应式布局，输出视觉问题清单 | ✅ | AI Assistant | 2026-06-03 |
 | 高 | 深度解决全面审查发现的混乱点：修 Node/CI engine、Waline RLS LOGIN 契约、CSP allowlist、audit 门禁、未用依赖、README 版本、格式噪声和 E2E 并发导航超时 | ✅ | AI Assistant | 2026-06-03 |
