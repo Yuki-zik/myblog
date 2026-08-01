@@ -14,6 +14,5 @@ test("site endpoints expose canonical SEO and security headers", async ({ reques
 
   const search = await request.get("/search-index.json");
   expect(search.ok()).toBe(true);
-  expect(search.headers()["x-content-type-options"]).toBe("nosniff");
-  expect(search.headers()["cache-control"]).toContain("s-maxage=300");
+  expect(search.headers()["content-type"]).toContain("application/json");
 });

@@ -20,10 +20,16 @@
       "sqlite3"
     ],
     "overrides": {
-      "form-data@<2.5.4": "2.5.4",
-      "protobufjs": "^7.5.8",
-      "axios": "^0.32.0",
-      "tar": "^7.5.10",
+      "form-data@<2.5.6": "2.5.6",
+      "form-data@>=3.0.0 <3.0.5": "3.0.5",
+      "form-data@>=4.0.0 <4.0.6": "4.0.6",
+      "protobufjs": "^7.6.5",
+      "axios": "^0.33.0",
+      "brace-expansion@<1.1.17": "1.1.17",
+      "dompurify": "^3.4.11",
+      "linkify-it": "^5.0.2",
+      "nodemailer": "^9.0.1",
+      "tar": "^7.5.21",
       "validator": "^13.15.23",
       "ws": "^8.20.1",
       "qs": "^6.15.2"

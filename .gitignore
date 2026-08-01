@@ -13,3 +13,6 @@ test-results
 # Local debug / screenshot artifacts
 .playwright-cli/
 output/
+tmp
+.playwright-mcp
+.impeccable

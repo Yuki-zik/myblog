@@ -18,20 +18,20 @@ const {
 } = Astro.props;
 ---
 
-<header class="discover-section-head" data-ux-reveal="fade-up">
-  <div class="discover-section-head__copy">
-    <p class="discover-section-head__kicker">{kicker}</p>
+<header class="discover-section-head flex items-end justify-between gap-6 pb-4" data-ux-reveal="fade-up">
+  <div class="discover-section-head__copy grid gap-2">
+    <p class="discover-section-head__kicker text-[0.75rem] font-bold uppercase tracking-[0.22em]">{kicker}</p>
     <h2>{title}</h2>
-    {description ? <p>{description}</p> : null}
+    {description ? <p class="max-w-[40rem] leading-[1.72]">{description}</p> : null}
   </div>
 
-  <div class="discover-section-head__meta">
-    {countLabel ? <span class="discover-section-head__count">{countLabel}</span> : null}
+  <div class="discover-section-head__meta inline-flex flex-wrap items-center gap-[0.9rem]">
+    {countLabel ? <span class="discover-section-head__count text-[0.75rem]">{countLabel}</span> : null}
     {
       linkHref && linkLabel ? (
-        <a href={linkHref} class="discover-section-head__link">
+        <a href={linkHref} class="discover-section-head__link inline-flex items-center gap-1 text-[0.75rem]">
           <span>{linkLabel}</span>
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="size-3" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path>
             <path d="m12 5 7 7-7 7"></path>
           </svg>

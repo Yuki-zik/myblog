@@ -1,17 +1,13 @@
+/*
+ * Theme toggle control.
+ *
+ * Box model (size, radius, flex centring, border width, cursor) lives as
+ * Tailwind utilities on the button in `src/layouts/BaseLayout.astro`.
+ * Colour/background/border-color are supplied by the state-scoped chrome rules
+ * in `layout.css` (`[data-header-state]`), so they are not duplicated here.
+ */
+
 .theme-toggle {
-  border: 1px solid var(--chrome-line);
-  background: color-mix(in srgb, var(--chrome-bg) 76%, var(--surface-strong) 24%);
-  color: var(--chrome-text);
-  border-radius: 999px;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  gap: 0;
   transition:
     width var(--duration-fast) var(--ease-out),
     padding-inline var(--duration-fast) var(--ease-out),
@@ -22,59 +18,16 @@
     transform var(--duration-fast) var(--ease-out);
 }
 
+/* The colour half of this hover is escalated at the bottom of this file — see
+   the state-scoped overrides block for why. */
 .theme-toggle:hover {
-  color: white;
-  background: var(--chrome-hover);
-  border-color: color-mix(in srgb, var(--chrome-text) 20%, transparent 80%);
   transform: translateY(-1px);
 }
 
-.theme-toggle-icon {
-  width: 1rem;
-  height: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* icon markup is injected by UiControllers, so it cannot carry utilities */
 .theme-toggle-icon svg {
   width: 100%;
   height: 100%;
-}
-
-.theme-toggle:hover,
-.theme-toggle:focus-visible {
-  width: auto;
-  min-width: 2.5rem;
-  padding-inline: 0.72rem;
-  gap: 0.42rem;
-}
-
-.theme-toggle-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.theme-toggle:hover .theme-toggle-label,
-.theme-toggle:focus-visible .theme-toggle-label {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  color: currentColor;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
 }
 
 :is(.theme-toggle,
@@ -82,7 +35,6 @@
   .archive-entry-button,
   .archive-post-link,
   .pill-list a,
-  .author-links a,
   .home-hero-link,
   .home-hero-btn,
   .post-pager-link):focus-visible {
@@ -99,8 +51,7 @@
   .post-toc-mobile-summary,
   .waline-comments .wl-content a,
   .waline-comments .wl-meta a,
-  .waline-comments .wl-login-info,
-  .site-footer a):focus-visible {
+  .waline-comments .wl-login-info):focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 38%, transparent 62%);
   border-radius: 10px;
@@ -124,34 +75,56 @@
 }
 
 /* 2026-03-15: small control primitive */
-.theme-toggle {
-  width: 2.28rem;
-  height: 2.28rem;
-  border-color: color-mix(in srgb, var(--chrome-line) 82%, transparent 18%);
-  background: color-mix(in srgb, var(--chrome-bg) 92%, transparent 8%);
-  color: var(--chrome-text-muted);
-}
-
-.theme-toggle:hover {
-  color: var(--chrome-text);
-  background: color-mix(in srgb, var(--chrome-hover) 86%, transparent 14%);
-  border-color: color-mix(in srgb, var(--border-default) 72%, transparent 28%);
-  transform: translateY(-1px);
-}
-
-.theme-toggle-icon {
-  width: 0.92rem;
-  height: 0.92rem;
-}
-
 :is(.theme-toggle,
   .header-search-result-link,
   .archive-entry-button,
   .archive-post-link,
   .pill-list a,
-  .author-links a,
   .home-hero-link,
   .home-hero-btn,
   .post-pager-link):focus-visible {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 36%, transparent 64%);
+}
+
+/* ===========================================================================
+ * State-scoped overrides for the header-mounted toggle. MUST stay last.
+ *
+ * The 2026-03-16 three-state header rework moved this control's chrome into
+ * `layout.css` under `.site-header[data-header-state=…] .theme-toggle`, which
+ * is (0,3,0) and therefore silently outranked both the (0,2,0) `:hover` above
+ * and the (0,2,0) shared `:is(…):focus-visible` lists. Since then hover has
+ * rendered nothing but the 1px lift, and the toggle has had no focus ring at
+ * all. Git history shows the hover was authored twice — once against
+ * `--chrome-hover` / white, then again against `--chrome-hover` /
+ * `--chrome-text` — and never deleted, so this is accidental shadowing across
+ * two files, not a deliberate suppression.
+ *
+ * `.site-header[data-header-state] .theme-toggle:<state>` is (0,4,0), so it
+ * wins on specificity rather than on `!important` or import order. The
+ * attribute is always present (inline `top` in BaseLayout, maintained by
+ * UiControllers), so one selector covers top / compact / hidden, and the
+ * `white X%` / chrome-token mixes brighten under both colour schemes.
+ * ======================================================================== */
+
+.site-header[data-header-state] .theme-toggle:hover {
+  border-color: color-mix(in srgb, white 18%, transparent 82%);
+  background:
+    radial-gradient(120% 180% at 50% -80%, color-mix(in srgb, white 18%, transparent 82%) 0%, transparent 56%),
+    linear-gradient(180deg, color-mix(in srgb, white 24%, transparent 76%) 0%, color-mix(in srgb, white 8%, transparent 92%) 100%),
+    color-mix(in srgb, var(--chrome-hover) 52%, transparent 48%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 26%, transparent 74%),
+    inset 0 0 0 0.75px color-mix(in srgb, white 8%, transparent 92%);
+  color: var(--chrome-text);
+}
+
+/* Restores the shared focus ring, keeping the resting glass insets so the pill
+   does not lose its fill while focused. Declared after `:hover` at equal
+   specificity so the ring wins when a pointer is also over the button. */
+.site-header[data-header-state] .theme-toggle:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 18%, transparent 82%),
+    inset 0 0 0 0.75px color-mix(in srgb, white 4%, transparent 96%),
+    0 0 0 3px color-mix(in srgb, var(--focus-ring) 36%, transparent 64%);
 }

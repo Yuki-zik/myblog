@@ -14,9 +14,9 @@
   --page-bg: rgb(252, 252, 253);
   --page-bg-ambient: none;
   --surface-primary: color-mix(in srgb, var(--page-bg) 98%, var(--c-lace) 2%);
-  --surface-elevated: color-mix(in srgb, var(--page-bg) 96%, var(--c-lace) 3%, var(--c-ivory) 1%);
+  --surface-elevated: color-mix(in srgb, var(--page-bg) 96%, color-mix(in srgb, var(--c-lace) 75%, var(--c-ivory) 25%) 4%);
   --surface-strong: var(--c-midnight);
-  --surface-subtle: color-mix(in srgb, var(--page-bg) 94%, var(--c-lace) 4%, var(--c-ivory) 2%);
+  --surface-subtle: color-mix(in srgb, var(--page-bg) 94%, color-mix(in srgb, var(--c-lace) 66.67%, var(--c-ivory) 33.33%) 6%);
 
   /* ========================================= */
   /* Typography */
@@ -24,7 +24,7 @@
   --text-primary: color-mix(in srgb, var(--c-midnight) 92%, var(--c-navy) 8%);
   --text-secondary: color-mix(in srgb, var(--c-navy) 76%, var(--c-lace) 24%);
   --text-on-dark: color-mix(in srgb, var(--c-lace) 94%, white 6%);
-  --text-meta: color-mix(in srgb, var(--c-navy) 60%, var(--c-ivory) 18%, var(--c-lace) 22%);
+  --text-meta: color-mix(in srgb, var(--c-navy) 60%, color-mix(in srgb, var(--c-ivory) 45%, var(--c-lace) 55%) 40%);
 
   /* ========================================= */
   /* Borders & Dividers */
@@ -37,8 +37,8 @@
   /* ========================================= */
   /* Interactive States */
   /* ========================================= */
-  --state-hover: color-mix(in srgb, white 70%, var(--c-lace) 22%, var(--c-ivory) 8%);
-  --state-active: color-mix(in srgb, white 58%, var(--c-lace) 24%, var(--c-navy) 18%);
+  --state-hover: color-mix(in srgb, white 70%, color-mix(in srgb, var(--c-lace) 73.33%, var(--c-ivory) 26.67%) 30%);
+  --state-active: color-mix(in srgb, white 58%, color-mix(in srgb, var(--c-lace) 57.14%, var(--c-navy) 42.86%) 42%);
   --focus-ring: color-mix(in srgb, var(--c-moonlight) 42%, transparent 58%);
   --selected-bg: color-mix(in srgb, var(--c-moonlight) 10%, white 90%);
   --selected-border: color-mix(in srgb, var(--c-moonlight) 26%, var(--c-navy) 74%);
@@ -98,7 +98,7 @@
   --code-border: color-mix(in srgb, var(--c-navy) 62%, var(--c-lace) 38%);
   --code-text: var(--text-on-dark);
 
-  --blockquote-bg: color-mix(in srgb, var(--c-lace) 70%, white 18%, var(--c-ivory) 12%);
+  --blockquote-bg: color-mix(in srgb, var(--c-lace) 70%, color-mix(in srgb, white 60%, var(--c-ivory) 40%) 30%);
   --blockquote-border: color-mix(in srgb, var(--c-ivory) 66%, var(--c-navy) 34%);
   --blockquote-text: var(--text-primary);
 
@@ -106,7 +106,7 @@
   --notice-border: color-mix(in srgb, var(--c-ivory) 62%, var(--border-default) 38%);
   --notice-text: color-mix(in srgb, var(--c-midnight) 78%, var(--c-ivory) 22%);
 
-  --empty-bg: color-mix(in srgb, white 76%, var(--c-lace) 18%, var(--c-ivory) 6%);
+  --empty-bg: color-mix(in srgb, white 76%, color-mix(in srgb, var(--c-lace) 75%, var(--c-ivory) 25%) 24%);
   --empty-border: var(--divider);
   --empty-text: var(--text-secondary);
   --empty-icon: color-mix(in srgb, var(--c-ivory) 58%, var(--c-navy) 42%);
@@ -152,6 +152,14 @@
   --shadow-lg: 0 18px 36px rgba(24, 37, 64, 0.08), 0 4px 12px rgba(24, 37, 64, 0.05);
   --shadow-xl: 0 24px 50px rgba(24, 37, 64, 0.1), 0 6px 16px rgba(24, 37, 64, 0.06);
   --shadow-glow: 0 0 0 4px var(--focus-ring);
+
+  /* Bespoke chrome drop-shadow tint + decorative line overlays, routed through
+     the foundations so each one follows data-color-scheme instead of freezing a
+     literal. Light values reproduce the previous literals exactly. */
+  --shadow-tint: var(--c-midnight);
+  --page-grid-line: color-mix(in srgb, var(--c-navy) 1.8%, transparent);
+  --cover-grid-line: color-mix(in srgb, var(--c-lace) 24%, transparent);
+  --cover-grid-stripe: color-mix(in srgb, var(--c-lace) 18%, transparent);
 
   --font-ui: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-display: "Space Grotesk", "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -201,6 +209,20 @@
   --chrome-line: color-mix(in srgb, var(--border-default) 44%, transparent 56%);
   --chrome-text: var(--text-primary);
   --chrome-text-muted: color-mix(in srgb, var(--text-secondary) 88%, transparent 12%);
+
+  /*
+   * Floating action control (back-to-top). Unlike chrome, this one is
+   * deliberately INVERTED against the page: dark pill on the light page, light
+   * pill on the dark page. It floats over article content, so tracking the
+   * page surface would make it disappear — which is exactly the bug the
+   * previous hardcoded `rgba(24, 37, 64, 0.92)` had in dark mode.
+   */
+  --fab-bg: color-mix(in srgb, var(--c-midnight) 92%, transparent 8%);
+  --fab-bg-hover: color-mix(in srgb, var(--c-midnight) 98%, transparent 2%);
+  --fab-border: color-mix(in srgb, var(--c-lace) 14%, transparent 86%);
+  --fab-icon: color-mix(in srgb, var(--brand-accent) 82%, white 18%);
+  --fab-icon-hover: color-mix(in srgb, var(--brand-accent) 11%, white 89%);
+  --fab-shadow: 0 22px 44px rgba(12, 17, 31, 0.2), 0 4px 12px rgba(12, 17, 31, 0.12);
 
   --reading-bg: var(--page-bg);
   --reading-surface: var(--surface-primary);
@@ -359,6 +381,13 @@
     --shadow-xl: 0 28px 54px rgba(0, 0, 0, 0.42), 0 6px 16px rgba(0, 0, 0, 0.3);
     --shadow-glow: 0 0 0 4px var(--focus-ring);
 
+    /* Dark: drop-shadow tint flips to black, matching the --shadow-* dark
+       precedent (negligible on the dark chrome). The page grid flips from navy
+       — invisible on the near-black page — to a faint lace line so the
+       texture stays perceptible in dark mode. */
+    --shadow-tint: black;
+    --page-grid-line: color-mix(in srgb, var(--c-lace) 4%, transparent);
+
     --chrome-bg: color-mix(in srgb, var(--surface-primary) 80%, var(--surface-elevated) 20%);
     --chrome-bg-strong: color-mix(in srgb, var(--surface-primary) 64%, var(--surface-elevated) 36%);
     --chrome-hover: color-mix(in srgb, var(--state-hover) 86%, var(--selected-bg) 14%);
@@ -369,6 +398,14 @@
     --comment-error-bg: color-mix(in srgb, var(--c-moonlight) 16%, var(--c-midnight) 84%);
     --comment-error-border: color-mix(in srgb, var(--c-moonlight) 36%, var(--divider) 64%);
     --comment-error-text: color-mix(in srgb, var(--c-moonlight) 72%, var(--c-lace) 28%);
+
+    /* Inverted floating control: light pill on the dark page. */
+    --fab-bg: color-mix(in srgb, var(--c-lace) 94%, transparent 6%);
+    --fab-bg-hover: color-mix(in srgb, var(--c-lace) 99%, transparent 1%);
+    --fab-border: color-mix(in srgb, var(--c-midnight) 16%, transparent 84%);
+    --fab-icon: color-mix(in srgb, var(--brand-accent) 88%, var(--c-midnight) 12%);
+    --fab-icon-hover: color-mix(in srgb, var(--brand-accent) 96%, var(--c-midnight) 4%);
+    --fab-shadow: 0 22px 44px rgba(0, 0, 0, 0.46), 0 4px 12px rgba(0, 0, 0, 0.32);
   }
 }
 
@@ -470,6 +507,13 @@
   --shadow-xl: 0 28px 54px rgba(0, 0, 0, 0.42), 0 6px 16px rgba(0, 0, 0, 0.3);
   --shadow-glow: 0 0 0 4px var(--focus-ring);
 
+  /* Dark: drop-shadow tint flips to black, matching the --shadow-* dark
+     precedent (negligible on the dark chrome). The page grid flips from navy
+     — invisible on the near-black page — to a faint lace line so the
+     texture stays perceptible in dark mode. */
+  --shadow-tint: black;
+  --page-grid-line: color-mix(in srgb, var(--c-lace) 4%, transparent);
+
   --chrome-bg: color-mix(in srgb, var(--surface-primary) 80%, var(--surface-elevated) 20%);
   --chrome-bg-strong: color-mix(in srgb, var(--surface-primary) 64%, var(--surface-elevated) 36%);
   --chrome-hover: color-mix(in srgb, var(--state-hover) 86%, var(--selected-bg) 14%);
@@ -480,4 +524,12 @@
   --comment-error-bg: color-mix(in srgb, var(--c-moonlight) 16%, var(--c-midnight) 84%);
   --comment-error-border: color-mix(in srgb, var(--c-moonlight) 36%, var(--divider) 64%);
   --comment-error-text: color-mix(in srgb, var(--c-moonlight) 72%, var(--c-lace) 28%);
+
+  /* Inverted floating control: light pill on the dark page. */
+  --fab-bg: color-mix(in srgb, var(--c-lace) 94%, transparent 6%);
+  --fab-bg-hover: color-mix(in srgb, var(--c-lace) 99%, transparent 1%);
+  --fab-border: color-mix(in srgb, var(--c-midnight) 16%, transparent 84%);
+  --fab-icon: color-mix(in srgb, var(--brand-accent) 88%, var(--c-midnight) 12%);
+  --fab-icon-hover: color-mix(in srgb, var(--brand-accent) 96%, var(--c-midnight) 4%);
+  --fab-shadow: 0 22px 44px rgba(0, 0, 0, 0.46), 0 4px 12px rgba(0, 0, 0, 0.32);
 }

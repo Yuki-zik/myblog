@@ -22,56 +22,79 @@ function sectionLabel(index: number): string {
       aria-label={title}
       style={accent ? `--toc-accent: ${accent};` : undefined}
     >
+      <button
+        type="button"
+        class="toc-sidebar__toggle"
+        data-toc-toggle
+        aria-expanded="true"
+        aria-controls="toc-sidebar-body"
+      >
+        <span class="toc-sidebar__toggle-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 6 15 12 9 18"></polyline>
+          </svg>
+        </span>
+        <span class="toc-sidebar__toggle-label">{title}</span>
+      </button>
+
       <span class="toc-sidebar__track" aria-hidden="true"></span>
       <span class="toc-sidebar__progress" data-toc-progress aria-hidden="true"></span>
 
-      <div class="toc-sidebar__body" data-toc-sidebar-body>
-        <ol class="toc-sidebar__list" data-toc-list>
-          {
-            items.map((item, index) => (
-              <li class="toc-sidebar__item" data-toc-item data-item-id={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  class="toc-sidebar__link toc-sidebar__link--level-2"
-                  data-toc-link
-                  data-target-id={item.id}
-                >
-                  <span class="toc-sidebar__number">{sectionLabel(index)}</span>
-                  <span class="toc-sidebar__title">{item.title}</span>
-                </a>
+      <div class="toc-sidebar__viewport">
+        <div class="toc-sidebar__body" id="toc-sidebar-body" data-toc-sidebar-body>
+          <ol class="toc-sidebar__list list-none m-0 p-0 grid gap-[1.1rem]" data-toc-list>
+            {
+              items.map((item, index) => (
+                <li class="toc-sidebar__item" data-toc-item data-item-id={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    class="toc-sidebar__link toc-sidebar__link--level-2 grid gap-[0.18rem]"
+                    data-toc-link
+                    data-target-id={item.id}
+                  >
+                    <span class="toc-sidebar__number font-ui text-[0.78rem] font-bold tracking-[0.08em] leading-none">
+                      {sectionLabel(index)}
+                    </span>
+                    <span class="toc-sidebar__title text-inherit text-[0.94rem] font-[560] leading-[1.45] text-balance">
+                      {item.title}
+                    </span>
+                  </a>
 
-                {
-                  item.children && item.children.length > 0 ? (
-                    <ol class="toc-sidebar__children">
-                      {
-                        item.children.map((child, childIndex) => (
-                          <li
-                            class="toc-sidebar__item toc-sidebar__item--child"
-                            data-toc-item
-                            data-item-id={child.id}
-                            data-parent-id={item.id}
-                          >
-                            <a
-                              href={`#${child.id}`}
-                              class="toc-sidebar__link toc-sidebar__link--level-3"
-                              data-toc-link
-                              data-target-id={child.id}
+                  {
+                    item.children && item.children.length > 0 ? (
+                      <ol class="toc-sidebar__children list-none m-0 mt-[0.78rem] ml-[0.1rem] p-0 pl-[1rem] grid gap-[0.72rem]">
+                        {
+                          item.children.map((child, childIndex) => (
+                            <li
+                              class="toc-sidebar__item toc-sidebar__item--child"
+                              data-toc-item
+                              data-item-id={child.id}
+                              data-parent-id={item.id}
                             >
-                              <span class="toc-sidebar__number toc-sidebar__number--child">
-                                {`${index + 1}.${childIndex + 1}`}
-                              </span>
-                              <span class="toc-sidebar__title toc-sidebar__title--child">{child.title}</span>
-                            </a>
-                          </li>
-                        ))
-                      }
-                    </ol>
-                  ) : null
-                }
-              </li>
-            ))
-          }
-        </ol>
+                              <a
+                                href={`#${child.id}`}
+                                class="toc-sidebar__link toc-sidebar__link--level-3 grid gap-[0.18rem]"
+                                data-toc-link
+                                data-target-id={child.id}
+                              >
+                                <span class="toc-sidebar__number toc-sidebar__number--child font-ui text-[0.78rem] font-bold tracking-[0.08em] leading-none">
+                                  {`${index + 1}.${childIndex + 1}`}
+                                </span>
+                                <span class="toc-sidebar__title toc-sidebar__title--child text-inherit text-[0.94rem] font-[560] leading-[1.45] text-balance">
+                                  {child.title}
+                                </span>
+                              </a>
+                            </li>
+                          ))
+                        }
+                      </ol>
+                    ) : null
+                  }
+                </li>
+              ))
+            }
+          </ol>
+        </div>
       </div>
     </nav>
   ) : null
@@ -99,6 +122,82 @@ function sectionLabel(index: number): string {
     color: var(--toc-text);
   }
 
+  /*
+   * Collapse control.
+   *
+   * The chevron rotates to point down when collapsed; the label doubles as the
+   * heading for the list, so the sidebar keeps an accessible name in both
+   * states.
+   */
+  .toc-sidebar__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.7rem 1.2rem;
+    padding: 0.24rem 0.5rem 0.24rem 0.3rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--toc-text-faint);
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .toc-sidebar__toggle:hover {
+    color: var(--toc-text-strong);
+    background: var(--toc-hover);
+  }
+
+  .toc-sidebar__toggle-icon {
+    display: inline-flex;
+    inline-size: 0.82rem;
+    block-size: 0.82rem;
+    /* Points down when open, right when collapsed. */
+    transform: rotate(90deg);
+    /* Matches the collapse duration and curve in `toc-client.ts` so the
+       chevron, the rail and the folding list read as one gesture. */
+    transition: transform 520ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  }
+
+  .toc-sidebar__toggle-icon svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .toc-sidebar[data-collapsed="true"] .toc-sidebar__toggle-icon {
+    transform: rotate(0deg);
+  }
+
+  /*
+   * The collapse animates an explicit height via the Web Animations API in
+   * `toc-client.ts` rather than a CSS `grid-template-rows: 1fr -> 0fr`
+   * transition. The grid technique registers a CSSTransition but does not
+   * interpolate here — measured with forced frames, the height jumps straight
+   * from full to zero — because the row is sized against a capped container.
+   * An explicit animation also gives the controller a reliable completion hook
+   * for restoring `overflow`.
+   *
+   * The viewport only clips; it deliberately carries no height cap of its own.
+   * The cap lives on `.toc-sidebar__body`, which is what makes that element the
+   * scroll container for long tables of contents. Moving the cap up here would
+   * leave the body free to grow to its natural height, so it would never
+   * overflow and would silently stop scrolling.
+   */
+  .toc-sidebar__viewport {
+    overflow: hidden;
+  }
+
+  .toc-sidebar[data-collapsed="true"] .toc-sidebar__viewport {
+    height: 0;
+  }
+
   .toc-sidebar__body {
     position: relative;
     max-block-size: calc(100vh - 8rem);
@@ -107,8 +206,37 @@ function sectionLabel(index: number): string {
     scrollbar-width: none;
   }
 
+  .toc-sidebar[data-collapsed="true"] .toc-sidebar__body {
+    overflow: hidden;
+  }
+
+  /* The rail has nothing to track once the list is folded away. */
+  .toc-sidebar[data-collapsed="true"] .toc-sidebar__track,
+  .toc-sidebar[data-collapsed="true"] .toc-sidebar__progress {
+    opacity: 0;
+  }
+
   .toc-sidebar__body::-webkit-scrollbar {
     display: none;
+  }
+
+  /*
+   * Set by toc-client.ts for one frame while it restores a stored preference,
+   * so a reader who left the contents collapsed does not watch it fold itself
+   * shut again on every page load.
+   */
+  .toc-sidebar[data-toc-motion="off"] .toc-sidebar__toggle-icon,
+  .toc-sidebar[data-toc-motion="off"] .toc-sidebar__track,
+  .toc-sidebar[data-toc-motion="off"] .toc-sidebar__progress {
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-sidebar__toggle-icon,
+    .toc-sidebar__track,
+    .toc-sidebar__progress {
+      transition: none;
+    }
   }
 
   .toc-sidebar__track,
@@ -119,6 +247,9 @@ function sectionLabel(index: number): string {
     width: 3px;
     border-radius: 999px;
     pointer-events: none;
+    /* Slightly ahead of the 520ms fold so the rail is gone before the list
+       finishes closing, rather than lingering over empty space. */
+    transition: opacity 380ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
   }
 
   .toc-sidebar__track {
@@ -136,30 +267,27 @@ function sectionLabel(index: number): string {
       opacity 320ms var(--ease-out, ease);
   }
 
-  .toc-sidebar__list,
-  .toc-sidebar__children {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  /*
+   * While the TOC list itself is scrolling to bring the active item into view,
+   * the indicator's coordinate system is moving under it. Animating toward a
+   * target expressed in that frame just renders the rail lagging behind the
+   * list. `toc-client.ts` sets this flag only for that catch-up case and clears
+   * it once the geometry settles, so ordinary reading scroll keeps the 320ms
+   * ease.
+   */
+  .toc-sidebar__progress[data-instant] {
+    transition: none;
   }
 
-  .toc-sidebar__list {
-    display: grid;
-    gap: 1.1rem;
-  }
-
+  /* `.toc-sidebar__list` / `.toc-sidebar__children` list reset, grid and spacing are
+     utilities in the markup above; only the child rail border stays here. */
   .toc-sidebar__children {
-    margin-top: 0.78rem;
-    margin-left: 0.1rem;
-    padding-left: 1rem;
     border-left: 1px solid var(--toc-child-track);
-    display: grid;
-    gap: 0.72rem;
   }
 
+  /* `display`/`gap` are utilities; `color`, `text-decoration` and `transition` must stay
+     in CSS because the unlayered global `a { ... }` rule in base.css beats layered utilities. */
   .toc-sidebar__link {
-    display: grid;
-    gap: 0.18rem;
     text-decoration: none;
     color: var(--toc-text);
     transition:
@@ -174,21 +302,9 @@ function sectionLabel(index: number): string {
 
   .toc-sidebar__number {
     color: color-mix(in srgb, var(--toc-accent) 18%, var(--toc-text-faint) 82%);
-    font-family: var(--font-ui);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1;
   }
 
-  .toc-sidebar__title {
-    color: inherit;
-    font-size: 0.94rem;
-    font-weight: 560;
-    line-height: 1.45;
-    text-wrap: balance;
-  }
-
+  /* Variant rules stay unlayered so they keep overriding the base utilities. */
   .toc-sidebar__link--level-3 {
     gap: 0.12rem;
   }

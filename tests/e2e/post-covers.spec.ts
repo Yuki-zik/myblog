@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { waitForEntranceAnimations, waitForScrollSettled } from "./helpers/page-state";
 
 async function mockSupabase(page: Page) {
   await page.route("https://example.supabase.co/**", async (route) => {
@@ -210,6 +211,7 @@ test("post detail title cover renders a subtle ghost image for floating depth", 
   await expect(heroCover).toBeVisible();
   await expect(page.locator(".post-title-card .post-cover-img--main")).toBeVisible();
   await expect(page.locator(".post-title-card .post-cover-img--ghost")).toHaveCount(1);
+  await waitForEntranceAnimations(page);
 
   const collectMetrics = () =>
     page.evaluate(() => {
@@ -306,7 +308,8 @@ test("header search supports keyboard selection and enter navigation", async ({ 
     const headerRect = headerInner?.getBoundingClientRect();
     const panelRect = panel?.getBoundingClientRect();
     return {
-      headerOverflow: headerInner ? getComputedStyle(headerInner).overflow : "",
+      surfaceOverflow: headerInner ? getComputedStyle(headerInner).overflow : "",
+      panelInsideSurface: !!headerInner && !!panel && headerInner.contains(panel),
       viewportHeight: window.innerHeight,
       headerBottom: headerRect?.bottom ?? 0,
       panelTop: panelRect?.top ?? 0,
@@ -319,7 +322,8 @@ test("header search supports keyboard selection and enter navigation", async ({ 
     };
   });
 
-  expect(panelMetrics.headerOverflow).toBe("visible");
+  expect(panelMetrics.surfaceOverflow).toBe("hidden");
+  expect(panelMetrics.panelInsideSurface).toBe(false);
   expect(panelMetrics.panelHeight).toBeGreaterThan(120);
   expect(panelMetrics.panelTop).toBeGreaterThanOrEqual(panelMetrics.headerBottom - 8);
   expect(panelMetrics.panelBottom).toBeLessThanOrEqual(panelMetrics.viewportHeight);
@@ -437,15 +441,41 @@ test("reading progress bar updates aria value and visible fill on scroll", async
     };
   });
 
-  await page.evaluate(() => {
-    window.scrollTo(0, document.body.scrollHeight * 0.72);
-  });
-  await page.waitForTimeout(300);
+  /*
+   * Scroll to a known fraction of the page, wait for it to land, and wait for
+   * the bar to catch up.
+   *
+   * Two separate races had to be closed here. The site opts into
+   * `scroll-behavior: smooth`, so this scroll animates: traced under load, the
+   * viewport was still at 0 of a 3669px target 300ms after the call and had
+   * only reached 214px at 500ms, so the previous fixed wait contributed nothing
+   * and the header assertions were carried entirely by Playwright's auto-retry.
+   * Separately, the bar is written from a rAF-throttled scroll handler, so even
+   * once the scroll itself is settled the attribute can still be a frame or
+   * more behind — a one-shot read then samples a stale value, which is how the
+   * "progress increased" check could see 0.
+   */
+  const readProgress = async () => Number(await progressBar.getAttribute("aria-valuenow"));
+
+  const scrollToFraction = async (fraction: number, previousValue: number) => {
+    await page.evaluate((value) => {
+      window.scrollTo(0, document.body.scrollHeight * value);
+    }, fraction);
+    await waitForScrollSettled(page);
+    // Let the rAF-scheduled handler publish the value for this position.
+    await expect.poll(readProgress, { timeout: 10_000 }).toBeGreaterThan(previousValue);
+    return readProgress();
+  };
+
+  // An intermediate sample, so the test can assert the value actually tracks
+  // the scroll rather than merely being non-zero at the end.
+  const quarterValue = await scrollToFraction(0.25, initialValue);
+
+  const nextValue = await scrollToFraction(0.72, quarterValue);
 
   await expect(page.locator(".site-header")).toHaveClass(/is-scrolled/);
   await expect(page.locator(".site-header")).toHaveAttribute("data-header-state", /compact|hidden/);
 
-  const nextValue = Number(await progressBar.getAttribute("aria-valuenow"));
   const nextFillState = await progressBar.evaluate((el) => {
     const fill = el.querySelector("[data-reading-progress-fill]") as HTMLElement | null;
     const styles = fill ? getComputedStyle(fill) : null;
@@ -470,7 +500,20 @@ test("reading progress bar updates aria value and visible fill on scroll", async
     };
   });
 
-  expect(nextValue).toBeGreaterThan(initialValue);
+  /*
+   * Progress must track the scroll, not merely be non-zero.
+   *
+   * Measured on this article the bar reads 0 / 34 / 100 at 0% / 25% / 72% of
+   * the page: it is scaled to the article element and saturates once the
+   * article ends, which is before the document does. Bounding the quarter-way
+   * sample on both sides is what makes this meaningful — a stale read pins it
+   * near 0 and a mis-scaled bar saturates it immediately, and only a two-sided
+   * band rejects both. The end value is then required to be well advanced.
+   */
+  expect(quarterValue, "a quarter down the page the bar should be clearly under way").toBeGreaterThanOrEqual(15);
+  expect(quarterValue, "a quarter down the page the bar should not already be finished").toBeLessThanOrEqual(85);
+  expect(nextValue).toBeGreaterThan(quarterValue);
+  expect(nextValue, "by 72% of the page the reader is past the end of the article body").toBeGreaterThanOrEqual(50);
   expect(nextFillState.cssProgress).not.toBe(initialFillState.cssProgress);
   expect(nextFillState.fillWidth).not.toBe(initialFillState.fillWidth);
   expect(Math.abs(progressMetrics.top - initialMetrics.top)).toBeLessThanOrEqual(0.5);

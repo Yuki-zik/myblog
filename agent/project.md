@@ -6,7 +6,7 @@
 
 ## 2. 架构图及核心模块
 
-- **前端生成与聚合层**: `Astro (@astrojs/react, astro@5.17.3)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
+- **前端生成与聚合层**: `Astro (@astrojs/react, astro@7.1.6)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
 - **交互组件层**: `React (react@19)` — 承担 Waline 挂载、局部交互组件和测试友好的客户端封装。
 - **Waline 服务端部署层**: `waline-server/index.cjs` + `waline-server/vercel.json` — 与博客前端解耦的独立部署单元，推荐作为同仓库下第二个 Vercel 项目部署。
 - **评论数据存储层**: `Supabase PostgreSQL` + `waline-server/sql/waline.pgsql` — 承担 Waline 评论、计数器和后台用户表存储。
@@ -15,13 +15,13 @@
 - **评论集成层**: `src/components/comments/WalineComments.tsx` — 统一封装 Waline `init()` 调用、主题切换适配和缺省配置提示。
 - **搜索与导航层**: `src/lib/search/index.ts`, `src/components/search/HeaderSearch.astro` — 静态搜索索引端点（`/search-index.json`）+ 客户端即时搜索 UI。
 - **目录组件层**: `src/lib/posts/toc.ts`, `src/components/post/PostToc.astro` — 从 Astro headings 提取 H2/H3，渲染带当前章节高亮的固定/折叠 TOC。
-- **主题系统层**: `src/styles/tokens.css` + `src/styles/*.css` — 基于 five-color foundation 的 semantic token contract，并在现有 Astro + React 架构内吸收 Astro Theme Pure 的阅读优先视觉语言；页面、结构区、阅读区和 Waline 集成样式都通过同一套 light/dark 语义 token 驱动。
+- **主题系统层**: `src/styles/tokens.css` + `src/styles/tailwind.css` + 其余模块化 CSS — Tailwind v4 utility 通过 `@theme inline` 引用运行时 token，未迁移的 unlayered CSS 继续负责页面专属规则；两者共用同一套 light/dark 语义 token。
 
 ## 3. 技术栈和依赖
 
-- **框架**: Astro 5.x, React 19
+- **框架**: Astro 7.x, React 19
 - **评论系统**: `@waline/client` + `@waline/vercel`
-- **样式**: 原生 CSS 模块化体系（`src/styles/tokens.css` + `base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`），无 CSS 框架
+- **样式**: Tailwind CSS v4 utilities + 模块化原生 CSS；不导入 Tailwind preflight，`tokens.css` 仍是运行时颜色/字体/阴影真源
 - **Markdown 渲染**: `remark-gfm` + 自定义 rehype 插件（脚注与段落锚点）
 - **评论存储**: Supabase PostgreSQL（由独立 Waline server 消费）
 - **工程化与测试**:
@@ -32,7 +32,7 @@
 
 ## 4. 当前 UI 设计系统快照
 
-- **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 导入的模块化 CSS（`tokens/base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`）以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
+- **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 首先导入的 `tailwind.css`、其后导入的模块化 CSS，以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
 - **全站气质**: 设计系统以 five-color foundation 为底座，先在 `src/styles/tokens.css` 映射为 `surface/text/border/accent/chrome/reading` 语义 token，再由页面模块做克制分化。整体气质是冷静、研究型、阅读优先，而不是高饱和科技演示风。
 - **字体分工**: 顶栏与全站 chrome 仍使用 `Space Grotesk / Source Serif 4 / IBM Plex Mono`；首页正文单独引入 `Outfit / Noto Serif SC / JetBrains Mono` 做 reference-mode 的 editorial 叙事，文章页继续保留既有阅读字体系统。
 - **布局骨架**: 站点现在明确分成两套 runtime。`discover-runtime` 覆盖首页、主题列表、主题详情、概念详情、作者页、归档页，统一使用 `ambient field + poster/split hero + section-head + discover surface + family footer`；`reading-runtime` 覆盖文章详情页，保留 scholarly tri-layout，桌面端由 `TOC rail + main reading column + scholar rail` 组成，并在正文下方接 Waline、family actions 和 pager。

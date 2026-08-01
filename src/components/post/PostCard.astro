@@ -70,16 +70,16 @@ const statItems = [
 ] as Array<StatItem | null>;
 ---
 
-<article class="post-card" data-post-card data-ux-reveal="fade-up">
-  <a href={`/posts/${post.id}`} class="post-card-cover-link" aria-label={`阅读文章：${post.data.title}`}>
+<article class="post-card grid min-h-full gap-0 overflow-visible" data-post-card data-ux-reveal="fade-up">
+  <a href={`/posts/${post.id}`} class="post-card-cover-link block" aria-label={`阅读文章：${post.data.title}`}>
     <PostCover post={post} variant="card" />
   </a>
 
-  <div class="post-card-body">
-    <p class="post-card-meta-row subtle" aria-label="文章元信息">
+  <div class="post-card-body grid">
+    <p class="post-card-meta-row subtle flex flex-wrap items-center gap-x-[0.72rem] gap-y-[0.36rem]" aria-label="文章元信息">
       {(metaItems.filter(Boolean) as MetaItem[]).map((item) => (
-        <span class="post-card-meta-item" aria-label={item.ariaLabel}>
-          <MetaIcon name={item.icon} class="post-card-meta-icon" />
+        <span class="post-card-meta-item inline-flex items-center gap-[0.34rem]" aria-label={item.ariaLabel}>
+          <MetaIcon name={item.icon} class="post-card-meta-icon flex-none" />
           <span>{item.label}</span>
         </span>
       ))}
@@ -89,26 +89,26 @@ const statItems = [
       <a href={`/posts/${post.id}`}>{post.data.title}</a>
     </h3>
 
-    {post.data.summary ? <p class="post-card-summary">{post.data.summary}</p> : null}
+    {post.data.summary ? <p class="post-card-summary max-w-[58ch] text-base leading-[1.78]">{post.data.summary}</p> : null}
 
-    <div class="post-card-stats-row" aria-label="文章辅助信息">
-      <div class="post-card-stats">
+    <div class="post-card-stats-row flex items-center justify-between gap-[0.8rem] pt-[0.08rem]" aria-label="文章辅助信息">
+      <div class="post-card-stats flex flex-wrap gap-x-[0.72rem] gap-y-[0.42rem]">
         {(statItems.filter(Boolean) as StatItem[]).map((item) => (
-          <span class="post-card-stat" aria-label={item.ariaLabel}>
-            <MetaIcon name={item.icon} class="post-card-stat-icon" />
+          <span class="post-card-stat inline-flex items-center gap-[0.34rem]" aria-label={item.ariaLabel}>
+            <MetaIcon name={item.icon} class="post-card-stat-icon flex-none" />
             <span>{item.label}</span>
           </span>
         ))}
       </div>
-      <span class="post-card-more">阅读全文</span>
+      <span class="post-card-more flex-none whitespace-nowrap text-[0.82rem] font-semibold tracking-[0.01em]">阅读全文</span>
     </div>
 
-    <ul class="pill-list post-card-topics" aria-label="文章主题标签">
+    <ul class="pill-list post-card-topics flex-auto" aria-label="文章主题标签">
       {post.data.topics.map((topicSlug) => (
         <li><a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a></li>
       ))}
     </ul>
 
-    <div class="post-card-endmark" aria-hidden="true"></div>
+    <div class="post-card-endmark mt-[0.62rem] h-px w-[min(7.4rem,26%)]" aria-hidden="true"></div>
   </div>
 </article>

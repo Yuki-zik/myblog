@@ -59,22 +59,22 @@ const archivesDescription = "按年月浏览全部文章，像时间账本一样
         archiveGroups.length === 0 ? (
           <EmptyState title="归档暂时为空。" body="等第一批文章发布后，这里会按年月自动生成时间账本。" />
         ) : (
-          <div class="archives-page">
+          <div class="archives-page grid gap-[1.1rem]">
             {archiveGroups.map((yearGroup) => (
               <section class="archive-year-section" data-archive-year={yearGroup.year} data-ux-reveal="fade-up">
-                <div class="archive-year-tile">
-                  <span>{yearGroup.year}</span>
+                <div class="archive-year-tile sticky top-20">
+                  <span class="inline-flex items-center">{yearGroup.year}</span>
                 </div>
 
-                <div class="archive-year-content">
+                <div class="archive-year-content grid gap-[0.72rem]">
                   {yearGroup.months.map((month) => (
-                    <section class="archive-month-group">
-                      <div class="archive-month-node" data-archive-month={month.monthKey}>
-                        <span class="archive-month-label">{month.monthLabel}</span>
-                        <span class="archive-month-line" aria-hidden="true"></span>
+                    <section class="archive-month-group grid gap-[0.72rem]">
+                      <div class="archive-month-node flex items-center gap-[0.62rem]" data-archive-month={month.monthKey}>
+                        <span class="archive-month-label whitespace-nowrap">{month.monthLabel}</span>
+                        <span class="archive-month-line h-px w-full" aria-hidden="true"></span>
                       </div>
 
-                      <div class="archive-grid" data-ux-stagger>
+                      <div class="archive-grid grid grid-cols-1 gap-[0.7rem]" data-ux-stagger>
                         {month.posts.map((post) => (
                           <ArchivePostTile
                             post={post}

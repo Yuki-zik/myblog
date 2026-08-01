@@ -89,7 +89,8 @@
           if (animate) {
             iconEl.style.animation = "none";
             iconEl.offsetHeight;
-            iconEl.style.animation = "ux-icon-rotate 500ms cubic-bezier(0.34, 1.56, 0.64, 1)";
+            iconEl.style.animation =
+              "ux-icon-rotate 420ms cubic-bezier(0.25, 1, 0.5, 1)";
           } else {
             iconEl.style.animation = "";
           }
@@ -162,21 +163,85 @@
       var ticking = false;
       var TOP_THRESHOLD = 10;
       var COMPACT_THRESHOLD = 60;
-      var HIDE_THRESHOLD = 188;
-      var HIDE_DELTA = 52;
+      var HIDE_THRESHOLD = 240;
+      var HIDE_DELTA = 120;
+      var COMPACT_DWELL_MS = 820;
       var SHOW_DELTA = 38;
       var IGNORE_DELTA = 4;
       var HOVER_ZONE = 108;
       var clarity = "normal";
       var hoverReveal = false;
+      var compactSince = 0;
+      var hideTimer = null;
+
+      function clearHideTimer() {
+        if (hideTimer === null) return;
+        window.clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+
+      function writeState(nextState) {
+        header.dataset.headerState = nextState;
+        header.classList.toggle("is-scrolled", nextState !== "top");
+        header.classList.toggle("is-hidden", nextState === "hidden");
+        if (nextState === "compact") {
+          compactSince = performance.now();
+          scheduleHideAfterDwell();
+        }
+        notifyHeaderFrameChange();
+      }
+
+      /*
+       * The surface is scaled up to cover the viewport at the top of the page.
+       * CSS cannot divide one length by another, so the factor is computed here
+       * and written once per resize. `offsetWidth` and `offsetHeight` report the
+       * untransformed layout box, so reading them while the scroll-driven
+       * animation is mid-flight still yields the pill's real size.
+       */
+      function syncHeaderScale() {
+        var surface = header.querySelector(".site-header-inner");
+        if (!(surface instanceof HTMLElement)) return;
+
+        var pillWidth = surface.offsetWidth;
+        var pillHeight = surface.offsetHeight;
+        if (pillWidth <= 0 || pillHeight <= 0) return;
+
+        var band = header.offsetHeight || pillHeight;
+        // Overscan so the pill's rounded corners and side borders finish
+        // outside the viewport, which is what reads as a full-bleed bar.
+        var overscan = 96;
+
+        header.style.setProperty(
+          "--header-expand-x",
+          String((window.innerWidth + overscan) / pillWidth)
+        );
+        header.style.setProperty("--header-expand-y", String(band / pillHeight));
+      }
+
+      function scheduleHideAfterDwell() {
+        if (state !== "compact" || hideTimer !== null) return;
+        var elapsed = performance.now() - compactSince;
+        var remaining = Math.max(COMPACT_DWELL_MS - elapsed, 0);
+
+        hideTimer = window.setTimeout(function () {
+          hideTimer = null;
+          var y = Math.max(window.scrollY, 0);
+          if (
+            state === "compact" &&
+            y >= HIDE_THRESHOLD &&
+            downTravel >= HIDE_DELTA
+          ) {
+            applyState("hidden");
+            downTravel = 0;
+          }
+        }, remaining);
+      }
 
       function applyState(nextState) {
         if (state === nextState && header.dataset.headerState === nextState) return;
         state = nextState;
-        header.dataset.headerState = nextState;
-        header.classList.toggle("is-scrolled", nextState !== "top");
-        header.classList.toggle("is-hidden", nextState === "hidden");
-        notifyHeaderFrameChange();
+        clearHideTimer();
+        writeState(nextState);
       }
 
       function applyClarity(nextClarity) {
@@ -196,6 +261,8 @@
       function syncInitialState() {
         var y = Math.max(window.scrollY, 0);
         state = y <= TOP_THRESHOLD ? "top" : "compact";
+        compactSince = state === "compact" ? performance.now() : 0;
+        clearHideTimer();
         downTravel = 0;
         upTravel = 0;
         lastY = y;
@@ -233,17 +300,25 @@
         } else {
           upTravel += Math.abs(delta);
           downTravel = 0;
+          clearHideTimer();
         }
 
         if (state === "top" && y >= COMPACT_THRESHOLD) {
           applyState("compact");
-          downTravel = 0;
+          downTravel = Math.max(y - COMPACT_THRESHOLD, 0);
         }
 
         if (state === "compact") {
           if (delta > 0 && y >= HIDE_THRESHOLD && downTravel >= HIDE_DELTA) {
-            applyState("hidden");
-            downTravel = 0;
+            if (
+              compactSince > 0 &&
+              performance.now() - compactSince >= COMPACT_DWELL_MS
+            ) {
+              applyState("hidden");
+              downTravel = 0;
+            } else if (compactSince > 0) {
+              scheduleHideAfterDwell();
+            }
           }
         } else if (state === "hidden") {
           if (upTravel >= SHOW_DELTA) {
@@ -276,6 +351,9 @@
         applyHoverReveal(false);
       });
 
+      window.addEventListener("resize", syncHeaderScale, { passive: true });
+
+      syncHeaderScale();
       syncInitialState();
     }
 

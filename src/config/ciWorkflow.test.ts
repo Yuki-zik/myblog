@@ -13,7 +13,7 @@ describe("CI workflow contract", () => {
     expect(workflow).toContain("SITE_URL: https://myblog.example");
   });
 
-  it("runs on a Node version compatible with Astro 6", () => {
+  it("runs on a Node version compatible with Astro 7", () => {
     expect(workflow).not.toContain("node-version: 20");
     expect(workflow).toContain("node-version: 22");
     expect(packageJson.engines?.node).toBe(">=22.12.0");

@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import { unified } from "@astrojs/markdown-remark";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -37,6 +38,9 @@ export default defineConfig({
         !page.includes("/og/")
     })
   ],
+  vite: {
+    plugins: [tailwindcss()]
+  },
   markdown: {
     // C1: migrated off the deprecated top-level `remarkPlugins`/`rehypePlugins`
     // arrays onto `markdown.processor`. `unified()` defaults `gfm: true` and

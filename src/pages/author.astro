@@ -109,7 +109,7 @@ const authorContactEntries = [
           <p class="discover-hero__panel-label">Mission</p>
           {SITE_AUTHOR_PROFILE.avatar ? (
             <img
-              class="author-avatar"
+              class="author-avatar aspect-square w-[clamp(5.5rem,9vw,7rem)] rounded-[18px] object-cover"
               src={SITE_AUTHOR_PROFILE.avatar}
               alt={`${SITE_AUTHOR_PROFILE.name} 的头像`}
               loading="eager"
@@ -220,7 +220,12 @@ const authorContactEntries = [
           <div class="author-social-grid" data-ux-stagger>
             {socialNetworks.map((network) => (
               <a
-                class:list={["author-social-card", "discover-surface", `author-social-card--${network.id}`]}
+                class:list={[
+                  "author-social-card",
+                  "discover-surface",
+                  `author-social-card--${network.id}`,
+                  "grid grid-cols-[auto_minmax(0,1fr)_auto] min-h-[5.6rem] items-center gap-[0.85rem] px-[1.05rem] py-4"
+                ]}
                 href={network.href}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -228,7 +233,10 @@ const authorContactEntries = [
                 data-substats-source={network.substats?.source}
                 data-substats-key={network.substats?.key}
               >
-                <span class="author-social-symbol" aria-hidden="true">
+                <span
+                  class="author-social-symbol inline-flex min-h-10 min-w-10 items-center justify-center rounded-[14px] px-2 py-[0.2rem] font-display text-[0.9rem] font-bold tracking-[0.04em]"
+                  aria-hidden="true"
+                >
                   {network.id === "telegram"
                     ? "TG"
                     : network.id === "github"
@@ -238,16 +246,22 @@ const authorContactEntries = [
                         : "红"}
                 </span>
 
-                <span class="author-social-copy">
-                  <span class="author-social-name">{network.label}</span>
-                  {network.description ? <span class="author-social-description">{network.description}</span> : null}
+                <span class="author-social-copy grid min-w-0 gap-[0.18rem]">
+                  <span class="author-social-name font-display text-[1rem] font-semibold tracking-[-0.02em]">{network.label}</span>
+                  {network.description ? (
+                    <span class="author-social-description text-[0.82rem] leading-[1.55]">{network.description}</span>
+                  ) : null}
                 </span>
 
-                <span class="author-social-stat">
-                  <strong data-social-count>
+                <span class="author-social-stat grid justify-items-end gap-[0.08rem] text-right">
+                  <strong class="font-display text-[clamp(1.2rem,1.4vw,1.6rem)] leading-none" data-social-count>
                     {network.statValue !== undefined ? network.statValue : network.statValueFallback ?? "--"}
                   </strong>
-                  {network.statLabel ? <span data-social-label>{network.statLabel}</span> : null}
+                  {network.statLabel ? (
+                    <span class="text-[0.82rem]" data-social-label>
+                      {network.statLabel}
+                    </span>
+                  ) : null}
                 </span>
               </a>
             ))}
@@ -290,7 +304,7 @@ const authorContactEntries = [
         authorPosts.length === 0 ? (
           <EmptyState title="暂时还没有可展示的文章。" body="等第一批内容发布后，这里会自动接入统一的文章卡片列表。" />
         ) : (
-          <div class="discover-post-grid author-post-grid" data-ux-stagger>
+          <div class="discover-post-grid author-post-grid mt-[0.2rem]" data-ux-stagger>
             {authorPosts.map((post) => <PostCard post={post} />)}
           </div>
         )

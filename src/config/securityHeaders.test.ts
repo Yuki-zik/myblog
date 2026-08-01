@@ -37,4 +37,20 @@ describe("deployment security headers", () => {
     );
     expect(robotsTag?.value).toContain("noindex");
   });
+
+  it("gives the generated search index explicit CDN caching and MIME hardening", () => {
+    const config = JSON.parse(readFileSync(join(process.cwd(), "vercel.json"), "utf8")) as {
+      headers?: Array<{ source?: string; headers?: Array<{ key: string; value: string }> }>;
+    };
+
+    const searchRule = (config.headers ?? []).find(
+      (entry) => entry.source === "/search-index.json"
+    );
+    const headers = new Map(
+      (searchRule?.headers ?? []).map((header) => [header.key.toLowerCase(), header.value])
+    );
+
+    expect(headers.get("x-content-type-options")).toBe("nosniff");
+    expect(headers.get("cache-control")).toContain("s-maxage=300");
+  });
 });

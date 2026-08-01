@@ -21,7 +21,7 @@ Astro + React + Waline 的主题化知识博客首版，当前采用“博客前
 
 当前前端已经完成的接入方式：
 
-- 文章页通过 `client:load` 挂载 `WalineComments`
+- 文章页通过 `client:visible` 挂载 `WalineComments`（滚动到评论区才加载，降低首屏负担）
 - 评论 `path` 固定为 `/posts/<slug>`
 - `PUBLIC_WALINE_SERVER_URL` 缺失时不会报错，而是渲染配置提示
 
@@ -89,15 +89,30 @@ PUBLIC_WALINE_SERVER_URL=https://comments.example.com
 
 - [`waline-server/README.md`](./waline-server/README.md)
 
+## 样式：Tailwind CSS v4
+
+站点已迁移到 Tailwind CSS v4（`@tailwindcss/vite`）。入口是 `src/styles/tailwind.css`，由 `BaseLayout.astro` 第一个导入。有三条约定需要先知道：
+
+1. **不引入 preflight。** 只导入 `tailwindcss/theme.css`（`layer theme`）与 `tailwindcss/utilities.css`（`layer utilities`）。正文 `ul / ol` 依赖浏览器默认 `list-style`，preflight 会把文章项目符号清掉。不要改成 `@import "tailwindcss";`。
+2. **utilities 在 `@layer utilities`，`src/styles/*.css` 里的存量规则未分层。** CSS 层叠里未分层规则永远压过分层规则，所以加一个 Tailwind class 在删掉对应旧声明之前是不生效的——这是分批迁移能逐组件回滚的原因，也是迁移时必须"加 utility 就删旧声明"的原因。
+3. **主题令牌用 `@theme inline` 回指 `tokens.css`，不要写死字面量。** 站点是三态主题（`data-theme` = system / light / dark，再算出 `data-color-scheme` = light / dark），写死会把暗色分支冻掉。暗色选择器一律用 `html[data-color-scheme="dark"]`，不要用 `html[data-theme="dark"]`（后者在 `system` 下静默失效）。
+
+可用的语义 utility：`bg-page` / `bg-surface` / `text-ink` / `text-ink-muted` / `border-edge` / `text-accent` / `font-reading` / `text-h2` / `shadow-elev-2` / `p-md` 等，完整列表见 `src/styles/tailwind.css`。
+
+`src/styles/tailwindTheme.test.ts` 锁住了 radius 不漂移、inline 桥接不被写死、preflight 不被引入三条边界。
+
 ## 测试
 
 ```bash
-pnpm test
-pnpm test:e2e
-pnpm build
+pnpm test        # vitest 单元/集成
+pnpm build       # astro check + astro build
+pnpm test:e2e    # Playwright
+pnpm test:all    # 统一入口：unit -> build -> e2e
 ```
 
 ## 路由
+
+页面：
 
 - `/`
 - `/topics`
@@ -105,3 +120,9 @@ pnpm build
 - `/posts/[slug]`
 - `/concepts/[slug]`
 - `/archives`
+- `/author`
+
+数据端点：
+
+- `/search-index.json` — 站内搜索索引，由 `src/lib/search/index.ts` 构建
+- `/design.md` — 《MyBlog 的设计说明书》Markdown 原文，与文章同源

@@ -33,19 +33,19 @@ function iconMarkup(icon: DiscoverAction["icon"]) {
 
 {
   actions.length > 0 ? (
-    <div class:list={["discover-action-pair", className]}>
+    <div class:list={["discover-action-pair flex flex-wrap gap-4", className]}>
       {actions.map((action) => (
         <a
           href={action.href}
           class:list={[
-            "discover-action",
+            "discover-action inline-flex min-h-[3.125rem] items-center gap-2 rounded-full border border-solid border-transparent px-6 py-3 text-sm font-medium leading-none",
             `discover-action--${action.variant ?? "secondary"}`
           ]}
           target={action.external ? "_blank" : undefined}
           rel={action.external ? "noreferrer noopener" : undefined}
         >
           <span>{action.label}</span>
-          <span class="discover-action__icon" set:html={iconMarkup(action.icon)} />
+          <span class="discover-action__icon inline-flex items-center justify-center" set:html={iconMarkup(action.icon)} />
         </a>
       ))}
     </div>
