@@ -2,6 +2,10 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 正式运行收口：验证并交付论文功能、定位 Vercel 失败、核验生产配置、完成发布与运行检查 | ⏳ | Codex | 2026-09-06 |
+| 高 | 建立论文 PDF 自动增强管线：解析摘要/概论、识别 pipeline 图、生成封面与来源清单，并接入页面与验证命令 | ✅ | AI Assistant | 2026-08-04 |
+| 高 | 从作者 Google Scholar `NTwrnCIAAAAJ` 导入并交叉核验真实论文，替换论文页设计样稿 | ✅ | AI Assistant | 2026-08-04 |
+| 高 | 新增独立论文成果体系：`papers` 内容集合、论文索引/详情页、导航与搜索接入、学术元数据及响应式视觉验证 | ✅ | AI Assistant | 2026-08-03 |
 | 高 | 调查 PR #1 的 GitHub CI 与 Vercel 失败，安全合并 `origin/main` 到 `feat/optimize-pass`，按根因做最小修复并完成验证、提交与推送 | ✅ | AI Assistant | 2026-08-01 |
 | 高 | 顶部栏第六轮：内容随框收敛（同一 scroll timeline + `@property` 进度值驱动字号/间距/控件尺寸），保持文字不被缩放 | ✅ | AI Assistant | 2026-07-29 |
 | 高 | 顶部栏第五轮：折叠药丸补 26px 内边距、改用 Apple 连续曲率 squircle 圆角、折叠缓动加有界 overshoot，并把几何统一到 token | ✅ | AI Assistant | 2026-07-29 |

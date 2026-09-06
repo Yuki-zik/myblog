@@ -10,11 +10,15 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "papers:enrich": "node scripts/papers/enrich.mjs",
+    "papers:enrich:all": "node scripts/papers/enrich.mjs --all",
+    "papers:enrich:apply": "node scripts/papers/enrich.mjs --all --apply",
+    "papers:check": "node scripts/papers/enrich.mjs --check",
     "test:waline-server": "pnpm --dir waline-server smoke",
     "audit:prod": "pnpm audit --prod --audit-level moderate",
     "audit:waline-server": "pnpm --dir waline-server audit --prod --audit-level moderate",
     "audit:all": "pnpm audit:prod && pnpm audit:waline-server",
-    "test:all": "pnpm test && pnpm build && pnpm test:waline-server && pnpm audit:all && pnpm test:e2e"
+    "test:all": "pnpm test && pnpm papers:check && pnpm build && pnpm test:waline-server && pnpm audit:all && pnpm test:e2e"
   },
   "engines": {
     "node": ">=22.12.0"
@@ -60,6 +64,8 @@
   },
   "pnpm": {
     "overrides": {
+      "nanoid@<3.3.18": "3.3.18",
+      "browserslist@<4.28.7": "4.28.7",
       "rollup": "^4.59.0",
       "picomatch@<2.3.2": "2.3.2",
       "picomatch@>=4.0.0 <4.0.4": "4.0.4",

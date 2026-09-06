@@ -5,13 +5,14 @@ import { buildSearchIndex } from "../lib/search/index";
 export const prerender = true;
 
 export const GET: APIRoute = async () => {
-  const [posts, topics, concepts] = await Promise.all([
+  const [posts, papers, topics, concepts] = await Promise.all([
     getCollection("posts", ({ data }) => !data.draft),
+    getCollection("papers", ({ data }) => !data.draft),
     getCollection("topics"),
     getCollection("concepts")
   ]);
 
-  const index = buildSearchIndex(posts, topics, concepts);
+  const index = buildSearchIndex(posts, papers, topics, concepts);
 
   return new Response(JSON.stringify(index), {
     headers: {

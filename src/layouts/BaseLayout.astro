@@ -14,6 +14,7 @@ import "../styles/author.css";
 import "../styles/archives.css";
 import "../styles/back-to-top.css";
 import "../styles/article.css";
+import "../styles/papers.css";
 import "../styles/code.css";
 import "katex/dist/katex.min.css";
 import "../styles/discover.css";
@@ -71,6 +72,8 @@ const currentSection = pathname === "/"
   ? "home"
   : pathname.startsWith("/topics") || pathname.startsWith("/posts") || pathname.startsWith("/concepts")
     ? "topics"
+    : pathname.startsWith("/papers")
+      ? "papers"
     : pathname.startsWith("/archives")
       ? "archives"
       : pathname.startsWith("/author")
@@ -80,6 +83,7 @@ const currentSection = pathname === "/"
 const navItems = [
   { href: "/", label: "\u9996\u9875", section: "home" },
   { href: "/topics", label: "\u4e3b\u9898", section: "topics" },
+  { href: "/papers", label: "\u8bba\u6587", section: "papers" },
   { href: "/archives", label: "\u5f52\u6863", section: "archives" },
   { href: "/author", label: "\u4f5c\u8005", section: "author" }
 ];

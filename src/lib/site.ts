@@ -1,6 +1,7 @@
 export interface SiteAuthorProfile {
   id: string;
   name: string;
+  publicationName?: string;
   bioShort?: string;
   tagline?: string;
   mission?: string;
@@ -11,6 +12,7 @@ export interface SiteAuthorProfile {
   socials?: {
     x?: string;
     github?: string;
+    scholar?: string;
   };
   researchTracks?: {
     title: string;
@@ -42,6 +44,7 @@ export interface SiteAuthorProfile {
 export const SITE_AUTHOR_PROFILE: SiteAuthorProfile = {
   id: "a-znk",
   name: "A-Znk",
+  publicationName: "Qianli Ma",
   bioShort: "AI 安全 USTC 硕士｜专注大模型系统与安全",
   tagline: "AI 安全 USTC 硕士｜专注大模型系统与安全",
   mission: "我在做的是：把大模型从“能回答问题”变成“能完成任务的系统”。",
@@ -50,7 +53,8 @@ export const SITE_AUTHOR_PROFILE: SiteAuthorProfile = {
   avatar: "/author-avatar.png",
   email: "I.OVE@outlook.com",
   socials: {
-    github: "yuki-zik"
+    github: "yuki-zik",
+    scholar: "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
   },
   researchTracks: [
     {

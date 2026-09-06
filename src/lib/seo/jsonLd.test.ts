@@ -5,6 +5,7 @@ import {
   buildBlogPostingGraph,
   buildBreadcrumb,
   buildCollectionPageGraph,
+  buildScholarlyArticleGraph,
   personId,
   serializeJsonLd,
   websiteId
@@ -15,7 +16,11 @@ const SITE = "https://blog.example.com/";
 const author: SiteAuthorProfile = {
   id: "a-znk",
   name: "A-Znk",
-  socials: { github: "yuki-zik" }
+  publicationName: "Qianli Ma",
+  socials: {
+    github: "yuki-zik",
+    scholar: "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
+  }
 };
 
 describe("buildBaseNodes", () => {
@@ -30,7 +35,11 @@ describe("buildBaseNodes", () => {
     expect(person["@id"]).toBe("https://blog.example.com/#person-a-znk");
     // Name carries ONLY the name (Google: no titles in author.name).
     expect(person.name).toBe("A-Znk");
-    expect(person.sameAs).toEqual(["https://github.com/yuki-zik"]);
+    expect(person.alternateName).toBe("Qianli Ma");
+    expect(person.sameAs).toEqual([
+      "https://github.com/yuki-zik",
+      "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
+    ]);
   });
 
   it("omits sameAs when no socials are configured", () => {
@@ -105,6 +114,68 @@ describe("buildBlogPostingGraph", () => {
     });
     expect(bare.about).toBeUndefined();
     expect(bare.mentions).toBeUndefined();
+  });
+});
+
+describe("buildScholarlyArticleGraph", () => {
+  it("omits unknown publication and modification dates", () => {
+    const [paper] = buildScholarlyArticleGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/papers/year-only",
+      title: "Year-only paper",
+      description: "Abstract",
+      authors: [{ name: "Qianli Ma", self: true }],
+      keywords: ["security"],
+      breadcrumbs: [{ name: "Year-only paper" }]
+    });
+    expect(paper).not.toHaveProperty("datePublished");
+    expect(paper).not.toHaveProperty("dateModified");
+  });
+
+  it("preserves an explicit modification date without assuming a publication date", () => {
+    const [paper] = buildScholarlyArticleGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/papers/updated",
+      title: "Updated paper",
+      description: "Abstract",
+      authors: [{ name: "Qianli Ma", self: true }],
+      dateModified: "2026-09-06T00:00:00Z",
+      keywords: ["security"],
+      breadcrumbs: [{ name: "Updated paper" }]
+    });
+    expect(paper).not.toHaveProperty("datePublished");
+    expect(paper.dateModified).toBe("2026-09-06T00:00:00Z");
+  });
+
+  it("emits scholarly metadata and resolves the site author identity", () => {
+    const [paper] = buildScholarlyArticleGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/papers/security",
+      title: "Security evaluation",
+      description: "Abstract",
+      authors: [
+        { name: "A-Znk", self: true },
+        { name: "Research Partner", url: "https://example.com/researcher" }
+      ],
+      datePublished: "2026-08-03T12:00:00+08:00",
+      keywords: ["MLLM", "security"],
+      venue: "Preprint",
+      doi: "10.0000/example",
+      breadcrumbs: [{ name: "论文" }, { name: "Security evaluation" }]
+    });
+
+    expect(paper["@type"]).toBe("ScholarlyArticle");
+    expect(paper.datePublished).toBe("2026-08-03T12:00:00+08:00");
+    expect(paper.dateModified).toBe("2026-08-03T12:00:00+08:00");
+    expect(paper.author).toEqual([
+      { "@id": personId(SITE) },
+      { "@type": "Person", name: "Research Partner", url: "https://example.com/researcher" }
+    ]);
+    expect(paper.identifier).toEqual({
+      "@type": "PropertyValue",
+      propertyID: "DOI",
+      value: "10.0000/example"
+    });
   });
 });
 

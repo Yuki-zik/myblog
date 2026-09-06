@@ -25,6 +25,12 @@ describe("CI workflow contract", () => {
     expect(workflow).toContain("pnpm --dir waline-server smoke");
   });
 
+  it("checks paper cover provenance in CI and aggregate verification", () => {
+    expect(packageJson.scripts?.["papers:check"]).toBe("node scripts/papers/enrich.mjs --check");
+    expect(packageJson.scripts?.["test:all"]).toContain("pnpm papers:check");
+    expect(workflow).toContain("run: pnpm papers:check");
+  });
+
   it("keeps production dependency audits in CI and the aggregate verification command", () => {
     expect(packageJson.scripts?.["audit:prod"]).toBe("pnpm audit --prod --audit-level moderate");
     expect(packageJson.scripts?.["audit:waline-server"]).toBe(

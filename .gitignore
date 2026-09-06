@@ -16,3 +16,7 @@ output/
 tmp
 .playwright-mcp
 .impeccable
+
+# Author-provided PDFs and local extraction reports are not published.
+.paper-sources/
+.paper-pipeline/

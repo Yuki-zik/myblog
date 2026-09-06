@@ -34,6 +34,9 @@ jobs:
       - name: Run unit tests (vitest)
         run: pnpm test
 
+      - name: Validate paper cover provenance
+        run: pnpm papers:check
+
       - name: Build (astro check + astro build)
         run: pnpm build
 

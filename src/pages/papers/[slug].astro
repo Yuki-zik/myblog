@@ -1,0 +1,195 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import DiscoverAmbient from "../../components/discover/DiscoverAmbient.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildScholarlyArticleGraph } from "../../lib/seo/jsonLd";
+
+interface Props {
+  paper: CollectionEntry<"papers">;
+}
+
+export async function getStaticPaths() {
+  const papers = await getCollection("papers", ({ data }) => !data.draft);
+  return papers.map((paper) => ({
+    params: { slug: paper.id },
+    props: { paper }
+  }));
+}
+
+const { paper } = Astro.props;
+const { Content } = await render(paper);
+const canonicalPath = `/papers/${paper.id}`;
+const site = Astro.site;
+const structuredData = site
+  ? buildScholarlyArticleGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL(canonicalPath, site).toString(),
+      title: paper.data.title,
+      description: paper.data.abstract,
+      authors: paper.data.authors,
+      datePublished: paper.data.publicationDate,
+      dateModified: paper.data.updated,
+      keywords: paper.data.keywords,
+      venue: paper.data.venue?.name,
+      doi: paper.data.identifiers?.doi,
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "论文", url: new URL("/papers", site).toString() },
+        { name: paper.data.title }
+      ]
+    })
+  : undefined;
+
+const statusLabels = {
+  prototype: "页面样稿 · 非正式发表",
+  preprint: "预印本",
+  accepted: "已接收",
+  published: "已发表"
+} as const;
+const publishedYear = paper.data.year;
+const citation =
+  paper.data.citation ??
+  `${paper.data.authors.map((author) => author.name).join(", ")}. ${paper.data.title}. ${paper.data.venue?.name ?? "Preprint"}, ${publishedYear}.`;
+const resourceLabels = {
+  publisher: "Publisher",
+  pdf: "PDF",
+  code: "Code",
+  project: "Project",
+  data: "Data",
+  supplement: "Supplement",
+  slides: "Slides",
+  video: "Video",
+  demo: "Demo"
+} as const;
+---
+
+<BaseLayout
+  title={`${paper.data.title} | 论文`}
+  description={paper.data.abstract}
+  authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
+  canonical={canonicalPath}
+  metaType="article"
+  publishedTime={paper.data.publicationDate}
+  modifiedTime={paper.data.updated}
+  runtime="reading"
+  mainClass="shell--paper-reading"
+  structuredData={structuredData}
+>
+  <div class="paper-reading-page" data-paper-detail>
+    <DiscoverAmbient />
+
+    <article class="paper-dossier">
+      <a class="paper-dossier__back" href="/papers">← 返回论文索引</a>
+
+      <header class="paper-dossier__header">
+        <div class="paper-dossier__masthead">
+          <div class="paper-dossier__status-row">
+            <span class={`paper-status paper-status--${paper.data.status}`} data-paper-status>
+              {statusLabels[paper.data.status]}
+            </span>
+            <span>Research record / {publishedYear}</span>
+          </div>
+          <h1>{paper.data.title}</h1>
+          {paper.data.subtitle ? <p class="paper-dossier__subtitle">{paper.data.subtitle}</p> : null}
+          <p class="paper-dossier__authors">
+            {paper.data.authors.map((author, index) => (
+              <>
+                {index > 0 ? <span aria-hidden="true"> · </span> : null}
+                {author.url ? (
+                  <a href={author.url} class:list={{ "is-self": author.self }}>{author.name}</a>
+                ) : (
+                  <span class:list={{ "is-self": author.self }}>{author.name}</span>
+                )}
+              </>
+            ))}
+          </p>
+          <nav class="paper-primary-actions" aria-label="论文主要资源">
+            {paper.data.resources.map((resource) => (
+              <a href={resource.url} target="_blank" rel="noreferrer">
+                {resource.label ?? resourceLabels[resource.type]} ↗
+              </a>
+            ))}
+            <a href="#citation">Cite</a>
+          </nav>
+        </div>
+
+        <dl class="paper-dossier__facts">
+          <div>
+            <dt>VENUE</dt>
+            <dd>{paper.data.venue?.name ?? "未指定"}</dd>
+          </div>
+          <div>
+            <dt>YEAR</dt>
+            <dd>{paper.data.year}</dd>
+          </div>
+          {paper.data.identifiers?.doi ? (
+            <div>
+              <dt>DOI</dt>
+              <dd>{paper.data.identifiers.doi}</dd>
+            </div>
+          ) : null}
+          {paper.data.identifiers?.arxiv ? (
+            <div>
+              <dt>ARXIV</dt>
+              <dd>{paper.data.identifiers.arxiv}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </header>
+
+      {paper.data.cover ? (
+        <figure class="paper-pipeline-cover" data-paper-cover>
+          <Image
+            src={paper.data.cover.src}
+            alt={paper.data.cover.alt}
+            widths={[720, 1080, 1440]}
+            sizes="(max-width: 760px) 100vw, 1152px"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>
+            <span>Figure · page {paper.data.cover.sourcePage}</span>
+            {paper.data.cover.caption}
+          </figcaption>
+        </figure>
+      ) : null}
+
+      <section class="paper-abstract" data-paper-abstract aria-labelledby="paper-abstract-title">
+        <div class="paper-section-marker" aria-hidden="true">00</div>
+        <div>
+          <p class="paper-section-kicker">Abstract</p>
+          <h2 id="paper-abstract-title">摘要</h2>
+          <p>{paper.data.abstract}</p>
+        </div>
+      </section>
+
+      <div class="paper-dossier__layout">
+        <div class="paper-body">
+          <Content />
+        </div>
+
+        <aside class="paper-dossier__sidebar" aria-label="论文引用与资源">
+          <section id="citation">
+            <p class="paper-section-kicker">Cite this work</p>
+            <p data-paper-citation>{citation}</p>
+            {paper.data.bibtex ? (
+              <details class="paper-bibtex">
+                <summary>BibTeX</summary>
+                <pre><code>{paper.data.bibtex}</code></pre>
+              </details>
+            ) : null}
+          </section>
+
+          <section>
+            <p class="paper-section-kicker">Keywords</p>
+            <ul class="paper-keywords">
+              {paper.data.keywords.map((keyword) => <li>{keyword}</li>)}
+            </ul>
+          </section>
+
+        </aside>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

@@ -48,11 +48,15 @@ export function buildBaseNodes(siteUrl: string, author: SiteAuthorProfile): Json
   if (author.socials?.x) {
     sameAs.push(`https://x.com/${author.socials.x}`);
   }
+  if (author.socials?.scholar) {
+    sameAs.push(author.socials.scholar);
+  }
 
   const person: JsonLdNode = {
     "@type": "Person",
     "@id": personId(siteUrl),
     name: author.name,
+    ...(author.publicationName ? { alternateName: author.publicationName } : {}),
     ...(author.homepage ? { url: author.homepage } : {}),
     ...(sameAs.length ? { sameAs } : {})
   };
@@ -119,6 +123,50 @@ export function buildBlogPostingGraph(input: BlogPostingInput): JsonLdNode[] {
     ...(input.concepts?.length
       ? { mentions: input.concepts.map((name) => ({ "@type": "Thing", name })) }
       : {}),
+    breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
+  };
+
+  return [article, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
+}
+
+export interface ScholarlyArticleInput {
+  siteUrl: string;
+  canonicalUrl: string;
+  title: string;
+  description: string;
+  authors: Array<{ name: string; url?: string; self?: boolean }>;
+  datePublished?: string;
+  dateModified?: string;
+  keywords: string[];
+  venue?: string;
+  doi?: string;
+  breadcrumbs: BreadcrumbItem[];
+}
+
+export function buildScholarlyArticleGraph(input: ScholarlyArticleInput): JsonLdNode[] {
+  const dateModified = input.dateModified ?? input.datePublished;
+  const publicationParts: JsonLdNode[] = [{ "@id": websiteId(input.siteUrl), "@type": "WebSite" }];
+  if (input.venue) {
+    publicationParts.push({ "@type": "PublicationIssue", name: input.venue });
+  }
+
+  const article: JsonLdNode = {
+    "@type": "ScholarlyArticle",
+    "@id": `${input.canonicalUrl}#scholarly-article`,
+    headline: input.title,
+    description: input.description,
+    author: input.authors.map((author) =>
+      author.self
+        ? { "@id": personId(input.siteUrl) }
+        : { "@type": "Person", name: author.name, ...(author.url ? { url: author.url } : {}) }
+    ),
+    ...(input.datePublished ? { datePublished: input.datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
+    inLanguage: "zh-CN",
+    mainEntityOfPage: input.canonicalUrl,
+    isPartOf: publicationParts,
+    keywords: input.keywords,
+    ...(input.doi ? { identifier: { "@type": "PropertyValue", propertyID: "DOI", value: input.doi } } : {}),
     breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
   };
 

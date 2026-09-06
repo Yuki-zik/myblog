@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 
-export type SearchIndexItemType = "post" | "topic" | "concept";
+export type SearchIndexItemType = "paper" | "post" | "topic" | "concept";
 
 export interface SearchIndexItem {
   type: SearchIndexItemType;
@@ -11,13 +11,16 @@ export interface SearchIndexItem {
   /** Normalized plain-text body for full-content matching (not displayed). */
   body?: string;
   date?: string;
+  /** Known paper year, used for sorting when the exact publication date is unknown. */
+  year?: number;
   updated?: string;
 }
 
 const TYPE_PRIORITY: Record<SearchIndexItemType, number> = {
-  post: 0,
-  topic: 1,
-  concept: 2
+  paper: 0,
+  post: 1,
+  topic: 2,
+  concept: 3
 };
 
 function compactStrings(values: Array<string | undefined>): string[] {
@@ -150,9 +153,12 @@ export function searchIndexItems(
         return typeDiff;
       }
 
-      if (a.item.type === "post" && b.item.type === "post") {
-        const aDate = a.item.updated ?? a.item.date ?? "";
-        const bDate = b.item.updated ?? b.item.date ?? "";
+      if (
+        (a.item.type === "post" || a.item.type === "paper") &&
+        (b.item.type === "post" || b.item.type === "paper")
+      ) {
+        const aDate = a.item.updated ?? a.item.date ?? String(a.item.year ?? "");
+        const bDate = b.item.updated ?? b.item.date ?? String(b.item.year ?? "");
         if (aDate !== bDate) {
           return bDate.localeCompare(aDate);
         }
@@ -166,6 +172,7 @@ export function searchIndexItems(
 
 export function buildSearchIndex(
   posts: CollectionEntry<"posts">[],
+  papers: CollectionEntry<"papers">[],
   topics: CollectionEntry<"topics">[],
   concepts: CollectionEntry<"concepts">[]
 ): SearchIndexItem[] {
@@ -180,6 +187,25 @@ export function buildSearchIndex(
       body: extractSearchableText(post.body ?? ""),
       date: post.data.date,
       updated: post.data.updated
+    }));
+
+  const paperItems: SearchIndexItem[] = papers
+    .filter((paper) => !paper.data.draft)
+    .map((paper) => ({
+      type: "paper",
+      title: paper.data.title,
+      url: `/papers/${paper.id}`,
+      summary: paper.data.summary ?? paper.data.abstract,
+      keywords: compactStrings([
+        ...paper.data.keywords,
+        ...paper.data.authors.map((author) => author.name),
+        paper.data.venue?.name,
+        paper.data.venue?.short
+      ]),
+      body: extractSearchableText(paper.body ?? ""),
+      date: paper.data.publicationDate,
+      year: paper.data.year,
+      updated: paper.data.updated
     }));
 
   const topicItems: SearchIndexItem[] = topics.map((topic) => ({
@@ -200,5 +226,5 @@ export function buildSearchIndex(
     body: extractSearchableText(concept.body ?? "")
   }));
 
-  return [...postItems, ...topicItems, ...conceptItems];
+  return [...paperItems, ...postItems, ...topicItems, ...conceptItems];
 }
