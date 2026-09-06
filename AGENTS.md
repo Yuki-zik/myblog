@@ -183,14 +183,15 @@ When browser review is triggered, keep it scoped:
 
 ## 7) Suggested Next Tasks (Priority Order)
 
-1. Close the production release checklist in `docs/production-readiness.md`; CI already exists and includes unit, paper provenance, build, audits, Waline smoke, and production-build E2E.
+1. Follow the operational caveats in `docs/production-readiness.md`: the 2026-09-06 release is live, but Free-plan database pausing and historical credential rotation need explicit ongoing decisions.
 2. Add production monitoring/logging for Waline load failures.
 3. Decide whether to expose pageview / reaction features from Waline.
 4. Continue expanding search / TOC / author E2E coverage.
 
 ## 8) Notes for Next Agent
 
-- As of 2026-09-06, release work is on `feat/optimize-pass` tracking `origin/feat/optimize-pass`; PR #1 targets `main`. Always recheck Git before acting.
+- As of 2026-09-06, PR #1 is merged and the local checkout is on `main` tracking `origin/main`. Always recheck Git before acting.
+- Waline smoke now verifies valid/invalid query parsing and that PostgreSQL connection/SQL logging stays disabled. Keep the `think-validator` compatibility override until the upstream Waline dependency range includes the fix.
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
 

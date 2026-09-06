@@ -2,7 +2,7 @@
 
 ## 当前发布状态（2026-09-06）
 
-发布分支为 `feat/optimize-pass`，PR #1 尚待发布闭环。论文系统含两篇真实成果，缺少合法 PDF 时不生成封面；论文未知日期不再补成 1 月 1 日。CI 已接入论文来源检查，本轮按兼容版本修复前端/Waline 新披露依赖问题，保留既有审计门禁与忽略策略。116 项单测与 19 页构建已通过，完整浏览器回归正在验证。Vercel 登录已恢复，日志证实旧预览因缺失 SITE_URL 失败；已按核实的正式域名补齐 Production/Preview 配置，现有 Waline 地址保持不变。新部署和线上评论仍待核验；发布清单见 `docs/production-readiness.md`。
+已正式发布到 `https://myblog-silk-one.vercel.app`；PR #1 已合并，本地切回并同步 `main`。应用发布版本 `df5e467` 的 GitHub CI 全部通过，包含 116 项单测与全量 E2E；博客/Waline 两套正式部署均 READY。修复了缺失 SITE_URL、论文虚构日期、搜索测试遗漏、依赖安全门禁、敏感数据库日志、旧 think-validator 兼容问题和内嵌字体 CSP。原 Supabase 数据库恢复 ACTIVE_HEALTHY；匿名评论读取 HTTP 200/errno 0，原有 1 条评论保留。全新浏览器核验首页/论文页/详情/搜索/canonical 与评论，未见控制台错误。没有发布测试评论、修改数据库结构或自动轮换密码。两篇论文缺合法 PDF 时保持无封面。持续运行需注意免费数据库闲置暂停和历史凭据轮换，详见 `docs/production-readiness.md`。
 
 ## 1. 目标与定位
 
