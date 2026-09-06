@@ -220,15 +220,21 @@ test("the search index endpoint exposes every published collection entry", async
   expect(byType.post).toBeGreaterThan(0);
   expect(byType.topic).toBeGreaterThan(0);
   expect(byType.concept).toBeGreaterThan(0);
+  expect(byType.paper).toBe(2);
+
+  expect(index.filter((item) => item.type === "paper").map((item) => item.url).sort()).toEqual([
+    "/papers/duap-multilingual-speech-privacy",
+    "/papers/oxicams-carbon-dots-machine-learning"
+  ]);
 
   index.forEach((item) => {
-    expect(["post", "topic", "concept"]).toContain(item.type);
+    expect(["post", "paper", "topic", "concept"]).toContain(item.type);
     expect(item.title.length).toBeGreaterThan(0);
-    expect(item.url).toMatch(/^\/(posts|topics|concepts)\//);
+    expect(item.url).toMatch(/^\/(posts|papers|topics|concepts)\//);
     expect(Array.isArray(item.keywords)).toBe(true);
   });
 
-  // Draft posts must never reach the client-side index.
+  // Each published entry must have a unique client-side index URL.
   const urls = index.map((item) => item.url);
   expect(new Set(urls).size).toBe(urls.length);
 });
