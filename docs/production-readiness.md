@@ -42,6 +42,14 @@ Do not store tokens, database credentials, or exported environment files in Git.
 - GitHub deployment `5689811245` records a successful Production frontend deployment for `619e97428f73fc07a38a78708ea56756c4cf3d7c` on 2026-07-31, with URL `https://myblog-2og6jdyw8-qianlimaxai-5994s-projects.vercel.app`. Confirm it in Vercel before using it as a rollback target.
 - Previous frontend production target confirmed in Vercel: `dpl_7ti2Ewm8uKuf7Q66iz7AbR3ycx8F`, state READY. New release deployment and live comment service are still pending verification.
 
+## Release verification progress
+
+- `d4da940`: GitHub Verify and full E2E succeeded; both Vercel previews READY.
+- Local: 116 unit tests and 19-page build passed. Initial full E2E passed 91/92, exposing a stale search type assertion; corrected search suite passed 13/13, followed by the successful full cloud E2E.
+- Desktop paper index and mobile dark paper detail screenshots reviewed under `output/playwright/` (ignored local evidence).
+- Anonymous production comment loading exposed HTTP 500 from the Supabase pooler. Management API confirmed the existing database project is INACTIVE; restoration and live verification are pending.
+- PostgreSQL adapter defaults logged connection URIs. The Waline entry now disables connection/SQL logging using supported config keys; smoke exercises the installed adapter without a database connection. Existing historical logs may contain credentials: do not copy raw logs; credential rotation requires a coordinated database/Vercel change.
+
 ## Rollback boundary
 
 Retain the previous known-good production deployment in Vercel. If a new production deployment fails functional checks, restore that verified deployment through the existing project; do not delete deployments, change the database, or force-push branch history. The prior known-good deployment ID must be obtained from Vercel before promotion.

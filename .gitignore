@@ -20,3 +20,6 @@ tmp
 # Author-provided PDFs and local extraction reports are not published.
 .paper-sources/
 .paper-pipeline/
+
+# Supabase CLI metadata (not application configuration).
+supabase/.temp/
