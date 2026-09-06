@@ -8,6 +8,7 @@ const isCI = !!process.env.CI;
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
+  workers: 1,
   retries: isCI ? 2 : 0,
   use: {
     baseURL: "http://127.0.0.1:4173",

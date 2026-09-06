@@ -12,7 +12,7 @@ export function collectReferencedTopicsForConcept(
   );
 
   return topics
-    .filter((topic) => referencedTopicSlugs.has(topic.slug))
+    .filter((topic) => referencedTopicSlugs.has(topic.id))
     .sort((a, b) => {
       const orderA = a.data.order ?? Number.POSITIVE_INFINITY;
       const orderB = b.data.order ?? Number.POSITIVE_INFINITY;

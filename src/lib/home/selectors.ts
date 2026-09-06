@@ -1,5 +1,5 @@
 export interface HomePostLike {
-  slug: string;
+  id: string;
   data: {
     date: string;
     cover?: {
@@ -20,10 +20,10 @@ export function pickFeaturedHomePost<T extends HomePostLike>(posts: T[]): T | nu
 
 export function pickRecentHomePosts<T extends HomePostLike>(
   posts: T[],
-  featuredSlug?: string,
+  featuredId?: string,
   limit = 5
 ): T[] {
   return sortHomePostsByDate(posts)
-    .filter((post) => post.slug !== featuredSlug)
+    .filter((post) => post.id !== featuredId)
     .slice(0, limit);
 }

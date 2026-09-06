@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
@@ -17,7 +17,10 @@ import { formatPostDisplayDate } from "../../lib/posts/date";
 import { getPostSiblings } from "../../lib/posts/navigation";
 import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 import { buildPostToc } from "../../lib/posts/toc";
+import { getPostPath } from "../../lib/posts/urls";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildBlogPostingGraph } from "../../lib/seo/jsonLd";
+import { getRelatedPosts } from "../../lib/knowledge/relatedPosts";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -38,17 +41,39 @@ type HeaderStatItem = {
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post }
   }));
 }
 
 const { post } = Astro.props;
 const resolvedAuthor = resolvePostAuthor(post);
-const { Content, headings, remarkPluginFrontmatter } = await post.render();
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const tocItems = buildPostToc(headings ?? []);
-const allPosts = await getCollection("posts", ({ data }) => !data.draft);
-const siblings = getPostSiblings(allPosts, post.slug);
+const [allPosts, allTopics] = await Promise.all([
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("topics")
+]);
+const siblings = getPostSiblings(allPosts, post.id);
+const topicTitleBySlug = new Map(allTopics.map((topic) => [topic.id, topic.data.title]));
+const relatedPosts = getRelatedPosts(
+  {
+    id: post.id,
+    title: post.data.title,
+    summary: post.data.summary,
+    date: post.data.date,
+    topics: post.data.topics,
+    concepts: post.data.concepts
+  },
+  allPosts.map((entry) => ({
+    id: entry.id,
+    title: entry.data.title,
+    summary: entry.data.summary,
+    date: entry.data.date,
+    topics: entry.data.topics,
+    concepts: entry.data.concepts
+  }))
+);
 const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY])
   ? (remarkPluginFrontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY] as TufteRailFootnote[])
   : [];
@@ -107,19 +132,52 @@ const headerStats = [
         }
       : null
 ] as Array<HeaderStatItem | null>;
+
+// JSON-LD: BlogPosting graph. Topics are rendered as visible chips → `about`;
+// concepts are only surfaced as a count (not named) so we omit `mentions`.
+const canonicalPath = post.data.canonical ?? getPostPath(post.id);
+const site = Astro.site;
+const structuredData = site
+  ? buildBlogPostingGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL(canonicalPath, site).toString(),
+      title: post.data.title,
+      description: post.data.summary,
+      datePublished: post.data.date,
+      dateModified: post.data.updated,
+      imageUrl: post.data.cover?.src.src
+        ? new URL(post.data.cover.src.src, site).toString()
+        : undefined,
+      topics: post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug),
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "主题", url: new URL("/topics", site).toString() },
+        ...(post.data.topics[0]
+          ? [
+              {
+                name: topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0],
+                url: new URL(`/topics/${post.data.topics[0]}`, site).toString()
+              }
+            ]
+          : []),
+        { name: post.data.title }
+      ]
+    })
+  : undefined;
 ---
 
 <BaseLayout
   title={`${post.data.title} | 文章`}
   description={post.data.summary}
   authorMeta={resolvedAuthor.name}
-  canonical={post.data.canonical ?? `/posts/${post.slug}`}
+  canonical={post.data.canonical ?? getPostPath(post.id)}
   metaType="article"
   publishedTime={post.data.date}
   modifiedTime={post.data.updated}
-  openGraphImage={post.data.cover?.src.src}
+  openGraphImage={`/og/posts/${post.id}.png`}
   runtime="reading"
   mainClass="shell--article-reading"
+  structuredData={structuredData}
 >
   <div class="post-reading-page">
     <DiscoverAmbient />
@@ -129,7 +187,7 @@ const headerStats = [
       id="reading-progress-bar"
       data-controller="reading-progress"
       role="progressbar"
-      aria-label="阅读进度"
+      aria-label="正文阅读进度"
       aria-valuenow={0}
       aria-valuemin={0}
       aria-valuemax={100}
@@ -204,7 +262,7 @@ const headerStats = [
                   </span>
                   {post.data.topics.map((topicSlug) => (
                     <span class="post-header-topic-item">
-                      <a href={`/topics/${topicSlug}`}>#{topicSlug}</a>
+                      <a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a>
                     </span>
                   ))}
                 </p>
@@ -224,8 +282,26 @@ const headerStats = [
           </section>
         </article>
 
+        {relatedPosts.length > 0 ? (
+          <section class="post-related-notes" aria-label="相关笔记">
+            <h2 class="post-related-notes-title">相关笔记</h2>
+            <ul class="post-related-notes-list">
+              {relatedPosts.map((related) => (
+                <li class="post-related-notes-item">
+                  <a class="post-related-notes-link" href={getPostPath(related.id)}>
+                    {related.title}
+                  </a>
+                  {related.summary ? (
+                    <p class="post-related-notes-summary">{related.summary}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         <section class="post-waline-comments-section" aria-label="评论">
-          <WalineComments client:visible path={`/posts/${post.slug}`} />
+          <WalineComments client:visible path={getPostPath(post.id)} />
         </section>
 
         <section class="post-reading-family-actions" aria-label="继续浏览">
@@ -233,7 +309,7 @@ const headerStats = [
             actions={[
               siblings.olderPost
                 ? {
-                    href: `/posts/${siblings.olderPost.slug}`,
+                    href: getPostPath(siblings.olderPost.id),
                     label: `下一篇：${siblings.olderPost.data.title}`,
                     variant: "primary",
                     icon: "arrow"
@@ -246,7 +322,7 @@ const headerStats = [
                   },
               {
                 href: `/topics/${post.data.topics[0]}`,
-                label: `返回主题：${post.data.topics[0]}`,
+                label: `返回主题：${topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}`,
                 variant: "secondary",
                 icon: "topic"
               }
@@ -262,7 +338,7 @@ const headerStats = [
           tocItems={tocItems}
           figures={post.data.figures ?? []}
           markdownFootnotes={markdownFootnotes}
-          postSlug={post.slug}
+          postSlug={post.id}
           showToc={false}
         />
       </aside>

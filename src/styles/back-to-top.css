@@ -41,11 +41,30 @@
   transform: translateY(-2px);
 }
 
+.back-to-top:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--focus-ring) 46%, transparent 54%),
+    0 22px 44px rgba(12, 17, 31, 0.2);
+}
+
 @media (max-width: 640px) {
   .back-to-top {
-    right: 0.9rem;
-    bottom: 1rem;
-    width: 2.55rem;
-    height: 2.55rem;
+    right: calc(0.8rem + env(safe-area-inset-right, 0px));
+    bottom: calc(1.35rem + env(safe-area-inset-bottom, 0px));
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition-duration: 1ms !important;
+    transform: none !important;
+  }
+
+  .back-to-top:hover,
+  .back-to-top.is-visible {
+    transform: none !important;
   }
 }

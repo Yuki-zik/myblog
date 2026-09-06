@@ -389,13 +389,17 @@ test("home reference collapses into a single-column editorial stack on mobile", 
   const metrics = await page.evaluate(() => {
     const heroCopy = document.querySelector(".home-reference-hero__copy") as HTMLElement | null;
     const terminal = document.querySelector(".home-reference-terminal-wrap") as HTMLElement | null;
+    const terminalCard = document.querySelector("[data-home-reference-terminal]") as HTMLElement | null;
     const domainCards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
     const recentItem = document.querySelector("[data-home-recent-item]") as HTMLElement | null;
 
     return {
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
       terminalPosition: terminal ? getComputedStyle(terminal).position : "",
       heroCopyBottom: heroCopy?.getBoundingClientRect().bottom ?? 0,
       terminalTop: terminal?.getBoundingClientRect().top ?? 0,
+      terminalRight: terminalCard?.getBoundingClientRect().right ?? 0,
       firstDomainLeft: domainCards[0]?.getBoundingClientRect().left ?? 0,
       secondDomainLeft: domainCards[1]?.getBoundingClientRect().left ?? 0,
       firstDomainTop: domainCards[0]?.getBoundingClientRect().top ?? 0,
@@ -404,8 +408,10 @@ test("home reference collapses into a single-column editorial stack on mobile", 
     };
   });
 
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
   expect(metrics.terminalPosition).toBe("relative");
   expect(metrics.terminalTop).toBeGreaterThan(metrics.heroCopyBottom - 4);
+  expect(metrics.terminalRight).toBeLessThanOrEqual(metrics.viewportWidth - 16);
   expect(Math.abs(metrics.firstDomainLeft - metrics.secondDomainLeft)).toBeLessThan(4);
   expect(metrics.secondDomainTop).toBeGreaterThan(metrics.firstDomainTop + 20);
   expect(metrics.recentFlexDirection).toBe("column");
@@ -522,6 +528,82 @@ test("home domains keep a fixed 4-card desktop window and loop elegantly through
       ],
       animating: "false"
     });
+});
+
+test("home domains horizontal wheel input moves the same loop as next and previous controls", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/");
+
+  const viewport = page.locator("[data-home-domains-viewport]");
+  await expect(viewport).toBeVisible();
+
+  const readMetrics = () =>
+    page.evaluate(() => {
+      const viewport = document.querySelector("[data-home-domains-viewport]") as HTMLElement | null;
+      const cards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
+      const viewportRect = viewport?.getBoundingClientRect();
+
+      const fullyVisibleTitles = cards
+        .filter((card) => {
+          if (!viewportRect) return false;
+          const rect = card.getBoundingClientRect();
+          return rect.left >= viewportRect.left - 1 && rect.right <= viewportRect.right + 1;
+        })
+        .map((card) => card.querySelector("[data-home-domain-title]")?.textContent?.trim() ?? "");
+
+      return {
+        allTitles: cards.map((card) => card.querySelector("[data-home-domain-title]")?.textContent?.trim() ?? ""),
+        fullyVisibleTitles,
+        animating: viewport?.dataset.animating ?? "false"
+      };
+    });
+
+  const before = await readMetrics();
+  const expectedAfterWheel = Array.from({ length: 4 }, (_, index) => before.allTitles[(index + 1) % before.allTitles.length]);
+
+  await viewport.hover();
+  await page.mouse.wheel(180, 0);
+
+  await expect
+    .poll(readMetrics, { timeout: 2500 })
+    .toEqual(
+      expect.objectContaining({
+        fullyVisibleTitles: expectedAfterWheel,
+        animating: "false"
+      })
+    );
+});
+
+test("home domains vertical wheel input keeps normal page scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/");
+
+  const viewport = page.locator("[data-home-domains-viewport]");
+  await expect(viewport).toBeVisible();
+  await viewport.scrollIntoViewIfNeeded();
+
+  const before = await page.evaluate(() => {
+    const cards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
+    return {
+      scrollY: window.scrollY,
+      firstTitle: cards[0]?.querySelector("[data-home-domain-title]")?.textContent?.trim() ?? ""
+    };
+  });
+
+  await viewport.hover();
+  await page.mouse.wheel(0, 240);
+  await page.waitForTimeout(250);
+
+  const after = await page.evaluate(() => {
+    const cards = Array.from(document.querySelectorAll("[data-home-domain-card]")) as HTMLElement[];
+    return {
+      scrollY: window.scrollY,
+      firstTitle: cards[0]?.querySelector("[data-home-domain-title]")?.textContent?.trim() ?? ""
+    };
+  });
+
+  expect(after.scrollY).toBeGreaterThan(before.scrollY + 40);
+  expect(after.firstTitle).toBe(before.firstTitle);
 });
 
 test("home domains accept rapid consecutive clicks without dropping queued steps", async ({ page }) => {

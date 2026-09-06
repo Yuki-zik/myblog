@@ -23,7 +23,6 @@
   padding: 0;
   list-style: none;
 }
-
 .pill-list a,
 .pill-list li {
   display: inline-flex;
@@ -433,4 +432,3 @@ html[data-color-scheme="dark"] .post-cover--featured {
     width: min(6.4rem, 42%);
   }
 }
-

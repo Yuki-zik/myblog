@@ -27,7 +27,7 @@ const sortedTopics = [...topics].sort((a, b) => {
   return a.data.title.localeCompare(b.data.title, "zh-CN");
 });
 
-const topicTitleBySlug = new Map(sortedTopics.map((topic) => [topic.slug, topic.data.title]));
+const topicTitleBySlug = new Map(sortedTopics.map((topic) => [topic.id, topic.data.title]));
 
 const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
   post.data.topics.forEach((topicSlug) => {
@@ -38,7 +38,7 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 }, {});
 
 const featuredPost = pickFeaturedHomePost(posts);
-const recentPosts = pickRecentHomePosts(posts, featuredPost?.slug, 5);
+const recentPosts = pickRecentHomePosts(posts, featuredPost?.id, 5);
 const homeDomainsLoopable = sortedTopics.length > 4;
 
 const featuredTopicLabel = featuredPost?.data.topics[0]
@@ -229,7 +229,7 @@ const homeDescription =
 
               return (
                 <a
-                  href={`/topics/${topic.slug}`}
+                  href={`/topics/${topic.id}`}
                   class="home-reference-domain-item"
                   data-home-domain-card
                   data-ux-reveal="fade-up"
@@ -277,7 +277,7 @@ const homeDescription =
                     <h3 data-home-domain-title>{topic.data.title}</h3>
                     <p class="text-[0.875rem] leading-[1.6]" data-home-domain-summary>{topic.data.summary}</p>
                     <p class="home-reference-domain-card__meta text-[0.875rem] leading-[1.6]" data-home-domain-meta>
-                      相关文章 {postCountByTopic[topic.slug] ?? 0} 篇
+                      相关文章 {postCountByTopic[topic.id] ?? 0} 篇
                     </p>
                   </div>
                 </a>
@@ -295,7 +295,7 @@ const homeDescription =
 
           {
             featuredPost ? (
-              <a href={`/posts/${featuredPost.slug}`} class="home-reference-card home-reference-featured-card relative block p-4">
+              <a href={`/posts/${featuredPost.id}`} class="home-reference-card home-reference-featured-card relative block p-4">
                 <div class="home-featured-cover-stack post-cover post-cover--featured mb-6" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
                   {
                     featuredPost.data.cover?.src ? (
@@ -359,7 +359,7 @@ const homeDescription =
           ) : (
             <div class="home-reference-recent-list flex flex-col gap-3">
               {recentPosts.map((post) => (
-                <a href={`/posts/${post.slug}`} class="home-reference-card home-reference-recent-item group relative flex items-center gap-6 overflow-hidden p-5" data-home-recent-item>
+                <a href={`/posts/${post.id}`} class="home-reference-card home-reference-recent-item group relative flex items-center gap-6 overflow-hidden p-5" data-home-recent-item>
                   <div class="home-reference-recent-item__meta flex w-48 shrink-0 items-center gap-4">
                     <span class="home-reference-recent-item__date font-(family-name:--hr-font-mono) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
                     <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center rounded-full px-2.5 py-1 font-(family-name:--hr-font-mono) text-[0.625rem] leading-none">

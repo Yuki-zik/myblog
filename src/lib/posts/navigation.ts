@@ -16,7 +16,7 @@ export function getPostSiblings(
   currentSlug: string
 ): PostSiblings {
   const orderedPosts = sortPostsByDateDesc(posts);
-  const currentIndex = orderedPosts.findIndex((post) => post.slug === currentSlug);
+  const currentIndex = orderedPosts.findIndex((post) => post.id === currentSlug);
 
   if (currentIndex === -1) {
     return {

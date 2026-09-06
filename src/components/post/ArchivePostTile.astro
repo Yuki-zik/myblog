@@ -13,7 +13,7 @@ const { post, author, dateLabel } = Astro.props;
 
 <article class="archive-post-tile overflow-visible" data-archive-card data-ux-reveal="fade-up">
   <a
-    href={`/posts/${post.slug}`}
+    href={`/posts/${post.id}`}
     class="archive-post-link relative grid items-stretch gap-[0.9rem] rounded-[inherit] p-[0.78rem]"
     aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
   >

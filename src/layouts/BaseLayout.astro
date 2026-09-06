@@ -14,12 +14,17 @@ import "../styles/author.css";
 import "../styles/archives.css";
 import "../styles/back-to-top.css";
 import "../styles/article.css";
+import "../styles/papers.css";
+import "../styles/code.css";
+import "katex/dist/katex.min.css";
 import "../styles/discover.css";
+import "../styles/graph.css";
 import "../styles/waline.css";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import HeaderSearch from "../components/search/HeaderSearch.astro";
 import UiControllers from "../components/UiControllers.astro";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { buildBaseNodes, serializeJsonLd, type JsonLdNode } from "../lib/seo/jsonLd";
 
 interface Props {
   title: string;
@@ -34,6 +39,12 @@ interface Props {
   mainClass?: string;
   hideFooter?: boolean;
   footerVariant?: "discover" | "reading" | "none";
+  /**
+   * Page-specific schema.org nodes (e.g. BlogPosting, CollectionPage,
+   * BreadcrumbList). WebSite + Person are always emitted by the layout, so
+   * callers only pass the extra nodes that reference those shared @ids.
+   */
+  structuredData?: JsonLdNode[];
 }
 
 const {
@@ -48,7 +59,8 @@ const {
   runtime,
   mainClass,
   hideFooter = false,
-  footerVariant: explicitFooterVariant
+  footerVariant: explicitFooterVariant,
+  structuredData
 } = Astro.props;
 
 const footerVariant = hideFooter
@@ -60,6 +72,8 @@ const currentSection = pathname === "/"
   ? "home"
   : pathname.startsWith("/topics") || pathname.startsWith("/posts") || pathname.startsWith("/concepts")
     ? "topics"
+    : pathname.startsWith("/papers")
+      ? "papers"
     : pathname.startsWith("/archives")
       ? "archives"
       : pathname.startsWith("/author")
@@ -69,6 +83,7 @@ const currentSection = pathname === "/"
 const navItems = [
   { href: "/", label: "\u9996\u9875", section: "home" },
   { href: "/topics", label: "\u4e3b\u9898", section: "topics" },
+  { href: "/papers", label: "\u8bba\u6587", section: "papers" },
   { href: "/archives", label: "\u5f52\u6863", section: "archives" },
   { href: "/author", label: "\u4f5c\u8005", section: "author" }
 ];
@@ -89,6 +104,14 @@ function resolveAbsoluteUrl(value: string | undefined): string | undefined {
 const canonicalUrl = resolveAbsoluteUrl(canonical ?? pathname);
 const openGraphImageUrl = resolveAbsoluteUrl(openGraphImage);
 const twitterCard = openGraphImage ? "summary_large_image" : "summary";
+
+const siteUrlString = Astro.site?.toString();
+const jsonLdHtml = siteUrlString
+  ? serializeJsonLd([
+      ...buildBaseNodes(siteUrlString, SITE_AUTHOR_PROFILE),
+      ...(structuredData ?? [])
+    ])
+  : null;
 
 const themeInitScript = `(function () {
   var root = document.documentElement;
@@ -138,6 +161,12 @@ const themeInitScript = `(function () {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {openGraphImageUrl ? <meta name="twitter:image" content={openGraphImageUrl} /> : null}
+
+    {
+      jsonLdHtml ? (
+        <script type="application/ld+json" is:inline set:html={jsonLdHtml} />
+      ) : null
+    }
 
     <!-- Google Fonts: Space Grotesk (UI chrome) + Source Serif 4 (reading) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -12,6 +12,41 @@
     "smoke": "node smoke.cjs"
   },
   "dependencies": {
-    "@waline/vercel": "1.39.3"
+    "@waline/vercel": "1.40.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "protobufjs",
+      "sqlite3"
+    ],
+    "overrides": {
+      "form-data@<2.5.6": "2.5.6",
+      "form-data@>=3.0.0 <3.0.5": "3.0.5",
+      "form-data@>=4.0.0 <4.0.6": "4.0.6",
+      "protobufjs": "^7.6.5",
+      "axios": "^0.33.0",
+      "brace-expansion@<1.1.18": "1.1.18",
+      "dompurify": "^3.4.13",
+      "linkify-it": "^5.0.2",
+      "nodemailer": "^9.0.1",
+      "tar": "^7.5.21",
+      "validator": "^13.15.23",
+      "ws": "^8.20.1",
+      "qs": "^6.16.0",
+      "ip-address@<10.3.1": "10.3.1",
+      "@xmldom/xmldom@>=0.9.0 <0.9.12": "0.9.12",
+      "think-mysql2>mysql": "npm:mysql2@3.23.1"
+    },
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-p6mc-m468-83gw",
+        "GHSA-p8p7-x288-28g6",
+        "GHSA-72xf-g2v4-qvf3",
+        "GHSA-w9mr-4mfr-499f",
+        "GHSA-xxjr-mmjv-4gpg",
+        "GHSA-f23m-r3pf-42rh",
+        "GHSA-w5hq-g745-h8pq"
+      ]
+    }
   }
 }

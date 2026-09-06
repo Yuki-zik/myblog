@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-04-11 (design manual + browser verification policy session)
+Last updated: 2026-09-06 (release readiness and deployment evidence)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -36,6 +36,7 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 - Post paragraphs still receive stable anchors for TOC / marginalia / footnote positioning.
 - Article comments are mounted with Waline instead of in-repo Supabase logic.
 - Keep v1 simple and extensible (future: moderation, richer comment UX, graph/backlinks).
+- Keep research outputs distinct from blog posts: papers use structured publication metadata and a compact year-grouped ledger.
 
 ## 2) Current Implementation Status
 
@@ -47,12 +48,15 @@ Build a theme-first knowledge blog with Waline-powered article comments:
   - `/topics`
   - `/topics/[slug]`
   - `/posts/[slug]`
+  - `/papers`
+  - `/papers/[slug]`
   - `/concepts/[slug]`
   - `/archives`
 - Content collections implemented in `src/content.config.ts`:
   - `posts`
   - `topics`
   - `concepts`
+  - `papers`
 
 ### 2.2 Paragraph anchor system (implemented)
 
@@ -75,12 +79,28 @@ Build a theme-first knowledge blog with Waline-powered article comments:
   - when `PUBLIC_WALINE_SERVER_URL` is missing, the wrapper renders a configuration hint instead of crashing
   - when Waline `init()` throws, the wrapper renders a runtime error hint instead of tearing down the page
 
+### 2.4 Paper system (implemented)
+
+- Content collection: `src/content/papers/*`
+- Routes:
+  - `/papers`: server-rendered, newest-year-first publication ledger
+  - `/papers/[slug]`: standalone scholarly detail page with abstract, resources, citation, BibTeX, and Markdown sections
+- Paper authors, venue, identifiers, and resources are structured data; do not flatten them back to display strings.
+- `prototype` entries must remain visibly labeled as non-published work. Never present a design sample as an accepted or published paper.
+- Paper pages participate in `/search-index.json` and emit `ScholarlyArticle` JSON-LD.
+- Do not mount Waline, the post scholar rail, or post paragraph-comment behavior on paper pages unless explicitly requested.
+- The author's Scholar profile is `NTwrnCIAAAAJ`. Treat it as a discovery source, then verify title, author order, venue, year, DOI, volume, issue, and pages against Crossref plus a second scholarly index before publishing.
+- Do not persist Scholar citation counts; they are volatile. Do not copy publisher abstracts verbatim—write an original concise summary from verified metadata.
+- Paper PDF enrichment is documented in `docs/paper-automation.md`. Use `pnpm papers:enrich` for analysis, `--apply` only for a reviewed/high-confidence pipeline figure, and `pnpm papers:check` to validate committed cover provenance.
+- Never bypass a publisher paywall. Prefer `.paper-sources/<slug>.pdf` for an author-owned copy or an explicit open `resources[type=pdf]` URL.
+
 ## 3) Cloud/Deployment Progress
 
 - GitHub repo created and pushed:
   - `https://github.com/Yuki-zik/myblog`
-- Vercel project import completed (user screenshots indicate deployment is live)
-- Waline server needs to be configured separately for each deployment environment
+- Vercel has separate `myblog` and `waline` projects. Do not infer production health from a successful local build or a Waline deployment.
+- Release status and required production checks are tracked in `docs/production-readiness.md`.
+- Waline server and frontend public configuration must be verified separately for each deployment environment.
 
 ## 4) Required Environment Variables
 
@@ -148,6 +168,7 @@ When browser review is triggered, keep it scoped:
   - `src/content/posts/*`
   - `src/content/topics/*`
   - `src/content/concepts/*`
+  - `src/content/papers/*`
 - Comment domain:
   - `src/components/comments/WalineComments.tsx`
   - `src/styles/waline.css`
@@ -162,14 +183,14 @@ When browser review is triggered, keep it scoped:
 
 ## 7) Suggested Next Tasks (Priority Order)
 
-1. Add CI workflow (run `pnpm test` + `pnpm build` on PR).
+1. Close the production release checklist in `docs/production-readiness.md`; CI already exists and includes unit, paper provenance, build, audits, Waline smoke, and production-build E2E.
 2. Add production monitoring/logging for Waline load failures.
 3. Decide whether to expose pageview / reaction features from Waline.
 4. Continue expanding search / TOC / author E2E coverage.
 
 ## 8) Notes for Next Agent
 
-- Repository is on `main` tracking `origin/main`.
+- As of 2026-09-06, release work is on `feat/optimize-pass` tracking `origin/feat/optimize-pass`; PR #1 targets `main`. Always recheck Git before acting.
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
 
@@ -212,5 +233,5 @@ Related invariants:
   4. Author / archives special pages
 - The main CSS hotspots are `src/styles/article.css`, `src/styles/layout.css`, `src/styles/author.css`, `src/styles/cards.css`, and `src/styles/toc.css`. Prefer further decomposition before large visual changes in those files.
 - Current runtime map:
-  - `discover`: `/`, `/topics`, `/topics/[slug]`, `/concepts/[slug]`, `/author`, `/archives`
-  - `reading`: `/posts/[slug]`
+  - `discover`: `/`, `/topics`, `/topics/[slug]`, `/concepts/[slug]`, `/papers`, `/author`, `/archives`
+  - `reading`: `/posts/[slug]`, `/papers/[slug]` (dedicated paper layout; no post-only rail/comments)

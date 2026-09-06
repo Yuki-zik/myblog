@@ -1,0 +1,186 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import DiscoverShell from "../../components/discover/DiscoverShell.astro";
+import PageHero from "../../components/discover/PageHero.astro";
+import SectionHead from "../../components/discover/SectionHead.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
+
+const papers = (await getCollection("papers", ({ data }) => !data.draft)).sort((a, b) => {
+  if (a.data.year !== b.data.year) {
+    return b.data.year - a.data.year;
+  }
+  return a.data.title.localeCompare(b.data.title, "zh-CN");
+});
+const paperGroups = [...new Set(papers.map((paper) => paper.data.year))].map((year) => ({
+  year,
+  papers: papers.filter((paper) => paper.data.year === year)
+}));
+const featuredPaper = papers.find((paper) => paper.data.featured) ?? papers[0] ?? null;
+const keywordCount = new Set(papers.flatMap((paper) => paper.data.keywords)).size;
+const description = "集中展示论文、预印本与研究原型，并保留可引用的元数据、摘要、贡献和资源入口。";
+const site = Astro.site;
+const canonicalUrl = site ? new URL("/papers", site).toString() : "";
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl,
+      title: "论文与研究成果",
+      description,
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "论文与研究成果" }
+      ]
+    })
+  : undefined;
+
+const statusLabels = {
+  prototype: "页面样稿",
+  preprint: "预印本",
+  accepted: "已接收",
+  published: "已发表"
+} as const;
+
+const resourceLabels = {
+  publisher: "Publisher",
+  pdf: "PDF",
+  code: "Code",
+  project: "Project",
+  data: "Data",
+  supplement: "Supplement",
+  slides: "Slides",
+  video: "Video",
+  demo: "Demo"
+} as const;
+---
+
+<BaseLayout
+  title="论文与研究成果 | MyBlog"
+  description={description}
+  canonical="/papers"
+  runtime="discover"
+  structuredData={structuredData}
+>
+  <DiscoverShell bodyClass="papers-index-page">
+    <PageHero
+      kicker="Research / Papers"
+      title="论文与研究成果"
+      description="这里不是文章归档，而是一份研究档案：每个条目都明确区分发表状态、作者、摘要、关键词与可引用信息。"
+      variant="split"
+      actions={featuredPaper
+        ? [
+            {
+              href: `/papers/${featuredPaper.id}`,
+              label: "查看代表条目",
+              variant: "primary",
+              icon: "arrow"
+            },
+            {
+              href: "/author",
+              label: "研究者简介",
+              variant: "secondary",
+              icon: "topic"
+            }
+          ]
+        : []}
+      stats={[
+        { value: String(papers.length).padStart(2, "0"), label: "项研究成果" },
+        { value: String(keywordCount).padStart(2, "0"), label: "个研究关键词" }
+      ]}
+    >
+      <div slot="aside" class="paper-index-ledger" aria-label="论文索引说明">
+        <p class="paper-index-ledger__eyebrow">RESEARCH REGISTER</p>
+        <strong>从研究问题进入，而不是从发布日期离开。</strong>
+        <p>正式成果、预印本和页面样稿会被清楚标记，避免把进行中的研究误写成已发表论文。</p>
+        <span aria-hidden="true">Σ / {String(papers.length).padStart(2, "0")}</span>
+      </div>
+    </PageHero>
+
+    <section class="discover-section">
+      <SectionHead
+        kicker="Index"
+        title="研究条目"
+        description="按时间倒序排列，状态与出处优先于装饰。"
+        countLabel={`${papers.length} papers indexed`}
+      />
+
+      <div class="paper-year-list" data-ux-stagger>
+        {paperGroups.map((group) => (
+          <section class="paper-year-group" data-paper-year={group.year} data-ux-reveal="fade-up">
+            <header class="paper-year-heading">
+              <h2>{group.year}</h2>
+              <span>{String(group.papers.length).padStart(2, "0")} records</span>
+            </header>
+
+            <div class="paper-index-list">
+              {group.papers.map((paper) => (
+                <article
+                  class:list={["paper-index-row", { "paper-index-row--with-cover": paper.data.cover }]}
+                  data-paper-card
+                >
+                  <div class="paper-index-row__record">
+                    {paper.data.cover ? (
+                      <a
+                        class="paper-index-row__cover"
+                        href={`/papers/${paper.id}`}
+                        aria-label={`查看论文：${paper.data.title}`}
+                      >
+                        <Image
+                          src={paper.data.cover.src}
+                          alt={paper.data.cover.alt}
+                          widths={[320, 480, 640]}
+                          sizes="(max-width: 820px) 100vw, 220px"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+                    ) : null}
+                    <div class="paper-index-row__main">
+                      <div class="paper-index-row__meta">
+                        <span class={`paper-status paper-status--${paper.data.status}`} data-paper-status>
+                          {statusLabels[paper.data.status]}
+                        </span>
+                        {paper.data.venue ? (
+                          <span>{paper.data.venue.short ?? paper.data.venue.name} · {paper.data.year}</span>
+                        ) : (
+                          <span>{paper.data.year}</span>
+                        )}
+                      </div>
+
+                      <h3><a href={`/papers/${paper.id}`}>{paper.data.title}</a></h3>
+                      <p class="paper-index-row__authors">
+                        {paper.data.authors.map((author, index) => (
+                          <>
+                            {index > 0 ? <span aria-hidden="true">, </span> : null}
+                            {author.url ? (
+                              <a href={author.url} class:list={{ "is-self": author.self }}>{author.name}</a>
+                            ) : (
+                              <span class:list={{ "is-self": author.self }}>{author.name}</span>
+                            )}
+                          </>
+                        ))}
+                      </p>
+                      <p class="paper-index-row__summary">{paper.data.summary ?? paper.data.abstract}</p>
+                    </div>
+                  </div>
+
+                  <nav class="paper-index-row__resources" aria-label={`${paper.data.title} 资源`}>
+                    <a class="paper-resource-link paper-resource-link--detail" href={`/papers/${paper.id}`}>
+                      Details
+                    </a>
+                    {paper.data.resources.map((resource) => (
+                      <a class="paper-resource-link" href={resource.url} target="_blank" rel="noreferrer">
+                        {resource.label ?? resourceLabels[resource.type]}
+                      </a>
+                    ))}
+                  </nav>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </section>
+  </DiscoverShell>
+</BaseLayout>

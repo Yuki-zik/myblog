@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import PageHero from "../components/discover/PageHero.astro";
+import SectionHead from "../components/discover/SectionHead.astro";
+import KnowledgeGraph from "../components/discover/KnowledgeGraph.tsx";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { buildCollectionPageGraph } from "../lib/seo/jsonLd";
+
+const [posts, topics, concepts] = await Promise.all([
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("topics"),
+  getCollection("concepts")
+]);
+
+const mapDescription =
+  "把主题、概念与文章之间的引用关系画成一张可漫游的知识网络图谱 —— 从任意节点跳进对应页面。";
+
+const site = Astro.site;
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL("/map", site).toString(),
+      title: "知识图谱",
+      description: mapDescription,
+      breadcrumbs: [
+        { name: "首页", url: new URL("/", site).toString() },
+        { name: "知识图谱" }
+      ]
+    })
+  : undefined;
+---
+
+<BaseLayout
+  title="知识图谱 | MyBlog"
+  description={mapDescription}
+  runtime="discover"
+  structuredData={structuredData}
+>
+  <DiscoverShell>
+    <PageHero
+      kicker="Discover / Map"
+      title="知识图谱"
+      description="discover runtime 的尽头是一张地图:主题、概念与文章按 frontmatter 里的真实引用关系连成网络,而不是时间流。"
+      stats={[
+        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
+        { value: String(topics.length).padStart(2, "0"), label: "个主题" },
+        { value: String(concepts.length).padStart(2, "0"), label: "个概念" }
+      ]}
+    />
+
+    <section class="discover-section" data-ux-stagger>
+      <SectionHead
+        kicker="Map"
+        title="沿引用关系漫游"
+        description="节点按类型着色,连线来自 posts↔topics / posts↔concepts / 主题与概念之间的关联。点击任意节点进入对应页面。"
+        countLabel={`${posts.length + topics.length + concepts.length} nodes`}
+      />
+      <KnowledgeGraph client:visible />
+    </section>
+  </DiscoverShell>
+</BaseLayout>

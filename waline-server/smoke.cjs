@@ -7,6 +7,7 @@
  *  1. `@waline/vercel` is installed and resolvable.
  *  2. `index.cjs` can be required without throwing synchronously.
  *  3. The exported value is a request handler function.
+ *  4. The installed PostgreSQL adapter does not log connection URIs or SQL.
  *
  * It intentionally does NOT touch the Postgres database; the goal is to catch
  * "the deployment unit is structurally broken" issues (bad lockfile, removed
@@ -16,6 +17,57 @@
  */
 
 const path = require("node:path");
+const assert = require("node:assert/strict");
+const { readFileSync } = require("node:fs");
+const { createRequire } = require("node:module");
+const vm = require("node:vm");
+
+async function verifyPrivateDatabaseLogging() {
+  let options;
+  const sandbox = {
+    module: { exports: {} },
+    require(name) {
+      assert.equal(name, "@waline/vercel");
+      return (config) => {
+        options = config;
+        return () => {};
+      };
+    },
+  };
+  vm.runInNewContext(readFileSync(path.join(__dirname, "index.cjs"), "utf8"), sandbox);
+  assert.equal(options?.["model.postgresql.logConnect"], false, "disable PostgreSQL DSN logging");
+  assert.equal(options?.["model.postgresql.logSql"], false, "disable PostgreSQL SQL-body logging");
+
+  // Exercise the installed config parser and PostgreSQL logger, without loading
+  // deployment env or opening a connection. This catches inert config keys.
+  const walineRequire = createRequire(require.resolve("@waline/vercel"));
+  const thinkRequire = createRequire(walineRequire.resolve("thinkjs"));
+  const { getConfigFn } = thinkRequire("think-config");
+  const helper = walineRequire("think-helper");
+  const Socket = walineRequire("think-model-postgresql/lib/socket");
+  const config = getConfigFn({ model: {
+    type: "postgresql", common: { logSql: true }, postgresql: {},
+  } }, false);
+  for (const [key, value] of Object.entries(options)) config(key, value);
+  const effective = helper.parseAdapterConfig(config("model"));
+  const messages = [];
+  const socket = new Socket({
+    ...effective,
+    host: "127.0.0.1", user: "smoke", password: "smoke-only", database: "smoke",
+    logger: (message) => messages.push(message),
+  });
+  const pool = socket.pool; // pg.Pool is lazy: no connect() call is made.
+  try {
+    const result = await socket.query({ sql: "SELECT 'smoke-only'", debounce: false }, {
+      query(_sql, callback) { callback(null, { rows: [] }); },
+      release() {},
+    });
+    assert.deepEqual(result.rows, []);
+    assert.deepEqual(messages, [], "database connection and query must not be logged");
+  } finally {
+    await pool.end();
+  }
+}
 
 function fail(message, error) {
   // eslint-disable-next-line no-console
@@ -41,16 +93,57 @@ process.env.PG_PASSWORD ||= "smoke";
 process.env.PG_PREFIX ||= "wl_";
 process.env.PG_SSL ||= "false";
 
-let entry;
-try {
-  entry = require(path.resolve(__dirname, "index.cjs"));
-} catch (error) {
-  fail("could not require ./index.cjs", error);
+async function main() {
+  await verifyPrivateDatabaseLogging();
+  let entry;
+  const capturedErrors = [];
+  const originalConsoleLog = console.log;
+  const originalConsoleWarn = console.warn;
+  const originalConsoleError = console.error;
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+
+  try {
+    console.log = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleLog(...args);
+    };
+    console.warn = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleWarn(...args);
+    };
+    console.error = (...args) => {
+      capturedErrors.push(args.map((arg) => (arg instanceof Error ? arg.stack || arg.message : String(arg))).join(" "));
+      originalConsoleError(...args);
+    };
+    process.stderr.write = (chunk, encoding, callback) => {
+      capturedErrors.push(Buffer.isBuffer(chunk) ? chunk.toString("utf8") : String(chunk));
+      return originalStderrWrite(chunk, encoding, callback);
+    };
+
+    entry = require(path.resolve(__dirname, "index.cjs"));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  } catch (error) {
+    fail("could not require ./index.cjs", error);
+  } finally {
+    console.log = originalConsoleLog;
+    console.warn = originalConsoleWarn;
+    console.error = originalConsoleError;
+    process.stderr.write = originalStderrWrite;
+  }
+
+  const runtimeError = capturedErrors.find((message) =>
+    /could not locate the bindings file|native binding|error:/i.test(message)
+  );
+  if (runtimeError) {
+    fail("Waline emitted a runtime dependency error while loading ./index.cjs", runtimeError);
+  }
+
+  if (typeof entry !== "function") {
+    fail(`index.cjs export is not a request handler (got ${typeof entry})`);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log("[waline-server smoke] OK: Waline handler loads; PostgreSQL connection/SQL logging is disabled.");
 }
 
-if (typeof entry !== "function") {
-  fail(`index.cjs export is not a request handler (got ${typeof entry})`);
-}
-
-// eslint-disable-next-line no-console
-console.log("[waline-server smoke] OK: index.cjs exports a Waline handler.");
+void main();

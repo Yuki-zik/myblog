@@ -31,7 +31,7 @@ const pagerPosts = [
   pagerPosts.length > 0 ? (
     <nav class="post-pager" aria-label="继续阅读">
       {pagerPosts.map(({ post, label }) => (
-        <a class="post-pager-link" href={`/posts/${post.slug}`}>
+        <a class="post-pager-link" href={`/posts/${post.id}`}>
           <span class="post-pager-label">{label}</span>
           <strong class="post-pager-title">{post.data.title}</strong>
           <span class="post-pager-meta">

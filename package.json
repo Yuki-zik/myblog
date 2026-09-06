@@ -10,18 +10,40 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:all": "pnpm test && pnpm build && pnpm test:e2e"
+    "papers:enrich": "node scripts/papers/enrich.mjs",
+    "papers:enrich:all": "node scripts/papers/enrich.mjs --all",
+    "papers:enrich:apply": "node scripts/papers/enrich.mjs --all --apply",
+    "papers:check": "node scripts/papers/enrich.mjs --check",
+    "test:waline-server": "pnpm --dir waline-server smoke",
+    "audit:prod": "pnpm audit --prod --audit-level moderate",
+    "audit:waline-server": "pnpm --dir waline-server audit --prod --audit-level moderate",
+    "audit:all": "pnpm audit:prod && pnpm audit:waline-server",
+    "test:all": "pnpm test && pnpm papers:check && pnpm build && pnpm test:waline-server && pnpm audit:all && pnpm test:e2e"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   },
   "dependencies": {
-    "@astrojs/react": "^4.4.2",
-    "@waline/client": "^3.13.0",
-    "astro": "^5.17.3",
+    "@astrojs/markdown-remark": "7.2.2",
+    "@astrojs/react": "^5.0.6",
+    "@astrojs/sitemap": "^3.7.3",
+    "@waline/client": "^3.15.0",
+    "astro": "^7.1.6",
+    "astro-og-canvas": "^0.13.0",
+    "canvaskit-wasm": "^0.41.1",
+    "cookie": "2.0.1",
+    "d3-force": "^3.0.0",
     "github-slugger": "^2.0.0",
+    "hast-util-sanitize": "^5.0.2",
+    "hast-util-to-html": "^9.0.5",
     "hast-util-to-string": "^3.0.1",
+    "katex": "^0.17.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "rehype-katex": "^7.0.1",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
     "unist-util-visit-parents": "^6.0.2"
   },
   "devDependencies": {
@@ -30,13 +52,31 @@
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
+    "@types/d3-force": "^3.0.10",
     "@types/hast": "^3.0.4",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "jsdom": "^27.0.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "nanoid@<3.3.18": "3.3.18",
+      "browserslist@<4.28.7": "4.28.7",
+      "rollup": "^4.59.0",
+      "picomatch@<2.3.2": "2.3.2",
+      "picomatch@>=4.0.0 <4.0.4": "4.0.4",
+      "fast-xml-builder": "1.1.7",
+      "devalue": "^5.8.1",
+      "smol-toml": "^1.6.1",
+      "yaml": "^2.8.3",
+      "js-yaml": "^4.3.0",
+      "postcss": "^8.5.18",
+      "sharp": "^0.35.0",
+      "svgo": "^4.0.2"
+    }
   }
 }

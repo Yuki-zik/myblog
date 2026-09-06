@@ -6,8 +6,20 @@ dist
 coverage
 playwright-report
 test-results
+
+# OS / editor
+.DS_Store
+
+# Local debug / screenshot artifacts
+.playwright-cli/
+output/
 tmp
-output
-.playwright-cli
 .playwright-mcp
 .impeccable
+
+# Author-provided PDFs and local extraction reports are not published.
+.paper-sources/
+.paper-pipeline/
+
+# Supabase CLI metadata (not application configuration).
+supabase/.temp/

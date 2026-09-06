@@ -1,0 +1,50 @@
+/* ============================================================
+ * Shiki dual-theme syntax highlighting
+ *
+ * astro.config.mjs sets `shikiConfig.defaultColor: false`, so each code token
+ * carries both `--shiki-light` and `--shiki-dark` CSS variables. We pick the
+ * right one per resolved color-scheme (`:root[data-color-scheme]`, which the
+ * no-flash theme script always sets to a concrete light|dark value).
+ *
+ * Specificity note: the scope + `pre.astro-code` compound is intentionally as
+ * specific as the article code-block rules in article.css so Shiki's token
+ * colors + background win. The signature left-accent frame / radius / margin
+ * still come from the `pre` rule in article.css and are deliberately NOT
+ * overridden here — code blocks stay in the "paper" component family.
+ *
+ * Theme pairing (github-light / github-dark-dimmed) is a one-line tunable in
+ * astro.config.mjs.
+ * ============================================================ */
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre.astro-code,
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre.astro-code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+.post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre.astro-code {
+  background-color: var(--shiki-light-bg);
+}
+
+:root[data-color-scheme="dark"]
+  .post-reading-layout--scholarly.post-reading-layout--tri
+  .post-body--scholarly
+  pre.astro-code,
+:root[data-color-scheme="dark"]
+  .post-reading-layout--scholarly.post-reading-layout--tri
+  .post-body--scholarly
+  pre.astro-code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+:root[data-color-scheme="dark"]
+  .post-reading-layout--scholarly.post-reading-layout--tri
+  .post-body--scholarly
+  pre.astro-code {
+  background-color: var(--shiki-dark-bg);
+}

@@ -10,7 +10,6 @@ function createPost(
 ): CollectionEntry<"posts"> {
   return {
     id: slug,
-    slug,
     body: "",
     collection: "posts",
     data: {
@@ -20,16 +19,12 @@ function createPost(
       concepts,
       draft: false
     },
-    render: async () => {
-      throw new Error("not needed in unit tests");
-    }
   } as unknown as CollectionEntry<"posts">;
 }
 
 function createTopic(slug: string, title: string, order?: number): CollectionEntry<"topics"> {
   return {
     id: slug,
-    slug,
     body: "",
     collection: "topics",
     data: {
@@ -38,9 +33,6 @@ function createTopic(slug: string, title: string, order?: number): CollectionEnt
       why: title,
       order
     },
-    render: async () => {
-      throw new Error("not needed in unit tests");
-    }
   } as unknown as CollectionEntry<"topics">;
 }
 
@@ -64,7 +56,7 @@ describe("collectReferencedTopicsForConcept", () => {
 
     const referencedTopics = collectReferencedTopicsForConcept("anchor-id", posts, topics);
 
-    expect(referencedTopics.map((topic) => topic.slug)).toEqual([
+    expect(referencedTopics.map((topic) => topic.id)).toEqual([
       "paragraph-review",
       "knowledge-network"
     ]);

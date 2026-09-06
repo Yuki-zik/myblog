@@ -1,12 +1,16 @@
 # 项目概况 (MyBlog v1)
 
+## 当前发布状态（2026-09-06）
+
+发布分支为 `feat/optimize-pass`，PR #1 尚待发布闭环。论文系统含两篇真实成果，缺少合法 PDF 时不生成封面；论文未知日期不再补成 1 月 1 日。CI 已接入论文来源检查，本轮按兼容版本修复前端/Waline 新披露依赖问题，保留既有审计门禁与忽略策略。116 项单测与 19 页构建已通过，完整浏览器回归正在验证。Vercel 登录已恢复，日志证实旧预览因缺失 SITE_URL 失败；已按核实的正式域名补齐 Production/Preview 配置，现有 Waline 地址保持不变。新部署和线上评论仍待核验；发布清单见 `docs/production-readiness.md`。
+
 ## 1. 目标与定位
 
-这是一个基于 **Astro + React + Waline** 的主题化知识博客（Theme-first knowledge blog）。核心定位是 Topic 优先的知识组织与沉浸式长文阅读；评论系统已从站内 Supabase 方案切换为 Waline，段落锚点则保留为阅读侧栏、脚注与旁注定位的基础设施。
+这是一个基于 **Astro + React + Waline** 的主题化知识博客（Theme-first knowledge blog）。核心定位是 Topic 优先的知识组织、沉浸式长文阅读与可检索的研究成果展示；评论系统已从站内 Supabase 方案切换为 Waline，段落锚点则保留为阅读侧栏、脚注与旁注定位的基础设施。
 
 ## 2. 架构图及核心模块
 
-- **前端生成与聚合层**: `Astro (@astrojs/react, astro@5.17.3)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
+- **前端生成与聚合层**: `Astro (@astrojs/react, astro@7.1.6)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
 - **交互组件层**: `React (react@19)` — 承担 Waline 挂载、局部交互组件和测试友好的客户端封装。
 - **Waline 服务端部署层**: `waline-server/index.cjs` + `waline-server/vercel.json` — 与博客前端解耦的独立部署单元，推荐作为同仓库下第二个 Vercel 项目部署。
 - **评论数据存储层**: `Supabase PostgreSQL` + `waline-server/sql/waline.pgsql` — 承担 Waline 评论、计数器和后台用户表存储。
@@ -14,14 +18,17 @@
 - **脚注/参考文献侧栏层**: `src/lib/markdown/rehypeTufteFootnotes.ts` + `src/lib/posts/postScholarRail.ts` — 标准 GFM 脚注是文章页一切文字型 sidenote 的唯一入口：`note-*` 表示解释性注释，`ref-*` 表示正文引用型参考文献；右侧 rail 以脚注第一次在正文中的引用位置为准布局。`figures` frontmatter 仍保留为图表说明模型，但 `figures[].sourceRefIds` 仅允许指向 `ref-*` bibliography footnote。
 - **评论集成层**: `src/components/comments/WalineComments.tsx` — 统一封装 Waline `init()` 调用、主题切换适配和缺省配置提示。
 - **搜索与导航层**: `src/lib/search/index.ts`, `src/components/search/HeaderSearch.astro` — 静态搜索索引端点（`/search-index.json`）+ 客户端即时搜索 UI。
+- **论文成果层**: `src/content/papers/*`, `src/pages/papers/*`, `src/styles/papers.css` — 结构化作者/venue/标识符/资源数据，按年份生成紧凑论文账本，并为单篇成果生成独立 scholarly detail 与 `ScholarlyArticle` JSON-LD。
+- **论文数据真源**: 作者 Google Scholar ID 为 `NTwrnCIAAAAJ`，只用于发现成果；入库前用 Crossref 与 OpenAlex/Semantic Scholar 交叉核验 DOI、作者顺序、venue 和卷期页码。动态引用数不落库，摘要采用原创概述而非复制出版社文本。
+- **论文 PDF 自动增强**: `scripts/papers/enrich.mjs` + `scripts/papers/lib.mjs` 使用 Poppler 提取 Abstract/Introduction 与带坐标图注，按 pipeline/workflow/architecture 等关键词排序方法图候选，再由 `sharp` 生成 1600×900 封面。作者本地 PDF 放在被忽略的 `.paper-sources/`，公开 PDF 则必须显式声明为 `resources[type=pdf]`；生成图和 provenance manifest 才进入内容目录。
 - **目录组件层**: `src/lib/posts/toc.ts`, `src/components/post/PostToc.astro` — 从 Astro headings 提取 H2/H3，渲染带当前章节高亮的固定/折叠 TOC。
-- **主题系统层**: `src/styles/tokens.css` + `src/styles/*.css` — 基于 five-color foundation 的 semantic token contract，并在现有 Astro + React 架构内吸收 Astro Theme Pure 的阅读优先视觉语言；页面、结构区、阅读区和 Waline 集成样式都通过同一套 light/dark 语义 token 驱动。
+- **主题系统层**: `src/styles/tokens.css` + `src/styles/tailwind.css` + 其余模块化 CSS — Tailwind v4 utility 通过 `@theme inline` 引用运行时 token，未迁移的 unlayered CSS 继续负责页面专属规则；两者共用同一套 light/dark 语义 token。
 
 ## 3. 技术栈和依赖
 
-- **框架**: Astro 5.x, React 19
+- **框架**: Astro 7.x, React 19
 - **评论系统**: `@waline/client` + `@waline/vercel`
-- **样式**: 原生 CSS 模块化体系（`src/styles/tokens.css` + `base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`），无 CSS 框架
+- **样式**: Tailwind CSS v4 utilities + 模块化原生 CSS；不导入 Tailwind preflight，`tokens.css` 仍是运行时颜色/字体/阴影真源
 - **Markdown 渲染**: `remark-gfm` + 自定义 rehype 插件（脚注与段落锚点）
 - **评论存储**: Supabase PostgreSQL（由独立 Waline server 消费）
 - **工程化与测试**:
@@ -32,10 +39,10 @@
 
 ## 4. 当前 UI 设计系统快照
 
-- **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 导入的模块化 CSS（`tokens/base/layout/home/cards/search/theme-toggle/footer/archives/toc/article/waline`）以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
+- **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 首先导入的 `tailwind.css`、其后导入的模块化 CSS，以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
 - **全站气质**: 设计系统以 five-color foundation 为底座，先在 `src/styles/tokens.css` 映射为 `surface/text/border/accent/chrome/reading` 语义 token，再由页面模块做克制分化。整体气质是冷静、研究型、阅读优先，而不是高饱和科技演示风。
 - **字体分工**: 顶栏与全站 chrome 仍使用 `Space Grotesk / Source Serif 4 / IBM Plex Mono`；首页正文单独引入 `Outfit / Noto Serif SC / JetBrains Mono` 做 reference-mode 的 editorial 叙事，文章页继续保留既有阅读字体系统。
-- **布局骨架**: 站点现在明确分成两套 runtime。`discover-runtime` 覆盖首页、主题列表、主题详情、概念详情、作者页、归档页，统一使用 `ambient field + poster/split hero + section-head + discover surface + family footer`；`reading-runtime` 覆盖文章详情页，保留 scholarly tri-layout，桌面端由 `TOC rail + main reading column + scholar rail` 组成，并在正文下方接 Waline、family actions 和 pager。
+- **布局骨架**: 站点现在明确分成两套 runtime。`discover-runtime` 覆盖首页、主题列表、主题详情、概念详情、论文索引、作者页、归档页，统一使用 `ambient field + poster/split hero + section-head + family footer`；`reading-runtime` 覆盖文章与论文详情。文章保留 `TOC rail + main reading column + scholar rail + Waline`，论文则使用独立的学术详情布局，不继承文章评论与旁注链路。
 - **文章页封面语言**: 标题卡片顶部封面采用“双层同源图片”模型：底层是居中下移、缩小并高斯模糊后的同源彩色虚影，负责提供 ambient colored shadow；顶层主图带极轻的白色描边和常规阴影，与底层虚影形成剥离感，并在 hover 时主图微微上浮、虚影进一步扩散。
 - **核心交互**: Header 是三态液态玻璃控制台（`top / compact / hidden`），Search 是头部命令式即时搜索入口，TOC 是文章页的二级导航，Waline 评论位于文末，角色偏“全文讨论”而不是段落边批注。
 - **体验原则**: `topic-first`、`reading-first`、`research-ready`、`restrained motion`。首页负责建立“这不是时间流博客”的认知，文章页负责沉浸式研究阅读，搜索/目录/header 只做辅助理解，不抢正文叙事。
@@ -114,7 +121,7 @@
 
 ### 内容模型
 - `src/content.config.ts`
-- `src/content/posts/*`, `src/content/topics/*`, `src/content/concepts/*`
+- `src/content/posts/*`, `src/content/topics/*`, `src/content/concepts/*`, `src/content/papers/*`
 
 ### 评论集成
 - `src/components/comments/WalineComments.tsx`
@@ -144,6 +151,16 @@
 - `src/components/discover/EmptyState.astro`
 - `src/components/UiControllers.astro`
 - `src/styles/discover.css`
+
+### 论文成果
+- `src/pages/papers/index.astro`
+- `src/pages/papers/[slug].astro`
+- `src/content/papers/*`
+- `src/styles/papers.css`
+- `src/lib/seo/jsonLd.ts`
+- `scripts/papers/{enrich,lib}.mjs`
+- `src/lib/papers/enrichment.test.ts`
+- `docs/paper-automation.md`
 
 ### 搜索
 - `src/lib/search/index.ts`

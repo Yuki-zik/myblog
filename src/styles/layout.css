@@ -208,6 +208,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  overflow: hidden;
   pointer-events: none;
   /*
    * `filter` is deliberately not transitioned.
@@ -280,6 +281,18 @@ html.is-header-morphing::view-transition-new(site-header) {
       transparent 100%
     );
   transform: translateY(0) scale(1.014);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header-inner,
+  .site-header-inner::before,
+  .site-header-inner::after,
+  .site-header .shell,
+  .site-nav a {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
 }
 
 .site-header[data-header-state="top"] .site-header-inner::after {

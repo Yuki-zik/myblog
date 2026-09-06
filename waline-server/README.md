@@ -10,7 +10,7 @@
 
 ## 目录结构
 
-- `package.json`: 固定 `@waline/vercel@1.39.3`
+- `package.json`: 固定 `@waline/vercel@1.40.3`
 - `index.cjs`: Waline server 入口
 - `vercel.json`: Vercel 路由到 Waline handler
 - `env.example`: Waline server 环境变量样例
@@ -57,7 +57,7 @@
 1. 选择同一个 GitHub 仓库 `Yuki-zik/myblog`
 2. Root Directory 设为 `waline-server`
 3. Framework Preset 保持 Other
-4. Node 版本使用 20+
+4. Node 版本使用 22+
 
 ### 4. 配置 Waline server 环境变量
 
@@ -78,8 +78,8 @@ cp env.example .env.local
 | `PG_HOST` | Supabase `Session pooler` host |
 | `PG_PORT` | Supabase `Session pooler` port，通常是 `6543` |
 | `PG_DB` | 数据库名，Supabase 默认通常是 `postgres` |
-| `PG_USER` | 数据库用户名，通常形如 `postgres.<project-ref>` |
-| `PG_PASSWORD` | 你的 Supabase 数据库密码 |
+| `PG_USER` | 专用数据库角色，推荐固定为 `waline` |
+| `PG_PASSWORD` | `waline` 专用数据库角色密码 |
 | `PG_SSL` | 填 `true` |
 | `PG_PREFIX` | 保持 `wl_` 即可 |
 
@@ -90,7 +90,7 @@ Waline 也支持 `POSTGRES_*` 作为 `PG_*` 的别名，但建议只选一套命
 | 变量 | 建议值 | 说明 |
 |---|---|---|
 | `SECURE_DOMAINS` | `https://blog.example.com,https://comments.example.com` | 只允许来自博客域名和评论服务域名的请求 |
-| `COMMENT_AUDIT` | `false` | 先保证评论可写入；后续若要审核再切到 `true` |
+| `COMMENT_AUDIT` | `true` | 生产默认先审核，避免垃圾评论直接公开 |
 | `AKISMET_KEY` | `false` | 个人博客先关闭，避免依赖额外反垃圾服务 |
 
 ### 6. 部署并注册管理员
@@ -110,9 +110,20 @@ Waline 也支持 `POSTGRES_*` 作为 `PG_*` 的别名，但建议只选一套命
 PUBLIC_WALINE_SERVER_URL=https://your-waline-server.example.com
 ```
 
+如果你的评论服务不是 `*.vercel.app` 或文档示例域名，还需要把实际评论服务域名加入仓库根目录 `vercel.json` 的 `Content-Security-Policy` / `connect-src` allowlist，否则生产环境浏览器会拦截 Waline 请求。
+
 然后重新部署前端。
 
 ## Supabase 连接信息如何映射到 `PG_*`
+
+先运行表结构 SQL，再创建专用 Waline 数据库角色，并运行 RLS migration：
+
+```sql
+-- 在 Supabase SQL Editor 中按需替换密码后执行。
+CREATE ROLE waline LOGIN PASSWORD 'replace-with-a-strong-password';
+```
+
+然后执行仓库里的 `supabase/migrations/20260429000000_waline_rls.sql`，它会把 `wl_*` 表、序列和 RLS policy 绑定到 `waline` 角色。
 
 从 Supabase 复制连接信息时，按下面映射：
 
@@ -121,8 +132,8 @@ PUBLIC_WALINE_SERVER_URL=https://your-waline-server.example.com
 | Host | `PG_HOST` |
 | Port | `PG_PORT` |
 | Database name | `PG_DB` |
-| User | `PG_USER` |
-| Password | `PG_PASSWORD` |
+| User | `PG_USER=waline` |
+| Password | `PG_PASSWORD=<waline role password>` |
 | SSL / TLS required | `PG_SSL=true` |
 
 推荐优先使用 `Session pooler`：
@@ -137,7 +148,14 @@ PUBLIC_WALINE_SERVER_URL=https://your-waline-server.example.com
 
 ```bash
 cd waline-server
-npm install
+pnpm install --frozen-lockfile
+pnpm smoke
+pnpm audit --prod
+```
+
+如需手动启动本地服务，再复制环境变量：
+
+```bash
 cp env.example .env.local
 ```
 
@@ -147,13 +165,23 @@ cp env.example .env.local
 set -a
 source .env.local
 set +a
-npm run dev
+pnpm dev
 ```
 
 然后访问终端输出的本地地址，检查：
 
 - `/api/comment` 返回不再是 500
 - `/ui/register` 可以打开
+
+## 依赖审计说明
+
+`package.json` 中的 `pnpm.auditConfig.ignoreGhsas` 只登记了 `@waline/vercel` 传递依赖中当前无法由本仓库直接修补的上游残留项，例如旧 provider 依赖里的 `request`、`lodash.set`、`lodash.unset`。可升级的高危项已经通过 `pnpm.overrides` 固定到修补版本。
+
+维护规则：
+
+- 任何新增的 audit finding 都必须先尝试升级或 override。
+- 只有确认没有 patched version、且来自 Waline 未启用 provider 链路时，才允许加入 `ignoreGhsas`。
+- 升级 `@waline/vercel` 后必须重新运行 `pnpm audit --prod`，并删除已不再需要的 ignore 项。
 
 ## 部署完成后的最小验收
 

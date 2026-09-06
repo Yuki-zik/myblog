@@ -29,6 +29,7 @@ describe("WalineComments", () => {
 
     render(<WalineComments path="/posts/test-post" />);
 
+    expect(screen.getByText(/围绕整篇文章/)).toBeInTheDocument();
     expect(
       screen.getByText(/PUBLIC_WALINE_SERVER_URL/),
     ).toBeInTheDocument();

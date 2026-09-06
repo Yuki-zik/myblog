@@ -5,7 +5,7 @@ import {
 } from "./selectors";
 
 type TestPost = {
-  slug: string;
+  id: string;
   data: {
     date: string;
     cover?: {
@@ -16,7 +16,7 @@ type TestPost = {
 
 function createPost(slug: string, date: string, hasCover = false): TestPost {
   return {
-    slug,
+    id: slug,
     data: {
       date,
       cover: hasCover ? { src: `${slug}.png` } : undefined
@@ -32,7 +32,7 @@ describe("home selectors", () => {
       createPost("older-with-cover", "2026-03-20T10:00:00+08:00", true)
     ];
 
-    expect(pickFeaturedHomePost(posts)?.slug).toBe("newest-with-cover");
+    expect(pickFeaturedHomePost(posts)?.id).toBe("newest-with-cover");
   });
 
   it("returns a recent list without the featured post and respects the five-item cap", () => {
@@ -46,7 +46,7 @@ describe("home selectors", () => {
       createPost("post-7", "2026-03-22T10:00:00+08:00")
     ];
 
-    expect(pickRecentHomePosts(posts, "post-1").map((post) => post.slug)).toEqual([
+    expect(pickRecentHomePosts(posts, "post-1").map((post) => post.id)).toEqual([
       "post-2",
       "post-3",
       "post-4",

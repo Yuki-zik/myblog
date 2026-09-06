@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 
-export type SearchIndexItemType = "post" | "topic" | "concept";
+export type SearchIndexItemType = "paper" | "post" | "topic" | "concept";
 
 export interface SearchIndexItem {
   type: SearchIndexItemType;
@@ -8,14 +8,19 @@ export interface SearchIndexItem {
   url: string;
   summary?: string;
   keywords: readonly string[];
+  /** Normalized plain-text body for full-content matching (not displayed). */
+  body?: string;
   date?: string;
+  /** Known paper year, used for sorting when the exact publication date is unknown. */
+  year?: number;
   updated?: string;
 }
 
 const TYPE_PRIORITY: Record<SearchIndexItemType, number> = {
-  post: 0,
-  topic: 1,
-  concept: 2
+  paper: 0,
+  post: 1,
+  topic: 2,
+  concept: 3
 };
 
 function compactStrings(values: Array<string | undefined>): string[] {
@@ -43,6 +48,31 @@ export function normalizeSearchText(value: string): string {
   return value
     .normalize("NFKC")
     .toLocaleLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Strip Markdown to plain text for full-content search indexing. Drops fenced
+ * code, resolves links/images to their text, removes footnote/anchor markers,
+ * directive syntax (`:::spoiler`), emphasis, heading/list/quote markers and
+ * raw HTML. Best-effort — tuned for recall, not perfect rendering.
+ */
+export function extractSearchableText(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^\[\^[^\]]+\]:\s?/gm, "")
+    .replace(/\[\^[^\]]+\]/g, " ")
+    .replace(/:::\w+(?:\[([^\]]*)\])?/g, "$1")
+    .replace(/:(\w+)\[([^\]]*)\]/g, "$2")
+    .replace(/`+/g, " ")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^\s*[>\-*+]\s+/gm, "")
+    .replace(/[*_~]/g, "")
+    .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -87,6 +117,13 @@ export function scoreSearchMatch(item: SearchIndexItem, queryInput: string): num
     score = Math.max(score, 140);
   }
 
+  if (item.body) {
+    const body = normalizeSearchText(item.body);
+    if (body.includes(query)) {
+      score = Math.max(score, 100);
+    }
+  }
+
   return score;
 }
 
@@ -116,9 +153,12 @@ export function searchIndexItems(
         return typeDiff;
       }
 
-      if (a.item.type === "post" && b.item.type === "post") {
-        const aDate = a.item.updated ?? a.item.date ?? "";
-        const bDate = b.item.updated ?? b.item.date ?? "";
+      if (
+        (a.item.type === "post" || a.item.type === "paper") &&
+        (b.item.type === "post" || b.item.type === "paper")
+      ) {
+        const aDate = a.item.updated ?? a.item.date ?? String(a.item.year ?? "");
+        const bDate = b.item.updated ?? b.item.date ?? String(b.item.year ?? "");
         if (aDate !== bDate) {
           return bDate.localeCompare(aDate);
         }
@@ -132,6 +172,7 @@ export function searchIndexItems(
 
 export function buildSearchIndex(
   posts: CollectionEntry<"posts">[],
+  papers: CollectionEntry<"papers">[],
   topics: CollectionEntry<"topics">[],
   concepts: CollectionEntry<"concepts">[]
 ): SearchIndexItem[] {
@@ -140,28 +181,50 @@ export function buildSearchIndex(
     .map((post) => ({
       type: "post",
       title: post.data.title,
-      url: `/posts/${post.slug}`,
+      url: `/posts/${post.id}`,
       summary: post.data.summary,
       keywords: compactStrings([...(post.data.topics ?? []), ...(post.data.concepts ?? [])]),
+      body: extractSearchableText(post.body ?? ""),
       date: post.data.date,
       updated: post.data.updated
+    }));
+
+  const paperItems: SearchIndexItem[] = papers
+    .filter((paper) => !paper.data.draft)
+    .map((paper) => ({
+      type: "paper",
+      title: paper.data.title,
+      url: `/papers/${paper.id}`,
+      summary: paper.data.summary ?? paper.data.abstract,
+      keywords: compactStrings([
+        ...paper.data.keywords,
+        ...paper.data.authors.map((author) => author.name),
+        paper.data.venue?.name,
+        paper.data.venue?.short
+      ]),
+      body: extractSearchableText(paper.body ?? ""),
+      date: paper.data.publicationDate,
+      year: paper.data.year,
+      updated: paper.data.updated
     }));
 
   const topicItems: SearchIndexItem[] = topics.map((topic) => ({
     type: "topic",
     title: topic.data.title,
-    url: `/topics/${topic.slug}`,
+    url: `/topics/${topic.id}`,
     summary: topic.data.summary,
-    keywords: compactStrings([...(topic.data.relatedTopics ?? []), ...(topic.data.entryPosts ?? [])])
+    keywords: compactStrings([...(topic.data.relatedTopics ?? []), ...(topic.data.entryPosts ?? [])]),
+    body: extractSearchableText([topic.data.why ?? "", topic.body ?? ""].join("\n"))
   }));
 
   const conceptItems: SearchIndexItem[] = concepts.map((concept) => ({
     type: "concept",
     title: concept.data.title,
-    url: `/concepts/${concept.slug}`,
+    url: `/concepts/${concept.id}`,
     summary: concept.data.summary,
-    keywords: compactStrings([...(concept.data.tags ?? []), ...(concept.data.related ?? [])])
+    keywords: compactStrings([...(concept.data.tags ?? []), ...(concept.data.related ?? [])]),
+    body: extractSearchableText(concept.body ?? "")
   }));
 
-  return [...postItems, ...topicItems, ...conceptItems];
+  return [...paperItems, ...postItems, ...topicItems, ...conceptItems];
 }

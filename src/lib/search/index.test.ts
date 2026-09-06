@@ -1,7 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { describe, expect, it } from "vitest";
 import type { SearchIndexItem } from "./index";
-import { buildSearchIndex, scoreSearchMatch, searchIndexItems } from "./index";
+import { buildSearchIndex, extractSearchableText, scoreSearchMatch, searchIndexItems } from "./index";
 
 function createPost(
   slug: string,
@@ -66,18 +66,58 @@ function createConcept(
   } as unknown as CollectionEntry<"concepts">;
 }
 
+function createPaper(
+  slug: string,
+  overrides: Partial<CollectionEntry<"papers">["data"]> = {}
+): CollectionEntry<"papers"> {
+  return {
+    id: slug,
+    slug,
+    body: "",
+    collection: "papers",
+    data: {
+      title: slug,
+      authors: [{ name: "A-Znk", self: true }],
+      abstract: "paper abstract",
+      year: 2026,
+      status: "prototype",
+      keywords: ["multimodal security"],
+      resources: [],
+      draft: false,
+      featured: false,
+      ...overrides
+    },
+    render: async () => {
+      throw new Error("not needed in unit tests");
+    }
+  } as unknown as CollectionEntry<"papers">;
+}
+
 describe("search index helpers", () => {
-  it("builds a unified index for posts, topics, and concepts and skips drafts", () => {
+  it("preserves known paper dates without inventing dates for year-only papers", () => {
+    const index = buildSearchIndex([], [
+      createPaper("older", { year: 2025, publicationDate: "2025-09-25T00:00:00Z" }),
+      createPaper("newer", { year: 2026 })
+    ], [], []);
+    expect(index[0].date).toBe("2025-09-25T00:00:00Z");
+    expect(index[1].date).toBeUndefined();
+    expect(searchIndexItems(index, "multimodal security").map((item) => item.url)).toEqual([
+      "/papers/newer", "/papers/older"
+    ]);
+  });
+
+  it("builds a unified index for posts, papers, topics, and concepts and skips drafts", () => {
     const index = buildSearchIndex(
       [
         createPost("published-post", { title: "Published", topics: ["t1"], concepts: ["c1"] }),
         createPost("draft-post", { title: "Draft", draft: true })
       ],
+      [createPaper("security-evaluation", { title: "安全评测论文", keywords: ["MLLM"] })],
       [createTopic("knowledge-network", { title: "知识网络", relatedTopics: ["note"] })],
       [createConcept("anchor-id", { title: "Anchor ID", tags: ["markdown"] })]
     );
 
-    expect(index).toHaveLength(3);
+    expect(index).toHaveLength(4);
     expect(index.find((item) => item.url === "/posts/published-post")).toMatchObject({
       type: "post",
       title: "Published",
@@ -85,6 +125,10 @@ describe("search index helpers", () => {
     });
     expect(index.find((item) => item.url === "/topics/knowledge-network")?.type).toBe("topic");
     expect(index.find((item) => item.url === "/concepts/anchor-id")?.type).toBe("concept");
+    expect(index.find((item) => item.url === "/papers/security-evaluation")).toMatchObject({
+      type: "paper",
+      keywords: ["MLLM", "A-Znk"]
+    });
     expect(index.some((item) => item.title === "Draft")).toBe(false);
   });
 
@@ -140,5 +184,71 @@ describe("search index helpers", () => {
       "/topics/feed-reading",
       "/concepts/anchor-id"
     ]);
+  });
+});
+
+describe("full-content search (D4)", () => {
+  it("strips Markdown to searchable plain text", () => {
+    const text = extractSearchableText(
+      [
+        "## 标题",
+        "正文里提到 [Supabase RLS](https://x) 和 `code`。",
+        "```ts",
+        "const secret = 1;",
+        "```",
+        "> 引用块",
+        "- 列表项 **粗体**",
+        ":::spoiler[结局]",
+        "隐藏内容",
+        ":::",
+        "脚注引用[^a]",
+        "[^a]: 脚注正文"
+      ].join("\n")
+    );
+    expect(text).toContain("Supabase RLS");
+    expect(text).toContain("隐藏内容");
+    expect(text).toContain("脚注正文");
+    expect(text).not.toContain("const secret"); // fenced code dropped
+    expect(text).not.toContain("```");
+    expect(text).not.toContain("[^a]");
+    expect(text).not.toContain("**");
+  });
+
+  it("finds an item that matches only in the body, scored below summary", () => {
+    const item: SearchIndexItem = {
+      type: "post",
+      title: "无关标题",
+      url: "/posts/x",
+      summary: "无关摘要",
+      keywords: [],
+      body: "正文深处讨论了 supabase 行级安全策略的实现细节"
+    };
+    const score = scoreSearchMatch(item, "supabase");
+    expect(score).toBe(100);
+    expect(score).toBeLessThan(scoreSearchMatch({ ...item, summary: "supabase" }, "supabase"));
+  });
+
+  it("buildSearchIndex populates body from raw post markdown", () => {
+    const [post] = buildSearchIndex(
+      [createPost("p", { title: "P" })],
+      [],
+      [],
+      []
+    );
+    // createPost uses body:"" by default, so override via a fresh entry.
+    const withBody = buildSearchIndex(
+      [
+        {
+          ...createPost("p2", { title: "P2" }),
+          body: "## H\n这是可被检索的正文 keyword-xyz。"
+        } as CollectionEntry<"posts">
+      ],
+      [],
+      [],
+      []
+    )[0];
+    expect(post.body).toBe("");
+    expect(withBody.body).toContain("可被检索的正文 keyword-xyz");
+    expect(searchIndexItems([withBody], "keyword-xyz").map((i) => i.url)).toEqual(["/posts/p2"]);
   });
 });

@@ -2,6 +2,11 @@
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 正式运行收口：验证并交付论文功能、定位 Vercel 失败、核验生产配置、完成发布与运行检查 | ⏳ | Codex | 2026-09-06 |
+| 高 | 建立论文 PDF 自动增强管线：解析摘要/概论、识别 pipeline 图、生成封面与来源清单，并接入页面与验证命令 | ✅ | AI Assistant | 2026-08-04 |
+| 高 | 从作者 Google Scholar `NTwrnCIAAAAJ` 导入并交叉核验真实论文，替换论文页设计样稿 | ✅ | AI Assistant | 2026-08-04 |
+| 高 | 新增独立论文成果体系：`papers` 内容集合、论文索引/详情页、导航与搜索接入、学术元数据及响应式视觉验证 | ✅ | AI Assistant | 2026-08-03 |
+| 高 | 调查 PR #1 的 GitHub CI 与 Vercel 失败，安全合并 `origin/main` 到 `feat/optimize-pass`，按根因做最小修复并完成验证、提交与推送 | ✅ | AI Assistant | 2026-08-01 |
 | 高 | 顶部栏第六轮：内容随框收敛（同一 scroll timeline + `@property` 进度值驱动字号/间距/控件尺寸），保持文字不被缩放 | ✅ | AI Assistant | 2026-07-29 |
 | 高 | 顶部栏第五轮：折叠药丸补 26px 内边距、改用 Apple 连续曲率 squircle 圆角、折叠缓动加有界 overshoot，并把几何统一到 token | ✅ | AI Assistant | 2026-07-29 |
 | 高 | 顶部栏第四轮：改为滚动位置驱动的连续折叠（表面与内容拆分、仅动 transform/scale、材质统一），并修掉横向溢出与滚动驱动动画导致的测试挂死 | ✅ | AI Assistant | 2026-07-28 |
@@ -12,10 +17,25 @@
 | 高 | 引入 Tailwind CSS v4 并分批全量迁移四个样式簇（shell / discover / reading / home+author），保 DOM 与类名契约；同时修复迁移中暴露的既有缺陷与 8 项存量问题，并把 e2e 的固定等待改为等真实稳定态 | ✅ | AI Assistant | 2026-07-26 |
 | 高 | Tailwind v4 迁移后死代码清理与 CSS 归属澄清：逐条核验四条主张，删除不可达的 `SiteFooter.astro`/`footer.css` 与悬空 `.site-footer`/`.author-links` 选择器，拆分 `.post-waline-comments-section` 单一归属，并对证伪/判断题项给出保留理由，全程零渲染变化 | ✅ | AI Assistant | 2026-07-26 |
 | 中 | 通读当前项目：梳理双 runtime、内容模型、Markdown 管线、客户端控制器、主题 token、测试/CI 与部署现状，并输出文档漂移与风险清单 | ✅ | AI Assistant | 2026-07-26 |
+| 高 | 准确修复视觉审查发现的问题：覆盖搜索裁切/焦点、移动归档/concept overflow、文章 rail、阅读断点、raw slug、轮播滚轮、主题 toggle、back-to-top、Waline 语气与截图复核 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 对博客进行视觉检查：用真实浏览器检查首页、discover 页面、文章阅读页、归档/作者页、主题切换、搜索和响应式布局，输出视觉问题清单 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 深度解决全面审查发现的混乱点：修 Node/CI engine、Waline RLS LOGIN 契约、CSP allowlist、audit 门禁、未用依赖、README 版本、格式噪声和 E2E 并发导航超时 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 全面审查当前仓库还剩哪些混乱点：覆盖分支/upstream、dirty worktree、文档记录、配置/锁文件、未跟踪文件和误推风险 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 整理 Git 分支树：对齐本地 main 到 origin/main，梳理 review-fixes / origin/review-fixes / 当前未提交改动关系，并沉淀分支地图 | ✅ | AI Assistant | 2026-06-03 |
+| 中 | 创建一个基于用户偏好的 Codex pet：可爱的二次元高额头女孩，带知识博客/研究工程气质，并产出可安装宠物包或明确生成阻塞点 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 并行阅读当前项目内容：先粗扫仓库结构、依赖、运行时与验证入口，再用多 agent 深读页面/runtime、内容/Markdown/评论、测试/部署边界并汇总架构地图 | ✅ | AI Assistant | 2026-06-03 |
+| 高 | 修复不同宽高比下 header 搜索栏被压缩/溢出的问题：复现 824px 低高视口，搜索打开后占完整行并保持导航/主题按钮在视口内 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 实施审查修复计划：修 CI/SITE_URL、Waline server 安全与 smoke、RLS 专用角色、reading/discover 视觉边界、搜索/轮播交互、endpoint/footnote 测试与 audit 门禁 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 全面代码审查当前博客项目：并行覆盖前端视觉/后端/Waline/数据库/安全/性能/测试，输出分级问题、修复示例与优先级路线图 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 更新当前项目到远端最新状态，并阅读仓库结构、核心链路与待办风险 | ✅ | AI Assistant | 2026-06-02 |
+| 高 | 对当前项目进行深度 review：并行审查架构、前端运行时、内容管线、测试工程与安全/部署边界，输出真实问题与风险清单 | ✅ | AI Assistant | 2026-04-29 |
+| 高 | 修复 review 发现的全部问题：SITE_URL fail-fast、.gitignore 补全、Waline RLS 安全网、WalineComments 错误信息隐藏、robots.txt 动态绝对 URL、search-index 安全头与缓存 | ✅ | AI Assistant | 2026-04-29 |
 | 高 | 对最新一轮 code review 的 5 项问题做全面修复：还原依赖、把 `pnpm build` 与 GitHub CI 接入统一验证入口、修复非首页 discover 与 Waline 在 `system + OS dark` 下未跟随暗色的问题、补 waline-server 最小 smoke、并新增非首页 system-dark 回归 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”轮播的多次快速点击响应：避免累计点击后仍需串行播放整段动画，要求窗口更快追上用户意图 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”轮播的快速连续点击交互：取消必须等待单次动画结束的输入丢失与反馈迟滞 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 继续收紧首页“关注领域”卡片纵向比例：在上一轮基础上再缩短一点，并保持四卡窗口、hover 与轮播节奏不变 | ✅ | AI Assistant | 2026-04-12 |
+| 高 | 将 `pnpm build` 纳入统一验证入口并补 GitHub CI workflow，避免 `test:all` 与人工提交流程脱节 | ✅ | AI Assistant | 2026-04-12 |
+| 中 | 为 `waline-server/` 补最小 smoke / 自动验证，减少前端 wrapper 之外的评论回归盲区 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 收紧首页“关注领域”卡片纵向比例：降低过高卡片高度并重平衡标题/描述/底部统计的垂直分配 | ✅ | AI Assistant | 2026-04-11 |
 | 高 | 收紧文章页目录跟进时机与进度条动作：让底部章节在上半屏就驱动 TOC 跟进，并把 progress 过渡收敛为更柔和的对称节奏 | ✅ | AI Assistant | 2026-04-11 |
 | 高 | 修复文章页目录在底部场景的进度条 bug：恢复长目录的自适应滚动，并修正进度条/轨道在容器自滚后的底部错位与裁切 | ✅ | AI Assistant | 2026-04-11 |
@@ -25,19 +45,19 @@
 | 中 | 收紧代理工作流中的浏览器/截图复查规则：仅对真实渲染或浏览器行为有影响的改动要求人工复查，并把触发/跳过条件写入 `AGENTS.md` | ✅ | AI Assistant | 2026-04-11 |
 | 高 | 写作并发布《MyBlog 的设计说明书》：新增单源文章、SVG 封面与 `/design.md` 双出口，并补齐对应验证 | ✅ | AI Assistant | 2026-04-11 |
 | 高 | 快速并行掌握仓库：拆分 runtime/pages、内容契约、测试与交付三条线并汇总当前架构地图、风险与后续入口 | ✅ | AI Assistant | 2026-04-11 |
-| 高 | 收紧文章页列表缩进与选中文本可见性：让列表左缘贴回正文列，并为阅读页补更高对比度的 `::selection` 高亮 | ✅ | AI Assistant | 2026-03-30 |
-| 高 | 校准文章页全屏下 markdown 分割线与正文 measure：修复 `hr` 在大屏分支短于段落/列表导致的视觉错位，并补齐回归测试 | ✅ | AI Assistant | 2026-03-30 |
-| 高 | 修复文章页 figure marginalia 与正文内联引用的双向 hover / flash 联动回归，并补齐对应 E2E | ✅ | AI Assistant | 2026-03-31 |
-| 高 | 统一文章日期格式化与归档分组的时区处理，避免构建环境变化导致发布日期与归档月份漂移 | ✅ | AI Assistant | 2026-03-31 |
-| 高 | 修正 concept 页面“引用它的主题”聚合逻辑，改为按真实引用文章的 topics 反查而非只看 entryPosts | ✅ | AI Assistant | 2026-03-31 |
 | 中 | 补齐文章 canonical / OG / Twitter 元数据，并让文章页输出 article 级语义与分享图 | ✅ | AI Assistant | 2026-04-01 |
 | 中 | 收敛文章页 TOC 的重复客户端实现，避免 TocSidebar 与 PostToc 多套 observer / scroll 逻辑并存 | ✅ | AI Assistant | 2026-04-01 |
 | 中 | 收紧 Waline 挂载边界：补充 init 失败回退并评估改为 `client:visible` 以降低文章首屏负担 | ✅ | AI Assistant | 2026-04-01 |
 | 中 | 补 cross-collection integrity 测试并收紧文章 heading contract，防止坏 slug、orphan h3 与 h4-h6 静默进入线上 | ✅ | AI Assistant | 2026-04-01 |
 | 中 | 收紧 TypeScript 检查边界，避免根目录临时脚本被 `astro check` 纳入诊断范围 | ✅ | AI Assistant | 2026-04-01 |
+| 高 | 修复文章页 figure marginalia 与正文内联引用的双向 hover / flash 联动回归，并补齐对应 E2E | ✅ | AI Assistant | 2026-03-31 |
+| 高 | 统一文章日期格式化与归档分组的时区处理，避免构建环境变化导致发布日期与归档月份漂移 | ✅ | AI Assistant | 2026-03-31 |
+| 高 | 修正 concept 页面“引用它的主题”聚合逻辑，改为按真实引用文章的 topics 反查而非只看 entryPosts | ✅ | AI Assistant | 2026-03-31 |
+| 高 | 收紧文章页列表缩进与选中文本可见性：让列表左缘贴回正文列，并为阅读页补更高对比度的 `::selection` 高亮 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 校准文章页全屏下 markdown 分割线与正文 measure：修复 `hr` 在大屏分支短于段落/列表导致的视觉错位，并补齐回归测试 | ✅ | AI Assistant | 2026-03-30 |
 | 高 | 对博客项目进行正式 code review：并行审查核心模块、页面、数据流、状态管理、构建配置和公共组件，输出真实问题与高风险设计清单 | ✅ | AI Assistant | 2026-03-30 |
-| 高 | 审计并收紧首页“关注领域”的 light / dark / system 主题行为：补足链接外层约束并新增主题切换回归 | ✅ | AI Assistant | 2026-03-29 |
 | 高 | 收紧文章页正文 measure 与分割线：缩短桌面端正文列宽，并同步收回标题 divider 与 `SECTION` 横线长度 | ✅ | AI Assistant | 2026-03-30 |
+| 高 | 审计并收紧首页“关注领域”的 light / dark / system 主题行为：补足链接外层约束并新增主题切换回归 | ✅ | AI Assistant | 2026-03-29 |
 | 高 | 继续精修首页“关注领域”循环列表：消除底部轻微裁切，并修正左右切换动画不对称/单侧触发异常 | ✅ | AI Assistant | 2026-03-29 |
 | 高 | 精修首页“关注领域”循环列表：让切换动画更优雅，并修复轮播切换压制卡片 hover 上浮的问题 | ✅ | AI Assistant | 2026-03-28 |
 | 高 | 重做首页“关注领域”为优雅循环 4 卡列表：移除滚动/进度条感，改成循环切换并保证卡片桌面端同高 | ✅ | AI Assistant | 2026-03-28 |
@@ -91,8 +111,6 @@
 | 中 | 继续增强顶部栏液态玻璃效果：仅提升 header 的高光、折射、层次与悬浮感，其余结构与交互保持不变 | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 优化顶部栏材质表现：保留现有结构与三态逻辑，仅把 header 提升为液态玻璃质感并确保文字清晰可读 | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 阅读当前项目并并行建立可复用的 harness 上下文：梳理应用架构、内容/评论链路、验证命令与关键约束，并回写 agent 文档 | ✅ | AI Assistant | 2026-03-22 |
-| 高 | 将 `pnpm build` 纳入统一验证入口并补 GitHub CI workflow，避免 `test:all` 与人工提交流程脱节 | ✅ | AI Assistant | 2026-04-12 |
-| 中 | 为 `waline-server/` 补最小 smoke / 自动验证，减少前端 wrapper 之外的评论回归盲区 | ✅ | AI Assistant | 2026-04-12 |
 | 高 | 统一文章页右侧文字型边注为类型化脚注链路：正文引用与信息注释统一使用标准 GFM 脚注，图表说明保留 figures 但按同一 sidenote 视觉渲染，并移除 posts schema 中的 annotations / references | ✅ | AI Assistant | 2026-03-22 |
 | 中 | 修正 legacy reference 的 rail 显示标签语义：统一显示为 `文N`，不再沿用脚注式 `[n]` 标签 | ✅ | AI Assistant | 2026-03-22 |
 | 高 | 修复 scholar rail 混合脚注/注释/图表时的编号空间冲突：避免重复数字、跳号错觉与由此产生的排序误读 | ✅ | AI Assistant | 2026-03-22 |
@@ -148,70 +166,36 @@
 | 中 | 提升文章页阅读进度条可见性：增强顶部轨道与填充对比度，避免“存在但不可感知” | ✅ | AI Assistant | 2026-03-14 |
 | 高 | 收紧配色语义与阅读界面：恢复 Midnight/Navy 主导的 header/footer，修正顶部栏展开/缩放状态、进度条独立固定和文章页左移去边框 | ✅ | AI Assistant | 2026-03-14 |
 | 高 | 基于 Midnight Blue / Navy / Lace / Ivory / Moonlight 配色重构全站主题系统、首页/列表/阅读页，并修复文章页移动端响应式断裂 | ✅ | AI Assistant | 2026-03-14 |
-| 高 | 初始化 `agent/` 目录结构和标准文档 | ✅ | AI Assistant | 2026-02-21 |
-| 高 | 将原 `AGENT_CONTEXT.md` 内容迁移至标准规范 (`Agents.md`) | ✅ | AI Assistant | 2026-02-21 |
-| 高 | 新增作者档案配置和文章作者解析，文章页展示作者元数据 | ✅ | AI Assistant | 2026-02-22 |
-| 高 | 新增 Header 即时搜索（posts/topics/concepts）与 `/search-index.json` | ✅ | AI Assistant | 2026-02-22 |
-| 高 | 新增文章目录（H2/H3）：桌面端固定 + 移动端折叠，含当前章节高亮 | ✅ | AI Assistant | 2026-02-22 |
-| 高 | 新增 `/author` 页面及顶部导航入口 | ✅ | AI Assistant | 2026-02-22 |
-| 高 | 新增文章底部评论系统（独立 Supabase 表、Markdown 渲染、GitHub 登录入口） | ✅ | AI Assistant | 2026-02-22 |
-| 高 | 使用 `/Users/a-znk/Downloads/myblog-main` 同步本地仓库源码并更新 GitHub | ✅ | AI Assistant | 2026-03-12 |
-| 高 | 修复同步后文章页丢失段落评论挂载导致的 E2E 回归 | ✅ | AI Assistant | 2026-03-12 |
+| 高 | 修正阅读页进度条定位逻辑，并把顶部栏品牌/导航往中间收拢以改善协调性 | ✅ | AI Assistant | 2026-03-14 |
+| 高 | 移除段落/站内评论逻辑并以 Waline 替换文章评论系统 | ✅ | AI Assistant | 2026-03-14 |
 | 高 | 整体精修博客 UI/UX：轻量 header、搜索胶囊、统一主题容器、拓宽文章阅读区并恢复阅读进度条 | ✅ | AI Assistant | 2026-03-13 |
 | 高 | 调整阅读页结构细节：header 常态贴顶、正文/注释去边框、放大目录、进度条回到最顶细线 | ✅ | AI Assistant | 2026-03-13 |
 | 高 | 修正阅读页剩余观感问题：进度条跟随、左右留白、header 再缩小、TOC 缩进层级 | ✅ | AI Assistant | 2026-03-13 |
 | 高 | 继续精修阅读页：让进度条与 header 解耦、放大 TOC、继续拓宽正文并压缩滚动态 header 宽度 | ✅ | AI Assistant | 2026-03-13 |
 | 高 | 重做阅读页目录层级比例，并修复进度条被旧规则覆盖导致的消失/配色问题 | ✅ | AI Assistant | 2026-03-13 |
 | 高 | 继续修正阅读页目录与进度条：放大 TOC、强化 H2/H3 层级差异，并确保 header 收缩时进度条持续可见 | ✅ | AI Assistant | 2026-03-13 |
-| 高 | 修正阅读页进度条定位逻辑，并把顶部栏品牌/导航往中间收拢以改善协调性 | ✅ | AI Assistant | 2026-03-14 |
-| 高 | 移除段落/站内评论逻辑并以 Waline 替换文章评论系统 | ✅ | AI Assistant | 2026-03-14 |
 | 中 | 继续压缩滚动态 header 垂直高度，并放宽文章标题下导语文本框 | ✅ | AI Assistant | 2026-03-13 |
 | 中 | 按参考图像素级细化滚动态顶部条，并补强导航/搜索 UX 后用截图与 E2E 复核 | ✅ | AI Assistant | 2026-03-13 |
 | 中 | 调整滚动态顶部条宽度与导航布局，并用截图验证缩放效果 | ✅ | AI Assistant | 2026-03-13 |
-| 中 | 分析现有代码与文档是否一致 | ✅ | AI Assistant | 2026-02-22 |
-| 中 | 根据 README.md 和需求总结界面设计并更新 README 文档 | ✅ | AI Assistant | 2026-02-22 |
-| 中 | 为归档页（/archives）添加海报横幅 | ✅ | AI Assistant | 2026-02-22 |
-| 中 | 修复 agent/ 文档结构问题（timeline 格式、codex 重写、README 死链等） | ✅ | AI Assistant | 2026-03-03 |
+| 高 | 使用 `/Users/a-znk/Downloads/myblog-main` 同步本地仓库源码并更新 GitHub | ✅ | AI Assistant | 2026-03-12 |
+| 高 | 修复同步后文章页丢失段落评论挂载导致的 E2E 回归 | ✅ | AI Assistant | 2026-03-12 |
 | 中 | 制定 Figma 先行的 UI/UX 设计到代码落地工作流 | ✅ | AI Assistant | 2026-03-09 |
 | 中 | 将现有博客全站 UI（desktop/mobile + light/dark）复现到 Figma 文件 | ✅ | AI Assistant | 2026-03-09 |
 | 中 | 向现有 Figma 文件追加 `00 Foundations` / `01 Components` / `02~05` 结构页 | ✅ | AI Assistant | 2026-03-09 |
+| 中 | 修复 agent/ 文档结构问题（timeline 格式、codex 重写、README 死链等） | ✅ | AI Assistant | 2026-03-03 |
+| 高 | 新增作者档案配置和文章作者解析，文章页展示作者元数据 | ✅ | AI Assistant | 2026-02-22 |
+| 高 | 新增 Header 即时搜索（posts/topics/concepts）与 `/search-index.json` | ✅ | AI Assistant | 2026-02-22 |
+| 高 | 新增文章目录（H2/H3）：桌面端固定 + 移动端折叠，含当前章节高亮 | ✅ | AI Assistant | 2026-02-22 |
+| 高 | 新增 `/author` 页面及顶部导航入口 | ✅ | AI Assistant | 2026-02-22 |
+| 高 | 新增文章底部评论系统（独立 Supabase 表、Markdown 渲染、GitHub 登录入口） | ✅ | AI Assistant | 2026-02-22 |
+| 中 | 分析现有代码与文档是否一致 | ✅ | AI Assistant | 2026-02-22 |
+| 中 | 根据 README.md 和需求总结界面设计并更新 README 文档 | ✅ | AI Assistant | 2026-02-22 |
+| 中 | 为归档页（/archives）添加海报横幅 | ✅ | AI Assistant | 2026-02-22 |
+| 高 | 初始化 `agent/` 目录结构和标准文档 | ✅ | AI Assistant | 2026-02-21 |
+| 高 | 将原 `AGENT_CONTEXT.md` 内容迁移至标准规范 (`Agents.md`) | ✅ | AI Assistant | 2026-02-21 |
 | 中 | 在 Figma 内手工重命名现有页面、归组并抽取真实可复用组件实例 | ⏳ | AI Assistant | - |
 | 中 | 为搜索 / TOC / author 页面补充 E2E 测试 | ✅ | AI Assistant | - |
 | 低 | 添加管理员内容审核工作流（评论默认 pending + DB 策略） | ⏳ | AI Assistant | - |
 | 低 | 添加服务端限流 / 反垃圾基础防护 | ⏳ | AI Assistant | - |
 | 低 | Telegram 真实登录桥接（文章评论 GitHub/Telegram 入口） | 📋 Backlog | - | - |
 | 低 | 添加 CI workflow（PR 时自动运行 `pnpm test` + `pnpm build`） | 📋 Backlog | - | - |
-
-## 本次反思
-
-- 这次重影效果重做说明，实现“失焦残影”和“发光底片”的核心差别不仅在于 `blur` 的大小，更在于 `mask-image` 的几何衰减方向。对称的径向渐变会让重影向四周均匀散开，形成“光晕”感；而要表现向后拖拽的“残影”，必须把 mask 的中心点和渐变边界做成非对称的，让靠近主图的部分保留结构，远离主图的部分加速透明消失。这种非对称雾化比继续调整 `box-shadow` 更加接近光学上的拖影效果。
-- 这次修正再次提醒，视觉效果“没出来”不一定是参数不对，也可能是状态层把样式覆盖掉了。文章页顶部封面的 `post-cover-img--shadow` 之前看起来像普通发散 glow，根因不是 `translate` 太小，而是同一个元素还挂着 `cover-reveal` 动画，结束态把 shadow/main 各自的 `opacity` 和 `transform` 都写回了公共值，导致本来写好的右下重影几何实际没有生效。
-- 这次视觉替换型需求再次说明，真正要替掉的是“视觉来源”而不是“视觉强度”。如果目标是把卡片阴影改成图片右下残影，只调 `cards.css` 里的 `box-shadow` 数值永远不够，必须继续追到 `PostCover` 组件结构、本体图片/回退封面的双层渲染，以及 `archives.css` 里会不会把新重影裁掉的 `overflow` 规则。
-- 这次重构暴露了一个潜藏很深的 E2E 测试脆弱点：前端组件层做重构（例如把移动端 `<details>` 修改并移出，把左侧 TOC 的 `[data-toc-depth]` 彻底拿掉），如果没有同时覆盖到 Playwright 中的 CSS Selectors 与 Metrics assertions，虽然页面看得到，测试依然会崩塌。必须把相关的 `.astro` 模板变化、`css` 类的增减，同 `.spec.ts` 同步挂钩。
-- 此外，对移动端显示条件的隐藏逻辑（如 `@media` 配合 `display: none`）不仅让真实设备无法访问某块功能，也让测试直接报错 `element not found`。在清理旧代码或者重排版时，确保关键交互功能组件不只是“不显示”，而是“在需要的响应式区间显示”至关重要，特别是对带有 `<summary>` 的 `details` 天然切换组件。
-- 这次 Waline 补全再次说明，评论系统迁移真正难的不是把 client 挂上，而是把“部署边界”讲清楚。把 Waline server 作为仓库内独立部署单元、但仍然作为外部服务单独部署，能同时满足两个目标：博客前端继续保持干净，另一个接手者也不需要去外部 wiki 或聊天记录里拼凑环境变量、SQL 初始化和 Vercel Root Directory 这些关键步骤。
-- 这次类纸阅读模式验证了一个边界：真正提升沉浸感的不是把整页一起染成暖色，而是把纸感严格限制在正文承载容器里，再让外部 TOC、header、rail 继续保持工具性。浏览器复核里最有价值的不是“颜色更暖了”，而是确认正文容器获得了独立材质、标题组到正文的距离被拉开，同时 header hidden 时进度条仍独立固定；如果纸感扩散到整页，技术写作界面的严谨感会立刻被削弱。
-- 这次浏览器复核说明，视觉任务不能只靠样式数值和局部截图自证完成。桌面端的字体、间距、TOC 对比度都达标，但移动端仍被 3 月 13 日遗留的 `order: -1/-2` 响应式规则反向打乱，导致首屏先出现 rail 再出现正文。只有真的看浏览器首屏，才能发现这种“测试通过但阅读顺序错了”的问题。
-- 这次文章页重构再次证明，大型样式文件里最可靠的落地方式不是“清掉所有旧规则再重写”，而是建立一个明确的最终权威层。`article.css` 和 `toc.css` 都堆叠了多个阶段的 scholarly 规则，如果继续在中间位置补丁，只会不断和旧优先级打架；把最终阅读层收口到文件尾部后，目标节奏和回归范围都清晰得多。
-- 这次问题说明“`position: fixed` 已写上去”不等于它真的固定在 viewport；只要祖先层被 `transform` 过，即使最终是 `translateY(0)`，fixed 后代也会改为相对该祖先定位。之前进度条挂到 `body` 后仍跟着页面滚走，根因正是 `body` 的入场动画把自己永久变成了新的 containing block。
-- 这次定点修复再次证明，阅读页问题不能只看表象。文章页 header 失效并不是滚动容器换了，而是状态机里专门对 `.shell--article-reading` 做了“永不 hidden”的分流；progress bar 消失也不是挂载位置错了，而是计算仍耦合 header 几何，再叠加 article.css 里多段重复覆盖，导致表现非常脆弱。
-- 这次顶部栏改造说明“滚动动画需求”本质上是状态机问题，不是单条 `scrollY > x` 的样式切换。把 `top / compact / hidden` 明确建模后，阈值、方向和回退条件才会稳定，也更容易针对阅读页保留必要的可见性约束。
-- 这次 Pure 风格迁移验证了一个更稳的做法：把它当设计供体，只迁移 token 语义、排版节奏和组件语言，而不是导入模板组件。这样能明显提升视觉成熟度，同时不碰时间轴、边注、双链和 Waline 的既有契约。
-- 这次重构证明“主题系统落地”必须同时做三件事：token contract、组件映射、约束测试。只有变量文件没有契约测试，旧色值和私有局部色板会很快重新渗回组件层。
-- 进度条这类细线型反馈组件，代码层“存在并在更新”不等于用户层“可感知”；在深色顶栏上，`3px + 低透明度` 足以让功能变成近似不可见。
-- 这轮 follow-up 说明“语义配色是否成立”不能只看 token 文件，必须继续检查最终覆盖层有没有残留逃逸色值；header/进度条里那套临时蓝色一旦没收口，整站语义就会被冲掉。
-- 顶部条从“浮条常态”改回“完整顶条常态”后，最容易漏掉的是滚动态内部内容宽度同步缩小；只缩外层容器、不缩内部 shell，会产生肉眼可见的假收缩。
-- 这次重设计再次证明，主题系统如果不先统一 token 语义，后续首页、卡片、文章页只会变成局部修补；先收敛 foundation/semantic/reading tokens，后续页面细化才有一致基线。
-- 文章页 mobile overflow 最后不是大布局没折叠，而是旧的 inline code `white-space: nowrap` 残留导致文档宽度被撑破；这种问题需要用真实 viewport 下的“最宽元素”排查，不能只盯 grid。
-- 下载目录里的实际代码与仓库当前工作区不一致，直接覆盖会把仓库推进到不可验证状态；先做保留 `.git` 的源码同步，再跑校验是必要的。
-- 这次同步暴露了一个真实行为回归：文章页丢失 `ParagraphComments` 挂载，导致评论相关 E2E 失败。已在提交前恢复，避免把已知坏状态推上远端。
-- 当前仓库已经用新的源码快照更新，并通过 `pnpm test`、`pnpm build`、`pnpm test:e2e` 完成验证。
-- 顶部条的观感问题不能只看 CSS 数值，需要结合真实滚动状态截图验证；这次调整同时处理了 header 容器宽度、内容分布和滚动态按钮压缩，效果才接近参考图。
-- 当用户要求“像素级靠近”时，只改宽度不够，图标语言、导航留白和交互反馈也要一起收敛；这次把主题按钮换成 SVG、补上当前导航态和搜索快捷键后，顶部条才从“样式修补”变成完整 UX 调整。
-- 这轮进一步确认了一个边界：如果用户感知到“整体太大”，就不能只盯着 `scale()`，必须把常态尺寸和收缩态尺寸一起重定，否则视觉上仍会觉得像同一条大 header 只是略缩了一点。
-- 全站 UI 精修最怕只在单页局部修补；这次用 surface token、文章页最终覆盖和新增 E2E 约束一起落地，才把“更精致”从主观感受变成可持续维护的样式基线。
-- 这次 follow-up 说明阅读页的版式权重比单个组件更重要：只做颜色或圆角调整不够，header 的 resting/scrolled 两种状态、正文是否被卡片化、TOC 的数字对齐和进度条位置都会直接改变沉浸感。
-- 进度条这种细节不能只看“滚动后宽度有没有变”，还要看它的起算区间是否符合阅读预期；这次把计算从正文块改为整篇阅读容器后，用户感知上的“没跟随”问题才真正解决。
-- 这次问题的核心不是“目录再调大一点”这么简单，而是 `article.css` 里旧的 tri-layout 规则比最终覆盖层优先级更高，导致后面的 TOC 放大样式根本没生效；以后遇到“改了 CSS 但页面像没变”的情况，应该先验证 specificity 和实际 computed style。
-- 这次继续暴露了另一个常见误区：进度条“逻辑不对”未必是百分比公式错了，往往是几何绑定对象错了。这里真正的断点是进度条还停留在页面顶部，而 header 已经变成收缩浮层；再加上文章页 header 的自动隐藏，视觉上就会被理解成“没有跟着滚动走”。
-- 评论系统迁移这类替换型需求，不能只做“新入口接上”；如果旧测试、旧 env、旧架构文档还保留在仓库里，后续 agent 很容易继续沿着已经被废弃的实现做增量修改。

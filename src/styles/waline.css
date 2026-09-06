@@ -1,9 +1,9 @@
 @import "@waline/client/style";
 
 .post-waline-comments-section {
-  margin-top: 2rem;
+  margin-top: 2.8rem;
   border-top: 1px solid color-mix(in srgb, var(--reading-rule) 82%, transparent 18%);
-  padding-top: 1rem;
+  padding-top: 1.35rem;
 }
 
 .waline-comments {
@@ -26,6 +26,14 @@
   display: grid;
   gap: 0.8rem;
   color: var(--reading-ink);
+}
+
+body[data-runtime="reading"] .waline-comments {
+  --waline-bg-color: color-mix(in srgb, var(--article-paper) 92%, white 8%);
+  --waline-bg-color-light: color-mix(in srgb, var(--article-paper) 86%, white 14%);
+  --waline-bg-color-hover: color-mix(in srgb, var(--article-paper) 78%, var(--surface-elevated) 22%);
+  --waline-info-bg-color: color-mix(in srgb, var(--article-paper) 80%, var(--surface-elevated) 20%);
+  color: var(--article-ink);
 }
 
 .waline-comments__header {
