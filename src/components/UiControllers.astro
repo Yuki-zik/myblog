@@ -733,7 +733,22 @@
       });
     }
 
+    function initResearchSignature() {
+      var signatures = document.querySelectorAll("details[data-home-research-signature]");
+      if (!signatures.length) return;
+
+      var desktop = window.matchMedia("(min-width: 1024px)");
+      function syncSignatureLayout() {
+        signatures.forEach(function (signature) {
+          if (signature instanceof HTMLDetailsElement) signature.open = desktop.matches;
+        });
+      }
+      syncSignatureLayout();
+      desktop.addEventListener("change", syncSignatureLayout);
+    }
+
     initReveal();
+    initResearchSignature();
     initThemeToggle();
     initBackToTop();
     initHeader();

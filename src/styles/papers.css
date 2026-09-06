@@ -595,10 +595,27 @@ main.shell--paper-reading {
 @media (max-width: 560px) {
   .paper-reading-page {
     padding-inline: 1rem;
+    padding-top: 1.25rem;
+  }
+
+  .paper-dossier__back {
+    margin-bottom: 1.25rem;
   }
 
   .paper-dossier__masthead h1 {
-    font-size: clamp(2rem, 10vw, 2.85rem);
+    max-width: none;
+    margin: 0.75rem 0;
+    font-size: clamp(1.75rem, 7.7vw, 2.125rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+
+  .paper-dossier__authors {
+    margin-top: 1rem;
+  }
+
+  .paper-primary-actions {
+    margin-top: 1rem;
   }
 
   .paper-index-row--with-cover .paper-index-row__record {

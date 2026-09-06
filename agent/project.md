@@ -1,5 +1,9 @@
 # 项目概况 (MyBlog v1)
 
+## 本地视觉迭代（2026-09-06，未发布）
+
+`codex/visual-interaction-pass` 已完成四项第一轮优化：首页主题/论文双入口与精简研究签名、首页弱文本对比度、原生 mobile search dialog（含键盘/IME/VisualViewport/scroll 恢复）、文章标题优先和论文手机字号。`pnpm test:all` 完整通过：116 单测、106 E2E、19 页构建、论文来源检查、Waline smoke 和审计门禁；明暗主题与手机/桌面截图复核通过。该分支不改变下面记录的正式发布版本，尚未推送或部署。设计预览不接入线上评论，详见 `docs/visual-interaction-pass.md`。
+
 ## 当前发布状态（2026-09-06）
 
 已正式发布到 `https://myblog-silk-one.vercel.app`；PR #1 已合并，本地切回并同步 `main`。应用发布版本 `df5e467` 的 GitHub CI 全部通过，包含 116 项单测与全量 E2E；博客/Waline 两套正式部署均 READY。修复了缺失 SITE_URL、论文虚构日期、搜索测试遗漏、依赖安全门禁、敏感数据库日志、旧 think-validator 兼容问题和内嵌字体 CSP。原 Supabase 数据库恢复 ACTIVE_HEALTHY；匿名评论读取 HTTP 200/errno 0，原有 1 条评论保留。全新浏览器核验首页/论文页/详情/搜索/canonical 与评论，未见控制台错误。没有发布测试评论、修改数据库结构或自动轮换密码。两篇论文缺合法 PDF 时保持无封面。持续运行需注意免费数据库闲置暂停和历史凭据轮换，详见 `docs/production-readiness.md`。

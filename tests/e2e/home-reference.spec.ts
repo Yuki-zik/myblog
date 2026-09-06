@@ -384,6 +384,8 @@ test("home reference collapses into a single-column editorial stack on mobile", 
 
   await expect(page.locator(".home-reference-hero__title")).toBeVisible();
   await expect(page.locator("[data-home-reference-terminal]")).toBeVisible();
+  await expect(page.locator("details[data-home-research-signature]")).not.toHaveAttribute("open", "");
+  await expect(page.locator(".home-reference-terminal__body")).not.toBeVisible();
   expect(await page.locator("[data-home-domains] [data-home-domain-card]").count()).toBeGreaterThanOrEqual(5);
 
   const metrics = await page.evaluate(() => {

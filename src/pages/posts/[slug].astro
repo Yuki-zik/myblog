@@ -204,34 +204,6 @@ const structuredData = site
       <div class="post-reading-main">
         <article class="post-reading-article">
           <section class="post-title-card" aria-label="文章标题卡片">
-            {post.data.cover ? (
-              <div class="post-cover post-cover--hero">
-                <div class="post-cover-stack">
-                  <Image
-                    src={post.data.cover.src}
-                    alt=""
-                    aria-hidden="true"
-                    class="post-cover-img post-cover-img--ghost"
-                    loading="eager"
-                    decoding="async"
-                    widths={[640, 960, 1280]}
-                    sizes="(max-width: 900px) 100vw, 900px"
-                  />
-                  <Image
-                    src={post.data.cover.src}
-                    alt={post.data.cover.alt}
-                    class="post-cover-img post-cover-img--main"
-                    loading="eager"
-                    decoding="async"
-                    widths={[640, 960, 1280]}
-                    sizes="(max-width: 900px) 100vw, 900px"
-                  />
-                </div>
-                {post.data.cover.credit ? (
-                  <p class="post-cover-credit">{post.data.cover.credit}</p>
-                ) : null}
-              </div>
-            ) : null}
             <header class="content-section post-header post-header--scholarly">
               <div class="post-header-meta-row">
                 <p class="subtle post-header-meta">
@@ -269,6 +241,34 @@ const structuredData = site
               ) : null}
               <div class="post-header-divider" aria-hidden="true"></div>
             </header>
+            {post.data.cover ? (
+              <div class="post-cover post-cover--hero">
+                <div class="post-cover-stack">
+                  <Image
+                    src={post.data.cover.src}
+                    alt=""
+                    aria-hidden="true"
+                    class="post-cover-img post-cover-img--ghost"
+                    loading="eager"
+                    decoding="async"
+                    widths={[320, 480, 640, 960]}
+                    sizes="(max-width: 560px) 80vw, 400px"
+                  />
+                  <Image
+                    src={post.data.cover.src}
+                    alt={post.data.cover.alt}
+                    class="post-cover-img post-cover-img--main"
+                    loading="eager"
+                    decoding="async"
+                    widths={[320, 480, 640, 960]}
+                    sizes="(max-width: 560px) 80vw, 400px"
+                  />
+                </div>
+                {post.data.cover.credit ? (
+                  <p class="post-cover-credit">{post.data.cover.credit}</p>
+                ) : null}
+              </div>
+            ) : null}
           </section>
 
           {tocItems.length > 0 ? (

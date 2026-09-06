@@ -276,8 +276,29 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0;
-  padding: 1.5rem 1.5rem 1rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-reference-terminal__header::-webkit-details-marker {
+  display: none;
+}
+
+.home-reference-terminal__header::after {
+  content: "+";
+  margin-left: auto;
+  color: #cbd5e1;
+}
+
+[data-home-research-signature][open] > .home-reference-terminal__header::after {
+  content: "−";
+}
+
+.home-reference-terminal__header:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: -4px;
 }
 
 .home-reference-terminal__lights {
@@ -309,15 +330,15 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 
 .home-reference-terminal__filename {
   margin-left: 0.5rem;
-  color: #64748b;
+  color: #a7b5ca;
   font-family: var(--hr-font-mono);
   font-size: 0.75rem;
 }
 
 .home-reference-terminal__body {
-  padding: 1.5rem;
+  padding: 1.1rem 1.25rem;
   font-family: var(--hr-font-mono);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.7;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -354,7 +375,7 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 }
 
 .home-reference-terminal__comment {
-  color: #64748b;
+  color: #a7b5ca;
 }
 
 .home-reference-terminal__string {
@@ -366,8 +387,8 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1rem;
-  color: #64748b;
-  font-size: 0.625rem;
+  color: #a7b5ca;
+  font-size: 0.6875rem;
 }
 
 .home-reference-terminal__prompt {
@@ -791,6 +812,15 @@ html[data-color-scheme="dark"] .home-reference-footer__quote {
   color: #64748b;
 }
 
+/* The home quotation sits over a translucent warm-paper footer. */
+[data-home-reference-footer] .home-reference-footer__quote {
+  color: #475569;
+}
+
+html[data-color-scheme="dark"] [data-home-reference-footer] .home-reference-footer__quote {
+  color: #a7b5ca;
+}
+
 /* Kept in CSS: `base.css` sets `a { transition }` unlayered, and the hover
    lift animates `transform` alongside the colour swap. */
 .home-reference-footer__social-link {
@@ -1066,24 +1096,8 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
   }
 
   .home-reference-terminal__body {
-    max-height: 10.5rem;
     padding: 0.92rem 1rem;
-    font-size: 0.78rem;
-    overflow: hidden;
-  }
-
-  .home-reference-terminal__shell::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    height: 3.6rem;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0), #0f172a 82%);
-  }
-
-  html[data-color-scheme="dark"] .home-reference-terminal__shell::after {
-    background: linear-gradient(180deg, rgba(15, 20, 35, 0), #0f1423 82%);
+    font-size: 0.8125rem;
   }
 
   .home-reference-domain-nav {
@@ -1115,12 +1129,12 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
 
 @media (max-width: 767px) {
   .home-reference__body {
-    gap: 4rem;
-    padding-top: 2.25rem;
+    gap: 3rem;
+    padding-top: 1.5rem;
   }
 
   .home-reference-hero__copy {
-    gap: 1.75rem;
+    gap: 1.25rem;
   }
 
   .home-reference-hero__title {
