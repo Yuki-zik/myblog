@@ -22,6 +22,18 @@ describe("deployment security headers", () => {
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("connect-src 'self' https://api.swo.moe");
     expect(csp).not.toMatch(/connect-src[^;]*\shttps:\s*(?:;|$)/);
+    const directives = new Map(csp.split(";").map((directive) => {
+      const [name, ...sources] = directive.trim().split(/\s+/);
+      return [name, sources];
+    }));
+    expect(directives.get("font-src")).toEqual([
+      "'self'", "data:", "https://fonts.gstatic.com"
+    ]);
+    expect(directives.get("script-src")).toEqual(["'self'", "'unsafe-inline'"]);
+    expect(directives.get("connect-src")).toEqual([
+      "'self'", "https://api.swo.moe", "https://waline.example",
+      "https://comments.example.com", "https://*.vercel.app"
+    ]);
   });
 
   it("marks raw .md mirrors as noindex (X-Robots-Tag) so they are not indexed as duplicates", () => {

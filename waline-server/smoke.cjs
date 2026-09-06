@@ -8,6 +8,7 @@
  *  2. `index.cjs` can be required without throwing synchronously.
  *  3. The exported value is a request handler function.
  *  4. The installed PostgreSQL adapter does not log connection URIs or SQL.
+ *  5. Anonymous comment query validation accepts valid input and rejects invalid input.
  *
  * It intentionally does NOT touch the Postgres database; the goal is to catch
  * "the deployment unit is structurally broken" issues (bad lockfile, removed
@@ -69,6 +70,41 @@ async function verifyPrivateDatabaseLogging() {
   }
 }
 
+function verifyCommentQueryValidation() {
+  const walineRequire = createRequire(require.resolve("@waline/vercel"));
+  const thinkRequire = createRequire(walineRequire.resolve("thinkjs"));
+  const logicRequire = createRequire(thinkRequire.resolve("think-logic"));
+  const Validator = logicRequire("think-validator");
+  const Koa = thinkRequire("koa");
+  const context = thinkRequire("./extend/context");
+  const sandbox = {
+    module: { exports: {} },
+    require(name) {
+      assert.equal(name, "./base.js");
+      return class {};
+    },
+  };
+  vm.runInNewContext(readFileSync(walineRequire.resolve("./src/logic/comment"), "utf8"), sandbox);
+  const app = new Koa();
+  function validate(changes = {}) {
+    const query = new URLSearchParams({
+      path: "/posts/paragraph-anchor-design", page: "1", pageSize: "10",
+      lang: "zh-CN", sortBy: "insertedAt_desc", ...changes,
+    });
+    const ctx = app.createContext({ url: `/api/comment?${query}`, method: "GET", headers: {} }, {});
+    ctx.param = context.param;
+    const logic = new sandbox.module.exports();
+    logic.get = () => ctx.param();
+    logic.ctx = ctx;
+    logic.getAction();
+    return new Validator(ctx).validate(logic.rules);
+  }
+  assert.deepEqual(validate(), {}, "normal anonymous comment query must pass validation");
+  for (const [field, value] of [["page", "no"], ["pageSize", "101"], ["sortBy", "unknown"]]) {
+    assert.deepEqual(Object.keys(validate({ [field]: value })), [field], `${field} must reject invalid input`);
+  }
+}
+
 function fail(message, error) {
   // eslint-disable-next-line no-console
   console.error(`[waline-server smoke] FAIL: ${message}`);
@@ -94,6 +130,7 @@ process.env.PG_PREFIX ||= "wl_";
 process.env.PG_SSL ||= "false";
 
 async function main() {
+  verifyCommentQueryValidation();
   await verifyPrivateDatabaseLogging();
   let entry;
   const capturedErrors = [];
@@ -143,7 +180,7 @@ async function main() {
   }
 
   // eslint-disable-next-line no-console
-  console.log("[waline-server smoke] OK: Waline handler loads; PostgreSQL connection/SQL logging is disabled.");
+  console.log("[waline-server smoke] OK: handler loads; comment query validation works; PostgreSQL connection/SQL logging is disabled.");
 }
 
 void main();

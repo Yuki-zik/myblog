@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  think-validator: 1.7.0
   form-data@<2.5.6: 2.5.6
   form-data@>=3.0.0 <3.0.5: 3.0.5
   form-data@>=4.0.0 <4.0.6: 4.0.6
@@ -1929,8 +1930,8 @@ packages:
   think-trace@1.0.18:
     resolution: {integrity: sha512-ghTO3movOuT3gmWu1Fbv5XHTOkFCmcSOIFw8xMu4SEoW7em+XLHkG/w5mHRklua5vsZ8xdfYEaNBV06c1b0Rrg==}
 
-  think-validator@1.6.7:
-    resolution: {integrity: sha512-igc0kNrfjucJ+CCeG33wsAxMHGPW3UdP1R3lFE8WJj5n9MdgqwxNZsT3sqHqp1TuowAV+1hCM+DV+1fXAF6XxA==}
+  think-validator@1.7.0:
+    resolution: {integrity: sha512-M9g8GZtoG1IOJN9aF9qPi6MK/a+XxNUmjfjnqs+pajfz/kpfq9cvsavX6FlABqwiybdr8msqFERd3AdImWFj0A==}
 
   thinkjs@3.2.15:
     resolution: {integrity: sha512-/jPy+QIIS+92uetRA7itigrlJXL6c/j+xBPJGaVT3LX2/zwlQ1VvjDUWu9SaaatWDYPVY44Em647QxsEjY9TXQ==}
@@ -4440,7 +4441,7 @@ snapshots:
       statuses: 1.5.0
       think-helper: 1.1.4
 
-  think-validator@1.6.7:
+  think-validator@1.7.0:
     dependencies:
       think-helper: 1.1.4
       validator: 13.15.35
@@ -4467,7 +4468,7 @@ snapshots:
       think-resource: 1.0.3
       think-router: 1.3.5
       think-trace: 1.0.18
-      think-validator: 1.6.7
+      think-validator: 1.7.0
     transitivePeerDependencies:
       - supports-color
 
@@ -4493,7 +4494,7 @@ snapshots:
       think-resource: 1.0.3
       think-router: 1.3.5
       think-trace: 1.0.18
-      think-validator: 1.6.7
+      think-validator: 1.7.0
     transitivePeerDependencies:
       - supports-color
 
