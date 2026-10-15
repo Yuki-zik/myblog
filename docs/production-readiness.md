@@ -2,7 +2,17 @@
 
 Updated: 2026-10-15. This checklist distinguishes verified code from a verified deployment.
 
-## Current production release — 2026-10-15
+## Current production release — 2026-10-15 accessibility follow-up
+
+[PR #3](https://github.com/Yuki-zik/myblog/pull/3) merged as `3994b115cb71a23f18052a408a3c15571e6dbe62` and is live on the existing domain. It preserves the GFM footnote description label without adding a TOC heading, gives reading controls distinct landmarks, exposes meaningful metadata/social/carousel semantics, and improves small-text contrast in both themes. Builds refresh Astro's content cache to avoid stale Markdown output after plugin helper changes.
+
+- Verification: 116 unit tests, 19-page build, paper provenance, related interaction/contrast tests, and a complete [117/117 cloud E2E run](https://github.com/Yuki-zik/myblog/actions/runs/38719438726).
+- Both Production deployments succeeded: frontend GitHub deployment `7090160875`, Waline `7090170509`.
+- Fresh production checks find one valid `footnote-label`, a reading progress landmark, a single named comment region, a named carousel group and social navigation. Light/dark reading axe checks report zero violations; gradient-related incomplete checks remain and were reviewed with screenshots. This is not a blanket WCAG certification.
+- Anonymous comments still return HTTP 200 / errno 0 and retain the original one comment. No database/settings changes or public comment writes were part of this follow-up.
+- Local evidence is in ignored `output/followup-2026-10-15/`.
+
+## Earlier production release — 2026-10-15
 
 The user authorized updating the existing production domain, `https://myblog-silk-one.vercel.app`. This release includes the previously local discovery/mobile-search/reading pass plus fixes for hidden keyboard search, sticky discover navigation, blocked storage, remote-font loading, RSS discovery/creator metadata, and sitemap/canonical consistency. Archive/topic/map descriptions now speak to readers instead of describing implementation details.
 
