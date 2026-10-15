@@ -2,16 +2,18 @@
 
 Updated: 2026-10-15. This checklist distinguishes verified code from a verified deployment.
 
-## 2026-10-15 release candidate
+## Current production release — 2026-10-15
 
 The user authorized updating the existing production domain, `https://myblog-silk-one.vercel.app`. This release includes the previously local discovery/mobile-search/reading pass plus fixes for hidden keyboard search, sticky discover navigation, blocked storage, remote-font loading, RSS discovery/creator metadata, and sitemap/canonical consistency. Archive/topic/map descriptions now speak to readers instead of describing implementation details.
 
-- Local verification: 116 unit tests, 19-page build, paper provenance, Waline smoke, both frozen installs, and both configured audit gates passed. All 114 distinct E2E cases are covered by the interrupted run, completed remaining suites, and a final endpoint rerun; fresh full GitHub CI is required for the release commit.
+- Local verification: 116 unit tests, 19-page build, paper provenance, Waline smoke, both frozen installs, and both configured audit gates passed. All 114 distinct E2E cases passed locally across interrupted and follow-up runs, then all 114 passed in one complete cloud run. [Release CI](https://github.com/Yuki-zik/myblog/actions/runs/38698416332) and [production merge CI](https://github.com/Yuki-zik/myblog/actions/runs/38699991576) both succeeded.
 - Astro is locked to 7.2.8 with its compatible Markdown package. Vulnerable dependency ranges were updated without adding any audit exclusions. Low-severity findings and the original Waline exceptions remain.
 - Original comment database restored from INACTIVE to ACTIVE_HEALTHY. Anonymous comment reading returns `errno: 0` and retains the existing one comment. No test comment, schema change, credential change, paid service, or keepalive automation was introduced.
 - Vercel CLI login expired; publication uses the existing GitHub integration. Previous frontend production target: `https://myblog-9nb4bzvcp-qianlimaxai-5994s-projects.vercel.app`, GitHub deployment `6289900515`, SHA `762826e7c2dbd8bef6349b137b4d802744549aff`; its successful state was refreshed before this release.
 - Evidence: ignored `output/release-2026-10-15/`, including `verification.json`, E2E logs, dependency gate logs, and targeted desktop/mobile light/dark screenshots.
-- Publication and exact-SHA cloud checks are pending; the historical production record below is not proof of this candidate being live.
+- [PR #2](https://github.com/Yuki-zik/myblog/pull/2) merged as `93364ad41e5ebd996cd2407e17d449a2195e985d`. Both Production deployments succeeded: frontend GitHub deployment `7086757979` (`https://myblog-bl28sigq3-qianlimaxai-5994s-projects.vercel.app`) and Waline `7086768269` (`https://waline-lj6yw3ksq-qianlimaxai-5994s-projects.vercel.app`).
+- Fresh anonymous production browser: all 19 sitemap pages return 200 and match their canonical URLs; RSS contains 4 items and 4 Dublin Core creators; scrolled desktop search is visible; the mobile dark paper page fits 390px without horizontal overflow; comment read returns HTTP 200 / errno 0 with the existing one comment. A transient local proxy timeout was followed by successful page and API requests.
+- Vercel previews require account login; browser acceptance was performed on the public production domain after the successful exact-SHA preview builds and CI. No preview protection was disabled.
 
 ## Previous production record — 2026-09-06
 

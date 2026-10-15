@@ -1,6 +1,6 @@
 # Visual and interaction pass — 2026-09-06
 
-Status: implemented and verified locally on `codex/visual-interaction-pass`; production remains unchanged. No push or deployment was performed.
+Status: originally verified locally on 2026-09-06; published on 2026-10-15 through PR #2 / `93364ad`, together with the release reliability fixes. See `docs/production-readiness.md` for current production evidence.
 
 ## Approved direction
 

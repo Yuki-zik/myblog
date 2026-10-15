@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-10-15 (deployment verification in progress; see agent/tasks.md)
+Last updated: 2026-10-15 (PR #2 production release verified)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -194,7 +194,7 @@ When browser review is triggered, keep it scoped:
 ## 8) Notes for Next Agent
 
 - As of 2026-09-06, PR #1 is merged and the production release tracks `main`. Always recheck the local branch and upstream before acting.
-- The subsequent local visual pass is on `codex/visual-interaction-pass`; it does not replace the production `main` release without a separate publish action. See `docs/visual-interaction-pass.md`.
+- The visual pass and release fixes were published through PR #2 (`93364ad`) on 2026-10-15. Production tracks `main`; fresh anonymous page/search/RSS/comment checks passed. See `docs/production-readiness.md` and `docs/visual-interaction-pass.md`.
 - Waline smoke now verifies valid/invalid query parsing and that PostgreSQL connection/SQL logging stays disabled. Keep the `think-validator` compatibility override until the upstream Waline dependency range includes the fix.
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
