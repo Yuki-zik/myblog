@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import PageHero from "../components/discover/PageHero.astro";
+---
+
+<BaseLayout
+  title="页面未找到 | MyBlog"
+  description="这个地址没有对应的页面。返回首页、浏览主题，或搜索你想找的内容。"
+  runtime="discover"
+  noindex
+>
+  <DiscoverShell>
+    <PageHero
+      kicker="404 / Not found"
+      title="页面未找到"
+      description="地址可能有误，或内容已移动。你可以返回首页、按主题浏览，也可以使用顶部搜索寻找内容。"
+      actions={[
+        { href: "/", label: "返回首页", variant: "primary", icon: "arrow" },
+        { href: "/topics", label: "浏览主题", variant: "secondary", icon: "topic" }
+      ]}
+    />
+  </DiscoverShell>
+</BaseLayout>
