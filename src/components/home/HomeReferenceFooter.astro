@@ -1,5 +1,5 @@
 ---
-import { SITE_AUTHOR_PROFILE } from "../../lib/site";
+import { SITE_AUTHOR_PROFILE, SITE_NAME } from "../../lib/site";
 
 type HomeFooterLink = {
   href: string;
@@ -72,8 +72,8 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
   <div class="home-reference-footer__grid mx-auto grid w-full max-w-[80rem] grid-cols-3 items-center gap-8 px-6 py-12">
     <div class="home-reference-footer__brand-block flex flex-col gap-2">
       <div class="home-reference-footer__brand-row flex items-center gap-2 font-(family-name:--hr-font-serif) font-medium">
-        <span class="home-reference-footer__brand-mark grid h-6 w-6 place-items-center rounded-[0.25rem] font-(family-name:--hr-font-mono) text-[0.625rem] font-bold">MB</span>
-        <span class="home-reference-footer__brand-name text-[1rem]">MyBlog</span>
+        <span class="home-reference-footer__brand-mark grid h-6 w-6 place-items-center rounded-[0.25rem] font-(family-name:--hr-font-mono) text-[0.625rem] font-bold" aria-hidden="true">AZ</span>
+        <span class="home-reference-footer__brand-name text-[1rem]">{SITE_NAME}</span>
       </div>
       <p class="home-reference-footer__note font-(family-name:--hr-font-mono) text-[0.75rem]">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
       <p class="home-reference-footer__copy font-(family-name:--hr-font-mono) text-[0.75rem]">© {year} {SITE_AUTHOR_PROFILE.name}. All rights reserved.</p>

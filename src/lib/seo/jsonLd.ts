@@ -1,4 +1,4 @@
-import type { SiteAuthorProfile } from "../site";
+import { SITE_NAME, SITE_ALTERNATE_NAMES, SITE_DESCRIPTION, type SiteAuthorProfile } from "../site";
 
 /**
  * Schema.org JSON-LD builders for MyBlog.
@@ -65,7 +65,9 @@ export function buildBaseNodes(siteUrl: string, author: SiteAuthorProfile): Json
     "@type": "WebSite",
     "@id": websiteId(siteUrl),
     url: abs("/", siteUrl),
-    name: `${author.name} | MyBlog`,
+    name: SITE_NAME,
+    alternateName: SITE_ALTERNATE_NAMES,
+    description: SITE_DESCRIPTION,
     inLanguage: "zh-CN",
     publisher: { "@id": personId(siteUrl) }
   };

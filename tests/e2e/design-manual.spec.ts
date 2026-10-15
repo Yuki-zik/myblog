@@ -22,7 +22,7 @@ test("design manual article and /design.md stay in sync", async ({ page, request
 
   await page.goto("/posts/myblog-design-manual");
 
-  await expect(page.locator(".post-header h1")).toHaveText("MyBlog 的设计说明书");
+  await expect(page.locator(".post-header h1")).toHaveText("A-Znk的blog：设计说明书");
   await expect(page.locator("[data-toc-link]").first()).toContainText("Overview");
   await expect(page.locator(".waline-comments")).toBeVisible();
 
@@ -31,7 +31,7 @@ test("design manual article and /design.md stay in sync", async ({ page, request
   expect(designSource.headers()["content-type"]).toContain("text/markdown");
 
   const designMarkdown = await designSource.text();
-  expect(designMarkdown).toContain('title: MyBlog 的设计说明书');
+  expect(designMarkdown).toContain('title: A-Znk的blog：设计说明书');
   expect(designMarkdown).toContain("## Overview（概述）");
 
   const searchIndexResponse = await request.get("/search-index.json");
@@ -41,7 +41,7 @@ test("design manual article and /design.md stay in sync", async ({ page, request
   expect(searchIndex).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        title: "MyBlog 的设计说明书",
+        title: "A-Znk的blog：设计说明书",
         url: "/posts/myblog-design-manual"
       })
     ])

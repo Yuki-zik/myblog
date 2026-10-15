@@ -8,7 +8,7 @@ import {
   pickRecentHomePosts
 } from "../lib/home/selectors";
 import { getPostDateISO } from "../lib/posts/date";
-import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { SITE_AUTHOR_PROFILE, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
 const [topics, posts, concepts] = await Promise.all([
   getCollection("topics"),
@@ -58,12 +58,11 @@ const secondaryCta = {
 
 const heroIssueNumber = String(posts.length).padStart(2, "0");
 const terminalTracks = SITE_AUTHOR_PROFILE.researchTracks?.slice(0, 3) ?? [];
-const homeDescription =
-  "以主题为入口组织大模型系统、安全研究与 Agent 工程笔记，把文章、概念和实践串成可浏览的知识网络。";
+const homeDescription = SITE_DESCRIPTION;
 ---
 
 <BaseLayout
-  title="MyBlog | Editorial Home"
+  title={`${SITE_NAME} | 大模型系统、模型安全与 Agent 工程`}
   description={homeDescription}
   runtime="discover"
   mainClass="shell--home-reference relative"
@@ -100,7 +99,7 @@ const homeDescription =
           </h1>
 
           <p class="home-reference-hero__description max-w-[36rem] text-[1.125rem] leading-[1.8]">
-            我关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
+            我是 A-Znk，关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
             你可以沿主题阅读笔记，也可以直接查看论文与研究成果。
           </p>
 

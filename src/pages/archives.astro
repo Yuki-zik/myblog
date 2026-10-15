@@ -14,7 +14,7 @@ const latestPost = [...posts].sort((a, b) => new Date(b.data.date).getTime() - n
 const archivesDescription = "按年月浏览全部文章，像时间账本一样回看研究记录、实现过程与复盘。";
 ---
 
-<BaseLayout title="Archives | MyBlog" description={archivesDescription} runtime="discover">
+<BaseLayout title="文章归档" description={archivesDescription} runtime="discover">
   <DiscoverShell>
     <PageHero
       kicker="Archive / Ledger"
