@@ -1,8 +1,19 @@
 # Production readiness
 
-Updated: 2026-09-06. This checklist distinguishes verified code from a verified deployment.
+Updated: 2026-10-15. This checklist distinguishes verified code from a verified deployment.
 
-## Current result: live
+## 2026-10-15 release candidate
+
+The user authorized updating the existing production domain, `https://myblog-silk-one.vercel.app`. This release includes the previously local discovery/mobile-search/reading pass plus fixes for hidden keyboard search, sticky discover navigation, blocked storage, remote-font loading, RSS discovery/creator metadata, and sitemap/canonical consistency. Archive/topic/map descriptions now speak to readers instead of describing implementation details.
+
+- Local verification: 116 unit tests, 19-page build, paper provenance, Waline smoke, both frozen installs, and both configured audit gates passed. All 114 distinct E2E cases are covered by the interrupted run, completed remaining suites, and a final endpoint rerun; fresh full GitHub CI is required for the release commit.
+- Astro is locked to 7.2.8 with its compatible Markdown package. Vulnerable dependency ranges were updated without adding any audit exclusions. Low-severity findings and the original Waline exceptions remain.
+- Original comment database restored from INACTIVE to ACTIVE_HEALTHY. Anonymous comment reading returns `errno: 0` and retains the existing one comment. No test comment, schema change, credential change, paid service, or keepalive automation was introduced.
+- Vercel CLI login expired; publication uses the existing GitHub integration. Previous frontend production target: `https://myblog-9nb4bzvcp-qianlimaxai-5994s-projects.vercel.app`, GitHub deployment `6289900515`, SHA `762826e7c2dbd8bef6349b137b4d802744549aff`; its successful state was refreshed before this release.
+- Evidence: ignored `output/release-2026-10-15/`, including `verification.json`, E2E logs, dependency gate logs, and targeted desktop/mobile light/dark screenshots.
+- Publication and exact-SHA cloud checks are pending; the historical production record below is not proof of this candidate being live.
+
+## Previous production record — 2026-09-06
 
 - Website: https://myblog-silk-one.vercel.app
 - PR #1 merged as `d35c831`; application hotfix `df5e4677a067667a329192a92a4245bcaae37d6b` is on `main` and passed [GitHub CI](https://github.com/Yuki-zik/myblog/actions/runs/34016014007).

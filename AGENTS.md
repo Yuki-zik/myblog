@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-09-06 (release readiness and deployment evidence)
+Last updated: 2026-10-15 (deployment verification in progress; see agent/tasks.md)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -122,7 +122,10 @@ Build-time vars:
 
 `pnpm test:e2e` owns its production server: `playwright.config.ts` runs
 `pnpm build && pnpm preview`. Do not switch it back to `pnpm dev` or pre-start a
-dev server on port 4173. The same commit has previously reported 55/55 against
+server on port 4173. Keep `reuseExistingServer: false` and the
+`ASTRO_PREVIEW_BACKGROUND=1` child-process flag: Astro 7.2 otherwise detects
+coding agents and detaches the preview process before Playwright can own it.
+The same commit has previously reported 55/55 against
 dev and 53/55 against the built output; the build exposed the real
 layout/timing failures.
 
@@ -217,6 +220,7 @@ Related invariants:
 - `src/layouts/BaseLayout.astro` now emits explicit `body/main[data-runtime]` and `footerVariant`; `src/components/UiControllers.astro` owns reveal/theme/header/back-to-top/domains-carousel/social-stats/reading-progress initialization. Do not reintroduce page-scoped inline scripts unless the user explicitly approves breaking that controller boundary.
 - Homepage research signature uses one native `details` node; `UiControllers` sets the initial and cross-breakpoint state at 1024px. Do not duplicate the terminal or force closed `details` contents visible with CSS.
 - Search keeps one field/results set: desktop uses the header dropdown; at <=900px the same nodes move into a native top-layer dialog. Preserve scroll/focus restoration, layout occupancy of the hidden trigger, VisualViewport resizing, and IME guards. Active-result scrolling must move only the result list.
+- Discover pages use `body { overflow-x: clip }` so the sticky header follows the document viewport. `overflow-x: hidden` creates a body scroll container and can leave focused search above the viewport; preserve focus/open search visibility when the header's scroll state is hidden.
 - Article reading entries place metadata/title/summary before a compact ghost/main cover. The title-card cover wrapper must not inherit the shared card primitive's fixed aspect-ratio; otherwise a small image can still reserve an oversized empty box.
 - `src/styles/home-reference.css` still owns the full-bleed home background and footer polish, but runtime switching no longer depends on `body:has(main.shell--home-reference)`. If a discover page loses its background, first check `runtime="discover"` in `BaseLayout` and `src/styles/discover.css`; if only the homepage loses fidelity, then inspect `home-reference.css`.
 - The home `关注领域` section is no longer a server-picked quartet. Current behavior is: render the full topic pool, but on desktop constrain it to a **4-card viewport** with horizontal movement via prev/next controls, arrow keys, and wheel-to-horizontal mapping. If this section ever looks static again, inspect `src/pages/index.astro` and the `home-reference-domains-viewport` rules in `src/styles/home-reference.css` before changing the data layer.

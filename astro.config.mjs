@@ -21,6 +21,8 @@ const resolvedSite = site || (process.env.CI ? "https://myblog.example" : "http:
 
 export default defineConfig({
   site: resolvedSite,
+  // Match the site's canonical links and RSS URLs across generated pages.
+  trailingSlash: "never",
   // Prefetch internal links on hover (MPA navigation, no ClientRouter). Cheap
   // for a small site and speeds up topic→post→concept hops; `hover` (the
   // prefetchAll default) avoids eager bandwidth on viewport/load.

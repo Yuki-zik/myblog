@@ -30,7 +30,8 @@ body[data-runtime="discover"] {
 
 body[data-runtime="discover"] {
   background: #f7f7f5;
-  overflow-x: hidden;
+  /* Clip decorative overflow without making body the sticky header's scroller. */
+  overflow-x: clip;
 }
 
 body[data-runtime="discover"]::before {

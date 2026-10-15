@@ -733,7 +733,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   pointer-events: none;
 }
 
-.site-header[data-header-state="hidden"].is-hover-revealed {
+.site-header[data-header-state="hidden"]:is(.is-hover-revealed, :focus-within, :has([data-header-search].is-open)) {
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
@@ -743,7 +743,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transform: translateY(-5px) scale(0.974);
 }
 
-.site-header[data-header-state="hidden"].is-hover-revealed .site-header-inner {
+.site-header[data-header-state="hidden"]:is(.is-hover-revealed, :focus-within, :has([data-header-search].is-open)) .site-header-inner {
   transform: translateY(0) scale(0.988);
 }
 
@@ -751,7 +751,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transform: translateY(-1px) scale(0.988);
 }
 
-.site-header[data-header-state="hidden"].is-hover-revealed .shell {
+.site-header[data-header-state="hidden"]:is(.is-hover-revealed, :focus-within, :has([data-header-search].is-open)) .shell {
   transform: translateY(-0.25px) scale(0.992);
 }
 

@@ -1,5 +1,9 @@
 # 项目概况 (MyBlog v1)
 
+## 当前工作（2026-10-15）
+
+在 `codex/visual-interaction-pass`（干净起点 `0f60988`）上完成搜索可见性、字体非阻塞加载、存储失败降级、RSS 与 canonical 修复及安全依赖更新。用户已确认更新原正式域名 `myblog-silk-one.vercel.app`。116 单测、19 页构建、论文来源、Waline smoke、两套冻结安装和审计门禁已通过；114 项 E2E 用例经中断续跑及定向复核全部覆盖通过；云端完整 CI 与正式发布待完成。原 Supabase 项目由 INACTIVE 恢复到 ACTIVE_HEALTHY，线上评论读取 `errno: 0` 且保留原 1 条评论。Vercel CLI 登录失效，沿用有效 GitHub 账号及原 GitHub→Vercel 发布链路，尚未发布。证据位于被忽略的 `output/release-2026-10-15/`；任务状态复用 `agent/tasks.md`。
+
 ## 本地视觉迭代（2026-09-06，未发布）
 
 `codex/visual-interaction-pass` 已完成四项第一轮优化：首页主题/论文双入口与精简研究签名、首页弱文本对比度、原生 mobile search dialog（含键盘/IME/VisualViewport/scroll 恢复）、文章标题优先和论文手机字号。`pnpm test:all` 完整通过：116 单测、106 E2E、19 页构建、论文来源检查、Waline smoke 和审计门禁；明暗主题与手机/桌面截图复核通过。该分支不改变下面记录的正式发布版本，尚未推送或部署。设计预览不接入线上评论，详见 `docs/visual-interaction-pass.md`。
@@ -14,7 +18,7 @@
 
 ## 2. 架构图及核心模块
 
-- **前端生成与聚合层**: `Astro (@astrojs/react, astro@7.1.6)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
+- **前端生成与聚合层**: `Astro (@astrojs/react, astro@7.2.8)` — 负责静态站点生成、服务端渲染和按需互动 (Astro Islands)。
 - **交互组件层**: `React (react@19)` — 承担 Waline 挂载、局部交互组件和测试友好的客户端封装。
 - **Waline 服务端部署层**: `waline-server/index.cjs` + `waline-server/vercel.json` — 与博客前端解耦的独立部署单元，推荐作为同仓库下第二个 Vercel 项目部署。
 - **评论数据存储层**: `Supabase PostgreSQL` + `waline-server/sql/waline.pgsql` — 承担 Waline 评论、计数器和后台用户表存储。

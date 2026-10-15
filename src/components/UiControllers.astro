@@ -40,6 +40,7 @@
 
       var storageKey = "theme-preference";
       var order = ["system", "light", "dark"];
+      var currentPreference = "system";
       var transitionResetTimer = 0;
       var icons = {
         system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="11.5" rx="2.4"></rect><path d="M8.5 20h7"></path><path d="M12 16v4"></path><path d="M8.2 10.2h2.6v-2.6"></path><path d="M15.8 9.8h-2.6v2.6"></path><path d="M10.8 7.6 8.2 10.2"></path><path d="m13.2 12.4 2.6-2.6"></path></svg>',
@@ -61,8 +62,12 @@
       var media = window.matchMedia("(prefers-color-scheme: dark)");
 
       function getPreference() {
-        var stored = localStorage.getItem(storageKey);
-        return order.indexOf(stored || "") > -1 ? stored : "system";
+        try {
+          var stored = localStorage.getItem(storageKey);
+          return order.indexOf(stored || "") > -1 ? stored : "system";
+        } catch {
+          return "system";
+        }
       }
 
       function resolvePreference(preference) {
@@ -70,6 +75,7 @@
       }
 
       function applyPreference(preference, options) {
+        currentPreference = preference;
         var animate = !options || options.animate !== false;
         var resolved = resolvePreference(preference);
 
@@ -107,16 +113,19 @@
       }
 
       toggle.addEventListener("click", function () {
-        var current = getPreference();
-        var currentIndex = order.indexOf(current);
+        var currentIndex = order.indexOf(currentPreference);
         var next = order[(currentIndex + 1) % order.length];
 
-        localStorage.setItem(storageKey, next);
+        try {
+          localStorage.setItem(storageKey, next);
+        } catch {
+          // Private mode or blocked storage: the toggle still works for this page.
+        }
         applyPreference(next);
       });
 
       media.addEventListener("change", function () {
-        if (getPreference() === "system") {
+        if (currentPreference === "system") {
           applyPreference("system");
         }
       });

@@ -1,4 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+async function sitemapLocations(page: Page, xml: string): Promise<string[]> {
+  const parsed = await page.evaluate((source) => {
+    const document = new DOMParser().parseFromString(source, "application/xml");
+    return {
+      error: document.querySelector("parsererror")?.textContent ?? null,
+      locations: Array.from(document.getElementsByTagNameNS("*", "loc"), (node) => node.textContent ?? "")
+    };
+  }, xml);
+  expect(parsed.error).toBeNull();
+  expect(parsed.locations.length).toBeGreaterThan(0);
+  return parsed.locations;
+}
 
 test("site endpoints expose canonical SEO and security headers", async ({ request }) => {
   const robots = await request.get("/robots.txt");
@@ -15,4 +28,80 @@ test("site endpoints expose canonical SEO and security headers", async ({ reques
   const search = await request.get("/search-index.json");
   expect(search.ok()).toBe(true);
   expect(search.headers()["content-type"]).toContain("application/json");
+});
+
+test("sitemap page URLs match their rendered canonical URLs without trailing slashes", async ({ page, request }) => {
+  const index = await request.get("/sitemap-index.xml");
+  expect(index.ok()).toBe(true);
+  const sitemapUrls = await sitemapLocations(page, await index.text());
+  const pageUrls: string[] = [];
+
+  for (const sitemapUrl of sitemapUrls) {
+    const sitemap = await request.get(new URL(sitemapUrl).pathname);
+    expect(sitemap.ok()).toBe(true);
+    pageUrls.push(...await sitemapLocations(page, await sitemap.text()));
+  }
+
+  expect(pageUrls).toContain("https://myblog.example/posts/myblog-design-manual");
+  expect(pageUrls).toContain("https://myblog.example/topics/knowledge-network");
+
+  for (const url of pageUrls) {
+    const pathname = new URL(url).pathname;
+    expect(pathname === "/" || !pathname.endsWith("/"), url).toBe(true);
+    const response = await request.get(pathname);
+    expect(response.ok(), url).toBe(true);
+    const canonical = await page.evaluate((html) => {
+      const document = new DOMParser().parseFromString(html, "text/html");
+      return document.querySelector('link[rel="canonical"]')?.getAttribute("href");
+    }, await response.text());
+    // The sitemap writer emits the bare origin for '/', while URL.href and
+    // canonical links retain its slash. They identify the same root resource.
+    expect(canonical, url).toBe(new URL(url).href);
+  }
+});
+
+test("RSS represents named authors with Dublin Core creators", async ({ page, request }) => {
+  const response = await request.get("/rss.xml");
+  expect(response.ok()).toBe(true);
+  // Static preview servers may use a generic XML media type for .xml files.
+  expect(response.headers()["content-type"]).toMatch(/^(?:application\/(?:rss\+xml|xml)|text\/xml)(?:;|$)/);
+
+  const feed = await page.evaluate((xml) => {
+    const document = new DOMParser().parseFromString(xml, "application/xml");
+    return {
+      error: document.querySelector("parsererror")?.textContent ?? null,
+      creatorNamespace: document.documentElement.lookupNamespaceURI("dc"),
+      items: Array.from(document.querySelectorAll("item"), (item) => ({
+        authors: item.getElementsByTagName("author").length,
+        creators: Array.from(
+          item.getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", "creator"),
+          (creator) => creator.textContent?.trim() ?? ""
+        )
+      }))
+    };
+  }, await response.text());
+
+  expect(feed.error).toBeNull();
+  expect(feed.creatorNamespace).toBe("http://purl.org/dc/elements/1.1/");
+  expect(feed.items.length).toBeGreaterThan(0);
+  for (const item of feed.items) {
+    expect(item.authors).toBe(0);
+    expect(item.creators).toHaveLength(1);
+    expect(item.creators[0]).not.toBe("");
+  }
+});
+
+test("rendered pages advertise the canonical RSS feed for auto-discovery", async ({ page, request }) => {
+  for (const path of ["/", "/topics", "/posts/myblog-design-manual", "/papers"]) {
+    const response = await request.get(path);
+    expect(response.ok()).toBe(true);
+    const feeds = await page.evaluate((html) => {
+      const document = new DOMParser().parseFromString(html, "text/html");
+      return Array.from(
+        document.querySelectorAll('head link[rel="alternate"][type="application/rss+xml"]'),
+        (link) => link.getAttribute("href")
+      );
+    }, await response.text());
+    expect(feeds, path).toEqual(["https://myblog.example/rss.xml"]);
+  }
 });

@@ -37,7 +37,7 @@ export async function GET(context: APIContext) {
         `<description>${escapeXml(post.data.summary ?? "")}</description>`,
         `<pubDate>${new Date(post.data.date).toUTCString()}</pubDate>`,
         categories,
-        `<author>${escapeXml(post.data.author ?? SITE_AUTHOR_PROFILE.name)}</author>`,
+        `<dc:creator>${escapeXml(post.data.author ?? SITE_AUTHOR_PROFILE.name)}</dc:creator>`,
         "</item>"
       ].join("");
     })
@@ -45,7 +45,7 @@ export async function GET(context: APIContext) {
 
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0">',
+    '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">',
     "<channel>",
     `<title>${escapeXml(`${SITE_AUTHOR_PROFILE.name} | MyBlog`)}</title>`,
     `<description>${escapeXml(SITE_AUTHOR_PROFILE.tagline ?? "主题化知识网络与段落短评博客")}</description>`,
