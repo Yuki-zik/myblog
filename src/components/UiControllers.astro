@@ -675,8 +675,9 @@
         var fill = bar.querySelector("[data-reading-progress-fill]");
         if (!(bar instanceof HTMLElement)) return;
 
-        if (bar.parentElement !== document.body) {
-          document.body.appendChild(bar);
+        var progressRegion = bar.closest("[data-reading-progress-region]") || bar;
+        if (progressRegion.parentElement !== document.body) {
+          document.body.appendChild(progressRegion);
         }
 
         var ticking = false;

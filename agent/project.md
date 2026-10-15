@@ -1,5 +1,9 @@
 # 项目概况 (MyBlog v1)
 
+## 无障碍跟进（2026-10-15）
+
+正在 `codex/reading-accessibility` 修复实测发现的脚注描述目标、地标/元信息语义和旁注/页脚对比度。116 单测、19 页构建、论文检查及新无障碍/既有旁注与首页相关 E2E 已通过。浏览器最终复核与发布待完成；证据在 `output/followup-2026-10-15/`。
+
 ## 当前发布（2026-10-15）
 
 [PR #2](https://github.com/Yuki-zik/myblog/pull/2) 已合并为 `93364ad`，新版本在 `https://myblog-silk-one.vercel.app` 正式运行；本地已同步 `main`。发布包含原视觉/交互迭代，以及键盘搜索、sticky header、字体加载、存储失败降级、RSS/canonical、读者说明与依赖安全更新。116 单测、19 页构建、论文来源、Waline smoke、两套冻结安装和审计门禁通过；完整云端 E2E 114/114，PR 与生产合并 CI 均成功。两套 Production 部署成功，匿名浏览器核验 19 个页面、搜索、手机论文页与 RSS。原评论数据库恢复 ACTIVE_HEALTHY，线上读取 HTTP 200/errno 0，原 1 条评论保留。详见 `docs/production-readiness.md`；本地证据在 `output/release-2026-10-15/`。免费数据库闲置暂停、已有低级别依赖风险及原 Waline 审计例外仍是运维边界。

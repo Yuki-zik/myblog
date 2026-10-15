@@ -1262,7 +1262,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="figure"] .post-scholar-footnote-number {
-  color: color-mix(in srgb, var(--reading-rule-strong) 56%, var(--reading-ink) 44%);
+  color: color-mix(in srgb, var(--reading-rule-strong) 40%, var(--reading-ink) 60%);
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-number-button {
@@ -1346,7 +1346,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="reference"] .post-scholar-item-type-tag {
-  color: color-mix(in srgb, var(--reading-accent) 82%, var(--reading-ink) 18%);
+  color: color-mix(in srgb, var(--reading-accent) 60%, var(--reading-ink) 40%);
   border-color: color-mix(in srgb, var(--reading-accent) 18%, transparent 82%);
   background: color-mix(in srgb, var(--reading-accent) 8%, var(--surface-subtle) 92%);
 }
@@ -1358,7 +1358,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type="figure"] .post-scholar-item-type-tag {
-  color: color-mix(in srgb, var(--reading-rule-strong) 78%, var(--reading-ink) 22%);
+  color: color-mix(in srgb, var(--reading-rule-strong) 40%, var(--reading-ink) 60%);
   border-color: color-mix(in srgb, var(--reading-rule-strong) 18%, transparent 82%);
   background: color-mix(in srgb, var(--reading-rule-strong) 8%, var(--surface-subtle) 92%);
 }
@@ -1374,7 +1374,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 
 /* Links inside sidenotes */
 .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-body a {
-  color: color-mix(in srgb, var(--reading-accent) 88%, var(--reading-ink) 12%);
+  color: color-mix(in srgb, var(--reading-accent) 70%, var(--reading-ink) 30%);
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--reading-rule-strong) 72%, transparent 28%);
   text-underline-offset: 0.14em;
@@ -1459,7 +1459,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 }
 
 .post-pager-label {
-  color: var(--reading-ink-subtle);
+  color: color-mix(in srgb, var(--reading-ink-subtle) 75%, var(--reading-ink) 25%);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -1815,7 +1815,7 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-meta);
+  color: var(--text-primary);
 }
 
 .post-related-notes-list {

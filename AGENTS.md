@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-10-15 (PR #2 production release verified)
+Last updated: 2026-10-15 (PR #2 live; reading accessibility follow-up in agent/tasks.md)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -197,6 +197,7 @@ When browser review is triggered, keep it scoped:
 - The visual pass and release fixes were published through PR #2 (`93364ad`) on 2026-10-15. Production tracks `main`; fresh anonymous page/search/RSS/comment checks passed. See `docs/production-readiness.md` and `docs/visual-interaction-pass.md`.
 - Waline smoke now verifies valid/invalid query parsing and that PostgreSQL connection/SQL logging stays disabled. Keep the `think-validator` compatibility override until the upstream Waline dependency range includes the fix.
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
+- When moving GFM footnotes to the scholar rail, retain their screen-reader label as a hidden non-heading element so `aria-describedby` remains valid without adding a TOC entry. The build clears Astro's content cache because helper-only Markdown plugin changes can otherwise reuse stale HTML.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
 
 ## 9) Frontend Rewrite Guardrails

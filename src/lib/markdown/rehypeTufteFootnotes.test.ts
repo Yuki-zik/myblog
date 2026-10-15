@@ -118,7 +118,14 @@ describe("rehypeTufteFootnotes", () => {
   });
 
   it("extracts post footnotes to Astro frontmatter, rewrites refs, and removes body footnote section", () => {
-    const { tree, footnoteRefLink } = createFootnoteTree();
+    const { tree, footnoteRefLink, footnotes } = createFootnoteTree();
+    footnoteRefLink.properties!.ariaDescribedBy = ["footnote-label"];
+    footnotes.children.unshift({
+      type: "element",
+      tagName: "h2",
+      properties: { id: "footnote-label", className: ["sr-only"] },
+      children: [{ type: "text", value: "Footnotes" }]
+    });
     const transformer = rehypeTufteFootnotes();
     const file = {
       path: "C:/repo/src/content/posts/example.md",
@@ -144,6 +151,13 @@ describe("rehypeTufteFootnotes", () => {
     expect(footnoteRefLink.properties?.href).toBe(`#${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}1`);
     expect(footnoteRefLink.properties?.["data-footnote-rail-target"]).toBe("1");
     expect(tree.children.some((child) => (child as Element).tagName === "section")).toBe(false);
+    const description = tree.children.find((child) =>
+      child.type === "element" && child.properties?.id === "footnote-label"
+    ) as Element | undefined;
+    expect(description?.tagName).toBe("span");
+    expect(getClassList(description!)).toContain("sr-only");
+    expect(description?.children).toEqual([{ type: "text", value: "Footnotes" }]);
+    expect(footnoteRefLink.properties?.ariaDescribedBy).toEqual(["footnote-label"]);
   });
 
   it("sanitizes footnote html before it is rendered in the scholar rail", () => {
