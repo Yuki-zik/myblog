@@ -2,7 +2,16 @@
 
 Updated: 2026-10-15. This checklist distinguishes verified code from a verified deployment.
 
-## Current production release — 2026-10-15 accessibility follow-up
+## Current production release — 2026-10-15 not-found recovery
+
+[PR #4](https://github.com/Yuki-zik/myblog/pull/4) merged as `e4af54c1ac5fdb8c66ab991fffe2de6def397f88`. Missing routes now show a discover-style recovery page with home/topic actions and the existing search. They retain HTTP 404, declare `noindex, follow`, and stay outside the sitemap; ordinary article indexing remains unchanged. Topic entry copy now describes the reading task.
+
+- 116 unit tests, 20-page build, paper provenance, and 7 targeted browser tests passed. [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/38728896478) passed all 120 E2E tests; [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/38731575258) also succeeded.
+- Both Production deployments succeeded: frontend GitHub deployment `7091987290`, Waline `7091977538`.
+- Fresh production checks confirmed the branded page at a missing article path returns 404 and noindex; searching from it navigates to a real article, which retains normal indexing. Desktop dark/mobile light screenshots and actual home/topic actions were reviewed.
+- Evidence: ignored `output/not-found-2026-10-15/`. No dependency, database or paid-service changes were introduced.
+
+## Earlier production release — 2026-10-15 accessibility follow-up
 
 [PR #3](https://github.com/Yuki-zik/myblog/pull/3) merged as `3994b115cb71a23f18052a408a3c15571e6dbe62` and is live on the existing domain. It preserves the GFM footnote description label without adding a TOC heading, gives reading controls distinct landmarks, exposes meaningful metadata/social/carousel semantics, and improves small-text contrast in both themes. Builds refresh Astro's content cache to avoid stale Markdown output after plugin helper changes.
 

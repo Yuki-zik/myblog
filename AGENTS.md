@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-10-15 (PR #3 live; not-found recovery in agent/tasks.md)
+Last updated: 2026-10-15 (PR #4 not-found recovery verified in production)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -52,6 +52,7 @@ Build a theme-first knowledge blog with Waline-powered article comments:
   - `/papers/[slug]`
   - `/concepts/[slug]`
   - `/archives`
+  - `/404` (shared recovery page for missing routes; HTTP 404 and noindex)
 - Content collections implemented in `src/content.config.ts`:
   - `posts`
   - `topics`
@@ -244,5 +245,5 @@ Related invariants:
   4. Author / archives special pages
 - The main CSS hotspots are `src/styles/article.css`, `src/styles/layout.css`, `src/styles/author.css`, `src/styles/cards.css`, and `src/styles/toc.css`. Prefer further decomposition before large visual changes in those files.
 - Current runtime map:
-  - `discover`: `/`, `/topics`, `/topics/[slug]`, `/concepts/[slug]`, `/papers`, `/author`, `/archives`
+  - `discover`: `/`, `/topics`, `/topics/[slug]`, `/concepts/[slug]`, `/papers`, `/author`, `/archives`, `/404`
   - `reading`: `/posts/[slug]`, `/papers/[slug]` (dedicated paper layout; no post-only rail/comments)
