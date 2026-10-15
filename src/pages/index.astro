@@ -46,25 +46,18 @@ const featuredTopicLabel = featuredPost?.data.topics[0]
   : "精选文章";
 
 const primaryCta = {
-  href: "/archives",
-  label: "翻阅归档"
+  href: "/topics",
+  label: "按主题探索"
 };
 
-const secondaryCta = SITE_AUTHOR_PROFILE.socials?.github
-  ? {
-      href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
-      label: "查看源码",
-      external: true
-    }
-  : {
-      href: "/author",
-      label: "作者页",
-      external: false
-    };
+const secondaryCta = {
+  href: "/papers",
+  label: "论文与研究成果",
+  external: false
+};
 
 const heroIssueNumber = String(posts.length).padStart(2, "0");
 const terminalTracks = SITE_AUTHOR_PROFILE.researchTracks?.slice(0, 3) ?? [];
-const terminalScope = SITE_AUTHOR_PROFILE.blogScope?.slice(0, 3) ?? [];
 const homeDescription =
   "以主题为入口组织大模型系统、安全研究与 Agent 工程笔记，把文章、概念和实践串成可浏览的知识网络。";
 ---
@@ -107,9 +100,8 @@ const homeDescription =
           </h1>
 
           <p class="home-reference-hero__description max-w-[36rem] text-[1.125rem] leading-[1.8]">
-            {SITE_AUTHOR_PROFILE.mission}
-            {" "}
-            {SITE_AUTHOR_PROFILE.intro}
+            我关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
+            你可以沿主题阅读笔记，也可以直接查看论文与研究成果。
           </p>
 
           <div class="home-reference-hero__actions flex flex-wrap items-center gap-4">
@@ -144,33 +136,26 @@ const homeDescription =
 
         <div class="home-reference-terminal-wrap sticky top-28 z-10 col-span-5 self-start" data-ux-reveal="fade-up">
           <div class="home-reference-card home-reference-terminal relative p-1.5">
-            <div class="home-reference-terminal__shell" data-home-reference-terminal>
-              <div class="home-reference-terminal__header">
-                <div class="home-reference-terminal__lights" aria-hidden="true">
+            <details class="home-reference-terminal__shell" data-home-reference-terminal data-home-research-signature>
+              <summary class="home-reference-terminal__header">
+                <span class="home-reference-terminal__lights" aria-hidden="true">
                   <span class="home-reference-terminal__light home-reference-terminal__light--red"></span>
                   <span class="home-reference-terminal__light home-reference-terminal__light--amber"></span>
                   <span class="home-reference-terminal__light home-reference-terminal__light--green"></span>
-                </div>
-                <span class="home-reference-terminal__filename">research_blog.rs</span>
-              </div>
+                </span>
+                <span class="home-reference-terminal__filename">研究签名 · research.ts</span>
+              </summary>
 
               <div class="home-reference-terminal__body">
-                <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">fn</span> <span class="home-reference-terminal__fn">build_editorial_home</span>() -&gt; <span class="home-reference-terminal__type">Result&lt;Homepage, Drift&gt;</span> {"{"}</p>
+                <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">const</span> <span class="home-reference-terminal__fn">research</span> = {"{"}</p>
                 <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 当前主研究轨道</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> focus = [</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">focus: [</p>
                 {terminalTracks.map((track) => (
                   <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{track.title}"</span>,</p>
                 ))}
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">];</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 博客覆盖范围</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> notes = [</p>
-                {terminalScope.map((scope) => (
-                  <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{scope}"</span>,</p>
-                ))}
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">];</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> archive = Route::new(<span class="home-reference-terminal__string">"/archives"</span>);</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">let</span> states = Homepage::compose(focus, notes, archive)?;</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent"><span class="home-reference-terminal__kw">Ok</span>(states.with_theme(Theme::MistyShadows))</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">],</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">notes: <span class="home-reference-terminal__string">"/topics"</span>,</p>
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent">papers: <span class="home-reference-terminal__string">"/papers"</span></p>
                 <p class="home-reference-terminal__line">{"}"}</p>
                 <div class="home-reference-terminal__meta">
                   <span>{posts.length} posts indexed</span>
@@ -182,7 +167,7 @@ const homeDescription =
                   <span class="home-reference-terminal__cursor" aria-hidden="true"></span>
                 </div>
               </div>
-            </div>
+            </details>
           </div>
         </div>
       </section>

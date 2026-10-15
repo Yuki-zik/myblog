@@ -138,10 +138,11 @@ test("archive cards lift as full tiles instead of only animating the cover", asy
   expect(after.titleColor).not.toBe(before.titleColor);
 });
 
-test("header and homepage provide archive entry", async ({ page }) => {
+test("header retains archive access while the homepage prioritizes topics", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.locator('.home-reference-hero__button--primary[href="/archives"]')).toBeVisible();
+  await expect(page.locator('.home-reference-hero__button--primary[href="/topics"]')).toBeVisible();
+  await expect(page.locator('header .site-nav a[href="/archives"]')).toBeVisible();
   await page.locator('header .site-nav a[href="/archives"]').click();
   await expect(page).toHaveURL("/archives");
 });

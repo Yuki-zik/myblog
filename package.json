@@ -24,11 +24,11 @@
     "node": ">=22.12.0"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.2.2",
+    "@astrojs/markdown-remark": "7.2.4",
     "@astrojs/react": "^5.0.6",
     "@astrojs/sitemap": "^3.7.3",
     "@waline/client": "^3.15.0",
-    "astro": "^7.1.6",
+    "astro": "^7.2.8",
     "astro-og-canvas": "^0.13.0",
     "canvaskit-wasm": "^0.41.1",
     "cookie": "2.0.1",
@@ -57,7 +57,7 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "jsdom": "^27.0.1",
-    "sharp": "^0.35.0",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
@@ -70,13 +70,15 @@
       "picomatch@<2.3.2": "2.3.2",
       "picomatch@>=4.0.0 <4.0.4": "4.0.4",
       "fast-xml-builder": "1.1.7",
-      "devalue": "^5.8.1",
-      "smol-toml": "^1.6.1",
+      "devalue": "^5.9.3",
+      "smol-toml": "^1.9.0",
       "yaml": "^2.8.3",
-      "js-yaml": "^4.3.0",
+      "js-yaml": "^4.3.2",
       "postcss": "^8.5.18",
-      "sharp": "^0.35.0",
-      "svgo": "^4.0.2"
+      "sharp": "^0.35.5",
+      "svgo": "^4.1.0",
+      "source-map-js@<1.2.2": "1.2.2",
+      "vue@<3.5.42": "3.5.42"
     }
   }
 }

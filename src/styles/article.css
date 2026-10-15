@@ -987,14 +987,14 @@ body[data-runtime="reading"]::before { opacity: 0; }
   outline-offset: 2px;
 }
 
-/* ── 22. Title card (editorial cover-meta-title-dek-stats) ───────── */
+/* ── 22. Reading entry (meta-title-dek-stats, then compact cover) ── */
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
   grid-column: 3;
   display: grid;
   row-gap: 0;
   justify-self: stretch;
   max-width: none;
-  margin: 0 auto 2.55rem;
+  margin: 0 auto 1.5rem;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -1010,25 +1010,27 @@ body[data-runtime="reading"]::before { opacity: 0; }
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
-  --title-cover-width: min(100%, calc(100% - clamp(12.5rem, 16vw, 15rem)));
+  --title-cover-width: min(100%, 25rem);
+  /* The shared hero's 16:9 ratio must not size this full-width wrapper. */
+  aspect-ratio: auto;
   position: relative;
   display: grid;
   justify-items: center;
   gap: 0.68rem;
   max-width: none;
   width: 100%;
-  margin: 0 auto 1.34rem;
+  margin: 1.5rem auto 1.25rem;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
   overflow: visible;
-  transform: translateY(clamp(1.5rem, 3vw, 3rem));
+  transform: none;
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img {
   height: auto;
-  max-height: none;
+  max-height: 15rem;
   border-radius: 18px;
   object-fit: contain;
   object-position: center 44%;
@@ -1036,6 +1038,7 @@ body[data-runtime="reading"]::before { opacity: 0; }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack {
   width: var(--title-cover-width);
+  height: auto;
 }
 
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-credit {
@@ -1087,8 +1090,8 @@ body[data-runtime="reading"]::before { opacity: 0; }
 .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly h1 {
   grid-column: 1;
   max-width: 14.6ch;
-  font-size: clamp(2.8rem, 4.7vw, 3.95rem);
-  line-height: 1.01;
+  font-size: clamp(2.3rem, 3.3vw, 3rem);
+  line-height: 1.12;
   letter-spacing: -0.058em;
 }
 
@@ -1752,7 +1755,7 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
-    margin-bottom: 2.1rem;
+    margin-bottom: 1.4rem;
     padding: 0;
   }
 
@@ -1763,13 +1766,13 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img {
     height: auto;
-    max-height: none;
+    max-height: 12rem;
     border-radius: 9px;
     object-fit: contain;
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack {
-    width: 100%;
+    width: min(100%, 20rem);
   }
 
   .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
@@ -1849,4 +1852,3 @@ body[data-runtime="reading"] .reading-progress-bar__fill,
   line-height: 1.6;
   color: var(--text-secondary);
 }
-

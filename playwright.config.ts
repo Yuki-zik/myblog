@@ -25,14 +25,17 @@ export default defineConfig({
      * These two disagree. On 2026-07-26 the same commit reported 55/55 against
      * `pnpm dev` and 53/55 against `pnpm build` + `pnpm preview`, and the build
      * was right: the dev server compiles routes on demand and serves unbundled
-     * CSS, which hides real layout and timing failures. `reuseExistingServer`
-     * still lets a preview server that is already running be reused locally.
+     * CSS, which hides real layout and timing failures. Always build and own
+     * this server so a stale preview cannot silently replace the tested build.
      */
     command: "pnpm build && pnpm preview --port 4173 --host 127.0.0.1",
     url: "http://127.0.0.1:4173",
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 180_000,
     env: {
+      // Astro 7.2 detects coding agents and otherwise detaches preview. Use
+      // its child-process mode so Playwright owns the foreground lifecycle.
+      ASTRO_PREVIEW_BACKGROUND: "1",
       PUBLIC_WALINE_SERVER_URL: "https://waline.example",
       SITE_URL: "https://myblog.example"
     }

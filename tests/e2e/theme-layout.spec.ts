@@ -1810,6 +1810,8 @@ test("article reading layout keeps restrained desktop proportions", async ({
         ".post-title-card .post-cover-img--ghost",
       ).length,
       coverTop: cover?.getBoundingClientRect().top ?? 0,
+      coverBottom: cover?.getBoundingClientRect().bottom ?? 0,
+      firstParagraphTop: firstParagraph?.getBoundingClientRect().top ?? 0,
       metaTop: meta?.getBoundingClientRect().top ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
       dekTop: dek?.getBoundingClientRect().top ?? 0,
@@ -1902,7 +1904,9 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(
     metrics.scholarRailRight - metrics.scholarNoteRight,
   ).toBeGreaterThanOrEqual(6);
-  expect(metrics.coverTop).toBeLessThan(metrics.metaTop);
+  expect(metrics.coverTop).toBeGreaterThan(metrics.dividerTop);
+  expect(metrics.coverBottom).toBeLessThan(metrics.firstParagraphTop);
+  expect(metrics.firstParagraphTop).toBeLessThan(960);
   expect(metrics.coverBorderWidth).toBe(0);
   expect(metrics.coverShadow).toBe("none");
   expect(metrics.metaTop).toBeLessThan(metrics.titleTop);

@@ -101,9 +101,11 @@ function resolveAbsoluteUrl(value: string | undefined): string | undefined {
   }
 }
 
-const canonicalUrl = resolveAbsoluteUrl(canonical ?? pathname);
+const canonicalUrl = resolveAbsoluteUrl(canonical ?? (pathname.replace(/\/+$/, "") || "/"));
+const rssUrl = resolveAbsoluteUrl("/rss.xml");
 const openGraphImageUrl = resolveAbsoluteUrl(openGraphImage);
 const twitterCard = openGraphImage ? "summary_large_image" : "summary";
+const fontStylesheetUrl = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Outfit:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@500;600;700&display=swap";
 
 const siteUrlString = Astro.site?.toString();
 const jsonLdHtml = siteUrlString
@@ -118,7 +120,12 @@ const themeInitScript = `(function () {
   var storageKey = "theme-preference";
   var valid = { system: true, light: true, dark: true };
   var media = window.matchMedia("(prefers-color-scheme: dark)");
-  var stored = localStorage.getItem(storageKey);
+  var stored = null;
+  try {
+    stored = localStorage.getItem(storageKey);
+  } catch {
+    // Blocked storage still follows the system theme on this page.
+  }
   var preference = stored && valid[stored] ? stored : "system";
   var resolved = preference === "system" ? (media.matches ? "dark" : "light") : preference;
   root.dataset.theme = preference;
@@ -137,6 +144,7 @@ const themeInitScript = `(function () {
     <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
+    <link rel="alternate" type="application/rss+xml" title="MyBlog RSS" href={rssUrl ?? "/rss.xml"} />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -171,7 +179,10 @@ const themeInitScript = `(function () {
     <!-- Google Fonts: Space Grotesk (UI chrome) + Source Serif 4 (reading) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Outfit:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href={fontStylesheetUrl} media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href={fontStylesheetUrl} />
+    </noscript>
 
     <script is:inline set:html={themeInitScript} />
   </head>
