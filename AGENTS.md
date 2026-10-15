@@ -1,6 +1,6 @@
-# Agent Context & Handoff (MyBlog)
+# Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-15 (PR #4 not-found recovery verified in production)
+Last updated: 2026-10-16 (site identity and search discoverability in agent/tasks.md)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -102,6 +102,8 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 - Vercel has separate `myblog` and `waline` projects. Do not infer production health from a successful local build or a Waline deployment.
 - Release status and required production checks are tracked in `docs/production-readiness.md`.
 - Waline server and frontend public configuration must be verified separately for each deployment environment.
+
+- Public site names and descriptions come from `SITE_NAME` / `SITE_DESCRIPTION` in `src/lib/site.ts`; header, footer, document titles, Open Graph, RSS and the existing WebSite JSON-LD share these values.
 
 ## 4) Required Environment Variables
 

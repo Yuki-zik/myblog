@@ -1,3 +1,7 @@
+export const SITE_NAME = "A-Znk的blog";
+export const SITE_ALTERNATE_NAMES = ["A-Znk Blog", "A-Znk的博客"];
+export const SITE_DESCRIPTION = "A-Znk 的个人博客，记录大模型系统、模型安全、Agent 工程和 AI Coding 实践，分享技术笔记与研究论文。";
+
 export interface SiteAuthorProfile {
   id: string;
   name: string;

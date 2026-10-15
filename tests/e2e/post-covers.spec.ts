@@ -297,7 +297,7 @@ test("header search supports keyboard selection and enter navigation", async ({ 
   await input.fill("设计说明书");
 
   const results = page.locator("[data-search-results]");
-  await expect(results.locator("a")).toContainText(["MyBlog 的设计说明书"]);
+  await expect(results.locator("a")).toContainText(["A-Znk的blog：设计说明书"]);
   await expect(input).toHaveAttribute("role", "combobox");
   await expect(results).toHaveAttribute("role", "listbox");
   await expect(results.locator("[role='option']")).toHaveCount(1);

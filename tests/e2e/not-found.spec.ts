@@ -9,7 +9,7 @@ for (const mode of [
     await page.emulateMedia({ colorScheme: mode.scheme, reducedMotion: "reduce" });
     const response = await page.goto("/__missing_note_for_test__");
     expect(response?.status()).toBe(404);
-    await expect(page).toHaveTitle("页面未找到 | MyBlog");
+    await expect(page).toHaveTitle("页面未找到 | A-Znk的blog");
     await expect(page.getByRole("heading", { name: "页面未找到", exact: true })).toBeVisible();
     await expect(page.locator('main[data-runtime="discover"]')).toBeVisible();
     await expect(page.getByRole("link", { name: "返回首页", exact: true })).toHaveAttribute("href", "/");

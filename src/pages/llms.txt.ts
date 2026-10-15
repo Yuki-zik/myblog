@@ -2,7 +2,7 @@ import type { APIContext } from "astro";
 import { getCollection } from "astro:content";
 import { buildLlmsTxt } from "../lib/seo/llms";
 import { getPostUrl } from "../lib/posts/urls";
-import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { SITE_AUTHOR_PROFILE, SITE_NAME } from "../lib/site";
 
 export const prerender = true;
 
@@ -19,7 +19,7 @@ export async function GET(context: APIContext) {
     .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
   const body = buildLlmsTxt({
-    siteName: `${SITE_AUTHOR_PROFILE.name} | MyBlog`,
+    siteName: SITE_NAME,
     tagline: SITE_AUTHOR_PROFILE.tagline,
     posts: sortedPosts.map((post) => ({
       title: post.data.title,

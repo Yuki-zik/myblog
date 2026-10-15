@@ -167,7 +167,7 @@ const structuredData = site
 ---
 
 <BaseLayout
-  title={`${post.data.title} | 文章`}
+  title={post.data.title}
   description={post.data.summary}
   authorMeta={resolvedAuthor.name}
   canonical={post.data.canonical ?? getPostPath(post.id)}

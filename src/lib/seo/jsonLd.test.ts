@@ -29,6 +29,9 @@ describe("buildBaseNodes", () => {
 
     expect(website["@type"]).toBe("WebSite");
     expect(website["@id"]).toBe("https://blog.example.com/#website");
+    expect(website.name).toBe("A-Znk的blog");
+    expect(website.alternateName).toEqual(["A-Znk Blog", "A-Znk的博客"]);
+    expect(website.description).toContain("大模型");
     expect(website.publisher).toEqual({ "@id": "https://blog.example.com/#person-a-znk" });
 
     expect(person["@type"]).toBe("Person");

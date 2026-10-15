@@ -3,7 +3,7 @@ import { buildLlmsTxt } from "./llms";
 
 describe("buildLlmsTxt", () => {
   const txt = buildLlmsTxt({
-    siteName: "A-Znk | MyBlog",
+    siteName: "A-Znk的blog",
     tagline: "主题化知识网络",
     posts: [{ title: "Foo", url: "https://x/posts/foo", summary: "about foo" }],
     topics: [{ title: "AI Coding", url: "https://x/topics/ai-coding", summary: "s" }],
@@ -11,7 +11,7 @@ describe("buildLlmsTxt", () => {
   });
 
   it("starts with an H1 site name and a blockquote tagline", () => {
-    expect(txt.startsWith("# A-Znk | MyBlog\n")).toBe(true);
+    expect(txt.startsWith("# A-Znk的blog\n")).toBe(true);
     expect(txt).toContain("> 主题化知识网络");
   });
 

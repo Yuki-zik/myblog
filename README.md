@@ -1,4 +1,6 @@
-# MyBlog v1
+# A-Znk的blog
+
+[在线访问 A-Znk的blog](https://myblog-silk-one.vercel.app/)
 
 > AI 代理请先阅读 [AGENTS.md](./AGENTS.md) 了解项目背景、设计决策与协作规范。
 
