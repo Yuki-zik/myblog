@@ -7,8 +7,10 @@ Public name: **A-Znk的blog**. The shared name, alternate names and description 
 - Public content is server-rendered and has canonical URLs; robots.txt allows crawling and points to the sitemap index.
 - Sitemap: https://myblog-silk-one.vercel.app/sitemap-index.xml
 - Ordinary content remains indexable. The 404 page and raw Markdown mirrors retain their intentional noindex rules.
-- The public repository README links to the actual site.
+- The public repository README links to the actual site; its GitHub description and homepage also use the new identity.
 - Validation artifacts and search observations are in ignored `output/branding-search-2026-10-15/`.
+
+Production verification (2026-10-16): PR #5 / `d895679` is live. All 19 indexable pages were checked for the branded title, one correct WebSite node, stable canonical and normal indexing rules. Merge CI passed 124/124 E2E cases.
 
 ## Google status observed during this change
 

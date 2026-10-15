@@ -1,8 +1,18 @@
 # Production readiness
 
-Updated: 2026-10-15. This checklist distinguishes verified code from a verified deployment.
+Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
 
-## Current production release — 2026-10-15 not-found recovery
+## Current production release — 2026-10-16 site identity
+
+[PR #5](https://github.com/Yuki-zik/myblog/pull/5) merged as `d895679c0e1dc1bfae8dbfd9cb6f6d4592f2f82e`. The public name is **A-Znk的blog**, consistently rendered in the header/footer, document/social titles, existing WebSite JSON-LD, RSS/llms, favicon, design-manual references and repository entry point. Author identity and existing content URLs remain intact. GitHub repository description/homepage were updated to the real site.
+
+- 116 unit tests, 14 targeted E2E tests, and desktop/mobile/icon review passed. [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/38766871780) succeeded with 123 direct passes and one retry-recovered breakpoint-search case; [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/38768245221) passed all 124 cases without a retry-recovered case.
+- Both Production deployments succeeded: frontend GitHub deployment `7098152924`, Waline `7098151558`.
+- Fresh production checks verified all 19 indexable pages: HTTP 200, branded title, one correctly named WebSite node, consistent canonical, and no accidental noindex. RSS/llms match the new name, and the mobile header fits 390px.
+- Google indexing remains **unconfirmed**. Direct Google search hit a CAPTCHA; a separate public site: query had no confirmed result. No owned Search Console property was accessed and no indexing request was submitted. See `docs/search-discovery.md` for the remaining owner step.
+- Evidence: ignored `output/branding-search-2026-10-15/`, including before/after heuristic audits. Those scores are not Google ranking or indexing measurements.
+
+## Earlier production release — 2026-10-15 not-found recovery
 
 [PR #4](https://github.com/Yuki-zik/myblog/pull/4) merged as `e4af54c1ac5fdb8c66ab991fffe2de6def397f88`. Missing routes now show a discover-style recovery page with home/topic actions and the existing search. They retain HTTP 404, declare `noindex, follow`, and stay outside the sitemap; ordinary article indexing remains unchanged. Topic entry copy now describes the reading task.
 

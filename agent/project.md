@@ -1,8 +1,10 @@
 # 项目概况 (A-Znk的blog)
 
-## 站名与检索（2026-10-16，待发布）
+## 站名与检索（2026-10-16，已发布）
 
-公共名称已集中配置为「A-Znk的blog」，同步到可见品牌、文档标题、Open Graph、WebSite 结构化数据、RSS/llms、图标、设计说明书和 README 的真实访问入口。116 单测与 14 项定向浏览器检查通过。Google 直接搜索被验证码拦截，公开 site: 查询未找到可确认结果；自动化会话未进入该站点 Search Console 属性，当前收录状态仍未确认。桌面/手机与图标视觉复核通过，待云端与发布。证据：`output/branding-search-2026-10-15/`。
+[PR #5](https://github.com/Yuki-zik/myblog/pull/5) 合并为 `d895679`，公共名称「A-Znk的blog」已上线。可见品牌、所有文档标题、Open Graph/WebSite、RSS/llms、图标、设计说明书与 README 入口一致；GitHub 项目简介和网址已同步。116 单测、14 项定向 E2E 通过；PR CI 为 123 直接通过加 1 项重试后通过，合并 CI 完整 124/124 一次通过。两套 Production 成功，线上 19 个公开页的站名/标题/结构化数据/canonical/索引规则无异常，手机 390px 无横向溢出。
+
+Google 直接检索遇验证码，另一次公开 site: 搜索无可确认结果，均不能作为未收录的证明。本次自动化未访问可管理的 Search Console 属性，未提交收录请求；站点所有者的登录/验证与索引核验仍待完成。操作说明：`docs/search-discovery.md`；证据：`output/branding-search-2026-10-15/`。
 
 ## 404 恢复入口（2026-10-15，已发布）
 
