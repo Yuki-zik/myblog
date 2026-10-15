@@ -1,6 +1,6 @@
 # Agent Context & Handoff (MyBlog)
 
-Last updated: 2026-10-15 (PR #3 accessibility follow-up verified in production)
+Last updated: 2026-10-15 (PR #3 live; not-found recovery in agent/tasks.md)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -199,6 +199,7 @@ When browser review is triggered, keep it scoped:
 - Keep paragraph anchor contract stable; downstream marginalia and footnote layout depend on it.
 - When moving GFM footnotes to the scholar rail, retain their screen-reader label as a hidden non-heading element so `aria-describedby` remains valid without adding a TOC entry. The build clears Astro's content cache because helper-only Markdown plugin changes can otherwise reuse stale HTML.
 - Do not initialize Waline directly inside Astro markup; keep it inside the dedicated React wrapper.
+- Missing routes use `src/pages/404.astro` with `noindex` and the shared discover shell. Keep their HTTP 404 status; do not turn missing URLs into redirects or successful responses.
 
 ## 9) Frontend Rewrite Guardrails
 

@@ -31,6 +31,7 @@ interface Props {
   description?: string;
   authorMeta?: string;
   canonical?: string;
+  noindex?: boolean;
   metaType?: "website" | "article";
   publishedTime?: string;
   modifiedTime?: string;
@@ -52,6 +53,7 @@ const {
   description = "\u4e3b\u9898\u5316\u77e5\u8bc6\u7f51\u7edc\u4e0e\u6bb5\u843d\u77ed\u8bc4\u535a\u5ba2",
   authorMeta = SITE_AUTHOR_PROFILE.name,
   canonical,
+  noindex = false,
   metaType = "website",
   publishedTime,
   modifiedTime,
@@ -141,6 +143,7 @@ const themeInitScript = `(function () {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex, follow" /> : null}
     <meta name="author" content={authorMeta} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
