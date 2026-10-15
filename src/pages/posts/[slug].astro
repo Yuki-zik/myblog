@@ -182,17 +182,19 @@ const structuredData = site
   <div class="post-reading-page">
     <DiscoverAmbient />
     <!-- Reading progress bar -->
-    <div
-      class="reading-progress-bar"
-      id="reading-progress-bar"
-      data-controller="reading-progress"
-      role="progressbar"
-      aria-label="正文阅读进度"
-      aria-valuenow={0}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    >
-      <span class="reading-progress-bar__fill" data-reading-progress-fill aria-hidden="true"></span>
+    <div role="region" aria-label="阅读状态" data-reading-progress-region>
+      <div
+        class="reading-progress-bar"
+        id="reading-progress-bar"
+        data-controller="reading-progress"
+        role="progressbar"
+        aria-label="正文阅读进度"
+        aria-valuenow={0}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <span class="reading-progress-bar__fill" data-reading-progress-fill aria-hidden="true"></span>
+      </div>
     </div>
     <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
       {tocTree.length > 0 ? (
@@ -208,9 +210,10 @@ const structuredData = site
               <div class="post-header-meta-row">
                 <p class="subtle post-header-meta">
                   {(headerMetaItems.filter(Boolean) as HeaderMetaItem[]).map((item) => (
-                    <span class="post-header-meta-item" aria-label={item.ariaLabel}>
+                    <span class="post-header-meta-item">
                       <MetaIcon name={item.icon} class="post-header-meta-icon" />
-                      <span>{item.label}</span>
+                      <span class="sr-only">{item.ariaLabel}</span>
+                      <span aria-hidden="true">{item.label}</span>
                     </span>
                   ))}
                 </p>
@@ -218,17 +221,18 @@ const structuredData = site
               <h1>{post.data.title}</h1>
               {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
               {headerStats.length > 0 ? (
-                <div class="post-header-stats-row" aria-label="文章辅助统计">
+                <div class="post-header-stats-row" role="group" aria-label="文章辅助统计">
                   {(headerStats.filter(Boolean) as HeaderStatItem[]).map((item) => (
-                    <span class="post-header-stat" aria-label={item.ariaLabel}>
+                    <span class="post-header-stat">
                       <MetaIcon name={item.icon} class="post-header-stat-icon" />
-                      <span>{item.label}</span>
+                      <span class="sr-only">{item.ariaLabel}</span>
+                      <span aria-hidden="true">{item.label}</span>
                     </span>
                   ))}
                 </div>
               ) : null}
               {post.data.topics.length > 0 ? (
-                <p class="post-header-topics" aria-label="文章主题标签">
+                <p class="post-header-topics" role="group" aria-label="文章主题标签">
                   <span class="post-header-topics-label" aria-hidden="true">
                     <MetaIcon name="tag" class="post-header-topics-icon" />
                   </span>
@@ -272,7 +276,7 @@ const structuredData = site
           </section>
 
           {tocItems.length > 0 ? (
-            <div class="post-toc-mobile-container" aria-label="移动端目录">
+            <div class="post-toc-mobile-container" role="group" aria-label="移动端目录">
               <PostToc items={tocItems} variant="mobileOnly" />
             </div>
           ) : null}
@@ -300,7 +304,7 @@ const structuredData = site
           </section>
         ) : null}
 
-        <section class="post-waline-comments-section" aria-label="评论">
+        <section class="post-waline-comments-section">
           <WalineComments client:visible path={getPostPath(post.id)} />
         </section>
 

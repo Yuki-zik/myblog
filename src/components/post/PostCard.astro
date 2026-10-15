@@ -76,11 +76,12 @@ const statItems = [
   </a>
 
   <div class="post-card-body grid">
-    <p class="post-card-meta-row subtle flex flex-wrap items-center gap-x-[0.72rem] gap-y-[0.36rem]" aria-label="文章元信息">
+    <p class="post-card-meta-row subtle flex flex-wrap items-center gap-x-[0.72rem] gap-y-[0.36rem]" role="group" aria-label="文章元信息">
       {(metaItems.filter(Boolean) as MetaItem[]).map((item) => (
-        <span class="post-card-meta-item inline-flex items-center gap-[0.34rem]" aria-label={item.ariaLabel}>
+        <span class="post-card-meta-item inline-flex items-center gap-[0.34rem]">
           <MetaIcon name={item.icon} class="post-card-meta-icon flex-none" />
-          <span>{item.label}</span>
+          <span class="sr-only">{item.ariaLabel}</span>
+          <span aria-hidden="true">{item.label}</span>
         </span>
       ))}
     </p>
@@ -91,12 +92,13 @@ const statItems = [
 
     {post.data.summary ? <p class="post-card-summary max-w-[58ch] text-base leading-[1.78]">{post.data.summary}</p> : null}
 
-    <div class="post-card-stats-row flex items-center justify-between gap-[0.8rem] pt-[0.08rem]" aria-label="文章辅助信息">
+    <div class="post-card-stats-row flex items-center justify-between gap-[0.8rem] pt-[0.08rem]" role="group" aria-label="文章辅助信息">
       <div class="post-card-stats flex flex-wrap gap-x-[0.72rem] gap-y-[0.42rem]">
         {(statItems.filter(Boolean) as StatItem[]).map((item) => (
-          <span class="post-card-stat inline-flex items-center gap-[0.34rem]" aria-label={item.ariaLabel}>
+          <span class="post-card-stat inline-flex items-center gap-[0.34rem]">
             <MetaIcon name={item.icon} class="post-card-stat-icon flex-none" />
-            <span>{item.label}</span>
+            <span class="sr-only">{item.ariaLabel}</span>
+            <span aria-hidden="true">{item.label}</span>
           </span>
         ))}
       </div>

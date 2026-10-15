@@ -83,7 +83,7 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
       <p class="home-reference-footer__quote font-(family-name:--hr-font-serif) text-[0.875rem] leading-[1.7] italic">“{footerQuote}”</p>
     </div>
 
-    <div class="home-reference-footer__socials flex items-center justify-end gap-4" aria-label="首页页脚社交链接">
+    <nav class="home-reference-footer__socials flex items-center justify-end gap-4" aria-label="首页页脚社交链接">
       {
         visibleLinks.map((link) => (
           <a
@@ -115,6 +115,6 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
           </a>
         ))
       }
-    </div>
+    </nav>
   </div>
 </footer>

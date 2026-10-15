@@ -796,20 +796,20 @@ html[data-color-scheme="dark"] .home-reference-footer__brand-mark {
 
 .home-reference-footer__note,
 .home-reference-footer__copy {
-  color: #64748b;
+  color: #596a82;
 }
 
 html[data-color-scheme="dark"] .home-reference-footer__note,
 html[data-color-scheme="dark"] .home-reference-footer__copy {
-  color: #64748b;
-}
-
-.home-reference-footer__quote {
   color: #94a3b8;
 }
 
+.home-reference-footer__quote {
+  color: #596a82;
+}
+
 html[data-color-scheme="dark"] .home-reference-footer__quote {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 /* The home quotation sits over a translucent warm-paper footer. */
@@ -1044,9 +1044,12 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
   }
 
   :root[data-theme="system"] .home-reference-footer__note,
-  :root[data-theme="system"] .home-reference-footer__copy,
+  :root[data-theme="system"] .home-reference-footer__copy {
+    color: #94a3b8;
+  }
+
   :root[data-theme="system"] .home-reference-footer__quote {
-    color: #64748b;
+    color: #94a3b8;
   }
 
   :root[data-theme="system"] .home-reference-footer__social-link {

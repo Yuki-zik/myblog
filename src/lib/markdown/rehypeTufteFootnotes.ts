@@ -433,7 +433,23 @@ function extractFootnotesForRail(
 }
 
 function removeFootnoteContainerFromTree(tree: Root): void {
-  tree.children = (tree.children ?? []).filter((child) => !(isElementNode(child) && isFootnoteContainer(child)));
+  tree.children = (tree.children ?? []).flatMap((child): RootContent[] => {
+    if (!isElementNode(child) || !isFootnoteContainer(child)) {
+      return [child];
+    }
+    // References still describe themselves with the GFM label's id. Keep its
+    // text accessible, without adding a heading to the article's TOC.
+    return (child.children ?? []).flatMap((label): RootContent[] =>
+      isElementNode(label) && label.tagName === "h2" && label.properties?.id
+        ? [{
+            type: "element",
+            tagName: "span",
+            properties: { id: label.properties.id, className: ["sr-only"] },
+            children: [{ type: "text", value: toString(label) }]
+          }]
+        : []
+    );
+  });
 }
 
 function rewriteFootnoteRefTargetsForRail(tree: Root): void {
