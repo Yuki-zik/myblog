@@ -1,5 +1,13 @@
 # Apple-inspired editorial interface pass
 
+## User-directed correction — 2026-10-16
+
+The initial pass removed the code introduction and flattened the atmosphere more than the user wanted. The user explicitly requested their return. The homepage now restores the original `research.ts` profile with source-backed tracks, routes and live counts, plus static colored ambient light; shared discover pages regain blue/amber layers behind readable solid cards. The single native disclosure and mobile collapse remain.
+
+The reported TOC failure was reproduced: the reading body's `overflow-x: hidden` made its other axis compute to `auto`, creating a competing sticky scroll ancestor while the document actually scrolled. Changing it to `clip` fixes pinning without altering TOC logic. This existed before PR #7, but prior active-link tests did not detect that the whole TOC could leave the viewport.
+
+Two new viewport-pinning tests failed before the fix, then the 65-case home/visual/theme/reading suite passed. Unit tests passed 116/116. Actual browser scroll at 960.5px and 1680.5px keeps the TOC top at 85.59px with different active headings; desktop light/dark and 390px disclosure/overflow checks passed. Evidence: `output/restore-character-2026-10-16/`. Release pending.
+
 ## Direction
 
 A calm content application inspired by Apple Books and Notes: system UI typography, neutral surfaces, a readable research overview, precise spacing and restrained interaction feedback. Navigation may use a translucent material; article/content panels remain solid and legible.

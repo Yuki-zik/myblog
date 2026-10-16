@@ -8,6 +8,51 @@
   font-family: var(--font-ui);
 }
 
+/* The home atmosphere is intentionally colorful and independent of discover. */
+.home-reference__ambient {
+  isolation: isolate;
+}
+
+.home-reference__grid {
+  background-image: radial-gradient(rgb(111 137 167 / 0.2) 0.7px, transparent 0.7px);
+  background-size: 28px 28px;
+  opacity: 0.45;
+}
+
+.home-reference__orb {
+  min-width: 30rem;
+  min-height: 30rem;
+  filter: blur(90px);
+}
+
+.home-reference__orb--blue {
+  top: -14%;
+  left: -14%;
+  width: 58vw;
+  height: 58vw;
+  background: rgb(96 165 250 / 0.32);
+}
+
+.home-reference__orb--amber {
+  right: -12%;
+  bottom: -14%;
+  width: 48vw;
+  height: 48vw;
+  background: rgb(251 191 36 / 0.24);
+}
+
+html[data-color-scheme="dark"] .home-reference__grid {
+  background-image: radial-gradient(rgb(140 162 196 / 0.22) 0.7px, transparent 0.7px);
+}
+
+html[data-color-scheme="dark"] .home-reference__orb--blue {
+  background: rgb(37 99 235 / 0.3);
+}
+
+html[data-color-scheme="dark"] .home-reference__orb--amber {
+  background: rgb(147 51 234 / 0.26);
+}
+
 .home-reference :where(a),
 .home-reference :where(a:hover) {
   color: inherit;
@@ -101,16 +146,26 @@
 
 /* One native disclosure; the shared controller owns the 1024px open state. */
 .home-reference-terminal__shell {
+  position: relative;
   overflow: hidden;
-  border-radius: inherit;
+  border: 1px solid rgba(30, 41, 59, 0.5);
+  border-radius: 18px;
+  background: #0f172a;
+  box-shadow: inset 0 2px 4px rgba(2, 6, 23, 0.28);
+  color: #cbd5e1;
+}
+
+html[data-color-scheme="dark"] .home-reference-terminal__shell {
+  background: #0f1423;
 }
 
 .home-reference-terminal__header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.25rem 1.5rem;
-  color: var(--text-primary);
+  gap: 0.5rem;
+  margin-bottom: 0;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
   cursor: pointer;
   list-style: none;
 }
@@ -122,10 +177,7 @@
 .home-reference-terminal__header::after {
   content: "+";
   margin-left: auto;
-  color: var(--text-meta);
-  font-size: 1.25rem;
-  font-weight: 400;
-  line-height: 1;
+  color: #cbd5e1;
 }
 
 [data-home-research-signature][open] > .home-reference-terminal__header::after {
@@ -133,74 +185,115 @@
 }
 
 .home-reference-terminal__header:focus-visible {
-  outline: 2px solid var(--brand-accent);
+  outline: 2px solid #93c5fd;
   outline-offset: -4px;
-  border-radius: 20px;
 }
 
-.home-reference-research__label {
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  font-weight: 600;
+.home-reference-terminal__lights {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-reference-terminal__light {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+}
+
+.home-reference-terminal__light--red {
+  background: rgba(244, 63, 94, 0.8);
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.4);
+}
+
+.home-reference-terminal__light--amber {
+  background: rgba(245, 158, 11, 0.8);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.home-reference-terminal__light--green {
+  background: rgba(16, 185, 129, 0.8);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.home-reference-terminal__filename {
+  margin-left: 0.5rem;
+  color: #a7b5ca;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
 }
 
 .home-reference-terminal__body {
-  padding: 0 1.5rem 1.25rem;
-}
-
-.home-reference-research__tracks {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.home-reference-research__track h2 {
-  margin: 0 0 0.35rem;
-  color: var(--text-primary);
-  font-family: var(--font-ui);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
-}
-
-.home-reference-research__summary {
-  color: var(--text-secondary);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
   font-size: 0.8125rem;
   line-height: 1.7;
-  text-wrap: pretty;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.home-reference-research__stats {
+.home-reference-terminal__line {
+  color: #cbd5e1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.home-reference-terminal__line + .home-reference-terminal__line {
+  margin-top: 0.14rem;
+}
+
+.home-reference-terminal__line--indent {
+  padding-left: 1rem;
+}
+
+.home-reference-terminal__line--indent-2 {
+  padding-left: 2rem;
+}
+
+.home-reference-terminal__kw {
+  color: #60a5fa;
+}
+
+.home-reference-terminal__fn {
+  color: #34d399;
+}
+
+.home-reference-terminal__type {
+  color: #94a3b8;
+}
+
+.home-reference-terminal__comment {
+  color: #a7b5ca;
+}
+
+.home-reference-terminal__string {
+  color: #fcd34d;
+}
+
+.home-reference-terminal__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-default);
-  color: var(--text-meta);
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  color: #a7b5ca;
+  font-size: 0.6875rem;
 }
 
-.home-reference-research__link,
-.home-reference-research__link:visited {
-  display: inline-flex;
+.home-reference-terminal__prompt {
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
-  color: var(--brand-accent);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: #34d399;
 }
 
-.home-reference-research__link:hover {
-  color: var(--brand-accent);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.home-reference-terminal__cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background: currentColor;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  animation: home-reference-terminal-blink 1.2s linear infinite;
 }
 
 .home-reference-section-head {
@@ -475,7 +568,7 @@
   }
 
   .home-reference-terminal__body {
-    padding: 0 1.25rem 1.25rem;
+    padding: 1rem 1.25rem;
   }
 
   .home-reference-domain-nav {
@@ -567,6 +660,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-reference-terminal__cursor {
+    animation: none !important;
+  }
+
   .home-reference-card,
   .home-reference-hero__button,
   .home-reference-domain-nav__button,
@@ -583,3 +680,8 @@
 }
 
 /* Retained for the shared discover ambient until that layer is migrated. */
+
+@keyframes home-reference-terminal-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

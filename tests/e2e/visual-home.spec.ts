@@ -11,33 +11,33 @@ test("home prioritizes topics and research with a concise introduction", async (
 });
 
 
-test("home research overview presents real research areas and working reading entrances", async ({ page }) => {
+test("home research code signature preserves the author's real research areas and collection counts", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   const overview = page.locator("details[data-home-research-signature]");
   await expect(overview).toHaveCount(1);
   await expect(overview).toHaveAttribute("open", "");
-  await expect(overview.locator("summary")).toHaveText("当前研究");
-  await expect(overview.getByRole("listitem")).toHaveCount(3);
-  await expect(overview.getByRole("heading", { level: 2 })).toHaveText([
-    "LLM / MLLM 系统", "模型安全", "Agent 工程"
+  await expect(overview.locator("summary")).toHaveText("研究签名 · research.ts");
+  await expect(overview.locator(".home-reference-terminal__line").first()).toHaveText("const research = {");
+  await expect(overview.locator(".home-reference-terminal__comment")).toHaveText("// 当前主研究轨道");
+  await expect(overview.locator(".home-reference-terminal__line--indent-2 .home-reference-terminal__string")).toHaveText([
+    '"LLM / MLLM 系统"', '"模型安全"', '"Agent 工程"'
   ]);
-  for (const item of await overview.getByRole("listitem").all()) {
-    expect((await item.locator("p").innerText()).length).toBeGreaterThan(20);
-  }
+  await expect(overview.locator(".home-reference-terminal__body")).toContainText('notes: "/topics"');
+  await expect(overview.locator(".home-reference-terminal__body")).toContainText('papers: "/papers"');
   const index = await (await page.request.get("/search-index.json")).json();
   const topics = index.filter((entry: { type: string }) => entry.type === "topic");
   const posts = index.filter((entry: { type: string }) => entry.type === "post");
   const concepts = index.filter((entry: { type: string }) => entry.type === "concept");
-  await expect(overview.locator("[data-research-count=posts]")).toHaveText(`${posts.length} 篇笔记`);
-  await expect(overview.locator("[data-research-count=topics]")).toHaveText(`${topics.length} 个主题`);
-  await expect(overview.locator("[data-research-count=concepts]")).toHaveText(`${concepts.length} 个概念`);
-  await overview.getByRole("link", { name: "查看研究与论文" }).click();
+  await expect(overview.locator("[data-research-count=posts]")).toHaveText(`${posts.length} posts indexed`);
+  await expect(overview.locator("[data-research-count=topics]")).toHaveText(`${topics.length} topics mapped`);
+  await expect(overview.locator("[data-research-count=concepts]")).toHaveText(`${concepts.length} concepts linked`);
+  await page.locator(".home-reference-hero__actions").getByRole("link", { name: "论文与研究成果" }).click();
   await expect(page).toHaveURL(/\/papers$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("mobile research overview is natively expandable without hiding the topic entrance", async ({ page }) => {
+test("mobile research code signature is natively expandable without hiding the topic entrance", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
@@ -54,7 +54,7 @@ test("mobile research overview is natively expandable without hiding the topic e
 });
 
 for (const scheme of ["light", "dark"] as const) {
-  test(`home research overview and footer supporting text retain contrast in system ${scheme}`, async ({ page }) => {
+  test(`home research code signature and footer supporting text retain contrast in system ${scheme}`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 960 });
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
@@ -76,7 +76,7 @@ for (const scheme of ["light", "dark"] as const) {
         const n = v / 255;
         return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
       }).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-      return [".home-reference-research__label", ".home-reference-research__summary", ".home-reference-research__stats", ".home-reference-footer__quote"].map((selector) => {
+      return [".home-reference-terminal__filename", ".home-reference-terminal__line", ".home-reference-terminal__kw", ".home-reference-terminal__fn", ".home-reference-terminal__comment", ".home-reference-terminal__string", ".home-reference-terminal__meta", ".home-reference-footer__quote"].map((selector) => {
         const el = Array.from(document.querySelectorAll<HTMLElement>(selector)).find((node) => node.getBoundingClientRect().height > 0)!;
         const ancestors: HTMLElement[] = [];
         for (let node: HTMLElement | null = el; node; node = node.parentElement) ancestors.unshift(node);
@@ -88,5 +88,51 @@ for (const scheme of ["light", "dark"] as const) {
       });
     });
     for (const entry of ratios) expect(entry.ratio, entry.selector).toBeGreaterThanOrEqual(4.5);
+  });
+
+  test(`discover pages retain visible ambient color behind opaque content in system ${scheme}`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
+    await page.goto("/topics");
+    await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
+    const ambient = page.locator(".discover-page__ambient");
+    await expect(ambient).toHaveAttribute("aria-hidden", "true");
+    await expect(ambient.locator(".discover-page__orb")).toHaveCount(2);
+    const layers = await page.evaluate(() => {
+      const ambient = document.querySelector(".discover-page__ambient")!;
+      const card = document.querySelector(".discover-entity-card")!;
+      const grid = document.querySelector(".discover-page__grid")!;
+      return {
+        pointerEvents: getComputedStyle(ambient).pointerEvents,
+        gridBackground: getComputedStyle(grid).backgroundImage,
+        cardBackground: getComputedStyle(card).backgroundColor,
+        orbs: Array.from(ambient.querySelectorAll(".discover-page__orb")).map((orb) => {
+          const styles = getComputedStyle(orb);
+          return {
+            background: styles.backgroundColor,
+            opacity: Number(styles.opacity),
+            filter: styles.filter,
+            width: orb.getBoundingClientRect().width,
+            animation: styles.animationName,
+          };
+        }),
+        scrollWidth: document.documentElement.scrollWidth,
+        viewportWidth: window.innerWidth,
+      };
+    });
+    expect(layers.pointerEvents).toBe("none");
+    expect(layers.gridBackground).toContain("radial-gradient");
+    expect(layers.cardBackground).toMatch(/^rgb\(/);
+    expect(layers.orbs[0].background).not.toBe(layers.orbs[1].background);
+    for (const orb of layers.orbs) {
+      const channels = orb.background.match(/[\d.]+/g)?.map(Number) ?? [];
+      expect(channels[3] ?? 1).toBeGreaterThan(0.08);
+      expect(orb.opacity).toBeGreaterThan(0);
+      expect(orb.filter).toContain("blur");
+      expect(orb.width).toBeGreaterThan(300);
+      expect(orb.animation).toBe("none");
+    }
+    expect(layers.scrollWidth).toBeLessThanOrEqual(layers.viewportWidth + 1);
   });
 }
