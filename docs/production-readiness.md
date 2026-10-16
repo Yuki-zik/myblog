@@ -2,6 +2,12 @@
 
 Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
 
+## Personal research workspace refinement — 2026-10-16
+
+[PR #9](https://github.com/Yuki-zik/myblog/pull/9), merge `edd1b8a`, implements the approved author-led homepage composition, thin code window, localized ambient light, larger featured cover and ruled recent-note list. The original research.ts content, native disclosure, carousel, cover stack and TOC fix remain intact.
+
+116 unit tests, 80 targeted production E2E and 133 PR E2E cases passed. Real desktop light/dark and 390px visual checks passed. Frontend `dpl_AGAHe44tVBp3CJ4En3AYWBH2MHfW` and Waline `dpl_8uQL9bFZpGws21WFDF8memJANpnL` are Production/READY. Public homepage checks confirm the new composition and no horizontal overflow. Evidence: `docs/apple-interface-pass.md` and ignored `output/research-workspace-2026-10-16/`.
+
 ## User-feedback repair — 2026-10-16
 
 [PR #8](https://github.com/Yuki-zik/myblog/pull/8), merged as `1e2db3d`, restores the user's original `research.ts` introduction and colored ambient layers, and fixes the reading body's scroll-root conflict so the article TOC remains pinned. 116 unit tests, 65 targeted production E2E and all 131 PR E2E cases passed. Both new pinning tests were demonstrated failing before the fix.

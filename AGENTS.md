@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-16 (personal research workspace refinement validated locally; release pending)
+Last updated: 2026-10-16 (PR #9 live: refined personal research workspace; research.ts and TOC contracts preserved)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 

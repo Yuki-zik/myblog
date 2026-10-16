@@ -6,7 +6,9 @@ After reviewing the restored version, the user approved a personal research work
 
 The homepage now uses a 48px author heading, secondary research heading, 14px code text and a 1px window rim. Blue light sits behind the window; the warm/purple lower light remains visible. The featured cover is about 488px wide at 1440px, retains the shared 4:3 ghost/main treatment, and stacks above the copy on mobile. Recent notes use full-width dividers with the existing metadata, tags and hover cue. Press feedback respects reduced motion.
 
-Two new composition tests failed on the preceding version, then passed after implementation. Unit tests: 116/116; home/visual/theme/cover production E2E: 80/80. Real browser review covered desktop light/dark, the featured article and list, and 390px disclosure/stacking without overflow. Evidence: ignored `output/research-workspace-2026-10-16/`. Release pending.
+Two new composition tests failed on the preceding version, then passed after implementation. Unit tests: 116/116; home/visual/theme/cover production E2E: 80/80. Real browser review covered desktop light/dark, the featured article and list, and 390px disclosure/stacking without overflow. Evidence: ignored `output/research-workspace-2026-10-16/`.
+
+[PR #9](https://github.com/Yuki-zik/myblog/pull/9) merged as `edd1b8aa83f0c0355589fc17706355e987720eba` after [CI](https://github.com/Yuki-zik/myblog/actions/runs/38903626930) passed all 133 E2E cases and existing gates. Frontend `dpl_AGAHe44tVBp3CJ4En3AYWBH2MHfW` and Waline `dpl_8uQL9bFZpGws21WFDF8memJANpnL` are Production/READY for that SHA. Public browser acceptance confirms the author heading, original research.ts text, 14px code, 1px rim, 487px cover and no horizontal overflow. The final screenshot was saved after reveal opacity reached 1; see `production-home.png`, `production-browser.json` and `deployments.json`.
 
 ## User-directed correction — 2026-10-16
 
