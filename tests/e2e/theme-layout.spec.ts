@@ -724,13 +724,31 @@ test("non-home discover routes follow dark OS when theme stays on system", async
       "dark",
     );
 
-    const bodyBackground = await page.evaluate(
-      () => getComputedStyle(document.body).backgroundColor,
-    );
+    const colors = await page.evaluate(() => {
+      // Let the browser resolve the semantic token to the same color format
+      // as the rendered body, including a future color-mix() token value.
+      const probe = document.createElement("span");
+      probe.hidden = true;
+      probe.style.backgroundColor = "var(--page-bg)";
+      document.body.append(probe);
+      const pageBackground = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+
+      return {
+        bodyBackground: getComputedStyle(document.body).backgroundColor,
+        pageBackground,
+      };
+    });
     expect(
-      bodyBackground,
-      `${route} should show the dark discover background under system+dark OS`,
-    ).toBe("rgb(11, 15, 25)");
+      colors.bodyBackground,
+      `${route} should use the shared page background under system+dark OS`,
+    ).toBe(colors.pageBackground);
+    // Token equality alone would miss a broken theme that resolves both
+    // surfaces to light. Keep an independent dark-background requirement.
+    const channels = colors.bodyBackground.match(/[\d.]+/g)?.map(Number) ?? [];
+    expect(channels.length).toBeGreaterThanOrEqual(3);
+    expect(Math.max(...channels.slice(0, 3))).toBeLessThan(48);
+    expect(channels[3] ?? 1).toBe(1);
   }
 });
 

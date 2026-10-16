@@ -1,5 +1,9 @@
 # 项目概况 (A-Znk的blog)
 
+## Apple 风格界面打磨（2026-10-16，本地验收完成）
+
+首页与共享发现页采用系统 UI 字体、中性实色表面和蓝色交互强调，半透明材质集中在导航；首页研究概览直接展示真实研究方向与内容数量。保留四卡轮播、单份原生 details、搜索焦点恢复、长文衬线及原有阅读/评论运行时。116 单测、构建、37 项最终定向 E2E 与桌面/390px明暗视觉复核通过；全量 E2E 的唯一间距失败修复后单独通过。发布证据与检查范围见 `docs/apple-interface-pass.md`。
+
 ## 当前主网址（2026-10-16）
 
 主入口现为 **https://a-znk-blog.vercel.app/**，旧 `myblog-silk-one.vercel.app` 保留为可访问别名。两个 Vercel 项目及 GitHub 仓库身份不变；前端和 Waline 的 `SITE_URL`、README/GitHub 入口、19 个页面 canonical、RSS、robots 与 sitemap 已同步。发布提交 `1a05291` 的两套 Production 均 READY；116 单测和 20 页构建通过，线上 19 页与 Google 原验证文件逐项核验通过，评论 HTTP 200/errno 0、原 1 条保留。
@@ -69,7 +73,7 @@
 
 - **现状真源**: 当前 UI 的实际权威来源是 `src/layouts/BaseLayout.astro` 首先导入的 `tailwind.css`、其后导入的模块化 CSS，以及 `tests/e2e/*.spec.ts` 的视觉/结构约束；`design-style-guide.md` 仍有较多历史快照内容，只适合作为背景参考，不能直接当现状。
 - **全站气质**: 设计系统以 five-color foundation 为底座，先在 `src/styles/tokens.css` 映射为 `surface/text/border/accent/chrome/reading` 语义 token，再由页面模块做克制分化。整体气质是冷静、研究型、阅读优先，而不是高饱和科技演示风。
-- **字体分工**: 顶栏与全站 chrome 仍使用 `Space Grotesk / Source Serif 4 / IBM Plex Mono`；首页正文单独引入 `Outfit / Noto Serif SC / JetBrains Mono` 做 reference-mode 的 editorial 叙事，文章页继续保留既有阅读字体系统。
+- **字体分工**: 顶栏、控件和发现页标题/正文使用系统 UI 字体；文章正文保留 `Source Serif 4 / Noto Serif SC`，代码保留等宽字体。论文页仍有局部既有字体规则。
 - **布局骨架**: 站点现在明确分成两套 runtime。`discover-runtime` 覆盖首页、主题列表、主题详情、概念详情、论文索引、作者页、归档页，统一使用 `ambient field + poster/split hero + section-head + family footer`；`reading-runtime` 覆盖文章与论文详情。文章保留 `TOC rail + main reading column + scholar rail + Waline`，论文则使用独立的学术详情布局，不继承文章评论与旁注链路。
 - **文章页封面语言**: 标题卡片顶部封面采用“双层同源图片”模型：底层是居中下移、缩小并高斯模糊后的同源彩色虚影，负责提供 ambient colored shadow；顶层主图带极轻的白色描边和常规阴影，与底层虚影形成剥离感，并在 hover 时主图微微上浮、虚影进一步扩散。
 - **核心交互**: Header 是三态液态玻璃控制台（`top / compact / hidden`），Search 是头部命令式即时搜索入口，TOC 是文章页的二级导航，Waline 评论位于文末，角色偏“全文讨论”而不是段落边批注。

@@ -10,7 +10,34 @@ test("home prioritizes topics and research with a concise introduction", async (
   expect(intro.split(/[。！？]/).filter((part) => part.trim()).length).toBeGreaterThanOrEqual(2);
 });
 
-test("mobile research signature is natively expandable without hiding the topic entrance", async ({ page }) => {
+
+test("home research overview presents real research areas and working reading entrances", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/");
+  const overview = page.locator("details[data-home-research-signature]");
+  await expect(overview).toHaveCount(1);
+  await expect(overview).toHaveAttribute("open", "");
+  await expect(overview.locator("summary")).toHaveText("当前研究");
+  await expect(overview.getByRole("listitem")).toHaveCount(3);
+  await expect(overview.getByRole("heading", { level: 2 })).toHaveText([
+    "LLM / MLLM 系统", "模型安全", "Agent 工程"
+  ]);
+  for (const item of await overview.getByRole("listitem").all()) {
+    expect((await item.locator("p").innerText()).length).toBeGreaterThan(20);
+  }
+  const index = await (await page.request.get("/search-index.json")).json();
+  const topics = index.filter((entry: { type: string }) => entry.type === "topic");
+  const posts = index.filter((entry: { type: string }) => entry.type === "post");
+  const concepts = index.filter((entry: { type: string }) => entry.type === "concept");
+  await expect(overview.locator("[data-research-count=posts]")).toHaveText(`${posts.length} 篇笔记`);
+  await expect(overview.locator("[data-research-count=topics]")).toHaveText(`${topics.length} 个主题`);
+  await expect(overview.locator("[data-research-count=concepts]")).toHaveText(`${concepts.length} 个概念`);
+  await overview.getByRole("link", { name: "查看研究与论文" }).click();
+  await expect(page).toHaveURL(/\/papers$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("mobile research overview is natively expandable without hiding the topic entrance", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
@@ -27,7 +54,7 @@ test("mobile research signature is natively expandable without hiding the topic 
 });
 
 for (const scheme of ["light", "dark"] as const) {
-  test(`home signature and footer supporting text retain contrast in system ${scheme}`, async ({ page }) => {
+  test(`home research overview and footer supporting text retain contrast in system ${scheme}`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 960 });
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
@@ -49,7 +76,7 @@ for (const scheme of ["light", "dark"] as const) {
         const n = v / 255;
         return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
       }).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-      return [".home-reference-terminal__filename", ".home-reference-terminal__comment", ".home-reference-terminal__meta", ".home-reference-footer__quote"].map((selector) => {
+      return [".home-reference-research__label", ".home-reference-research__summary", ".home-reference-research__stats", ".home-reference-footer__quote"].map((selector) => {
         const el = Array.from(document.querySelectorAll<HTMLElement>(selector)).find((node) => node.getBoundingClientRect().height > 0)!;
         const ancestors: HTMLElement[] = [];
         for (let node: HTMLElement | null = el; node; node = node.parentElement) ancestors.unshift(node);

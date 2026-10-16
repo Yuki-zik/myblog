@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-16 (a-znk-blog.vercel.app live; sitemap read successfully; new homepage index request quota-limited)
+Last updated: 2026-10-16 (Apple-inspired editorial interface validated locally; production release pending)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -208,6 +208,8 @@ When browser review is triggered, keep it scoped:
 - Missing routes use `src/pages/404.astro` with `noindex` and the shared discover shell. Keep their HTTP 404 status; do not turn missing URLs into redirects or successful responses.
 
 ## 9) Frontend Rewrite Guardrails
+
+- The current visual direction uses system UI typography, neutral solid content surfaces, blue interaction accents and restrained navigation translucency. Home research content is a real overview from `SITE_AUTHOR_PROFILE`, not a decorative code terminal. Keep the existing details/controller hooks even where their names still contain `terminal`. See `docs/apple-interface-pass.md` for evidence and scope.
 
 ### 9.0 Styling stack: Tailwind CSS v4 (authoritative)
 

@@ -101,151 +101,89 @@ test.beforeEach(async ({ page }) => {
   await mockSubstats(page);
 });
 
-test("home reference carries the misty dark theme while keeping header controls intact", async ({ page }) => {
-  await page.addInitScript(() => {
-    window.localStorage.setItem("theme-preference", "dark");
-  });
-
+test("home uses a calm dark canvas and solid surfaces while keeping header controls intact", async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem("theme-preference", "dark"));
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   await waitForThemeSettled(page);
-
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator(".theme-toggle-label")).toHaveText("深色");
-
   const metrics = await page.evaluate(() => {
-    const title = document.querySelector(".home-reference-hero__title") as HTMLElement | null;
-    const card = document.querySelector(".home-reference-card") as HTMLElement | null;
-    const grid = document.querySelector(".home-reference__grid") as HTMLElement | null;
-    const ambient = document.querySelector(".home-reference__ambient") as HTMLElement | null;
-    const orbBlue = document.querySelector(".home-reference__orb--blue") as HTMLElement | null;
-    const primaryButton = document.querySelector(".home-reference-hero__button--primary") as HTMLElement | null;
-    const secondaryButton = document.querySelector(".home-reference-hero__button--secondary") as HTMLElement | null;
-    const footer = document.querySelector("[data-home-reference-footer]") as HTMLElement | null;
-
+    const title = document.querySelector(".home-reference-hero__title")!;
+    const card = document.querySelector(".home-reference-card")!;
+    const footer = document.querySelector("[data-home-reference-footer]")!;
     return {
-      titleColor: title ? getComputedStyle(title).color : "",
-      cardBackground: card ? getComputedStyle(card).backgroundColor : "",
-      gridBackground: grid ? getComputedStyle(grid).backgroundImage : "",
-      ambientPosition: ambient ? getComputedStyle(ambient).position : "",
-      orbBlueWidth: orbBlue?.getBoundingClientRect().width ?? 0,
-      primaryButtonBackground: primaryButton ? getComputedStyle(primaryButton).backgroundColor : "",
-      secondaryButtonRadius: secondaryButton ? getComputedStyle(secondaryButton).borderRadius : "",
-      footerWidth: footer?.getBoundingClientRect().width ?? 0,
+      titleColor: getComputedStyle(title).color,
+      cardBackground: getComputedStyle(card).backgroundColor,
+      footerWidth: footer.getBoundingClientRect().width,
       viewportWidth: window.innerWidth,
-      footerVisible: Boolean(footer),
-      toggleExists: Boolean(document.querySelector(".site-header .theme-toggle"))
+      pageWidth: document.documentElement.scrollWidth
     };
   });
-
-  expect(metrics.titleColor).toBe("rgb(248, 250, 252)");
-  expect(metrics.cardBackground).toContain("15, 23, 42");
-  expect(metrics.gridBackground).toContain("radial-gradient");
-  expect(metrics.ambientPosition).toBe("fixed");
-  expect(metrics.orbBlueWidth).toBeGreaterThan(metrics.viewportWidth * 0.45);
-  expect(metrics.primaryButtonBackground).toBe("rgb(255, 255, 255)");
-  expect(metrics.secondaryButtonRadius).toBe("999px");
+  expect(metrics.titleColor).toBe("rgb(245, 245, 247)");
+  expect(metrics.cardBackground).toBe("rgb(34, 34, 37)");
   expect(metrics.footerWidth).toBe(metrics.viewportWidth);
-  expect(metrics.footerVisible).toBe(true);
-  expect(metrics.toggleExists).toBe(true);
+  expect(metrics.pageWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
+  await expect(page.locator(".site-header .theme-toggle")).toBeVisible();
+  await expect(page.locator(".home-reference__orb, .home-reference__grid")).toHaveCount(0);
 });
 
-test("home reference follows dark OS when theme stays on system", async ({ page }) => {
+test("home follows dark OS and keeps the same surface palette through theme toggles", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
-  await page.addInitScript(() => {
-    window.localStorage.removeItem("theme-preference");
-  });
-
+  await page.addInitScript(() => window.localStorage.removeItem("theme-preference"));
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   await waitForThemeSettled(page);
-
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "system");
-
-  const metrics = await page.evaluate(() => {
-    const primaryButton = document.querySelector(".home-reference-hero__button--primary") as HTMLElement | null;
-    const featuredTitle = document.querySelector(".home-reference-featured-card__title") as HTMLElement | null;
-    const featuredMain = document.querySelector("[data-home-featured-cover] .post-cover-img--main") as HTMLElement | null;
-    const featuredGhost = document.querySelector("[data-home-featured-cover] .post-cover-img--ghost") as HTMLElement | null;
-
+  const readDomainTheme = () => page.evaluate(() => {
+    const card = document.querySelector(".home-reference-domain-card")!;
+    const title = card.querySelector("[data-home-domain-title]")!;
+    const nav = document.querySelector("[data-home-domains-next]")!;
+    const featuredTitle = document.querySelector(".home-reference-featured-card__title")!;
+    const featuredMain = document.querySelector("[data-home-featured-cover] .post-cover-img--main")!;
+    const featuredGhost = document.querySelector("[data-home-featured-cover] .post-cover-img--ghost")!;
     return {
-      storedPreference: window.localStorage.getItem("theme-preference"),
-      buttonBackground: primaryButton ? getComputedStyle(primaryButton).backgroundColor : "",
-      buttonColor: primaryButton ? getComputedStyle(primaryButton).color : "",
-      featuredTitleColor: featuredTitle ? getComputedStyle(featuredTitle).color : "",
-      featuredBorderColor: featuredMain ? getComputedStyle(featuredMain).borderTopColor : "",
-      featuredGhostOpacity: featuredGhost ? Number.parseFloat(getComputedStyle(featuredGhost).opacity) : 0
+      theme: document.documentElement.dataset.theme,
+      colorScheme: document.documentElement.dataset.colorScheme,
+      cardBackground: getComputedStyle(card).backgroundColor,
+      cardBorder: getComputedStyle(card).borderTopColor,
+      titleColor: getComputedStyle(title).color,
+      navBackground: getComputedStyle(nav).backgroundColor,
+      navColor: getComputedStyle(nav).color,
+      featuredTitleColor: getComputedStyle(featuredTitle).color,
+      featuredBorderColor: getComputedStyle(featuredMain).borderTopColor,
+      featuredBorderWidth: Number.parseFloat(getComputedStyle(featuredMain).borderTopWidth),
+      featuredBorderStyle: getComputedStyle(featuredMain).borderTopStyle,
+      featuredGhostOpacity: Number.parseFloat(getComputedStyle(featuredGhost).opacity)
     };
   });
-
-  expect(metrics.storedPreference).toBeNull();
-  expect(metrics.buttonBackground).toBe("rgb(255, 255, 255)");
-  expect(metrics.buttonColor).toBe("rgb(15, 23, 42)");
-  expect(metrics.featuredTitleColor).toBe("rgb(255, 255, 255)");
-  expect(metrics.featuredBorderColor).toBe("rgb(51, 65, 85)");
-  expect(metrics.featuredGhostOpacity).toBeGreaterThan(0.35);
-});
-
-test("home domains keep consistent colors across system-dark, light, and dark theme toggles", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "dark" });
-  await page.addInitScript(() => {
-    window.localStorage.removeItem("theme-preference");
-  });
-
-  await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/");
-  await waitForThemeSettled(page);
-
-  const readDomainTheme = () =>
-    page.evaluate(() => {
-      const card = document.querySelector(".home-reference-domain-card") as HTMLElement | null;
-      const title = card?.querySelector("[data-home-domain-title]") as HTMLElement | null;
-      const nav = document.querySelector("[data-home-domains-next]") as HTMLElement | null;
-
-      return {
-        theme: document.documentElement.dataset.theme,
-        colorScheme: document.documentElement.style.colorScheme,
-        cardBackground: card ? getComputedStyle(card).backgroundColor : "",
-        cardBorder: card ? getComputedStyle(card).borderTopColor : "",
-        titleColor: title ? getComputedStyle(title).color : "",
-        navBackground: nav ? getComputedStyle(nav).backgroundColor : "",
-        navColor: nav ? getComputedStyle(nav).color : ""
-      };
-    });
-
   await expect.poll(readDomainTheme).toMatchObject({
-    theme: "system",
-    colorScheme: "dark",
-    cardBackground: "rgba(15, 23, 42, 0.6)",
-    cardBorder: "rgb(30, 41, 59)",
-    titleColor: "rgb(255, 255, 255)",
-    navBackground: "rgba(15, 23, 42, 0.72)",
-    navColor: "rgb(203, 213, 225)"
+    theme: "system", colorScheme: "dark", cardBackground: "rgb(34, 34, 37)", titleColor: "rgb(245, 245, 247)"
   });
-
+  const systemDark = await readDomainTheme();
+  expect(systemDark.featuredTitleColor).toBe(systemDark.titleColor);
+  expect(systemDark.featuredBorderWidth).toBeGreaterThan(0);
+  expect(systemDark.featuredBorderStyle).toBe("solid");
+  expect(systemDark.featuredBorderColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect(systemDark.featuredGhostOpacity).toBeGreaterThan(0.35);
   await page.click("#theme-toggle");
   await waitForThemeSettled(page);
   await expect.poll(readDomainTheme).toMatchObject({
-    theme: "light",
-    colorScheme: "light",
-    cardBackground: "rgba(255, 255, 255, 0.88)",
-    cardBorder: "rgb(241, 245, 249)",
-    titleColor: "rgb(15, 23, 42)",
-    navBackground: "rgba(255, 255, 255, 0.82)",
-    navColor: "rgb(51, 65, 85)"
+    theme: "light", colorScheme: "light", cardBackground: "rgb(255, 255, 255)", titleColor: "rgb(29, 29, 31)"
   });
-
+  const light = await readDomainTheme();
+  expect(light.cardBorder).not.toBe(systemDark.cardBorder);
+  expect(light.navBackground).not.toBe(systemDark.navBackground);
+  expect(light.navColor).not.toBe(systemDark.navColor);
+  expect(light.featuredTitleColor).toBe(light.titleColor);
+  expect(light.featuredTitleColor).not.toBe(systemDark.featuredTitleColor);
+  expect(light.featuredBorderColor).not.toBe(systemDark.featuredBorderColor);
+  expect(light.featuredBorderColor).not.toBe("rgba(0, 0, 0, 0)");
+  expect(light.featuredBorderWidth).toBeGreaterThan(0);
+  expect(light.featuredBorderStyle).toBe("solid");
+  expect(light.featuredGhostOpacity).toBeGreaterThan(0.35);
   await page.click("#theme-toggle");
   await waitForThemeSettled(page);
-  await expect.poll(readDomainTheme).toMatchObject({
-    theme: "dark",
-    colorScheme: "dark",
-    cardBackground: "rgba(15, 23, 42, 0.6)",
-    cardBorder: "rgb(30, 41, 59)",
-    titleColor: "rgb(255, 255, 255)",
-    navBackground: "rgba(15, 23, 42, 0.72)",
-    navColor: "rgb(203, 213, 225)"
-  });
+  await expect.poll(readDomainTheme).toEqual({ ...systemDark, theme: "dark" });
 });
 
 test("theme switching keeps the home background and cards in the same tonal family", async ({ page }) => {
@@ -294,89 +232,39 @@ test("theme switching keeps the home background and cards in the same tonal fami
   await waitForThemeSettled(page);
 });
 
-test("home reference primary CTA matches the reference button colors in light theme", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/");
-  await waitForThemeSettled(page);
-  await waitForEntranceAnimations(page);
-
-  const primaryButton = page.locator(".home-reference-hero__button--primary");
-  await expect(primaryButton).toBeVisible();
-
-  const readButtonColors = () =>
-    primaryButton.evaluate((node) => {
-      const styles = getComputedStyle(node);
-      return {
-        hover: node.matches(":hover"),
-        background: styles.backgroundColor,
-        color: styles.color
+for (const scheme of ["light", "dark"] as const) {
+  test(`home primary CTA stays legible and responds to hover in ${scheme}`, async ({ page }) => {
+    await page.addInitScript((theme) => window.localStorage.setItem("theme-preference", theme), scheme);
+    await page.setViewportSize({ width: 1440, height: 960 });
+    await page.goto("/");
+    await waitForThemeSettled(page);
+    await waitForEntranceAnimations(page);
+    const button = page.locator(".home-reference-hero__button--primary");
+    const readButton = () => button.evaluate((node) => {
+      const style = getComputedStyle(node);
+      const token = (name: string) => {
+        const probe = document.createElement("span");
+        probe.style.color = `var(${name})`;
+        node.append(probe);
+        const value = getComputedStyle(probe).color;
+        probe.remove();
+        return value;
       };
+      return { hover: node.matches(":hover"), background: style.backgroundColor, color: style.color,
+        rest: token("--button-primary-bg"), active: token("--button-primary-hover-bg"), foreground: token("--button-primary-text") };
     });
-
-  const lightRest = await readButtonColors();
-  expect(lightRest.hover).toBe(false);
-  expect(lightRest.background).toBe("rgb(15, 23, 42)");
-  expect(lightRest.color).toBe("rgb(255, 255, 255)");
-
-  await primaryButton.hover();
-  await expect
-    .poll(readButtonColors, {
-      timeout: 2000
-    })
-    .toMatchObject({
-      hover: true,
-      background: "rgb(37, 99, 235)",
-      color: "rgb(255, 255, 255)"
-    });
-
-  const lightHover = await readButtonColors();
-  expect(lightHover.background).toBe("rgb(37, 99, 235)");
-  expect(lightHover.color).toBe("rgb(255, 255, 255)");
-});
-
-test("home reference primary CTA matches the reference button colors in dark theme", async ({ page }) => {
-  await page.addInitScript(() => {
-    window.localStorage.setItem("theme-preference", "dark");
+    const rest = await readButton();
+    expect(rest.hover).toBe(false);
+    expect(rest.background).toBe(rest.rest);
+    expect(rest.color).toBe(rest.foreground);
+    expect(rest.rest).not.toBe(rest.active);
+    await button.hover();
+    await expect.poll(async () => {
+      const value = await readButton();
+      return value.hover && value.background === value.active && value.color === value.foreground;
+    }).toBe(true);
   });
-
-  await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/");
-  await waitForThemeSettled(page);
-  await waitForEntranceAnimations(page);
-
-  const primaryButton = page.locator(".home-reference-hero__button--primary");
-  await expect(primaryButton).toBeVisible();
-
-  const readButtonColors = () =>
-    primaryButton.evaluate((node) => {
-      const styles = getComputedStyle(node);
-      return {
-        hover: node.matches(":hover"),
-        background: styles.backgroundColor,
-        color: styles.color
-      };
-    });
-
-  const darkRest = await readButtonColors();
-  expect(darkRest.hover).toBe(false);
-  expect(darkRest.background).toBe("rgb(255, 255, 255)");
-  expect(darkRest.color).toBe("rgb(15, 23, 42)");
-
-  await primaryButton.hover();
-  await expect
-    .poll(readButtonColors, {
-      timeout: 2000
-    })
-    .toMatchObject({
-      hover: true,
-      background: "rgb(59, 130, 246)",
-      color: "rgb(255, 255, 255)"
-    });
-
-  const darkHover = await readButtonColors();
-  expect(darkHover.background).toBe("rgb(59, 130, 246)");
-  expect(darkHover.color).toBe("rgb(255, 255, 255)");
-});
+}
 
 test("home reference collapses into a single-column editorial stack on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -861,7 +749,7 @@ test("home domain cards keep a restrained desktop proportion instead of stretchi
 
   expect(metrics).toHaveLength(4);
   expect(Math.max(...metrics.map((entry) => entry.ratio))).toBeLessThan(1);
-  expect(Math.max(...metrics.map((entry) => entry.summaryToMetaGap))).toBeLessThan(92);
+  expect(Math.max(...metrics.map((entry) => entry.summaryToMetaGap))).toBeLessThan(48);
 });
 
 test("article pages keep the shared footer and do not render the home-only footer variant", async ({ page }) => {

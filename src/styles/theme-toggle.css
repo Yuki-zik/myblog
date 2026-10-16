@@ -3,25 +3,33 @@
  *
  * Box model (size, radius, flex centring, border width, cursor) lives as
  * Tailwind utilities on the button in `src/layouts/BaseLayout.astro`.
- * Colour/background/border-color are supplied by the state-scoped chrome rules
- * in `layout.css` (`[data-header-state]`), so they are not duplicated here.
+ * Geometry follows the header state in layout.css; the neutral surface and
+ * focus treatment match the search control across those states.
  */
 
 .theme-toggle {
+  border-color: var(--border-default);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  box-shadow: inset 0 1px 2px var(--state-hover);
   transition:
-    width var(--duration-fast) var(--ease-out),
-    padding-inline var(--duration-fast) var(--ease-out),
-    gap var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    width var(--duration-base) var(--ease-out),
+    padding-inline var(--duration-base) var(--ease-out),
+    gap var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out);
 }
 
-/* The colour half of this hover is escalated at the bottom of this file — see
-   the state-scoped overrides block for why. */
 .theme-toggle:hover {
-  transform: translateY(-1px);
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--input-bg));
+  color: var(--text-primary);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 3px;
 }
 
 /* icon markup is injected by UiControllers, so it cannot carry utilities */
@@ -30,16 +38,14 @@
   height: 100%;
 }
 
-:is(.theme-toggle,
-  .header-search-result-link,
-  .archive-entry-button,
+:is(.archive-entry-button,
   .archive-post-link,
   .pill-list a,
   .home-hero-link,
   .home-hero-btn,
   .post-pager-link):focus-visible {
   outline: none;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 36%, transparent 64%);
 }
 
 :is(.brand,
@@ -72,59 +78,4 @@
     transition-duration: 1ms !important;
     transform: none !important;
   }
-}
-
-/* 2026-03-15: small control primitive */
-:is(.theme-toggle,
-  .header-search-result-link,
-  .archive-entry-button,
-  .archive-post-link,
-  .pill-list a,
-  .home-hero-link,
-  .home-hero-btn,
-  .post-pager-link):focus-visible {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 36%, transparent 64%);
-}
-
-/* ===========================================================================
- * State-scoped overrides for the header-mounted toggle. MUST stay last.
- *
- * The 2026-03-16 three-state header rework moved this control's chrome into
- * `layout.css` under `.site-header[data-header-state=…] .theme-toggle`, which
- * is (0,3,0) and therefore silently outranked both the (0,2,0) `:hover` above
- * and the (0,2,0) shared `:is(…):focus-visible` lists. Since then hover has
- * rendered nothing but the 1px lift, and the toggle has had no focus ring at
- * all. Git history shows the hover was authored twice — once against
- * `--chrome-hover` / white, then again against `--chrome-hover` /
- * `--chrome-text` — and never deleted, so this is accidental shadowing across
- * two files, not a deliberate suppression.
- *
- * `.site-header[data-header-state] .theme-toggle:<state>` is (0,4,0), so it
- * wins on specificity rather than on `!important` or import order. The
- * attribute is always present (inline `top` in BaseLayout, maintained by
- * UiControllers), so one selector covers top / compact / hidden, and the
- * `white X%` / chrome-token mixes brighten under both colour schemes.
- * ======================================================================== */
-
-.site-header[data-header-state] .theme-toggle:hover {
-  border-color: color-mix(in srgb, white 18%, transparent 82%);
-  background:
-    radial-gradient(120% 180% at 50% -80%, color-mix(in srgb, white 18%, transparent 82%) 0%, transparent 56%),
-    linear-gradient(180deg, color-mix(in srgb, white 24%, transparent 76%) 0%, color-mix(in srgb, white 8%, transparent 92%) 100%),
-    color-mix(in srgb, var(--chrome-hover) 52%, transparent 48%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 26%, transparent 74%),
-    inset 0 0 0 0.75px color-mix(in srgb, white 8%, transparent 92%);
-  color: var(--chrome-text);
-}
-
-/* Restores the shared focus ring, keeping the resting glass insets so the pill
-   does not lose its fill while focused. Declared after `:hover` at equal
-   specificity so the ring wins when a pointer is also over the button. */
-.site-header[data-header-state] .theme-toggle:focus-visible {
-  outline: none;
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 18%, transparent 82%),
-    inset 0 0 0 0.75px color-mix(in srgb, white 4%, transparent 96%),
-    0 0 0 3px color-mix(in srgb, var(--focus-ring) 36%, transparent 64%);
 }
