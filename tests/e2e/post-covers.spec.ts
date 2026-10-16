@@ -282,8 +282,9 @@ test("desktop header search stays between brand and navigation", async ({ page }
 
   expect(searchBox.x).toBeGreaterThan(brandBox.x + brandBox.width + 8);
   expect(searchBox.x + searchBox.width).toBeLessThan(navBox.x - 8);
-  expect(brandBox.x).toBeGreaterThan(60);
-  expect(navBox.x + navBox.width).toBeLessThan(1380);
+  // The drawing header uses a wider page composition with 40px edge insets.
+  expect(brandBox.x).toBeGreaterThanOrEqual(32);
+  expect(navBox.x + navBox.width).toBeLessThanOrEqual(1408);
   expect(Math.abs(searchBox.x + searchBox.width / 2 - 720)).toBeLessThan(160);
 });
 

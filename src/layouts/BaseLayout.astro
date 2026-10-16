@@ -38,6 +38,7 @@ interface Props {
   openGraphImage?: string;
   runtime: "discover" | "reading";
   mainClass?: string;
+  headerVariant?: "default" | "drawing";
   hideFooter?: boolean;
   footerVariant?: "discover" | "reading" | "none";
   /**
@@ -60,6 +61,7 @@ const {
   openGraphImage,
   runtime,
   mainClass,
+  headerVariant = "default",
   hideFooter = false,
   footerVariant: explicitFooterVariant,
   structuredData
@@ -192,8 +194,8 @@ const themeInitScript = `(function () {
 
     <script is:inline set:html={themeInitScript} />
   </head>
-  <body data-runtime={runtime}>
-    <header class="site-header sticky top-0 z-80" data-header-state="top">
+  <body data-runtime={runtime} data-header-variant={headerVariant}>
+    <header class="site-header sticky top-0 z-80" data-header-state="top" data-header-variant={headerVariant}>
       <div class="site-header-surface-clip" aria-hidden="true">
         <div class="site-header-inner isolate overflow-hidden origin-top"></div>
       </div>

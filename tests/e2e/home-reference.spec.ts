@@ -1,8 +1,44 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { waitForEntranceAnimations } from "./helpers/page-state";
 
 async function waitForThemeSettled(page: Page) {
   await page.waitForFunction(() => !document.documentElement.classList.contains("theme-transitioning"));
+}
+
+async function readTextContrast(locator: Locator) {
+  return locator.evaluate((node) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext("2d")!;
+    const rgba = (color: string) => {
+      ctx.clearRect(0, 0, 1, 1);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      return Array.from(ctx.getImageData(0, 0, 1, 1).data);
+    };
+    const blend = (front: number[], back: number[]) => front.slice(0, 3).map((v, i) => v * front[3] / 255 + back[i] * (1 - front[3] / 255));
+    const luminance = (rgb: number[]) => rgb.map((v) => {
+      const n = v / 255;
+      return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+    }).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const ancestors: Element[] = [];
+    for (let el: Element | null = node; el; el = el.parentElement) ancestors.unshift(el);
+    let background: number[] | null = null;
+    for (const el of ancestors) {
+      const paint = rgba(getComputedStyle(el).backgroundColor);
+      if (paint[3] === 255) background = paint.slice(0, 3);
+      else if (background) background = blend(paint, background);
+    }
+    if (!background) throw new Error("Contrast sampling requires an opaque painted ancestor");
+    const backgroundLuminance = luminance(background);
+    const foregroundLuminance = luminance(blend(rgba(getComputedStyle(node).color), background));
+    return {
+      background,
+      backgroundLuminance,
+      foregroundLuminance,
+      ratio: (Math.max(backgroundLuminance, foregroundLuminance) + 0.05) / (Math.min(backgroundLuminance, foregroundLuminance) + 0.05),
+    };
+  });
 }
 
 async function mockSupabase(page: Page) {
@@ -101,7 +137,7 @@ test.beforeEach(async ({ page }) => {
   await mockSubstats(page);
 });
 
-test("home keeps its colored atmosphere and dark surfaces while keeping header controls intact", async ({ page }) => {
+test("home keeps its architectural paper legible in dark mode with header controls intact", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("theme-preference", "dark"));
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
@@ -109,24 +145,23 @@ test("home keeps its colored atmosphere and dark surfaces while keeping header c
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator(".theme-toggle-label")).toHaveText("深色");
   const metrics = await page.evaluate(() => {
-    const title = document.querySelector(".home-reference-hero__title")!;
-    const card = document.querySelector(".home-reference-domain-card")!;
     const footer = document.querySelector("[data-home-reference-footer]")!;
     return {
-      titleColor: getComputedStyle(title).color,
-      cardBackground: getComputedStyle(card).backgroundColor,
       footerWidth: footer.getBoundingClientRect().width,
       viewportWidth: window.innerWidth,
       pageWidth: document.documentElement.scrollWidth
     };
   });
-  expect(metrics.titleColor).toBe("rgb(245, 245, 247)");
-  expect(metrics.cardBackground).toBe("rgb(34, 34, 37)");
+  for (const selector of [".home-reference-hero__title", "[data-home-domain-title]"]) {
+    const paint = await readTextContrast(page.locator(selector).first());
+    expect(paint.backgroundLuminance).toBeLessThan(0.12);
+    expect(paint.foregroundLuminance).toBeGreaterThan(0.65);
+    expect(paint.ratio).toBeGreaterThanOrEqual(4.5);
+  }
   expect(metrics.footerWidth).toBe(metrics.viewportWidth);
   expect(metrics.pageWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
   await expect(page.locator(".site-header .theme-toggle")).toBeVisible();
-  await expect(page.locator(".home-reference__ambient")).toHaveAttribute("aria-hidden", "true");
-  await expect(page.locator(".home-reference__orb")).toHaveCount(2);
+  await expect(page.locator("[data-home-architecture-image]")).toBeVisible();
 });
 
 test("home preserves the research.ts introduction and live knowledge counts", async ({ page }) => {
@@ -162,40 +197,32 @@ test("home preserves the research.ts introduction and live knowledge counts", as
 });
 
 for (const scheme of ["light", "dark"] as const) {
-  test(`home atmosphere retains visible color without intercepting controls in system ${scheme}`, async ({ page }) => {
+  test(`home architectural drawing loads and leaves navigation usable in system ${scheme}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
     await page.setViewportSize({ width: 1440, height: 960 });
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
-    const ambient = page.locator(".home-reference__ambient");
-    await expect(ambient).toHaveAttribute("aria-hidden", "true");
-    const paint = await ambient.evaluate((node) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 1;
-      const ctx = canvas.getContext("2d")!;
-      return {
-        pointerEvents: getComputedStyle(node).pointerEvents,
-        orbs: Array.from(node.querySelectorAll<HTMLElement>(".home-reference__orb")).map((orb) => {
-          const style = getComputedStyle(orb);
-          ctx.clearRect(0, 0, 1, 1);
-          ctx.fillStyle = style.backgroundColor;
-          ctx.fillRect(0, 0, 1, 1);
-          const rgba = Array.from(ctx.getImageData(0, 0, 1, 1).data);
-          const rect = orb.getBoundingClientRect();
-          return { rgba, width: rect.width, height: rect.height, animation: style.animationName };
-        })
-      };
+    await waitForThemeSettled(page);
+    const drawing = page.locator("[data-home-architecture-image]");
+    await expect(drawing).toBeVisible();
+    await expect.poll(() => drawing.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    const paint = await drawing.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return { filter: style.filter, blendMode: style.mixBlendMode, naturalHeight: (node as HTMLImageElement).naturalHeight };
     });
-    expect(paint.pointerEvents).toBe("none");
-    expect(paint.orbs).toHaveLength(2);
-    for (const orb of paint.orbs) {
-      expect(orb.width).toBeGreaterThan(400);
-      expect(orb.height).toBeGreaterThan(400);
-      expect(orb.rgba[3]).toBeGreaterThan(40);
-      expect(Math.max(...orb.rgba.slice(0, 3)) - Math.min(...orb.rgba.slice(0, 3))).toBeGreaterThan(100);
-      expect(orb.animation).toBe("none");
+    expect(paint.naturalHeight).toBeGreaterThan(0);
+    if (scheme === "dark") {
+      expect(paint.filter).toContain("invert(1)");
+      expect(paint.blendMode).toBe("screen");
+    } else {
+      expect(paint.filter).not.toContain("invert(1)");
+      expect(paint.blendMode).toBe("multiply");
     }
+    const paper = await readTextContrast(page.locator(".home-reference-hero__title"));
+    if (scheme === "light") expect(paper.backgroundLuminance).toBeGreaterThan(0.75);
+    else expect(paper.backgroundLuminance).toBeLessThan(0.12);
+    expect(paper.ratio).toBeGreaterThanOrEqual(4.5);
     await page.getByRole("link", { name: "按主题探索", exact: true }).click();
     await expect(page).toHaveURL(/\/topics$/);
   });
@@ -208,6 +235,7 @@ test("home follows dark OS and keeps the same surface palette through theme togg
   await page.goto("/");
   await waitForThemeSettled(page);
   const readDomainTheme = () => page.evaluate(() => {
+    const paper = document.querySelector(".home-reference")!;
     const card = document.querySelector(".home-reference-domain-card")!;
     const title = card.querySelector("[data-home-domain-title]")!;
     const nav = document.querySelector("[data-home-domains-next]")!;
@@ -217,10 +245,14 @@ test("home follows dark OS and keeps the same surface palette through theme togg
     return {
       theme: document.documentElement.dataset.theme,
       colorScheme: document.documentElement.dataset.colorScheme,
-      cardBackground: getComputedStyle(card).backgroundColor,
-      cardBorder: getComputedStyle(card).borderTopColor,
+      paperBackground: getComputedStyle(paper).backgroundColor,
+      cardBorder: getComputedStyle(card).borderBottomColor,
+      cardBorderWidth: Number.parseFloat(getComputedStyle(card).borderBottomWidth),
+      cardBorderStyle: getComputedStyle(card).borderBottomStyle,
       titleColor: getComputedStyle(title).color,
-      navBackground: getComputedStyle(nav).backgroundColor,
+      navBorder: getComputedStyle(nav).borderBottomColor,
+      navBorderWidth: Number.parseFloat(getComputedStyle(nav).borderBottomWidth),
+      navBorderStyle: getComputedStyle(nav).borderBottomStyle,
       navColor: getComputedStyle(nav).color,
       featuredTitleColor: getComputedStyle(featuredTitle).color,
       featuredBorderColor: getComputedStyle(featuredMain).borderTopColor,
@@ -230,9 +262,17 @@ test("home follows dark OS and keeps the same surface palette through theme togg
     };
   });
   await expect.poll(readDomainTheme).toMatchObject({
-    theme: "system", colorScheme: "dark", cardBackground: "rgb(34, 34, 37)", titleColor: "rgb(245, 245, 247)"
+    theme: "system", colorScheme: "dark"
   });
   const systemDark = await readDomainTheme();
+  expect(systemDark.paperBackground).toMatch(/^rgb\(/);
+  expect(systemDark.cardBorderWidth).toBeGreaterThan(0);
+  expect(systemDark.cardBorderStyle).toBe("solid");
+  expect(systemDark.navBorderWidth).toBeGreaterThan(0);
+  expect(systemDark.navBorderStyle).toBe("solid");
+  const darkPaint = await readTextContrast(page.locator("[data-home-domain-title]").first());
+  expect(darkPaint.backgroundLuminance).toBeLessThan(0.12);
+  expect(darkPaint.ratio).toBeGreaterThanOrEqual(4.5);
   expect(systemDark.featuredTitleColor).toBe(systemDark.titleColor);
   expect(systemDark.featuredBorderWidth).toBeGreaterThan(0);
   expect(systemDark.featuredBorderStyle).toBe("solid");
@@ -241,11 +281,20 @@ test("home follows dark OS and keeps the same surface palette through theme togg
   await page.click("#theme-toggle");
   await waitForThemeSettled(page);
   await expect.poll(readDomainTheme).toMatchObject({
-    theme: "light", colorScheme: "light", cardBackground: "rgb(255, 255, 255)", titleColor: "rgb(29, 29, 31)"
+    theme: "light", colorScheme: "light"
   });
   const light = await readDomainTheme();
+  const lightPaint = await readTextContrast(page.locator("[data-home-domain-title]").first());
+  expect(lightPaint.backgroundLuminance).toBeGreaterThan(0.75);
+  expect(lightPaint.ratio).toBeGreaterThanOrEqual(4.5);
+  expect(light.paperBackground).toMatch(/^rgb\(/);
+  expect(light.paperBackground).not.toBe(systemDark.paperBackground);
   expect(light.cardBorder).not.toBe(systemDark.cardBorder);
-  expect(light.navBackground).not.toBe(systemDark.navBackground);
+  expect(light.cardBorderWidth).toBeGreaterThan(0);
+  expect(light.cardBorderStyle).toBe("solid");
+  expect(light.navBorder).not.toBe(systemDark.navBorder);
+  expect(light.navBorderWidth).toBeGreaterThan(0);
+  expect(light.navBorderStyle).toBe("solid");
   expect(light.navColor).not.toBe(systemDark.navColor);
   expect(light.featuredTitleColor).toBe(light.titleColor);
   expect(light.featuredTitleColor).not.toBe(systemDark.featuredTitleColor);
@@ -259,7 +308,7 @@ test("home follows dark OS and keeps the same surface palette through theme togg
   await expect.poll(readDomainTheme).toEqual({ ...systemDark, theme: "dark" });
 });
 
-test("theme switching keeps the home background and cards in the same tonal family", async ({ page }) => {
+test("theme switching keeps transparent topic cards on the same painted paper", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.addInitScript(() => {
     window.localStorage.setItem("theme-preference", "dark");
@@ -271,72 +320,54 @@ test("theme switching keeps the home background and cards in the same tonal fami
 
   await page.click("#theme-toggle");
 
-  const readTransitionState = () =>
-    page.evaluate(() => {
-      const bodyStyles = getComputedStyle(document.body);
-      // Theme-responsive content cards are distinct from the always-dark code window.
-      const card = document.querySelector(".home-reference-domain-card") as HTMLElement | null;
-      const cardStyles = card ? getComputedStyle(card) : null;
-      const bodyMatch = bodyStyles.backgroundColor.match(/\d+/g) ?? [];
-      const cardMatch = cardStyles?.backgroundColor.match(/\d+/g) ?? [];
-
-      return {
-        theme: document.documentElement.dataset.theme,
-        colorScheme: document.documentElement.dataset.colorScheme,
-        bodyRed: Number.parseInt(bodyMatch[0] ?? "0", 10),
-        cardRed: Number.parseInt(cardMatch[0] ?? "0", 10)
-      };
-    });
-
-  // Poll until the body background transition has measurably progressed past
-  // the dark starting tone. This keeps the assertion deterministic under heavy
-  // parallel load while still verifying the cross-theme tonal family.
-  await expect.poll(readTransitionState, { timeout: 4000 }).toMatchObject({
-    theme: "system",
-    colorScheme: "light"
-  });
-  await expect
-    .poll(async () => (await readTransitionState()).bodyRed, { timeout: 4000 })
-    .toBeGreaterThan(88);
-
-  const settled = await readTransitionState();
-  expect(settled.cardRed).toBeGreaterThan(120);
-  expect(Math.abs(settled.cardRed - settled.bodyRed)).toBeLessThan(110);
-
+  const readPaint = () => Promise.all([
+    readTextContrast(page.locator(".home-reference")),
+    readTextContrast(page.locator("[data-home-domain-title]").first()),
+  ]);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "system");
+  await expect(page.locator("html")).toHaveAttribute("data-color-scheme", "light");
+  // Composite each transparent card onto its actual opaque paper ancestor.
+  // The original transition brightness and tonal-distance limits still apply.
+  await expect.poll(async () => {
+    const [paper, card] = await readPaint();
+    return paper.background[0] > 88 && card.background[0] > 120;
+  }, { timeout: 4000 }).toBe(true);
+  const [paper, card] = await readPaint();
+  expect(Math.abs(card.background[0] - paper.background[0])).toBeLessThan(110);
   await waitForThemeSettled(page);
+  const [settledPaper, settledCard] = await readPaint();
+  expect(settledPaper.backgroundLuminance).toBeGreaterThan(0.75);
+  expect(settledCard.backgroundLuminance).toBeGreaterThan(0.75);
+  expect(settledCard.ratio).toBeGreaterThanOrEqual(4.5);
 });
 
 for (const scheme of ["light", "dark"] as const) {
-  test(`home primary CTA stays legible and responds to hover in ${scheme}`, async ({ page }) => {
+  test(`home text CTA stays legible and supports pointer and keyboard navigation in ${scheme}`, async ({ page }) => {
     await page.addInitScript((theme) => window.localStorage.setItem("theme-preference", theme), scheme);
     await page.setViewportSize({ width: 1440, height: 960 });
     await page.goto("/");
     await waitForThemeSettled(page);
     await waitForEntranceAnimations(page);
     const button = page.locator(".home-reference-hero__button--primary");
-    const readButton = () => button.evaluate((node) => {
-      const style = getComputedStyle(node);
-      const token = (name: string) => {
-        const probe = document.createElement("span");
-        probe.style.color = `var(${name})`;
-        node.append(probe);
-        const value = getComputedStyle(probe).color;
-        probe.remove();
-        return value;
-      };
-      return { hover: node.matches(":hover"), background: style.backgroundColor, color: style.color,
-        rest: token("--button-primary-bg"), active: token("--button-primary-hover-bg"), foreground: token("--button-primary-text") };
-    });
-    const rest = await readButton();
-    expect(rest.hover).toBe(false);
-    expect(rest.background).toBe(rest.rest);
-    expect(rest.color).toBe(rest.foreground);
-    expect(rest.rest).not.toBe(rest.active);
+    await expect(button).toHaveAttribute("href", "/topics");
+    expect((await readTextContrast(button)).ratio).toBeGreaterThanOrEqual(4.5);
     await button.hover();
-    await expect.poll(async () => {
-      const value = await readButton();
-      return value.hover && value.background === value.active && value.color === value.foreground;
-    }).toBe(true);
+    await expect.poll(() => button.evaluate((node) => node.matches(":hover"))).toBe(true);
+    expect((await readTextContrast(button)).ratio).toBeGreaterThanOrEqual(4.5);
+    const restShadow = await button.evaluate((node) => getComputedStyle(node).boxShadow);
+    await page.keyboard.press("Tab");
+    await button.focus();
+    await expect(button).toBeFocused();
+    const focus = await button.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return { outline: style.outlineStyle, width: Number.parseFloat(style.outlineWidth), shadow: style.boxShadow };
+    });
+    expect((focus.outline !== "none" && focus.width > 0) || (focus.shadow !== "none" && focus.shadow !== restShadow)).toBe(true);
+    await button.press("Enter");
+    await expect(page).toHaveURL(/\/topics$/);
+    await page.goBack();
+    await page.locator(".home-reference-hero__button--secondary").click();
+    await expect(page).toHaveURL(/\/papers$/);
   });
 }
 
@@ -360,7 +391,6 @@ test("home reference collapses into a single-column editorial stack on mobile", 
     return {
       scrollWidth: document.documentElement.scrollWidth,
       viewportWidth: window.innerWidth,
-      terminalPosition: terminal ? getComputedStyle(terminal).position : "",
       heroCopyBottom: heroCopy?.getBoundingClientRect().bottom ?? 0,
       terminalTop: terminal?.getBoundingClientRect().top ?? 0,
       terminalRight: terminalCard?.getBoundingClientRect().right ?? 0,
@@ -373,7 +403,6 @@ test("home reference collapses into a single-column editorial stack on mobile", 
   });
 
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
-  expect(metrics.terminalPosition).toBe("relative");
   expect(metrics.terminalTop).toBeGreaterThan(metrics.heroCopyBottom - 4);
   expect(metrics.terminalRight).toBeLessThanOrEqual(metrics.viewportWidth - 16);
   expect(Math.abs(metrics.firstDomainLeft - metrics.secondDomainLeft)).toBeLessThan(4);

@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-16 (PR #9 live: refined personal research workspace; research.ts and TOC contracts preserved)
+Last updated: 2026-10-17 (architectural drawing homepage locally verified; production publication pending)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -209,7 +209,7 @@ When browser review is triggered, keep it scoped:
 
 ## 9) Frontend Rewrite Guardrails
 
-- The user explicitly prefers the code-style `research.ts` introduction and colored ambient background. Preserve that research signature, its source-backed tracks/counts, and the single native details/controller hooks; do not replace it with a generic prose panel or flatten the background as a design cleanup. System UI typography, solid readable cards and restrained navigation translucency remain. See `docs/apple-interface-pass.md` for the initial pass and user-directed correction.
+- The homepage now follows the user-approved full-canvas architectural drawing direction: white paper, cool blue-gray line art, a large A-Znk name at upper-left and the complete `research.ts` signature as an opaque lower-left annotation. Its `headerVariant="drawing"` is a flat, thin-line navigation band. Other routes retain the shared editorial shell. Keep the real author-profile tracks/counts and the single native details/controller hooks. See `docs/architectural-home.md` for the design, asset provenance and validation scope.
 - Both discover and reading bodies must use `overflow-x: clip`, not `hidden`: hidden creates a competing body scroll container and breaks viewport sticky positioning. TOC tests must assert actual viewport pinning after document scroll, not only active-item state inside the TOC.
 
 ### 9.0 Styling stack: Tailwind CSS v4 (authoritative)
@@ -238,7 +238,7 @@ Related invariants:
 - `src/components/post/PostCover.astro` + `src/styles/cards.css` now define the shared **manual cover stack** contract for non-reading surfaces: topic/concept cards, archive tiles, and the home featured card should reuse the same `ghost + main` image structure, white rim, misty blur spread, and hover lift instead of forking bespoke cover treatments. If homepage featured imagery diverges, fix the shared cover primitive first.
 - The author page is no longer exempt from that card language: the "作者文章" section should prefer `PostCard.astro` over ad-hoc text-only lists so users can actually perceive the shared cover/hover system outside the home route. If author posts look visually disconnected again, start by checking whether `src/pages/author.astro` still renders `PostCard`.
 - Archive pages still keep their time-ledger structure, but `archive-post-tile` should behave like a first-class shared card, not a static thumbnail row. Regressions to watch for are: only the image animates while the tile body stays inert, or the read cue/title no longer react on hover.
-- The home primary CTA color is part of the reference fidelity contract. Regressions tend to show up first in `light` vs `system-on-dark` theme branches, so changes to `src/styles/home-reference.css` should be checked against both explicit dark mode and `:root[data-theme="system"]` with `prefers-color-scheme: dark`.
+- Home CTAs are underlined text links with visible keyboard focus and real topic/paper destinations. The architectural image uses Astro responsive assets with eager/high-priority loading; dark treatment follows `data-color-scheme="dark"`, including system-on-dark. The code annotation stays opaque in both themes so text contrast does not depend on the drawing behind it.
 - The current `参考项目/` directory contains a small Vite/Tailwind UI demo (`remix_-misty-shadows-ui-gallery.zip`) that is useful as a **visual reference only**. Do not treat it as an architecture reference for routing, content modeling, comments, or build setup.
 - Preserve these contracts unless the user explicitly approves breaking them:
   - paragraph anchor ids from `src/lib/markdown/rehypeParagraphAnchors.ts`

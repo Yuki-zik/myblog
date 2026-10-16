@@ -1,26 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-test("home composition gives the author, code window and featured article distinct visual roles", async ({ page }) => {
+test("home content keeps a readable code annotation and distinct featured article and note list", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await expect(page.locator("h1")).toContainText("A-Znk");
-  await expect(page.locator(".home-reference-hero__topics")).toContainText("模型安全");
   const metrics = await page.evaluate(() => {
     const node = (s: string) => document.querySelector<HTMLElement>(s)!;
     const box = (s: string) => node(s).getBoundingClientRect();
-    const terminal = box(".home-reference-terminal");
-    const shell = box(".home-reference-terminal__shell");
-    const blue = box(".home-reference__orb--blue");
     const cover = box("[data-home-featured-cover]");
     const copy = box(".home-reference-featured-card__copy");
     const recentStyle = getComputedStyle(node("[data-home-recent-item]"));
     return {
-      titleSize: parseFloat(getComputedStyle(node("h1")).fontSize),
       codeSize: parseFloat(getComputedStyle(node(".home-reference-terminal__body")).fontSize),
-      windowRim: shell.left - terminal.left,
-      blueWidth: blue.width,
-      lightBehindCode: blue.left + blue.width / 2 >= terminal.left - 80,
       domainHeight: box(".home-reference-domain-card").height,
       coverWidth: cover.width,
       coverRatio: cover.width / cover.height,
@@ -30,12 +22,7 @@ test("home composition gives the author, code window and featured article distin
       recentDivider: parseFloat(recentStyle.borderBottomWidth),
     };
   });
-  expect(metrics.titleSize).toBeGreaterThanOrEqual(40);
-  expect(metrics.titleSize).toBeLessThanOrEqual(50);
-  expect(metrics.codeSize).toBeGreaterThanOrEqual(14);
-  expect(metrics.windowRim).toBeLessThanOrEqual(3);
-  expect(metrics.blueWidth).toBeLessThanOrEqual(600);
-  expect(metrics.lightBehindCode).toBe(true);
+  expect(metrics.codeSize).toBeGreaterThanOrEqual(12);
   expect(metrics.domainHeight).toBeLessThanOrEqual(200);
   expect(metrics.coverWidth).toBeGreaterThanOrEqual(440);
   expect(metrics.coverRatio).toBeCloseTo(4 / 3, 1);
@@ -100,16 +87,21 @@ test("mobile research code signature is natively expandable without hiding the t
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
+  const topicLink = page.locator('.site-nav a[href="/topics"]');
+  await expect(topicLink).toBeInViewport();
+  expect((await topicLink.boundingBox())!.y).toBeLessThan(100);
   const disclosure = page.locator("details[data-home-research-signature]");
   await expect(disclosure).toBeVisible();
   await expect(disclosure).not.toHaveAttribute("open", "");
   await expect(disclosure.locator(".home-reference-terminal__body")).not.toBeVisible();
-  const heading = page.getByRole("heading", { name: "关注领域", exact: true });
-  expect((await heading.boundingBox())!.y).toBeLessThan(844);
   await disclosure.locator("summary").click();
   await expect(disclosure.locator(".home-reference-terminal__body")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   await disclosure.locator("summary").press("Enter");
   await expect(disclosure.locator(".home-reference-terminal__body")).not.toBeVisible();
+  const heading = page.getByRole("heading", { name: "关注领域", exact: true });
+  await heading.scrollIntoViewIfNeeded();
+  await expect(heading).toBeInViewport();
 });
 
 for (const scheme of ["light", "dark"] as const) {
