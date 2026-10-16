@@ -2,6 +2,12 @@
 
 Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
 
+## User-feedback repair — 2026-10-16
+
+[PR #8](https://github.com/Yuki-zik/myblog/pull/8), merged as `1e2db3d`, restores the user's original `research.ts` introduction and colored ambient layers, and fixes the reading body's scroll-root conflict so the article TOC remains pinned. 116 unit tests, 65 targeted production E2E and all 131 PR E2E cases passed. Both new pinning tests were demonstrated failing before the fix.
+
+Frontend `dpl_3izh33KfJS139YWJKCXjyX4tgZkn` and Waline `dpl_3hShoMpgFUhrtAFx5hqpQMo2Acec` are Production/READY for the merge SHA. Public browser checks confirm viewport pinning and chapter changes at two scroll positions, restored profile code and colored home layers. Details and screenshots: `docs/apple-interface-pass.md`, ignored `output/restore-character-2026-10-16/`.
+
 ## Current interface release — 2026-10-16
 
 [PR #7](https://github.com/Yuki-zik/myblog/pull/7) merged as `16052d6`: system UI typography, neutral solid content panels, blue interaction accents and a real homepage research overview. The single responsive search mount, topic carousel, scholarly reader and Waline boundary remain intact. A pre-existing number-button reset was corrected after Linux CI exposed its effect on sidenote width.

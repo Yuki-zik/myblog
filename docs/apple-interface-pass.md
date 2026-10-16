@@ -6,7 +6,9 @@ The initial pass removed the code introduction and flattened the atmosphere more
 
 The reported TOC failure was reproduced: the reading body's `overflow-x: hidden` made its other axis compute to `auto`, creating a competing sticky scroll ancestor while the document actually scrolled. Changing it to `clip` fixes pinning without altering TOC logic. This existed before PR #7, but prior active-link tests did not detect that the whole TOC could leave the viewport.
 
-Two new viewport-pinning tests failed before the fix, then the 65-case home/visual/theme/reading suite passed. Unit tests passed 116/116. Actual browser scroll at 960.5px and 1680.5px keeps the TOC top at 85.59px with different active headings; desktop light/dark and 390px disclosure/overflow checks passed. Evidence: `output/restore-character-2026-10-16/`. Release pending.
+Two new viewport-pinning tests failed before the fix, then the 65-case home/visual/theme/reading suite passed. Unit tests passed 116/116. Actual browser scroll at 960.5px and 1680.5px keeps the TOC top at 85.59px with different active headings; desktop light/dark and 390px disclosure/overflow checks passed. Evidence: `output/restore-character-2026-10-16/`.
+
+[PR #8](https://github.com/Yuki-zik/myblog/pull/8) merged as `1e2db3dd49aaba7f4677f414e743ddfeeb01ada1` after [CI](https://github.com/Yuki-zik/myblog/actions/runs/38872366793) passed 131/131 E2E cases and all existing checks. Frontend `dpl_3izh33KfJS139YWJKCXjyX4tgZkn` and Waline `dpl_3hShoMpgFUhrtAFx5hqpQMo2Acec` are Production/READY for that SHA. Public browser verification repeats the pinned TOC at scrollY 960 and 1680 with different active chapters, and confirms the original research.ts content, two colored background layers and no homepage horizontal overflow. See `production-toc.json/png`, `production-home.json/png`, and `deployments.json` in the evidence directory.
 
 ## Direction
 
