@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-17 (architectural drawing homepage locally verified; production publication pending)
+Last updated: 2026-10-17 (PR #10 architectural drawing homepage live; PR and merge CI plus production browser acceptance passed)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 

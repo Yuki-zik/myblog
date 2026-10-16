@@ -1,6 +1,12 @@
 # Production readiness
 
-Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
+Updated: 2026-10-17. This checklist distinguishes verified code from a verified deployment.
+
+## Architectural drawing homepage — 2026-10-17
+
+[PR #10](https://github.com/Yuki-zik/myblog/pull/10), merge `6b77d29`, publishes the user-approved full-canvas architectural cover, oversized author name, opaque research.ts annotation and homepage-only flat drawing header. Tablet expansion now grows in normal flow; mobile disclosure, dark mode and the existing reading runtime remain functional.
+
+116 unit tests, all 139 PR E2E cases and post-merge CI passed; local browser checks cover desktop light/dark, 390px mobile, 900px expanded notes and search. The local full E2E attempt had one unchanged header-timing timeout, followed by a successful targeted rerun; the exact-head cloud run passed all cases directly. Both Production deployments are READY, the public asset matches the local build hash, main routes/SEO files return 200, and comments retain HTTP 200 / errno 0 with the original one comment. See `docs/architectural-home.md` and ignored `output/architectural-home-2026-10-16/` for evidence.
 
 ## Personal research workspace refinement — 2026-10-16
 

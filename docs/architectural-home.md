@@ -1,6 +1,6 @@
 # Architectural drawing homepage
 
-Status: local implementation and browser acceptance complete; production publication pending.
+Status: live at https://a-znk-blog.vercel.app/ via PR #10, merge `6b77d29acee0401b4bd19a9d5d37b77ccf25af30`.
 
 ## Approved direction
 
@@ -38,3 +38,14 @@ Browser inspection of the built output confirmed the 1440px light/dark compositi
 - Architectural tests include 768/900/1023px expanded disclosure geometry. They reproduced the overlap before the fix and now pass without lowering the spacing assertions.
 - Paper provenance, Waline smoke and configured audit gates passed. Existing low-severity findings and Waline audit exceptions remain unchanged.
 - No dependencies, database writes or public test comments were added.
+
+## Production acceptance — 2026-10-17
+
+[PR #10](https://github.com/Yuki-zik/myblog/pull/10) passed all 139 E2E cases in one cloud run, plus unit/build/provenance/Waline/audit gates. The frontend and Waline previews were successful for the exact PR head `4940c64` before merging. [Post-merge CI](https://github.com/Yuki-zik/myblog/actions/runs/38931424990) also completed successfully before handoff.
+
+- Frontend `dpl_8QQtuy9nxKangjHEX3ZwtsQXok2X` and Waline `dpl_BLERnwSaF4A6PMN38LQsEu464mn3` are Production/READY for merge `6b77d29`.
+- Both branded and previous domains remain assigned and return HTTP 200. Home canonical points to the branded origin.
+- The public drawing is 373140 bytes; SHA-256 `a889f90d6d8f3bb79fb80dcc09fc219279b05d193b6ea5bd81af0a2a545360f6` matches the locally built asset.
+- Public homepage, topics, papers, article, search index, sitemap and Google verification file all return 200. Anonymous comments return HTTP 200 / errno 0 and preserve the original one comment.
+- Fresh production browser shows drawing header, loaded artwork and the A-Znk heading; desktop and 390px mobile have no horizontal overflow. Search returns five real results for 设计. The mobile signature starts collapsed. No browser console errors were observed in the checked page.
+- Production screenshots and the compact HTTP/browser reports are saved in the evidence directory. Unrelated workstation notes were preserved byte-for-byte and excluded from the release.
