@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
+import researchArchitecture from "../assets/home/research-architecture.webp";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
@@ -64,108 +65,97 @@ const homeDescription = SITE_DESCRIPTION;
   title={`${SITE_NAME} | 大模型系统、模型安全与 Agent 工程`}
   description={homeDescription}
   runtime="discover"
+  headerVariant="drawing"
   mainClass="shell--home-reference relative"
   footerVariant="none"
 >
   <div class="home-reference relative min-h-screen" data-home-reference-root>
-    <div class="home-reference__ambient fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <div class="home-reference__grid absolute inset-0"></div>
-      <div class="home-reference__grain absolute inset-0"></div>
-      <div class="home-reference__orb home-reference__orb--blue absolute rounded-full"></div>
-      <div class="home-reference__orb home-reference__orb--amber absolute rounded-full"></div>
-    </div>
+    <section
+      class="home-reference-hero"
+      aria-label="A-Znk 的研究与工程笔记"
+      data-ux-stagger
+    >
+      <Image
+        src={researchArchitecture}
+        alt="概念建筑线稿：跨越画面的悬挑结构、桁架与研究空间"
+        class="home-reference-hero__art"
+        widths={[768, 1280, 1586]}
+        sizes="100vw"
+        format="webp"
+        quality={88}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        data-home-architecture-image
+        data-home-hero-art
+      />
 
-    <div class="home-reference__body relative z-[1] mx-auto flex w-full max-w-[70rem] flex-col gap-16 px-6 pt-14 pb-0">
-      <section
-        class="home-reference-hero relative grid grid-cols-12 items-start gap-12"
-        aria-label="首页视觉主叙事"
-        data-ux-stagger
-      >
-        <div class="home-reference-hero__copy col-span-7 flex flex-col gap-6" data-ux-reveal="fade-up">
-          <div class="home-reference-hero__kicker inline-flex items-center gap-2 text-[0.8125rem] font-medium">
-            <span>A-Znk 的研究与实践</span>
-          </div>
-
-          <h1 class="home-reference-hero__title">
-            A-Znk
-            <span class="home-reference-hero__title-note">研究与工程笔记</span>
-          </h1>
-
-          <p class="home-reference-hero__topics">大模型系统 · 模型安全 · Agent 工程</p>
-
-          <p class="home-reference-hero__description max-w-[36rem] text-[1.0625rem] leading-[1.8]">
-            我是 A-Znk，关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
-            你可以沿主题阅读笔记，也可以直接查看论文与研究成果。
-          </p>
-
-          <div class="home-reference-hero__actions flex flex-wrap items-center gap-3">
-            <a
-              href={primaryCta.href}
-              class="home-reference-hero__button home-reference-hero__button--primary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--font-ui) text-[0.875rem] leading-none font-medium"
-            >
-              <span>{primaryCta.label}</span>
-              <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
-            </a>
-            <a
-              href={secondaryCta.href}
-              class="home-reference-hero__button home-reference-hero__button--secondary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--font-ui) text-[0.875rem] leading-none font-medium"
-              target={secondaryCta.external ? "_blank" : undefined}
-              rel={secondaryCta.external ? "noreferrer noopener" : undefined}
-            >
-              <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="6" cy="6" r="2"></circle>
-                <circle cx="18" cy="6" r="2"></circle>
-                <circle cx="12" cy="18" r="2"></circle>
-                <path d="M8 6h8"></path>
-                <path d="m7.7 7.1 3.2 8.1"></path>
-                <path d="m16.3 7.1-3.2 8.1"></path>
-              </svg>
-              <span>{secondaryCta.label}</span>
-            </a>
-          </div>
+      <div class="home-reference-hero__copy" data-ux-reveal="fade-up">
+        <div class="home-reference-hero__kicker inline-flex items-center gap-2 text-[0.8125rem] font-medium">
+          <span>PERSONAL RESEARCH / FIELDNOTES</span>
         </div>
 
-        <div class="home-reference-terminal-wrap sticky top-28 z-10 col-span-5 self-start" data-ux-reveal="fade-up">
-          <div class="home-reference-card home-reference-terminal relative">
-            <details class="home-reference-terminal__shell" data-home-reference-terminal data-home-research-signature>
-              <summary class="home-reference-terminal__header">
-                <span class="home-reference-terminal__lights" aria-hidden="true">
-                  <span class="home-reference-terminal__light home-reference-terminal__light--red"></span>
-                  <span class="home-reference-terminal__light home-reference-terminal__light--amber"></span>
-                  <span class="home-reference-terminal__light home-reference-terminal__light--green"></span>
-                </span>
-                <span class="home-reference-terminal__filename">研究签名 · research.ts</span>
-              </summary>
+        <h1 class="home-reference-hero__title">A-Znk</h1>
 
-              <div class="home-reference-terminal__body">
-                <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">const</span> <span class="home-reference-terminal__fn">research</span> = {"{"}</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 当前主研究轨道</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">focus: [</p>
-                {terminalTracks.map((track) => (
-                  <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{track.title}"</span>,</p>
-                ))}
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">],</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">notes: <span class="home-reference-terminal__string">"/topics"</span>,</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">papers: <span class="home-reference-terminal__string">"/papers"</span></p>
-                <p class="home-reference-terminal__line">{"}"}</p>
-                <div class="home-reference-terminal__meta">
-                  <span data-research-count="posts">{posts.length} posts indexed</span>
-                  <span data-research-count="topics">{topics.length} topics mapped</span>
-                  <span data-research-count="concepts">{concepts.length} concepts linked</span>
-                </div>
-                <div class="home-reference-terminal__prompt">
-                  <span>$</span>
-                  <span class="home-reference-terminal__cursor" aria-hidden="true"></span>
-                </div>
+        <p class="home-reference-hero__topics">大模型系统 · 模型安全 · Agent 工程</p>
+
+        <p class="home-reference-hero__description">
+          记录研究问题、实验与系统实践。沿主题阅读笔记，或查看论文与研究成果。
+        </p>
+
+        <div class="home-reference-hero__actions">
+          <a href={primaryCta.href} class="home-reference-hero__button home-reference-hero__button--primary">
+            <span>{primaryCta.label}</span><span aria-hidden="true">↗</span>
+          </a>
+          <a href={secondaryCta.href} class="home-reference-hero__button home-reference-hero__button--secondary">
+            <span>{secondaryCta.label}</span><span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="home-reference-terminal-wrap" data-ux-reveal="fade-up">
+        <div class="home-reference-card home-reference-terminal relative">
+          <details class="home-reference-terminal__shell" data-home-reference-terminal data-home-research-signature>
+            <summary class="home-reference-terminal__header">
+              <span class="home-reference-terminal__lights" aria-hidden="true">
+                <span class="home-reference-terminal__light home-reference-terminal__light--red"></span>
+                <span class="home-reference-terminal__light home-reference-terminal__light--amber"></span>
+                <span class="home-reference-terminal__light home-reference-terminal__light--green"></span>
+              </span>
+              <span class="home-reference-terminal__filename">研究签名 · research.ts</span>
+            </summary>
+
+            <div class="home-reference-terminal__body">
+              <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">const</span> <span class="home-reference-terminal__fn">research</span> = {"{"}</p>
+              <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 当前主研究轨道</p>
+              <p class="home-reference-terminal__line home-reference-terminal__line--indent">focus: [</p>
+              {terminalTracks.map((track) => (
+                <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{track.title}"</span>,</p>
+              ))}
+              <p class="home-reference-terminal__line home-reference-terminal__line--indent">],</p>
+              <p class="home-reference-terminal__line home-reference-terminal__line--indent">notes: <span class="home-reference-terminal__string">"/topics"</span>,</p>
+              <p class="home-reference-terminal__line home-reference-terminal__line--indent">papers: <span class="home-reference-terminal__string">"/papers"</span></p>
+              <p class="home-reference-terminal__line">{"}"}</p>
+              <div class="home-reference-terminal__meta">
+                <span data-research-count="posts">{posts.length} posts indexed</span>
+                <span data-research-count="topics">{topics.length} topics mapped</span>
+                <span data-research-count="concepts">{concepts.length} concepts linked</span>
               </div>
-            </details>
-          </div>
+              <div class="home-reference-terminal__prompt">
+                <span>$</span>
+                <span class="home-reference-terminal__cursor" aria-hidden="true"></span>
+              </div>
+            </div>
+          </details>
         </div>
-      </section>
+      </div>
+      <div class="home-reference-hero__caption" aria-label="关于本站">
+        <span>{SITE_NAME}</span>
+        <span>RESEARCH / ENGINEERING</span>
+      </div>
+    </section>
 
+    <div class="home-reference__body relative z-[1] flex w-full flex-col gap-16 pb-0">
       <section data-home-domains data-controller="domains-carousel" data-ux-stagger>
         <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4" data-ux-reveal="fade-up">
           <h2>关注领域</h2>

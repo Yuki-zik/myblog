@@ -943,3 +943,104 @@ html.is-header-morphing::view-transition-new(site-header) {
     --header-collapse-progress: 1;
   }
 }
+
+/* Drawing pages use a flat paper band. The surface node and content geometry
+   stay in place so scroll states, search and focus share the default runtime. */
+.site-header[data-header-variant="drawing"] {
+  background: var(--surface-primary);
+}
+
+.site-header[data-header-variant="drawing"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 40px;
+  inset-block-end: 0;
+  height: 1px;
+  background: var(--border-default);
+  pointer-events: none;
+}
+
+.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner::before,
+.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner::after {
+  content: none;
+}
+
+.site-header[data-header-variant="drawing"][data-header-state] .shell {
+  width: calc(100% - 80px);
+  max-width: none;
+}
+
+.site-header[data-header-variant="drawing"] .site-nav a {
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-weight: 450;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.site-header[data-header-variant="drawing"] .site-nav a:hover,
+.site-header[data-header-variant="drawing"] .site-nav a[aria-current="page"] {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.4em;
+}
+
+.site-header[data-header-variant="drawing"] :is(.brand, .site-nav a):focus-visible {
+  border-radius: 0;
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+.site-header[data-header-variant="drawing"] :is(.header-search-trigger, .header-search-field, .theme-toggle) {
+  border-color: var(--border-strong);
+  border-radius: 2px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.site-header[data-header-variant="drawing"] :is(.header-search-trigger, .theme-toggle):hover {
+  border-color: var(--text-secondary);
+  background: var(--state-hover);
+  color: var(--text-primary);
+}
+
+.site-header[data-header-variant="drawing"] .header-search-trigger-shortcut {
+  border-radius: 2px;
+  background: transparent;
+}
+
+.site-header[data-header-variant="drawing"] .header-search-panel {
+  border-color: var(--border-strong);
+  border-radius: 2px;
+  background: var(--surface-primary);
+  box-shadow: none;
+}
+
+/* The mobile field and results move into a dialog directly under body. The
+   body marker keeps the drawing treatment without changing that single-node flow. */
+.site-header[data-header-variant="drawing"] :is(.header-search-close, .header-search-result-link),
+body[data-header-variant="drawing"] .header-search-dialog :is(.header-search-field, .header-search-close, .header-search-result-link) {
+  border-radius: 2px;
+}
+
+@media (max-width: 900px) {
+  .site-header[data-header-variant="drawing"][data-header-state] .shell {
+    width: calc(100% - 32px);
+  }
+
+  .site-header[data-header-variant="drawing"]::after {
+    inset-inline: 16px;
+  }
+}

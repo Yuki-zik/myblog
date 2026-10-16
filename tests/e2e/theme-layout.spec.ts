@@ -173,13 +173,13 @@ test("home reference hero and header stay structured on desktop", async ({
   expect(metrics.searchBox!.x + metrics.searchBox!.width).toBeLessThan(
     metrics.navBox!.x,
   );
-  expect(metrics.terminalPosition).toBe("sticky");
-  expect(metrics.terminalBox!.x).toBeGreaterThan(
-    metrics.heroCopyBox!.x + metrics.heroCopyBox!.width * 0.72,
+  // The approved architectural poster places the code annotation below the
+  // title on the left, rather than in a second sticky hero column.
+  expect(metrics.terminalPosition).toBe("absolute");
+  expect(Math.abs(metrics.terminalBox!.x - metrics.heroCopyBox!.x)).toBeLessThan(16);
+  expect(metrics.terminalBox!.y).toBeGreaterThan(
+    metrics.heroCopyBox!.y + metrics.heroCopyBox!.height,
   );
-  expect(
-    Math.abs(metrics.terminalBox!.y - metrics.heroCopyBox!.y),
-  ).toBeLessThan(80);
   expect(
     Math.max(...metrics.domainTops) - Math.min(...metrics.domainTops),
   ).toBeLessThan(12);
