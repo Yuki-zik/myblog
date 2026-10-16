@@ -4,7 +4,7 @@
 
 [PR #5](https://github.com/Yuki-zik/myblog/pull/5) 合并为 `d895679`，公共名称「A-Znk的blog」已上线。可见品牌、所有文档标题、Open Graph/WebSite、RSS/llms、图标、设计说明书与 README 入口一致；GitHub 项目简介和网址已同步。116 单测、14 项定向 E2E 通过；PR CI 为 123 直接通过加 1 项重试后通过，合并 CI 完整 124/124 一次通过。两套 Production 成功，线上 19 个公开页的站名/标题/结构化数据/canonical/索引规则无异常，手机 390px 无横向溢出。
 
-Google 直接检索遇验证码，另一次公开 site: 搜索无可确认结果，均不能作为未收录的证明。本次自动化未访问可管理的 Search Console 属性，未提交收录请求；站点所有者的登录/验证与索引核验仍待完成。操作说明：`docs/search-discovery.md`；证据：`output/branding-search-2026-10-15/`。
+2026-10-16 已完成原域名的 Search Console URL-prefix 所有权验证、sitemap 提交与首页索引请求。验证文件 `public/googleb326e1b2b17b02a1.html` 随 PR #6（`16e82ec`）上线，线上 200 且与 Google 原文件字节一致；本地 116 单测/20 页构建通过，PR 与合并 CI 各 124/124，两套 Production 成功。Google URL Inspection 确认首页当时尚未收录；实时测试显示可编入索引，索引请求已进入优先抓取队列。sitemap 提交显示成功，公开 XML 含 19 页；Google 初始发现计数仍为 0，实际收录待其处理。记录：`docs/search-discovery.md`；证据：`output/search-console-2026-10-16/`。
 
 ## 404 恢复入口（2026-10-15，已发布）
 
