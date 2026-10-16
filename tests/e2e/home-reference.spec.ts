@@ -101,7 +101,7 @@ test.beforeEach(async ({ page }) => {
   await mockSubstats(page);
 });
 
-test("home uses a calm dark canvas and solid surfaces while keeping header controls intact", async ({ page }) => {
+test("home keeps its colored atmosphere and dark surfaces while keeping header controls intact", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("theme-preference", "dark"));
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
@@ -125,8 +125,81 @@ test("home uses a calm dark canvas and solid surfaces while keeping header contr
   expect(metrics.footerWidth).toBe(metrics.viewportWidth);
   expect(metrics.pageWidth).toBeLessThanOrEqual(metrics.viewportWidth + 1);
   await expect(page.locator(".site-header .theme-toggle")).toBeVisible();
-  await expect(page.locator(".home-reference__orb, .home-reference__grid")).toHaveCount(0);
+  await expect(page.locator(".home-reference__ambient")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".home-reference__orb")).toHaveCount(2);
 });
+
+test("home preserves the research.ts introduction and live knowledge counts", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.goto("/");
+  const terminal = page.locator("details[data-home-research-signature]");
+  await expect(terminal).toHaveCount(1);
+  await expect(terminal).toHaveAttribute("open", "");
+  await expect(terminal.locator("summary")).toHaveText("研究签名 · research.ts");
+  await expect(terminal.locator(".home-reference-terminal__line")).toHaveText([
+    "const research = {",
+    "// 当前主研究轨道",
+    "focus: [",
+    '"LLM / MLLM 系统",',
+    '"模型安全",',
+    '"Agent 工程",',
+    "],",
+    'notes: "/topics",',
+    'papers: "/papers"',
+    "}"
+  ]);
+  await expect(terminal.getByRole("heading")).toHaveCount(0);
+  await expect(terminal.locator(".home-reference-terminal__prompt")).toHaveText("$");
+  const index = await (await page.request.get("/search-index.json")).json();
+  for (const [kind, collection, suffix] of [
+    ["post", "posts", "posts indexed"],
+    ["topic", "topics", "topics mapped"],
+    ["concept", "concepts", "concepts linked"]
+  ] as const) {
+    const count = index.filter((entry: { type: string }) => entry.type === kind).length;
+    await expect(terminal.locator(`[data-research-count=${collection}]`)).toHaveText(`${count} ${suffix}`);
+  }
+});
+
+for (const scheme of ["light", "dark"] as const) {
+  test(`home atmosphere retains visible color without intercepting controls in system ${scheme}`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
+    await page.setViewportSize({ width: 1440, height: 960 });
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
+    const ambient = page.locator(".home-reference__ambient");
+    await expect(ambient).toHaveAttribute("aria-hidden", "true");
+    const paint = await ambient.evaluate((node) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const ctx = canvas.getContext("2d")!;
+      return {
+        pointerEvents: getComputedStyle(node).pointerEvents,
+        orbs: Array.from(node.querySelectorAll<HTMLElement>(".home-reference__orb")).map((orb) => {
+          const style = getComputedStyle(orb);
+          ctx.clearRect(0, 0, 1, 1);
+          ctx.fillStyle = style.backgroundColor;
+          ctx.fillRect(0, 0, 1, 1);
+          const rgba = Array.from(ctx.getImageData(0, 0, 1, 1).data);
+          const rect = orb.getBoundingClientRect();
+          return { rgba, width: rect.width, height: rect.height, animation: style.animationName };
+        })
+      };
+    });
+    expect(paint.pointerEvents).toBe("none");
+    expect(paint.orbs).toHaveLength(2);
+    for (const orb of paint.orbs) {
+      expect(orb.width).toBeGreaterThan(400);
+      expect(orb.height).toBeGreaterThan(400);
+      expect(orb.rgba[3]).toBeGreaterThan(40);
+      expect(Math.max(...orb.rgba.slice(0, 3)) - Math.min(...orb.rgba.slice(0, 3))).toBeGreaterThan(100);
+      expect(orb.animation).toBe("none");
+    }
+    await page.getByRole("link", { name: "按主题探索", exact: true }).click();
+    await expect(page).toHaveURL(/\/topics$/);
+  });
+}
 
 test("home follows dark OS and keeps the same surface palette through theme toggles", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });

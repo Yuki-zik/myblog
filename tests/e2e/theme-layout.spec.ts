@@ -812,6 +812,42 @@ test("post page collapses to a single mobile column and shows follow-up navigati
   expect(railMetrics.layerHeight).toBeGreaterThan(railMetrics.bubbleHeight);
 });
 
+for (const [slug, width] of [
+  ["paragraph-anchor-design", 1440],
+  ["myblog-design-manual", 1920],
+] as const) {
+  test(`article toc remains pinned to the viewport while reading ${slug}`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 960 });
+    await page.goto(`/posts/${slug}`);
+    await disableSmoothScroll(page);
+
+    // Scroll the document itself. Clicking a locator here could silently scroll
+    // an off-screen TOC back into view and hide a broken sticky container.
+    for (const top of [900, 1600]) {
+      await page.evaluate((y) => window.scrollTo(0, y), top);
+      await waitForScrollSettled(page);
+      await page.screenshot({ path: testInfo.outputPath(`toc-scroll-${top}.png`) });
+      await expect.poll(() => page.evaluate(() => {
+        const rail = document.querySelector<HTMLElement>(".post-reading-toc-rail")!;
+        const active = rail.querySelector<HTMLElement>("[data-toc-link].is-active");
+        const railBox = rail.getBoundingClientRect();
+        const activeBox = active?.getBoundingClientRect();
+        return {
+          documentScrolled: window.scrollY >= 850,
+          pinned: Math.abs(railBox.top - Number.parseFloat(getComputedStyle(rail).top)) < 2,
+          activeInViewport: !!activeBox && activeBox.top >= 0 && activeBox.bottom <= innerHeight,
+          noHorizontalOverflow: document.documentElement.scrollWidth <= innerWidth,
+        };
+      })).toEqual({
+        documentScrolled: true,
+        pinned: true,
+        activeInViewport: true,
+        noHorizontalOverflow: true,
+      });
+    }
+  });
+}
+
 test("article toc sidebar tracks active sections and keeps a progress rail", async ({
   page,
 }) => {

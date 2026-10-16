@@ -24,7 +24,9 @@ body[data-runtime="reading"] {
   --article-chip-border: color-mix(in srgb, var(--article-ink) 10%, transparent 90%);
   --article-chip-text: color-mix(in srgb, var(--article-ink) 76%, white 24%);
   background: rgb(252, 252, 253);
-  overflow-x: hidden;
+  /* Clip horizontal overflow without making body a competing scroll root.
+     The desktop TOC must stick to the document viewport. */
+  overflow-x: clip;
 }
 
 .post-reading-page {
