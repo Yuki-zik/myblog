@@ -110,7 +110,7 @@ test("home keeps its colored atmosphere and dark surfaces while keeping header c
   await expect(page.locator(".theme-toggle-label")).toHaveText("深色");
   const metrics = await page.evaluate(() => {
     const title = document.querySelector(".home-reference-hero__title")!;
-    const card = document.querySelector(".home-reference-card")!;
+    const card = document.querySelector(".home-reference-domain-card")!;
     const footer = document.querySelector("[data-home-reference-footer]")!;
     return {
       titleColor: getComputedStyle(title).color,
@@ -274,7 +274,8 @@ test("theme switching keeps the home background and cards in the same tonal fami
   const readTransitionState = () =>
     page.evaluate(() => {
       const bodyStyles = getComputedStyle(document.body);
-      const card = document.querySelector(".home-reference-card") as HTMLElement | null;
+      // Theme-responsive content cards are distinct from the always-dark code window.
+      const card = document.querySelector(".home-reference-domain-card") as HTMLElement | null;
       const cardStyles = card ? getComputedStyle(card) : null;
       const bodyMatch = bodyStyles.backgroundColor.match(/\d+/g) ?? [];
       const cardMatch = cardStyles?.backgroundColor.match(/\d+/g) ?? [];

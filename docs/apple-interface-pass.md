@@ -1,5 +1,13 @@
 # Apple-inspired editorial interface pass
 
+## Approved composition refinement — 2026-10-16
+
+After reviewing the restored version, the user approved a personal research workspace direction: clearer author identity, smaller hero typography, a thin-edged code window, localized colored light, shorter topic cards, a larger featured article and a ruled recent-note list. The original research.ts content, single details, four-card carousel and fixed TOC remain intact.
+
+The homepage now uses a 48px author heading, secondary research heading, 14px code text and a 1px window rim. Blue light sits behind the window; the warm/purple lower light remains visible. The featured cover is about 488px wide at 1440px, retains the shared 4:3 ghost/main treatment, and stacks above the copy on mobile. Recent notes use full-width dividers with the existing metadata, tags and hover cue. Press feedback respects reduced motion.
+
+Two new composition tests failed on the preceding version, then passed after implementation. Unit tests: 116/116; home/visual/theme/cover production E2E: 80/80. Real browser review covered desktop light/dark, the featured article and list, and 390px disclosure/stacking without overflow. Evidence: ignored `output/research-workspace-2026-10-16/`. Release pending.
+
 ## User-directed correction — 2026-10-16
 
 The initial pass removed the code introduction and flattened the atmosphere more than the user wanted. The user explicitly requested their return. The homepage now restores the original `research.ts` profile with source-backed tracks, routes and live counts, plus static colored ambient light; shared discover pages regain blue/amber layers behind readable solid cards. The single native disclosure and mobile collapse remain.

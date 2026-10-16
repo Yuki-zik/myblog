@@ -87,14 +87,11 @@ const homeDescription = SITE_DESCRIPTION;
           </div>
 
           <h1 class="home-reference-hero__title">
-            大模型系统
-            <br />
-            安全研究
-            <br />
-            <span class="home-reference-hero__title-tail inline">
-              <span class="home-reference-hero__title-accent">&amp;</span> 工程笔记
-            </span>
+            A-Znk
+            <span class="home-reference-hero__title-note">研究与工程笔记</span>
           </h1>
+
+          <p class="home-reference-hero__topics">大模型系统 · 模型安全 · Agent 工程</p>
 
           <p class="home-reference-hero__description max-w-[36rem] text-[1.0625rem] leading-[1.8]">
             我是 A-Znk，关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
@@ -132,7 +129,7 @@ const homeDescription = SITE_DESCRIPTION;
         </div>
 
         <div class="home-reference-terminal-wrap sticky top-28 z-10 col-span-5 self-start" data-ux-reveal="fade-up">
-          <div class="home-reference-card home-reference-terminal relative p-1.5">
+          <div class="home-reference-card home-reference-terminal relative">
             <details class="home-reference-terminal__shell" data-home-reference-terminal data-home-research-signature>
               <summary class="home-reference-terminal__header">
                 <span class="home-reference-terminal__lights" aria-hidden="true">
@@ -270,16 +267,16 @@ const homeDescription = SITE_DESCRIPTION;
         </div>
       </section>
 
-      <section class="home-reference-publishing-grid grid grid-cols-3 gap-8" data-ux-stagger>
-        <div class="col-span-1" data-home-featured-post data-ux-reveal="fade-up">
+      <section class="home-reference-publishing-grid grid gap-8" data-ux-stagger>
+        <div data-home-featured-post data-ux-reveal="fade-up">
           <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4">
             <h2>近期得意之作</h2>
           </div>
 
           {
             featuredPost ? (
-              <a href={`/posts/${featuredPost.id}`} class="home-reference-card home-reference-featured-card relative block p-5">
-                <div class="home-featured-cover-stack post-cover post-cover--featured mb-5" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
+              <a href={`/posts/${featuredPost.id}`} class="home-reference-card home-reference-featured-card relative p-5">
+                <div class="home-featured-cover-stack post-cover post-cover--featured" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
                   {
                     featuredPost.data.cover?.src ? (
                       <>
@@ -292,7 +289,7 @@ const homeDescription = SITE_DESCRIPTION;
                           loading="eager"
                           decoding="async"
                           aria-hidden="true"
-                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 420px"
+                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 500px"
                         />
                         <Image
                           src={featuredPost.data.cover.src}
@@ -302,7 +299,7 @@ const homeDescription = SITE_DESCRIPTION;
                           class="home-featured-cover-image home-featured-cover-image--main post-cover-img post-cover-img--main"
                           loading="eager"
                           decoding="async"
-                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 420px"
+                          sizes="(max-width: 720px) calc(100vw - 2rem), (max-width: 1120px) calc(100vw - 4rem), 500px"
                         />
                       </>
                     ) : (
@@ -311,7 +308,7 @@ const homeDescription = SITE_DESCRIPTION;
                   }
                 </div>
 
-                <div class="home-reference-featured-card__body flex flex-col gap-3">
+                <div class="home-reference-featured-card__copy home-reference-featured-card__body flex flex-col gap-3">
                   <div class="home-reference-featured-card__eyebrow inline-flex items-center gap-[0.35rem] font-(family-name:--font-ui) text-[0.75rem] font-medium">{featuredTopicLabel}</div>
                   <h3 class="home-reference-featured-card__title">{featuredPost.data.title}</h3>
                   {featuredPost.data.summary ? (
@@ -325,7 +322,7 @@ const homeDescription = SITE_DESCRIPTION;
           }
         </div>
 
-        <div class="col-span-2" data-home-recent-posts data-ux-reveal="fade-up">
+        <div data-home-recent-posts data-ux-reveal="fade-up">
           <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4">
             <h2>近期碎片</h2>
             <a href="/archives" class="home-reference-section-link inline-flex items-center gap-1">
@@ -340,9 +337,9 @@ const homeDescription = SITE_DESCRIPTION;
           {recentPosts.length === 0 ? (
             <p class="home-reference-empty rounded-[1rem] px-5 py-6 text-[0.95rem]">暂时还没有更多文章。</p>
           ) : (
-            <div class="home-reference-recent-list flex flex-col gap-3">
+            <div class="home-reference-recent-list flex flex-col">
               {recentPosts.map((post) => (
-                <a href={`/posts/${post.id}`} class="home-reference-card home-reference-recent-item group relative flex items-center gap-6 overflow-hidden p-5" data-home-recent-item>
+                <a href={`/posts/${post.id}`} class="home-reference-recent-item group relative flex items-center gap-6 overflow-hidden" data-home-recent-item>
                   <div class="home-reference-recent-item__meta flex w-48 shrink-0 flex-wrap items-center gap-2">
                     <span class="home-reference-recent-item__date font-(family-name:--font-ui) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
                     <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center rounded-full px-2.5 py-1 font-(family-name:--font-ui) text-[0.6875rem] leading-none">
