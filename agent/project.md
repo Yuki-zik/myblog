@@ -1,5 +1,11 @@
 # 项目概况 (A-Znk的blog)
 
+## 当前主网址（2026-10-16）
+
+主入口现为 **https://a-znk-blog.vercel.app/**，旧 `myblog-silk-one.vercel.app` 保留为可访问别名。两个 Vercel 项目及 GitHub 仓库身份不变；前端和 Waline 的 `SITE_URL`、README/GitHub 入口、19 个页面 canonical、RSS、robots 与 sitemap 已同步。发布提交 `1a05291` 的两套 Production 均 READY；116 单测和 20 页构建通过，线上 19 页与 Google 原验证文件逐项核验通过，评论 HTTP 200/errno 0、原 1 条保留。
+
+新域名的 Search Console 属性已自动完成所有权验证，sitemap 读取状态为“成功”（首次读取曾短暂报无法抓取）；首页 Google 实时测试显示可编入索引。新首页手动索引申请被“超出了配额”拒绝，需额度恢复后再申请；当前没有宣称新域名已收录。旧域名此前接受的索引请求仅属于旧资源。当前记录：`docs/search-discovery.md`；证据：`output/domain-branding-2026-10-16/`。
+
 ## 站名与检索（2026-10-16，已发布）
 
 [PR #5](https://github.com/Yuki-zik/myblog/pull/5) 合并为 `d895679`，公共名称「A-Znk的blog」已上线。可见品牌、所有文档标题、Open Graph/WebSite、RSS/llms、图标、设计说明书与 README 入口一致；GitHub 项目简介和网址已同步。116 单测、14 项定向 E2E 通过；PR CI 为 123 直接通过加 1 项重试后通过，合并 CI 完整 124/124 一次通过。两套 Production 成功，线上 19 个公开页的站名/标题/结构化数据/canonical/索引规则无异常，手机 390px 无横向溢出。

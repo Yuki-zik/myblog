@@ -2,17 +2,26 @@
 
 Public name: **A-Znk的blog**. The shared name, alternate names and description live in `src/lib/site.ts`. Page titles, visible brand, `og:site_name`, the existing `WebSite` node, RSS and the reading index use the same identity. Existing content URLs remain valid.
 
+## Current public hostname (2026-10-16)
+
+Primary URL: **https://a-znk-blog.vercel.app/**. The previous `myblog-silk-one.vercel.app` hostname remains an accessible alias. The same Vercel projects serve the site and Waline; their public `SITE_URL` values now use the branded origin. Release `1a05291` completed both production deployments. All 19 production canonicals, the sitemap, robots/RSS and the original verification file were checked; anonymous comments remain healthy with the original one comment.
+
+The new URL-prefix [Search Console property](https://search.google.com/search-console?resource_id=https%3A%2F%2Fa-znk-blog.vercel.app%2F) automatically verified ownership through the existing HTML file. `sitemap-index.xml` was submitted once: its initial “无法抓取” state subsequently became “成功”, with type “站点地图索引”. Its public child sitemap contains 19 URLs; this is not a claim that Google has indexed all of them.
+
+Google's homepage live test passed (“网址可编入 Google 索引”). The **new hostname's manual indexing request was not accepted**: Google displayed “超出了配额”, saying the daily quota was exhausted and to try the next day. Do not treat the older hostname's accepted request below as an accepted request for this hostname. Actual indexing remains pending. Evidence: ignored `output/domain-branding-2026-10-16/`, including the live-test, quota and final successful-sitemap screenshots.
+
+
 ## Verified technical signals
 
 - Public content is server-rendered and has canonical URLs; robots.txt allows crawling and points to the sitemap index.
-- Sitemap: https://myblog-silk-one.vercel.app/sitemap-index.xml
+- Sitemap: https://a-znk-blog.vercel.app/sitemap-index.xml
 - Ordinary content remains indexable. The 404 page and raw Markdown mirrors retain their intentional noindex rules.
 - The public repository README links to the actual site; its GitHub description and homepage also use the new identity.
 - Validation artifacts and search observations are in ignored `output/branding-search-2026-10-15/`.
 
 Production verification (2026-10-16): PR #5 / `d895679` is live. All 19 indexable pages were checked for the branded title, one correct WebSite node, stable canonical and normal indexing rules. Merge CI passed 124/124 E2E cases.
 
-## Google Search Console setup (2026-10-16)
+## Earlier setup on the previous hostname (2026-10-16)
 
 The URL-prefix property `https://myblog-silk-one.vercel.app/` is now verified in the site owner's Google account.
 

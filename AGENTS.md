@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-16 (Search Console verified; sitemap and homepage indexing request submitted; actual indexing pending)
+Last updated: 2026-10-16 (a-znk-blog.vercel.app live; sitemap read successfully; new homepage index request quota-limited)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -97,6 +97,8 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 
 ## 3) Cloud/Deployment Progress
 
+- Primary public URL: `https://a-znk-blog.vercel.app/`. `myblog-silk-one.vercel.app` remains an accessible alias; canonical/OG, RSS, robots and sitemap use the branded hostname. Frontend and Waline `SITE_URL` settings use the new origin.
+
 - GitHub repo created and pushed:
   - `https://github.com/Yuki-zik/myblog`
 - Vercel has separate `myblog` and `waline` projects. Do not infer production health from a successful local build or a Waline deployment.
@@ -104,7 +106,7 @@ Build a theme-first knowledge blog with Waline-powered article comments:
 - Waline server and frontend public configuration must be verified separately for each deployment environment.
 
 - Public site names and descriptions come from `SITE_NAME` / `SITE_DESCRIPTION` in `src/lib/site.ts`; header, footer, document titles, Open Graph, RSS and the existing WebSite JSON-LD share these values.
-- Google Search Console URL-prefix ownership is verified for `https://myblog-silk-one.vercel.app/` via `public/googleb326e1b2b17b02a1.html`. Keep that exact file in future releases. Sitemap submission and the homepage indexing request were accepted on 2026-10-16; actual indexing remains pending. See `docs/search-discovery.md`.
+- Google Search Console ownership is verified for both `https://a-znk-blog.vercel.app/` and the previous hostname using `public/googleb326e1b2b17b02a1.html`. Keep that exact file. The new-domain sitemap was read successfully; the new homepage passed the live test but its manual indexing request hit the daily quota on 2026-10-16. See `docs/search-discovery.md`.
 
 ## 4) Required Environment Variables
 

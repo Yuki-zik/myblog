@@ -2,7 +2,16 @@
 
 Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
 
-## Current production release — 2026-10-16 site identity
+## Current production hostname — 2026-10-16 branded URL
+
+Primary address: **https://a-znk-blog.vercel.app/**. The former address remains an HTTP-200 alias. Frontend and Waline `SITE_URL` values now use the branded origin; README and GitHub homepage were updated. Commit `1a05291` produced READY frontend deployment `dpl_6w5iDwjPCATnRjQKLwB2tpF1L73w` and Waline deployment `dpl_H8W3Mq2YkCKnJekC4VqmRSiv6uF2`.
+
+- 116 unit tests and a 20-page build with the new origin passed. All 19 production sitemap pages return 200 and the new canonical origin. RSS/robots/sitemap and the Google verification file match the new address; real Chrome access succeeded. Application runtime code is unchanged from the preceding release that passed 124 E2E cases.
+- Anonymous comments: HTTP 200, errno 0, original count 1, with the new Origin header. No database data or credential changes were needed.
+- New-host Search Console ownership is verified. The sitemap's initial fetch error resolved to “成功”; Google's homepage live test passed. A manual new-homepage indexing request hit the daily quota and was not accepted. Indexing remains pending; see `docs/search-discovery.md`.
+- Evidence: ignored `output/domain-branding-2026-10-16/`, including public-setting backups and production/sitemap/quota checks.
+
+## Earlier production release — 2026-10-16 site identity
 
 [PR #5](https://github.com/Yuki-zik/myblog/pull/5) merged as `d895679c0e1dc1bfae8dbfd9cb6f6d4592f2f82e`. The public name is **A-Znk的blog**, consistently rendered in the header/footer, document/social titles, existing WebSite JSON-LD, RSS/llms, favicon, design-manual references and repository entry point. Author identity and existing content URLs remain intact. GitHub repository description/homepage were updated to the real site.
 
@@ -46,7 +55,7 @@ The user authorized updating the existing production domain, `https://myblog-sil
 
 ## Previous production record — 2026-09-06
 
-- Website: https://myblog-silk-one.vercel.app
+- Website: https://a-znk-blog.vercel.app
 - PR #1 merged as `d35c831`; application hotfix `df5e4677a067667a329192a92a4245bcaae37d6b` is on `main` and passed [GitHub CI](https://github.com/Yuki-zik/myblog/actions/runs/34016014007).
 - Verified application deployments: frontend `dpl_9YAb7V8y4Uf7RkvM8PenD4TjViHQ`, Waline `dpl_LEs8TzA4ZfPEVZaMowwLnV71R2ne`, both Production/READY for that SHA. Later documentation-only commits may create equivalent deployments; use current Vercel state for operational actions.
 - Supabase original project restored to ACTIVE_HEALTHY. No new project, schema migration, comment deletion, or password change was performed.
