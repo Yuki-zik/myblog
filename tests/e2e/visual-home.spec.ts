@@ -1,5 +1,64 @@
 import { expect, test } from "@playwright/test";
 
+test("home composition gives the author, code window and featured article distinct visual roles", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator("h1")).toContainText("A-Znk");
+  await expect(page.locator(".home-reference-hero__topics")).toContainText("模型安全");
+  const metrics = await page.evaluate(() => {
+    const node = (s: string) => document.querySelector<HTMLElement>(s)!;
+    const box = (s: string) => node(s).getBoundingClientRect();
+    const terminal = box(".home-reference-terminal");
+    const shell = box(".home-reference-terminal__shell");
+    const blue = box(".home-reference__orb--blue");
+    const cover = box("[data-home-featured-cover]");
+    const copy = box(".home-reference-featured-card__copy");
+    const recentStyle = getComputedStyle(node("[data-home-recent-item]"));
+    return {
+      titleSize: parseFloat(getComputedStyle(node("h1")).fontSize),
+      codeSize: parseFloat(getComputedStyle(node(".home-reference-terminal__body")).fontSize),
+      windowRim: shell.left - terminal.left,
+      blueWidth: blue.width,
+      lightBehindCode: blue.left + blue.width / 2 >= terminal.left - 80,
+      domainHeight: box(".home-reference-domain-card").height,
+      coverWidth: cover.width,
+      coverRatio: cover.width / cover.height,
+      copyBesideCover: copy.left >= cover.right,
+      recentWidth: box("[data-home-recent-item]").width,
+      recentRadius: parseFloat(recentStyle.borderTopLeftRadius),
+      recentDivider: parseFloat(recentStyle.borderBottomWidth),
+    };
+  });
+  expect(metrics.titleSize).toBeGreaterThanOrEqual(40);
+  expect(metrics.titleSize).toBeLessThanOrEqual(50);
+  expect(metrics.codeSize).toBeGreaterThanOrEqual(14);
+  expect(metrics.windowRim).toBeLessThanOrEqual(3);
+  expect(metrics.blueWidth).toBeLessThanOrEqual(600);
+  expect(metrics.lightBehindCode).toBe(true);
+  expect(metrics.domainHeight).toBeLessThanOrEqual(200);
+  expect(metrics.coverWidth).toBeGreaterThanOrEqual(440);
+  expect(metrics.coverRatio).toBeCloseTo(4 / 3, 1);
+  expect(metrics.copyBesideCover).toBe(true);
+  expect(metrics.recentWidth).toBeGreaterThan(900);
+  expect(metrics.recentRadius).toBeLessThanOrEqual(2);
+  expect(metrics.recentDivider).toBeGreaterThan(0);
+});
+
+test("home featured article stacks its larger cover above the copy on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator(".home-reference-featured-card__copy")).toBeVisible();
+  const metrics = await page.evaluate(() => {
+    const cover = document.querySelector("[data-home-featured-cover]")!.getBoundingClientRect();
+    const copy = document.querySelector(".home-reference-featured-card__copy")!.getBoundingClientRect();
+    return { coverBottom: cover.bottom, copyTop: copy.top, width: innerWidth, scrollWidth: document.documentElement.scrollWidth };
+  });
+  expect(metrics.copyTop).toBeGreaterThanOrEqual(metrics.coverBottom);
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.width);
+});
+
 test("home prioritizes topics and research with a concise introduction", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator(".home-reference-hero");

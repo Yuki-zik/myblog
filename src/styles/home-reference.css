@@ -20,25 +20,23 @@
 }
 
 .home-reference__orb {
-  min-width: 30rem;
-  min-height: 30rem;
-  filter: blur(90px);
+  filter: blur(80px);
 }
 
 .home-reference__orb--blue {
-  top: -14%;
-  left: -14%;
-  width: 58vw;
-  height: 58vw;
-  background: rgb(96 165 250 / 0.32);
+  top: 3rem;
+  right: max(-4rem, calc((100vw - 70rem) / 2 - 4rem));
+  width: clamp(26rem, 36vw, 36rem);
+  height: clamp(26rem, 36vw, 36rem);
+  background: rgb(96 165 250 / 0.3);
 }
 
 .home-reference__orb--amber {
-  right: -12%;
-  bottom: -14%;
-  width: 48vw;
-  height: 48vw;
-  background: rgb(251 191 36 / 0.24);
+  left: -8rem;
+  bottom: -14rem;
+  width: clamp(28rem, 44vw, 38rem);
+  height: clamp(28rem, 44vw, 38rem);
+  background: rgb(251 191 36 / 0.18);
 }
 
 html[data-color-scheme="dark"] .home-reference__grid {
@@ -46,11 +44,11 @@ html[data-color-scheme="dark"] .home-reference__grid {
 }
 
 html[data-color-scheme="dark"] .home-reference__orb--blue {
-  background: rgb(37 99 235 / 0.3);
+  background: rgb(37 99 235 / 0.32);
 }
 
 html[data-color-scheme="dark"] .home-reference__orb--amber {
-  background: rgb(147 51 234 / 0.26);
+  background: rgb(147 51 234 / 0.18);
 }
 
 .home-reference :where(a),
@@ -61,7 +59,7 @@ html[data-color-scheme="dark"] .home-reference__orb--amber {
 
 .home-reference-card {
   background: var(--surface-primary);
-  border: 1px solid var(--border-default);
+  border: 1px solid color-mix(in srgb, var(--border-default) 70%, transparent);
   border-radius: 24px;
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.025);
   transition:
@@ -77,9 +75,24 @@ html[data-color-scheme="dark"] .home-reference__orb--amber {
   box-shadow: 0 10px 24px rgb(0 0 0 / 0.065);
 }
 
+/* The code signature is one window, not a card inside a white frame. */
+.home-reference-terminal {
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgb(160 185 226 / 0.3);
+  background: #101b30;
+  box-shadow:
+    0 20px 44px rgb(20 35 62 / 0.16),
+    0 4px 12px rgb(20 35 62 / 0.1),
+    inset 0 1px 0 rgb(218 231 255 / 0.1);
+}
+
 .home-reference-terminal:hover {
   transform: none;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.025);
+  box-shadow:
+    0 20px 44px rgb(20 35 62 / 0.16),
+    0 4px 12px rgb(20 35 62 / 0.1),
+    inset 0 1px 0 rgb(218 231 255 / 0.1);
 }
 
 .home-reference-hero__kicker {
@@ -91,15 +104,26 @@ html[data-color-scheme="dark"] .home-reference__orb--amber {
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 4.1vw, 3.75rem);
+  font-size: clamp(2.75rem, 3.5vw, 3rem);
   font-weight: 650;
   line-height: 1.18;
   letter-spacing: -0.045em;
 }
 
-.home-reference-hero__title-accent {
+.home-reference-hero__title-note {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: clamp(1.75rem, 2.3vw, 2rem);
+  font-weight: 550;
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+
+.home-reference-hero__topics {
   color: var(--text-meta);
-  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  letter-spacing: 0.015em;
 }
 
 .home-reference-hero__description {
@@ -118,6 +142,10 @@ html[data-color-scheme="dark"] .home-reference__orb--amber {
 
 .home-reference-hero__button:hover {
   transform: translateY(-1px);
+}
+
+.home-reference-hero__button:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .home-reference-hero__button--primary,
@@ -148,15 +176,10 @@ html[data-color-scheme="dark"] .home-reference__orb--amber {
 .home-reference-terminal__shell {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(30, 41, 59, 0.5);
-  border-radius: 18px;
-  background: #0f172a;
-  box-shadow: inset 0 2px 4px rgba(2, 6, 23, 0.28);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
   color: #cbd5e1;
-}
-
-html[data-color-scheme="dark"] .home-reference-terminal__shell {
-  background: #0f1423;
 }
 
 .home-reference-terminal__header {
@@ -165,7 +188,7 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   gap: 0.5rem;
   margin-bottom: 0;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  border-bottom: 1px solid rgb(148 163 184 / 0.18);
   cursor: pointer;
   list-style: none;
 }
@@ -220,13 +243,13 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   margin-left: 0.5rem;
   color: #a7b5ca;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .home-reference-terminal__body {
   padding: 1.1rem 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.7;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -384,7 +407,21 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 }
 
 .home-reference-domain-card {
-  min-height: 13rem;
+  min-height: 12rem;
+  padding: 1.125rem;
+}
+
+.home-reference-domain-card__head {
+  margin-bottom: 0.625rem;
+}
+
+.home-reference-domain-card__glyph svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.home-reference-domain-item:active .home-reference-domain-card {
+  transform: translateY(-1px) scale(0.99);
 }
 
 .home-reference-domain-card__glyph {
@@ -414,7 +451,7 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 
 .home-reference-domain-card__meta {
   margin-top: auto;
-  padding-top: 0.85rem;
+  padding-top: 0.5rem;
 }
 
 .home-reference-domain-card .home-reference-domain-card__meta {
@@ -422,8 +459,40 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   font-size: 0.75rem;
 }
 
+/* Featured writing gets its own full-width editorial spread. */
+.home-reference-publishing-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3.5rem;
+}
+
+[data-home-featured-post],
+[data-home-recent-posts] {
+  min-width: 0;
+  grid-column: 1;
+}
+
+.home-reference-featured-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2.5rem;
+  padding: 1.75rem;
+}
+
+.home-reference-featured-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.home-reference-featured-card__copy {
+  min-width: 0;
+  padding: 0.75rem 0.5rem;
+}
+
 /* Preserve the shared ghost/main cover contract and its 4:3 frame. */
 .home-featured-cover-stack {
+  width: 100%;
+  max-width: 31.25rem;
+  margin: 0;
   aspect-ratio: 4 / 3;
 }
 
@@ -441,7 +510,7 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-ui);
-  font-size: 1.1875rem;
+  font-size: clamp(1.5rem, 2.1vw, 1.875rem);
   font-weight: 600;
   line-height: 1.45;
   letter-spacing: -0.03em;
@@ -454,6 +523,27 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 
 .home-reference-featured-card__summary {
   color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+/* Recent notes remain a reading list rather than a second card collection. */
+.home-reference-recent-list {
+  gap: 0;
+}
+
+.home-reference-recent-item {
+  min-height: 5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-default) 75%, transparent);
+  border-radius: 0;
+  background: transparent;
+  transition: background-color 200ms ease;
+}
+
+.home-reference-recent-item:hover,
+.home-reference-recent-item:active {
+  background: color-mix(in srgb, var(--surface-primary) 48%, transparent);
 }
 
 .home-reference-recent-item__date {
@@ -588,7 +678,7 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   }
 
   .home-reference-domain-card {
-    min-height: 13rem;
+    min-height: 12rem;
   }
 
   .home-reference-publishing-grid {
@@ -607,7 +697,11 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
   }
 
   .home-reference-hero__title {
-    font-size: clamp(2.5rem, 10.5vw, 3rem);
+    font-size: 2.75rem;
+  }
+
+  .home-reference-hero__title-note {
+    font-size: 1.75rem;
   }
 
   .home-reference-hero__description {
@@ -624,6 +718,20 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 
   .home-reference-domain-card {
     min-height: auto;
+  }
+
+  .home-reference-featured-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  .home-reference-featured-card__copy {
+    padding: 0;
+  }
+
+  .home-featured-cover-stack {
+    max-width: none;
   }
 
   .home-reference-recent-item {
@@ -664,8 +772,15 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
     animation: none !important;
   }
 
+  .home-reference-domain-item:active .home-reference-domain-card,
+  .home-reference-featured-card:active,
+  .home-reference-hero__button:active {
+    transform: none;
+  }
+
   .home-reference-card,
   .home-reference-hero__button,
+  .home-reference-recent-item,
   .home-reference-domain-nav__button,
   .home-reference-recent-item__tag,
   .home-reference-recent-item__title,
@@ -678,8 +793,6 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
     transition: none !important;
   }
 }
-
-/* Retained for the shared discover ambient until that layer is migrated. */
 
 @keyframes home-reference-terminal-blink {
   0%, 49% { opacity: 1; }
