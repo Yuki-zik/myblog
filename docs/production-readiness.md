@@ -2,6 +2,12 @@
 
 Updated: 2026-10-16. This checklist distinguishes verified code from a verified deployment.
 
+## Current interface release — 2026-10-16
+
+[PR #7](https://github.com/Yuki-zik/myblog/pull/7) merged as `16052d6`: system UI typography, neutral solid content panels, blue interaction accents and a real homepage research overview. The single responsive search mount, topic carousel, scholarly reader and Waline boundary remain intact. A pre-existing number-button reset was corrected after Linux CI exposed its effect on sidenote width.
+
+116 unit tests, build/type checks, paper provenance, Waline smoke and existing dependency gates passed. Final PR E2E passed 124/124; merged CI also succeeded. Frontend `dpl_FoziXveEiJiR5CqC8QXGqtuUJDnM` and Waline `dpl_HAG5mpabUv7wd3rV66M9N42PEuuB` production checks succeeded. Fresh public Chrome confirms the new home, branded canonical, 390px dark layout and working search. Anonymous comments return HTTP 200 / errno 0 with the existing count 1. Evidence and earlier failed checks are recorded in `docs/apple-interface-pass.md` and ignored `output/apple-polish-2026-10-16/`.
+
 ## Current production hostname — 2026-10-16 branded URL
 
 Primary address: **https://a-znk-blog.vercel.app/**. The former address remains an HTTP-200 alias. Frontend and Waline `SITE_URL` values now use the branded origin; README and GitHub homepage were updated. Commit `1a05291` produced READY frontend deployment `dpl_6w5iDwjPCATnRjQKLwB2tpF1L73w` and Waline deployment `dpl_H8W3Mq2YkCKnJekC4VqmRSiv6uF2`.
