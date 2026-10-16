@@ -1,283 +1,116 @@
 /*
- * Home reference-mode styling.
- *
- * Tailwind v4 migration note: layout, spacing, radius, static typography and
- * the simple state utilities now live on the markup in `src/pages/index.astro`
- * and `src/components/home/HomeReferenceFooter.astro`. What is left here is
- * one of:
- *
- *   (a) unlayered-CSS-only territory — `base.css` owns `a` (colour/decoration/
- *       transition), `h1..h6` (margin/colour/font/letter-spacing/line-height),
- *       `p { margin: 0 }` and `button { font: inherit }`, and unlayered CSS
- *       always beats `@layer utilities`, so those properties cannot move;
- *   (b) the reference ambient/visual stack (gradients, grain, orbs, terminal
- *       object, full-bleed footer geometry, keyframes);
- *   (c) a value asserted by `tests/e2e/home-reference.spec.ts` or
- *       `tests/e2e/post-covers.spec.ts`.
- *
- * `discover.css` is imported after this file, so anything it also declares at
- * equal specificity wins — the duplicated `body[data-runtime="discover"]`
- * background/grain stack and `main[data-runtime="discover"]` reset were dead
- * here and have been deleted rather than converted.
+ * Homepage editorial layer. Layout utilities remain in the Astro templates;
+ * unlayered type and surfaces live here to take precedence over base.css.
+ * Semantic tokens own both explicit and system-selected color schemes.
  */
-
-/*
- * Reference-project font stacks. They are intentionally outside the token
- * system, so they are published as `--hr-font-*` custom properties and consumed
- * from markup via `font-(family-name:--hr-font-mono)`. Declared on `:root`
- * because `HomeReferenceFooter` also renders outside `.home-reference`.
- */
-:root {
-  --hr-font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --hr-font-serif: "Noto Serif SC", ui-serif, Georgia, serif;
-  --hr-font-mono: "JetBrains Mono", ui-monospace, monospace;
-}
-
-/*
- * `base.css` paints a global `body::after` wash. The discover runtime replaces
- * it with `.home-reference__ambient`, so it has to be switched off here; the
- * rest of the discover body background now lives in `discover.css`.
- */
-body[data-runtime="discover"]::after {
-  background: none;
-  opacity: 0;
-}
-
 .home-reference {
-  color: #1e293b;
-  font-family: var(--hr-font-sans);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
 }
 
-html[data-color-scheme="dark"] .home-reference {
-  color: #e2e8f0;
-}
-
-/*
- * Kept in CSS: `base.css` styles `a` unlayered, so link colour/decoration can
- * never be neutralised from a utility.
- */
 .home-reference :where(a),
 .home-reference :where(a:hover) {
   color: inherit;
   text-decoration: none;
 }
 
-/* Ambient stack. Positioning/opacity/radius live on the markup; the painted
-   surface stays here. `.home-reference__orb--blue` width is E2E-asserted. */
-.home-reference__grid {
-  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-html[data-color-scheme="dark"] .home-reference__grid {
-  background-image: radial-gradient(#1e293b 1px, transparent 1px);
-}
-
-.home-reference__orb {
-  filter: blur(80px);
-  will-change: transform, opacity;
-}
-
-.home-reference__orb--blue {
-  top: -10%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: rgba(96, 165, 250, 0.4);
-  animation: home-reference-orb-blue 15s ease-in-out infinite;
-}
-
-.home-reference__orb--amber {
-  right: -10%;
-  bottom: -10%;
-  width: 40vw;
-  height: 40vw;
-  background: rgba(251, 191, 36, 0.4);
-  animation: home-reference-orb-amber 20s ease-in-out infinite 2s;
-}
-
-html[data-color-scheme="dark"] .home-reference__orb--blue {
-  background: rgba(37, 99, 235, 0.4);
-}
-
-html[data-color-scheme="dark"] .home-reference__orb--amber {
-  background: rgba(147, 51, 234, 0.4);
-}
-
-/*
- * Kept in CSS: the surface colours are E2E-asserted per theme and the 500ms
- * background/colour transition is what the theme-transition tonal-family test
- * measures mid-flight.
- */
 .home-reference-card {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid #f1f5f9;
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 24px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.025);
   transition:
-    transform 300ms ease,
-    box-shadow 300ms ease,
-    border-color 300ms ease,
-    background-color 500ms ease,
-    color 500ms ease;
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
 }
 
-html[data-color-scheme="dark"] .home-reference-card {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: #1e293b;
-  box-shadow: none;
-}
-
-/* E2E: hover must lift the card by more than 2px. */
 .home-reference-card:hover {
-  transform: translateY(-4px);
-  border-color: #e2e8f0;
-  box-shadow:
-    0 24px 40px rgba(226, 232, 240, 0.5),
-    0 10px 24px rgba(148, 163, 184, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.065);
 }
 
-html[data-color-scheme="dark"] .home-reference-card:hover {
-  border-color: #334155;
-  box-shadow:
-    0 32px 60px rgba(0, 0, 0, 0.5),
-    0 12px 24px rgba(2, 6, 23, 0.35);
+.home-reference-terminal:hover {
+  transform: none;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.025);
 }
 
 .home-reference-hero__kicker {
-  color: #2563eb;
+  color: var(--text-secondary);
+  letter-spacing: 0.015em;
 }
 
-html[data-color-scheme="dark"] .home-reference-hero__kicker {
-  color: #60a5fa;
-}
-
-.home-reference-hero__kicker-dot {
-  box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
-}
-
-html[data-color-scheme="dark"] .home-reference-hero__kicker-dot {
-  box-shadow: 0 0 8px rgba(96, 165, 250, 0.45);
-}
-
-/* Kept in CSS: `base.css` owns every `h1` typography property unlayered. */
 .home-reference-hero__title {
-  color: #0f172a;
-  font-family: var(--hr-font-serif);
-  font-size: 3rem;
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-
-html[data-color-scheme="dark"] .home-reference-hero__title {
-  color: #f8fafc;
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 4.1vw, 3.75rem);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.045em;
 }
 
 .home-reference-hero__title-accent {
-  color: #64748b;
-}
-
-html[data-color-scheme="dark"] .home-reference-hero__title-accent {
-  color: #94a3b8;
+  color: var(--text-meta);
+  font-weight: 400;
 }
 
 .home-reference-hero__description {
-  color: #475569;
+  color: var(--text-secondary);
+  text-wrap: pretty;
 }
 
-html[data-color-scheme="dark"] .home-reference-hero__description {
-  color: #cbd5e1;
-}
-
-/*
- * Kept in CSS: the CTA palette is part of the reference fidelity contract and
- * is asserted at rest and on hover in both dark branches; the multi-property
- * transition and the hover `transform` also have to stay because `base.css`
- * sets `a { transition }` unlayered.
- */
 .home-reference-hero__button {
+  min-height: 44px;
   transition:
-    transform 300ms ease,
-    box-shadow 300ms ease,
-    background-color 300ms ease,
-    border-color 300ms ease,
-    color 300ms ease;
+    transform 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }
 
 .home-reference-hero__button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
-.home-reference-hero__button--primary {
-  background: #0f172a;
-  color: #fff;
+.home-reference-hero__button--primary,
+.home-reference-hero__button--primary:visited {
+  background: var(--button-primary-bg);
+  border-color: var(--button-primary-border);
+  color: var(--button-primary-text);
 }
 
 .home-reference-hero__button--primary:hover {
-  background: #2563eb;
-  color: #fff;
-  box-shadow: 0 18px 32px rgba(37, 99, 235, 0.25);
+  background: var(--button-primary-hover-bg);
+  color: var(--button-primary-text);
 }
 
-html[data-color-scheme="dark"] .home-reference-hero__button--primary {
-  background: #fff;
-  color: #0f172a;
-}
-
-html[data-color-scheme="dark"] .home-reference-hero__button--primary:hover {
-  background: #3b82f6;
-  color: #fff;
-  box-shadow: 0 18px 32px rgba(59, 130, 246, 0.25);
-}
-
-.home-reference-hero__button--secondary {
-  background: #fff;
-  border-color: #e2e8f0;
-  color: #334155;
+.home-reference-hero__button--secondary,
+.home-reference-hero__button--secondary:visited {
+  background: var(--surface-primary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 .home-reference-hero__button--secondary:hover {
-  background: #f8fafc;
-  box-shadow: 0 12px 24px rgba(148, 163, 184, 0.14);
+  background: var(--surface-subtle);
+  color: var(--text-primary);
 }
 
-html[data-color-scheme="dark"] .home-reference-hero__button--secondary {
-  background: #1e293b;
-  border-color: #334155;
-  color: #e2e8f0;
-}
-
-html[data-color-scheme="dark"] .home-reference-hero__button--secondary:hover {
-  background: #334155;
-  box-shadow: 0 12px 24px rgba(2, 6, 23, 0.24);
-}
-
-/* Kept in CSS: the terminal is a hand-tuned visual object copied from the
-   reference project, and E2E measures where it lands relative to the hero. */
+/* One native disclosure; the shared controller owns the 1024px open state. */
 .home-reference-terminal__shell {
-  position: relative;
   overflow: hidden;
-  border: 1px solid rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
-  background: #0f172a;
-  box-shadow: inset 0 2px 4px rgba(2, 6, 23, 0.28);
-  color: #cbd5e1;
-}
-
-html[data-color-scheme="dark"] .home-reference-terminal__shell {
-  background: #0f1423;
+  border-radius: inherit;
 }
 
 .home-reference-terminal__header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  color: var(--text-primary);
   cursor: pointer;
   list-style: none;
 }
@@ -289,7 +122,10 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 .home-reference-terminal__header::after {
   content: "+";
   margin-left: auto;
-  color: #cbd5e1;
+  color: var(--text-meta);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1;
 }
 
 [data-home-research-signature][open] > .home-reference-terminal__header::after {
@@ -297,212 +133,126 @@ html[data-color-scheme="dark"] .home-reference-terminal__shell {
 }
 
 .home-reference-terminal__header:focus-visible {
-  outline: 2px solid #93c5fd;
+  outline: 2px solid var(--brand-accent);
   outline-offset: -4px;
+  border-radius: 20px;
 }
 
-.home-reference-terminal__lights {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.home-reference-terminal__light {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 999px;
-}
-
-.home-reference-terminal__light--red {
-  background: rgba(244, 63, 94, 0.8);
-  box-shadow: 0 0 8px rgba(244, 63, 94, 0.4);
-}
-
-.home-reference-terminal__light--amber {
-  background: rgba(245, 158, 11, 0.8);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
-}
-
-.home-reference-terminal__light--green {
-  background: rgba(16, 185, 129, 0.8);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-}
-
-.home-reference-terminal__filename {
-  margin-left: 0.5rem;
-  color: #a7b5ca;
-  font-family: var(--hr-font-mono);
-  font-size: 0.75rem;
+.home-reference-research__label {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .home-reference-terminal__body {
-  padding: 1.1rem 1.25rem;
-  font-family: var(--hr-font-mono);
+  padding: 0 1.5rem 1.25rem;
+}
+
+.home-reference-research__tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-reference-research__track h2 {
+  margin: 0 0 0.35rem;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+
+.home-reference-research__summary {
+  color: var(--text-secondary);
   font-size: 0.8125rem;
   line-height: 1.7;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  text-wrap: pretty;
 }
 
-.home-reference-terminal__line {
-  color: #cbd5e1;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-}
-
-.home-reference-terminal__line + .home-reference-terminal__line {
-  margin-top: 0.14rem;
-}
-
-.home-reference-terminal__line--indent {
-  padding-left: 1rem;
-}
-
-.home-reference-terminal__line--indent-2 {
-  padding-left: 2rem;
-}
-
-.home-reference-terminal__kw {
-  color: #60a5fa;
-}
-
-.home-reference-terminal__fn {
-  color: #34d399;
-}
-
-.home-reference-terminal__type {
-  color: #94a3b8;
-}
-
-.home-reference-terminal__comment {
-  color: #a7b5ca;
-}
-
-.home-reference-terminal__string {
-  color: #fcd34d;
-}
-
-.home-reference-terminal__meta {
+.home-reference-research__stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  color: #a7b5ca;
-  font-size: 0.6875rem;
+  gap: 0.5rem 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-meta);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.home-reference-terminal__prompt {
-  display: flex;
+.home-reference-research__link,
+.home-reference-research__link:visited {
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  color: #34d399;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  color: var(--brand-accent);
+  font-size: 0.8125rem;
+  font-weight: 500;
 }
 
-.home-reference-terminal__cursor {
-  display: inline-block;
-  width: 0.5rem;
-  height: 1rem;
-  background: currentColor;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
-  animation: home-reference-terminal-blink 0.8s linear infinite;
+.home-reference-research__link:hover {
+  color: var(--brand-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-html[data-color-scheme="dark"] .home-reference-section-head {
-  border-bottom-color: #1e293b;
+.home-reference-section-head {
+  border-bottom-color: var(--border-default);
 }
 
-/* Kept in CSS: `base.css` owns `h2` margin/colour/font/letter-spacing. */
 .home-reference-section-head h2 {
   margin: 0;
-  color: #0f172a;
-  font-family: var(--hr-font-mono);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.4;
 }
 
-html[data-color-scheme="dark"] .home-reference-section-head h2 {
-  color: #fff;
-}
-
-/*
- * Kept in CSS deliberately. This descendant rule (0,1,1) currently shadows the
- * carousel arrow typography inside `.home-reference-domain-nav__button` and
- * also pins the "查看全部" label so it does not follow the section link's hover
- * colour. Splitting it into per-element utilities would silently change both.
- */
-.home-reference-section-head span,
+.home-reference-domain-toolbar > span,
 .home-reference-section-link {
-  color: #64748b;
-  font-family: var(--hr-font-mono);
-  font-size: 0.75rem;
+  color: var(--text-meta);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
 }
 
-html[data-color-scheme="dark"] .home-reference-section-head span,
-html[data-color-scheme="dark"] .home-reference-section-link {
-  color: #94a3b8;
-}
-
-/*
- * Kept in CSS: `base.css` sets `button { font: inherit }` unlayered, so the
- * nav typography cannot move, and the resting/hover surface colours are
- * E2E-asserted per theme.
- */
 .home-reference-domain-nav__button {
-  border: 1px solid #e2e8f0;
-  background: rgba(255, 255, 255, 0.82);
-  color: #334155;
-  font-family: var(--hr-font-mono);
-  font-size: 0.78rem;
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
   line-height: 1;
   transition:
-    transform 250ms ease,
-    border-color 250ms ease,
-    background-color 250ms ease,
-    color 250ms ease,
-    opacity 250ms ease;
+    transform 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    opacity 200ms ease;
 }
 
 .home-reference-domain-nav__button:hover:not(:disabled) {
   transform: translateY(-1px);
-  border-color: #cbd5e1;
-  background: #fff;
-  color: #0f172a;
+  background: var(--surface-subtle);
+  color: var(--text-primary);
 }
 
-html[data-color-scheme="dark"] .home-reference-domain-nav__button {
-  border-color: #334155;
-  background: rgba(15, 23, 42, 0.72);
-  color: #cbd5e1;
-}
-
-html[data-color-scheme="dark"] .home-reference-domain-nav__button:hover:not(:disabled) {
-  border-color: #475569;
-  background: rgba(30, 41, 59, 0.9);
-  color: #fff;
-}
-
-/* Kept in CSS: `base.css` sets `a { transition }` unlayered. */
 .home-reference-section-link {
-  transition: color 300ms ease;
+  transition: color 200ms ease;
 }
 
 .home-reference-section-link:hover {
-  color: #2563eb;
+  color: var(--brand-accent);
 }
 
-html[data-color-scheme="dark"] .home-reference-section-link:hover {
-  color: #60a5fa;
-}
-
-/*
- * Carousel geometry. `UiControllers.astro` measures the viewport and the track
- * to compute the 4-card desktop window, and E2E asserts exactly four fully
- * visible cards plus a card ratio below 1.0 — so the flex basis formula, the
- * gap and the overflow/bleed padding all have to stay declarative here.
- */
+/* Controller measures these four-card-window dimensions before moving. */
 .home-reference-domains-viewport {
   position: relative;
   overflow-x: clip;
@@ -512,7 +262,7 @@ html[data-color-scheme="dark"] .home-reference-section-link:hover {
 }
 
 .home-reference-domains-viewport:focus-visible {
-  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline: 2px solid var(--brand-accent);
   outline-offset: 0.35rem;
 }
 
@@ -534,552 +284,178 @@ html[data-color-scheme="dark"] .home-reference-section-link:hover {
   text-decoration: none;
 }
 
-/*
- * Load-bearing: `base.css` `a:hover` is (0,1,1) and outranks the
- * `.home-reference :where(a:hover)` neutraliser (0,1,0), so without this the
- * whole card would flip to the link hover colour.
- */
 .home-reference-domain-item:hover,
 .home-reference-domain-item:visited {
   color: inherit;
   text-decoration: none;
 }
 
-/* E2E: the card ratio (height / width) must stay below 1.0. */
 .home-reference-domain-card {
-  min-height: clamp(17.8rem, 17.2rem + 0.64vw, 18.2rem);
+  min-height: 13rem;
 }
 
 .home-reference-domain-card__glyph {
-  color: #94a3b8;
-  transition: color 300ms ease;
+  color: var(--brand-accent);
 }
 
 .home-reference-domain-card__id {
-  color: #cbd5e1;
-  transition: color 300ms ease;
+  color: var(--text-meta);
+  font-variant-numeric: tabular-nums;
 }
 
-html[data-color-scheme="dark"] .home-reference-domain-card__id {
-  color: #475569;
-}
-
-.home-reference-domain-card:hover .home-reference-domain-card__glyph,
-.home-reference-domain-card:hover .home-reference-domain-card__id {
-  color: #2563eb;
-}
-
-html[data-color-scheme="dark"] .home-reference-domain-card:hover .home-reference-domain-card__glyph,
-html[data-color-scheme="dark"] .home-reference-domain-card:hover .home-reference-domain-card__id {
-  color: #60a5fa;
-}
-
-/* Kept in CSS: `base.css` owns `h3` typography unlayered. */
 .home-reference-domain-card h3 {
-  margin: 0 0 0.36rem;
-  color: #0f172a;
-  font-family: var(--hr-font-serif);
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-html[data-color-scheme="dark"] .home-reference-domain-card h3 {
-  color: #fff;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
 }
 
 .home-reference-domain-card p {
-  color: #475569;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.65;
 }
 
-html[data-color-scheme="dark"] .home-reference-domain-card p {
-  color: #94a3b8;
-}
-
-/*
- * Kept in CSS: `base.css` sets `p { margin: 0 }` unlayered, so `margin-top:
- * auto` cannot move to a utility — and this is what pins the meta line to the
- * bottom of the card, which the E2E summary-to-stats whitespace budget
- * (< 92px) depends on.
- */
 .home-reference-domain-card__meta {
   margin-top: auto;
-  padding-top: 0.7rem;
+  padding-top: 0.85rem;
 }
 
-/* E2E (`post-covers.spec.ts`) asserts the computed value is exactly "4 / 3". */
+.home-reference-domain-card .home-reference-domain-card__meta {
+  color: var(--text-meta);
+  font-size: 0.75rem;
+}
+
+/* Preserve the shared ghost/main cover contract and its 4:3 frame. */
 .home-featured-cover-stack {
   aspect-ratio: 4 / 3;
 }
 
 .home-featured-cover-fallback {
-  border: 1px solid #e2e8f0;
-  background: linear-gradient(180deg, rgba(241, 245, 249, 0.94), rgba(226, 232, 240, 0.78));
-  color: #475569;
-}
-
-html[data-color-scheme="dark"] .home-featured-cover-fallback {
-  border-color: #334155;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
-  color: #94a3b8;
+  border: 1px solid var(--border-default);
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
 }
 
 .home-reference-featured-card__eyebrow {
-  color: #2563eb;
+  color: var(--brand-accent);
 }
 
-html[data-color-scheme="dark"] .home-reference-featured-card__eyebrow {
-  color: #60a5fa;
-}
-
-/* Kept in CSS: `base.css` owns `h3` typography unlayered. */
 .home-reference-featured-card__title {
   margin: 0;
-  color: #0f172a;
-  font-family: var(--hr-font-serif);
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.4;
-  transition: color 300ms ease;
-}
-
-html[data-color-scheme="dark"] .home-reference-featured-card__title {
-  color: #fff;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.03em;
+  transition: color 200ms ease;
 }
 
 .home-reference-featured-card:hover .home-reference-featured-card__title {
-  color: #2563eb;
-}
-
-html[data-color-scheme="dark"] .home-reference-featured-card:hover .home-reference-featured-card__title {
-  color: #60a5fa;
+  color: var(--brand-accent);
 }
 
 .home-reference-featured-card__summary {
-  color: #475569;
-}
-
-html[data-color-scheme="dark"] .home-reference-featured-card__summary {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .home-reference-recent-item__date {
-  color: #94a3b8;
-}
-
-html[data-color-scheme="dark"] .home-reference-recent-item__date {
-  color: #64748b;
+  color: var(--text-meta);
+  font-variant-numeric: tabular-nums;
 }
 
 .home-reference-recent-item__tag {
-  background: #f1f5f9;
-  color: #475569;
-  transition:
-    color 300ms ease,
-    background-color 300ms ease;
-}
-
-html[data-color-scheme="dark"] .home-reference-recent-item__tag {
-  background: #1e293b;
-  color: #cbd5e1;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  transition: color 200ms ease, background-color 200ms ease;
 }
 
 .home-reference-recent-item:hover .home-reference-recent-item__tag {
-  background: #eff6ff;
-  color: #2563eb;
+  color: var(--brand-accent);
 }
 
-html[data-color-scheme="dark"] .home-reference-recent-item:hover .home-reference-recent-item__tag {
-  background: rgba(30, 58, 138, 0.32);
-  color: #60a5fa;
-}
-
-/* Kept in CSS: `base.css` owns `h3` typography unlayered. */
 .home-reference-recent-item__title {
-  color: #0f172a;
-  font-family: var(--hr-font-serif);
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
   font-size: 1rem;
-  line-height: 1.45;
-  transition: color 300ms ease;
-}
-
-html[data-color-scheme="dark"] .home-reference-recent-item__title {
-  color: #e2e8f0;
+  font-weight: 550;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  transition: color 200ms ease;
 }
 
 .home-reference-recent-item:hover .home-reference-recent-item__title {
-  color: #2563eb;
+  color: var(--brand-accent);
 }
 
-html[data-color-scheme="dark"] .home-reference-recent-item:hover .home-reference-recent-item__title {
-  color: #60a5fa;
-}
-
-/*
- * Transform + transition stay in CSS on purpose.
- *
- * Tailwind v4's `-translate-x-*` / `-translate-y-*` set the `translate`
- * property, not `transform`. That renders identically, but it is not
- * equivalent to the page's contract: `theme-layout.spec.ts:194` reads
- * `getComputedStyle(arrow).transform` to assert the arrow starts offset, and
- * the reduced-motion block at the bottom of this file neutralises `transition`
- * on this exact selector.
- */
+/* Keep transform (not the translate utility) for the motion contract. */
 .home-reference-recent-item__arrow {
-  color: #2563eb;
+  color: var(--brand-accent);
   transform: translate(-1rem, -50%);
-  transition:
-    opacity 300ms ease,
-    transform 300ms ease;
+  transition: opacity 200ms ease, transform 200ms ease;
 }
 
 .home-reference-recent-item:hover .home-reference-recent-item__arrow {
   transform: translate(0, -50%);
 }
 
-html[data-color-scheme="dark"] .home-reference-recent-item__arrow {
-  color: #60a5fa;
-}
-
 .home-reference-empty {
-  border: 1px solid #e2e8f0;
-  background: rgba(255, 255, 255, 0.72);
-  color: #64748b;
+  border: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
 }
 
-html[data-color-scheme="dark"] .home-reference-empty {
-  border-color: #1e293b;
-  background: rgba(15, 23, 42, 0.45);
-  color: #94a3b8;
-}
-
-/*
- * Full-bleed footer geometry. E2E asserts the footer is exactly as wide as the
- * viewport while sitting inside the padded `.home-reference__body` column, so
- * the `100vw` + negative-margin escape hatch stays declarative here.
- */
+/* Footer escapes only the padded home column, retaining its full width. */
 .home-reference-footer {
   width: 100vw;
   margin-top: 0;
   margin-left: calc(50% - 50vw);
-  border-top: 1px solid rgba(226, 232, 240, 0.6);
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  transition:
-    background-color 500ms ease,
-    border-color 500ms ease;
-}
-
-html[data-color-scheme="dark"] .home-reference-footer {
-  border-top-color: rgba(30, 41, 59, 0.6);
-  background: rgba(11, 15, 25, 0.5);
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-primary);
+  font-family: var(--font-ui);
+  transition: background-color 220ms ease, border-color 220ms ease;
 }
 
 .home-reference-footer__brand-row {
-  color: #0f172a;
-}
-
-html[data-color-scheme="dark"] .home-reference-footer__brand-row {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .home-reference-footer__brand-mark {
-  background: #0f172a;
-  color: #fff;
-}
-
-html[data-color-scheme="dark"] .home-reference-footer__brand-mark {
-  background: #fff;
-  color: #0f172a;
+  background: var(--text-primary);
+  color: var(--surface-primary);
 }
 
 .home-reference-footer__note,
-.home-reference-footer__copy {
-  color: #596a82;
-}
-
-html[data-color-scheme="dark"] .home-reference-footer__note,
-html[data-color-scheme="dark"] .home-reference-footer__copy {
-  color: #94a3b8;
-}
-
+.home-reference-footer__copy,
 .home-reference-footer__quote {
-  color: #596a82;
+  color: var(--text-meta);
 }
 
-html[data-color-scheme="dark"] .home-reference-footer__quote {
-  color: #94a3b8;
-}
-
-/* The home quotation sits over a translucent warm-paper footer. */
-[data-home-reference-footer] .home-reference-footer__quote {
-  color: #475569;
-}
-
-html[data-color-scheme="dark"] [data-home-reference-footer] .home-reference-footer__quote {
-  color: #a7b5ca;
-}
-
-/* Kept in CSS: `base.css` sets `a { transition }` unlayered, and the hover
-   lift animates `transform` alongside the colour swap. */
 .home-reference-footer__social-link {
-  background: #f1f5f9;
-  color: #64748b;
-  transition:
-    background-color 300ms ease,
-    color 300ms ease,
-    transform 300ms ease;
-}
-
-html[data-color-scheme="dark"] .home-reference-footer__social-link {
-  background: #1e293b;
-  color: #94a3b8;
+  background: var(--surface-subtle);
+  color: var(--text-secondary);
+  transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;
 }
 
 .home-reference-footer__social-link:hover {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--surface-elevated);
+  color: var(--brand-accent);
   transform: translateY(-2px);
-}
-
-html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
-  background: rgba(30, 58, 138, 0.32);
-  color: #60a5fa;
-}
-
-/*
- * `system` is the default theme, so `html[data-color-scheme="dark"]` is not the
- * only dark branch: this mirror keeps the reference palette (and the CTA
- * contract) correct for `:root[data-theme="system"]` on a dark OS.
- */
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] .home-reference {
-    color: #e2e8f0;
-  }
-
-  :root[data-theme="system"] .home-reference__grid {
-    background-image: radial-gradient(#1e293b 1px, transparent 1px);
-  }
-
-  :root[data-theme="system"] .home-reference__orb--blue {
-    background: rgba(37, 99, 235, 0.4);
-  }
-
-  :root[data-theme="system"] .home-reference__orb--amber {
-    background: rgba(147, 51, 234, 0.4);
-  }
-
-  :root[data-theme="system"] .home-reference-card {
-    background: rgba(15, 23, 42, 0.6);
-    border-color: #1e293b;
-    box-shadow: none;
-  }
-
-  :root[data-theme="system"] .home-reference-card:hover {
-    border-color: #334155;
-    box-shadow:
-      0 32px 60px rgba(0, 0, 0, 0.5),
-      0 12px 24px rgba(2, 6, 23, 0.35);
-  }
-
-  :root[data-theme="system"] .home-reference-hero__kicker {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__kicker-dot {
-    box-shadow: 0 0 8px rgba(96, 165, 250, 0.45);
-  }
-
-  :root[data-theme="system"] .home-reference-hero__title {
-    color: #f8fafc;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__title-accent {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__description {
-    color: #cbd5e1;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__button--primary {
-    background: #fff;
-    color: #0f172a;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__button--primary:hover {
-    background: #3b82f6;
-    color: #fff;
-    box-shadow: 0 18px 32px rgba(59, 130, 246, 0.25);
-  }
-
-  :root[data-theme="system"] .home-reference-hero__button--secondary {
-    background: #1e293b;
-    border-color: #334155;
-    color: #e2e8f0;
-  }
-
-  :root[data-theme="system"] .home-reference-hero__button--secondary:hover {
-    background: #334155;
-    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.24);
-  }
-
-  :root[data-theme="system"] .home-reference-terminal__shell {
-    background: #0f1423;
-  }
-
-  :root[data-theme="system"] .home-reference-section-head {
-    border-bottom-color: #1e293b;
-  }
-
-  :root[data-theme="system"] .home-reference-section-head h2 {
-    color: #fff;
-  }
-
-  :root[data-theme="system"] .home-reference-section-head span,
-  :root[data-theme="system"] .home-reference-section-link {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-nav__button {
-    border-color: #334155;
-    background: rgba(15, 23, 42, 0.72);
-    color: #cbd5e1;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-nav__button:hover:not(:disabled) {
-    border-color: #475569;
-    background: rgba(30, 41, 59, 0.9);
-    color: #fff;
-  }
-
-  :root[data-theme="system"] .home-reference-section-link:hover {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-card__id {
-    color: #475569;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-card:hover .home-reference-domain-card__glyph,
-  :root[data-theme="system"] .home-reference-domain-card:hover .home-reference-domain-card__id {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-card h3 {
-    color: #fff;
-  }
-
-  :root[data-theme="system"] .home-reference-domain-card p {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-featured-cover-fallback {
-    border-color: #334155;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-featured-card__eyebrow {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-featured-card__title {
-    color: #fff;
-  }
-
-  :root[data-theme="system"] .home-reference-featured-card:hover .home-reference-featured-card__title {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-featured-card__summary {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item__date {
-    color: #64748b;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item__tag {
-    background: #1e293b;
-    color: #cbd5e1;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item:hover .home-reference-recent-item__tag {
-    background: rgba(30, 58, 138, 0.32);
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item__title {
-    color: #e2e8f0;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item:hover .home-reference-recent-item__title {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-recent-item__arrow {
-    color: #60a5fa;
-  }
-
-  :root[data-theme="system"] .home-reference-empty {
-    border-color: #1e293b;
-    background: rgba(15, 23, 42, 0.45);
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-footer {
-    border-top-color: rgba(30, 41, 59, 0.6);
-    background: rgba(11, 15, 25, 0.5);
-  }
-
-  :root[data-theme="system"] .home-reference-footer__brand-row {
-    color: #fff;
-  }
-
-  :root[data-theme="system"] .home-reference-footer__brand-mark {
-    background: #fff;
-    color: #0f172a;
-  }
-
-  :root[data-theme="system"] .home-reference-footer__note,
-  :root[data-theme="system"] .home-reference-footer__copy {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-footer__quote {
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-footer__social-link {
-    background: #1e293b;
-    color: #94a3b8;
-  }
-
-  :root[data-theme="system"] .home-reference-footer__social-link:hover {
-    background: rgba(30, 58, 138, 0.32);
-    color: #60a5fa;
-  }
-}
-
-/*
- * Responsive overrides stay unlayered on purpose — that is how they beat the
- * base utilities that now live on the markup.
- */
-@media (min-width: 768px) {
-  .home-reference-hero__title {
-    font-size: 3.75rem;
-  }
 }
 
 @media (max-width: 1023px) {
   .home-reference__body {
-    gap: 4.5rem;
+    gap: 3.5rem;
   }
 
   .home-reference-hero {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .home-reference-hero__copy,
@@ -1095,12 +471,11 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
   }
 
   .home-reference-terminal__header {
-    padding: 1rem 1rem 0.72rem;
+    padding: 1.125rem 1.25rem;
   }
 
   .home-reference-terminal__body {
-    padding: 0.92rem 1rem;
-    font-size: 0.8125rem;
+    padding: 0 1.25rem 1.25rem;
   }
 
   .home-reference-domain-nav {
@@ -1115,14 +490,12 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
 
   .home-reference-domain-grid {
     display: grid;
-    grid-auto-flow: row;
-    grid-auto-columns: auto;
     min-width: 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .home-reference-domain-card {
-    min-height: 18.75rem;
+    min-height: 13rem;
   }
 
   .home-reference-publishing-grid {
@@ -1132,8 +505,8 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
 
 @media (max-width: 767px) {
   .home-reference__body {
-    gap: 3rem;
-    padding-top: 1.5rem;
+    gap: 2.75rem;
+    padding-top: 1.75rem;
   }
 
   .home-reference-hero__copy {
@@ -1141,7 +514,7 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
   }
 
   .home-reference-hero__title {
-    font-size: 3rem;
+    font-size: clamp(2.5rem, 10.5vw, 3rem);
   }
 
   .home-reference-hero__description {
@@ -1178,6 +551,7 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
 
   .home-reference-footer__grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
     text-align: center;
   }
 
@@ -1193,58 +567,19 @@ html[data-color-scheme="dark"] .home-reference-footer__social-link:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-reference__orb,
-  .home-reference-terminal__cursor {
-    animation: none !important;
-  }
-
   .home-reference-card,
   .home-reference-hero__button,
   .home-reference-domain-nav__button,
+  .home-reference-recent-item__tag,
+  .home-reference-recent-item__title,
+  .home-reference-featured-card__title,
   .home-featured-cover-image--ghost,
   .home-featured-cover-image--main,
   .home-reference-recent-item__arrow,
+  .home-reference-footer,
   .home-reference-footer__social-link {
     transition: none !important;
   }
 }
 
-/* `discover.css` animates `.discover-page__orb--*` with these two keyframes as
-   well, so they must stay defined here. */
-@keyframes home-reference-orb-blue {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: translate3d(50px, -30px, 0) scale(1.1);
-  }
-}
-
-@keyframes home-reference-orb-amber {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    opacity: 0.7;
-    transform: translate3d(-40px, 40px, 0) scale(1.2);
-  }
-}
-
-@keyframes home-reference-terminal-blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-
-  50%,
-  100% {
-    opacity: 0;
-  }
-}
+/* Retained for the shared discover ambient until that layer is migrated. */

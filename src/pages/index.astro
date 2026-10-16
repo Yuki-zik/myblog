@@ -56,8 +56,7 @@ const secondaryCta = {
   external: false
 };
 
-const heroIssueNumber = String(posts.length).padStart(2, "0");
-const terminalTracks = SITE_AUTHOR_PROFILE.researchTracks?.slice(0, 3) ?? [];
+const researchTracks = SITE_AUTHOR_PROFILE.researchTracks?.slice(0, 3) ?? [];
 const homeDescription = SITE_DESCRIPTION;
 ---
 
@@ -69,23 +68,15 @@ const homeDescription = SITE_DESCRIPTION;
   footerVariant="none"
 >
   <div class="home-reference relative min-h-screen" data-home-reference-root>
-    <div class="home-reference__ambient fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <div class="home-reference__grid absolute inset-0"></div>
-      <div class="home-reference__grain absolute inset-0"></div>
-      <div class="home-reference__orb home-reference__orb--blue absolute rounded-full"></div>
-      <div class="home-reference__orb home-reference__orb--amber absolute rounded-full"></div>
-    </div>
-
-    <div class="home-reference__body relative z-[1] mx-auto flex w-full max-w-[80rem] flex-col gap-20 px-6 pt-12 pb-0">
+    <div class="home-reference__body relative z-[1] mx-auto flex w-full max-w-[70rem] flex-col gap-16 px-6 pt-14 pb-0">
       <section
-        class="home-reference-hero relative grid grid-cols-12 items-start gap-8"
+        class="home-reference-hero relative grid grid-cols-12 items-start gap-12"
         aria-label="首页视觉主叙事"
         data-ux-stagger
       >
-        <div class="home-reference-hero__copy col-span-7 flex flex-col gap-8" data-ux-reveal="fade-up">
-          <div class="home-reference-hero__kicker inline-flex items-center gap-3 font-(family-name:--hr-font-mono) text-[0.75rem] font-bold tracking-[0.22em] uppercase">
-            <span class="home-reference-hero__kicker-dot size-2 rounded-full bg-current" aria-hidden="true"></span>
-            <span>Vol. {heroIssueNumber} — 持续构建中</span>
+        <div class="home-reference-hero__copy col-span-7 flex flex-col gap-6" data-ux-reveal="fade-up">
+          <div class="home-reference-hero__kicker inline-flex items-center gap-2 text-[0.8125rem] font-medium">
+            <span>A-Znk 的研究与实践</span>
           </div>
 
           <h1 class="home-reference-hero__title">
@@ -94,19 +85,19 @@ const homeDescription = SITE_DESCRIPTION;
             安全研究
             <br />
             <span class="home-reference-hero__title-tail inline">
-              <span class="home-reference-hero__title-accent font-light italic">&amp;</span> 工程笔记.
+              <span class="home-reference-hero__title-accent">&amp;</span> 工程笔记
             </span>
           </h1>
 
-          <p class="home-reference-hero__description max-w-[36rem] text-[1.125rem] leading-[1.8]">
+          <p class="home-reference-hero__description max-w-[36rem] text-[1.0625rem] leading-[1.8]">
             我是 A-Znk，关注大模型安全与 Agent 工程，记录研究问题、实验和系统实践。
             你可以沿主题阅读笔记，也可以直接查看论文与研究成果。
           </p>
 
-          <div class="home-reference-hero__actions flex flex-wrap items-center gap-4">
+          <div class="home-reference-hero__actions flex flex-wrap items-center gap-3">
             <a
               href={primaryCta.href}
-              class="home-reference-hero__button home-reference-hero__button--primary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--hr-font-mono) text-[0.875rem] leading-none font-medium"
+              class="home-reference-hero__button home-reference-hero__button--primary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--font-ui) text-[0.875rem] leading-none font-medium"
             >
               <span>{primaryCta.label}</span>
               <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -116,7 +107,7 @@ const homeDescription = SITE_DESCRIPTION;
             </a>
             <a
               href={secondaryCta.href}
-              class="home-reference-hero__button home-reference-hero__button--secondary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--hr-font-mono) text-[0.875rem] leading-none font-medium"
+              class="home-reference-hero__button home-reference-hero__button--secondary inline-flex items-center gap-2 rounded-[999px] border border-transparent px-6 py-3 font-(family-name:--font-ui) text-[0.875rem] leading-none font-medium"
               target={secondaryCta.external ? "_blank" : undefined}
               rel={secondaryCta.external ? "noreferrer noopener" : undefined}
             >
@@ -134,37 +125,29 @@ const homeDescription = SITE_DESCRIPTION;
         </div>
 
         <div class="home-reference-terminal-wrap sticky top-28 z-10 col-span-5 self-start" data-ux-reveal="fade-up">
-          <div class="home-reference-card home-reference-terminal relative p-1.5">
+          <div class="home-reference-card home-reference-terminal relative">
             <details class="home-reference-terminal__shell" data-home-reference-terminal data-home-research-signature>
               <summary class="home-reference-terminal__header">
-                <span class="home-reference-terminal__lights" aria-hidden="true">
-                  <span class="home-reference-terminal__light home-reference-terminal__light--red"></span>
-                  <span class="home-reference-terminal__light home-reference-terminal__light--amber"></span>
-                  <span class="home-reference-terminal__light home-reference-terminal__light--green"></span>
-                </span>
-                <span class="home-reference-terminal__filename">研究签名 · research.ts</span>
+                <span class="home-reference-research__label">当前研究</span>
               </summary>
 
               <div class="home-reference-terminal__body">
-                <p class="home-reference-terminal__line"><span class="home-reference-terminal__kw">const</span> <span class="home-reference-terminal__fn">research</span> = {"{"}</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent home-reference-terminal__comment">// 当前主研究轨道</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">focus: [</p>
-                {terminalTracks.map((track) => (
-                  <p class="home-reference-terminal__line home-reference-terminal__line--indent-2"><span class="home-reference-terminal__string">"{track.title}"</span>,</p>
-                ))}
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">],</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">notes: <span class="home-reference-terminal__string">"/topics"</span>,</p>
-                <p class="home-reference-terminal__line home-reference-terminal__line--indent">papers: <span class="home-reference-terminal__string">"/papers"</span></p>
-                <p class="home-reference-terminal__line">{"}"}</p>
-                <div class="home-reference-terminal__meta">
-                  <span>{posts.length} posts indexed</span>
-                  <span>{topics.length} topics mapped</span>
-                  <span>{concepts.length} concepts linked</span>
+                <ul class="home-reference-research__tracks">
+                  {researchTracks.map((track) => (
+                    <li class="home-reference-research__track">
+                      <h2>{track.title}</h2>
+                      <p class="home-reference-research__summary">{track.summary}</p>
+                    </li>
+                  ))}
+                </ul>
+                <div class="home-reference-research__stats" aria-label="知识库规模">
+                  <span data-research-count="posts">{posts.length} 篇笔记</span>
+                  <span data-research-count="topics">{topics.length} 个主题</span>
+                  <span data-research-count="concepts">{concepts.length} 个概念</span>
                 </div>
-                <div class="home-reference-terminal__prompt">
-                  <span>$</span>
-                  <span class="home-reference-terminal__cursor" aria-hidden="true"></span>
-                </div>
+                <a class="home-reference-research__link" href="/papers">
+                  查看研究与论文 <span aria-hidden="true">↗</span>
+                </a>
               </div>
             </details>
           </div>
@@ -172,10 +155,10 @@ const homeDescription = SITE_DESCRIPTION;
       </section>
 
       <section data-home-domains data-controller="domains-carousel" data-ux-stagger>
-        <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4" data-ux-reveal="fade-up">
+        <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4" data-ux-reveal="fade-up">
           <h2>关注领域</h2>
           <div class="home-reference-domain-toolbar inline-flex items-center gap-[0.9rem]">
-            <span>{String(sortedTopics.length).padStart(2, "0")} 活跃中</span>
+            <span>{String(sortedTopics.length).padStart(2, "0")} 个主题</span>
             {
               homeDomainsLoopable ? (
                 <div class="home-reference-domain-nav inline-flex items-center gap-[0.45rem]" data-home-domains-nav>
@@ -221,7 +204,7 @@ const homeDescription = SITE_DESCRIPTION;
                   aria-label={`进入主题：${topic.data.title}`}
                 >
                   <div class="home-reference-card home-reference-domain-card relative flex h-full flex-col p-5">
-                    <div class="home-reference-domain-card__head mb-[1.2rem] flex items-start justify-between">
+                    <div class="home-reference-domain-card__head mb-3 flex items-start justify-between">
                       <span class="home-reference-domain-card__glyph" aria-hidden="true">
                         {
                           index === 0 ? (
@@ -256,7 +239,7 @@ const homeDescription = SITE_DESCRIPTION;
                           )
                         }
                       </span>
-                      <span class="home-reference-domain-card__id font-(family-name:--hr-font-mono) text-[0.75rem]" data-home-domain-id>{cardNumber}</span>
+                      <span class="home-reference-domain-card__id font-(family-name:--font-ui) text-[0.75rem]" data-home-domain-id>{cardNumber}</span>
                     </div>
 
                     <h3 data-home-domain-title>{topic.data.title}</h3>
@@ -274,14 +257,14 @@ const homeDescription = SITE_DESCRIPTION;
 
       <section class="home-reference-publishing-grid grid grid-cols-3 gap-8" data-ux-stagger>
         <div class="col-span-1" data-home-featured-post data-ux-reveal="fade-up">
-          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4">
+          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4">
             <h2>近期得意之作</h2>
           </div>
 
           {
             featuredPost ? (
-              <a href={`/posts/${featuredPost.id}`} class="home-reference-card home-reference-featured-card relative block p-4">
-                <div class="home-featured-cover-stack post-cover post-cover--featured mb-6" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
+              <a href={`/posts/${featuredPost.id}`} class="home-reference-card home-reference-featured-card relative block p-5">
+                <div class="home-featured-cover-stack post-cover post-cover--featured mb-5" data-home-featured-cover data-post-cover="featured" data-post-cover-manual={featuredPost.data.cover?.src ? "true" : "false"}>
                   {
                     featuredPost.data.cover?.src ? (
                       <>
@@ -308,13 +291,13 @@ const homeDescription = SITE_DESCRIPTION;
                         />
                       </>
                     ) : (
-                      <div class="home-featured-cover-fallback relative z-[1] grid h-full w-full place-items-center rounded-[0.75rem] font-(family-name:--hr-font-mono) text-[0.75rem] tracking-[0.12em] uppercase">Featured Note</div>
+                      <div class="home-featured-cover-fallback relative z-[1] grid h-full w-full place-items-center rounded-[0.75rem] font-(family-name:--font-ui) text-[0.75rem] tracking-[0.12em] uppercase">Featured Note</div>
                     )
                   }
                 </div>
 
                 <div class="home-reference-featured-card__body flex flex-col gap-3">
-                  <div class="home-reference-featured-card__eyebrow inline-flex items-center gap-[0.35rem] font-(family-name:--hr-font-mono) text-[0.625rem] tracking-[0.16em] uppercase">{featuredTopicLabel}</div>
+                  <div class="home-reference-featured-card__eyebrow inline-flex items-center gap-[0.35rem] font-(family-name:--font-ui) text-[0.75rem] font-medium">{featuredTopicLabel}</div>
                   <h3 class="home-reference-featured-card__title">{featuredPost.data.title}</h3>
                   {featuredPost.data.summary ? (
                     <p class="home-reference-featured-card__summary text-[0.875rem] leading-[1.7]">{featuredPost.data.summary}</p>
@@ -328,7 +311,7 @@ const homeDescription = SITE_DESCRIPTION;
         </div>
 
         <div class="col-span-2" data-home-recent-posts data-ux-reveal="fade-up">
-          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-[#e2e8f0] pb-4">
+          <div class="home-reference-section-head mb-6 flex items-center justify-between gap-4 border-b border-b-(--border-default) pb-4">
             <h2>近期碎片</h2>
             <a href="/archives" class="home-reference-section-link inline-flex items-center gap-1">
               <span>查看全部</span>
@@ -345,9 +328,9 @@ const homeDescription = SITE_DESCRIPTION;
             <div class="home-reference-recent-list flex flex-col gap-3">
               {recentPosts.map((post) => (
                 <a href={`/posts/${post.id}`} class="home-reference-card home-reference-recent-item group relative flex items-center gap-6 overflow-hidden p-5" data-home-recent-item>
-                  <div class="home-reference-recent-item__meta flex w-48 shrink-0 items-center gap-4">
-                    <span class="home-reference-recent-item__date font-(family-name:--hr-font-mono) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
-                    <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center rounded-full px-2.5 py-1 font-(family-name:--hr-font-mono) text-[0.625rem] leading-none">
+                  <div class="home-reference-recent-item__meta flex w-48 shrink-0 flex-wrap items-center gap-2">
+                    <span class="home-reference-recent-item__date font-(family-name:--font-ui) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
+                    <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center rounded-full px-2.5 py-1 font-(family-name:--font-ui) text-[0.6875rem] leading-none">
                       {topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}
                     </span>
                   </div>

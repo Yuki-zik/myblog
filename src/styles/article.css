@@ -1269,8 +1269,8 @@ body[data-runtime="reading"]::before { opacity: 0; }
   all: unset;
   display: inline-block;
   color: inherit;
-  font: inherit;
-  line-height: inherit;
+  font: 650 0.82rem/1.6 Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   padding: 0.02rem 0.18rem;
   border-radius: 3px;

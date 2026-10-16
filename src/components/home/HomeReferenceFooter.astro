@@ -69,18 +69,18 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
   ]}
   data-home-reference-footer={variant === "full-bleed" ? true : undefined}
 >
-  <div class="home-reference-footer__grid mx-auto grid w-full max-w-[80rem] grid-cols-3 items-center gap-8 px-6 py-12">
+  <div class="home-reference-footer__grid mx-auto grid w-full max-w-[70rem] grid-cols-3 items-center gap-8 px-6 py-12">
     <div class="home-reference-footer__brand-block flex flex-col gap-2">
-      <div class="home-reference-footer__brand-row flex items-center gap-2 font-(family-name:--hr-font-serif) font-medium">
-        <span class="home-reference-footer__brand-mark grid h-6 w-6 place-items-center rounded-[0.25rem] font-(family-name:--hr-font-mono) text-[0.625rem] font-bold" aria-hidden="true">AZ</span>
+      <div class="home-reference-footer__brand-row flex items-center gap-2 font-(family-name:--font-ui) font-medium">
+        <span class="home-reference-footer__brand-mark grid h-6 w-6 place-items-center rounded-[0.25rem] font-(family-name:--font-ui) text-[0.625rem] font-bold" aria-hidden="true">AZ</span>
         <span class="home-reference-footer__brand-name text-[1rem]">{SITE_NAME}</span>
       </div>
-      <p class="home-reference-footer__note font-(family-name:--hr-font-mono) text-[0.75rem]">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
-      <p class="home-reference-footer__copy font-(family-name:--hr-font-mono) text-[0.75rem]">© {year} {SITE_AUTHOR_PROFILE.name}. All rights reserved.</p>
+      <p class="home-reference-footer__note font-(family-name:--font-ui) text-[0.75rem]">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
+      <p class="home-reference-footer__copy font-(family-name:--font-ui) text-[0.75rem]">© {year} {SITE_AUTHOR_PROFILE.name}. All rights reserved.</p>
     </div>
 
     <div class="home-reference-footer__quote-block text-center">
-      <p class="home-reference-footer__quote font-(family-name:--hr-font-serif) text-[0.875rem] leading-[1.7] italic">“{footerQuote}”</p>
+      <p class="home-reference-footer__quote font-(family-name:--font-ui) text-[0.875rem] leading-[1.7]">“{footerQuote}”</p>
     </div>
 
     <nav class="home-reference-footer__socials flex items-center justify-end gap-4" aria-label="首页页脚社交链接">
@@ -108,9 +108,9 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
                 <path d="M21.2 4.3 3.8 11.1c-1 .4-1 1.8.1 2.1l4.2 1.3 1.6 5.1c.3 1 1.6 1.2 2.2.4l2.4-3 4.7 3.4c.8.6 1.9.1 2.1-.9l2.2-13.8c.2-1-.8-1.8-1.8-1.4ZM9.3 13.8l8.9-5.9-6.9 6.9-.3 3.2-1.7-4.2Z" />
               </svg>
             ) : link.kind === "zhihu" ? (
-              <span class="home-reference-footer__social-text font-(family-name:--hr-font-mono) text-[0.875rem] font-bold">知</span>
+              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">知</span>
             ) : (
-              <span class="home-reference-footer__social-text font-(family-name:--hr-font-mono) text-[0.875rem] font-bold">书</span>
+              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">书</span>
             )}
           </a>
         ))

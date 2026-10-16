@@ -6,8 +6,7 @@
  * strings the inline script assigns to result rows).
  *
  * What stays here on purpose:
- *  - the liquid-glass stack (multi-stop gradients + inset box-shadow +
- *    backdrop-filter), which has no utility equivalent
+ *  - the shared neutral control surfaces and their interaction states
  *  - `@keyframes search-expand` and the `.is-open` display swap
  *  - `<input>` / `<button>` typography, because base.css sets an unlayered
  *    `font: inherit` shorthand that beats layered `text-*` / `font-*`
@@ -16,47 +15,37 @@
  *  - the ≤900px collapse, which reads better as a media query and must stay
  *    unlayered so it wins over the base utilities
  *
- * Colours that the `[data-header-state]` rules in layout.css already own
- * (trigger/field border-color, shortcut background+color, input color) are not
- * repeated here — those base declarations were fully shadowed.
+ * Header geometry is owned by layout.css; control materials stay here so
+ * top, compact and mobile states share the same visual language.
  */
 
 .header-search-trigger {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, white 12%, transparent 88%) 0%, color-mix(in srgb, white 3%, transparent 97%) 100%),
-    color-mix(in srgb, var(--chrome-bg) 22%, transparent 78%);
-  color: color-mix(in srgb, var(--chrome-text) 90%, white 10%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 16%, transparent 84%),
-    0 10px 24px color-mix(in srgb, var(--shadow-tint) 3%, transparent);
-  backdrop-filter: blur(14px) saturate(1.1);
+  border-color: var(--border-default);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  box-shadow: inset 0 1px 2px var(--state-hover);
   transition:
-    border-color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
 }
 
 .header-search-trigger:hover {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, white 18%, transparent 82%) 0%, color-mix(in srgb, white 5%, transparent 95%) 100%),
-    color-mix(in srgb, var(--chrome-bg) 28%, transparent 72%);
-  border-color: color-mix(in srgb, white 18%, transparent 82%);
-  color: var(--chrome-text);
-  transform: translateY(-0.5px);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 22%, transparent 78%),
-    0 14px 26px color-mix(in srgb, var(--shadow-tint) 5%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--input-bg));
+  border-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
 .header-search-trigger-icon,
 .header-search-field-icon {
-  color: color-mix(in srgb, var(--chrome-text-muted) 72%, var(--chrome-text) 28%);
+  color: var(--text-secondary);
 }
 
 .header-search-trigger-shortcut {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 14%, transparent 86%);
+  border-color: var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
 }
 
 .header-search.is-open .header-search-trigger {
@@ -65,18 +54,17 @@
 
 .header-search-field {
   display: none;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, white 20%, transparent 80%) 0%, color-mix(in srgb, white 7%, transparent 93%) 100%),
-    color-mix(in srgb, var(--chrome-bg) 46%, transparent 54%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 16%, transparent 84%),
-    0 14px 28px color-mix(in srgb, var(--shadow-tint) 5%, transparent);
-  backdrop-filter: blur(10px) saturate(1.08);
+  border-color: var(--input-border);
+  background: var(--input-bg);
+  box-shadow: inset 0 1px 2px var(--state-hover);
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
 }
 
 .header-search.is-open .header-search-field {
   display: flex;
-  animation: search-expand 240ms var(--ease-out) both;
+  animation: search-expand var(--duration-base) var(--ease-out) both;
 }
 
 @keyframes search-expand {
@@ -104,7 +92,7 @@
   text-shadow: none;
   -webkit-font-smoothing: antialiased;
   font-smooth: always;
-  caret-color: color-mix(in srgb, var(--chrome-text) 90%, var(--brand-accent) 10%);
+  caret-color: var(--brand-accent);
 }
 
 .header-search-input:focus,
@@ -116,20 +104,20 @@
 }
 
 .header-search-trigger:focus-visible,
-.header-search-close:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 46%, transparent 54%);
+.header-search-close:focus-visible,
+.header-search-result-link:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
 }
 
-.header-search:focus-within .header-search-field {
-  border-color: color-mix(in srgb, var(--focus-ring) 68%, transparent 32%);
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--focus-ring) 38%, transparent 62%),
-    inset 0 1px 0 color-mix(in srgb, white 20%, transparent 80%);
+.header-search .header-search-field:focus-within,
+.header-search-dialog .header-search-field:focus-within {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .header-search-input::placeholder {
-  color: color-mix(in srgb, var(--chrome-text-muted) 78%, transparent 22%);
+  color: var(--input-placeholder);
 }
 
 .header-search-input::-webkit-search-decoration,
@@ -141,31 +129,26 @@
 }
 
 .header-search-close {
-  border-color: color-mix(in srgb, white 10%, transparent 90%);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, white 12%, transparent 88%) 0%, color-mix(in srgb, white 3%, transparent 97%) 100%),
-    color-mix(in srgb, var(--chrome-bg) 24%, transparent 76%);
-  color: color-mix(in srgb, var(--chrome-text-muted) 86%, white 14%);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 14%, transparent 86%);
+  border-color: var(--border-default);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
   transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+    color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
 }
 
-.header-search-close:hover {
-  color: var(--chrome-text);
-  border-color: color-mix(in srgb, white 18%, transparent 82%);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, white 18%, transparent 82%) 0%, color-mix(in srgb, white 4%, transparent 96%) 100%),
-    color-mix(in srgb, var(--chrome-bg) 30%, transparent 70%);
-  transform: rotate(90deg);
+.header-search-close:hover,
+.header-search-dialog .header-search-close:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--surface-primary));
 }
 
 .header-search-panel {
-  border-color: color-mix(in srgb, var(--border-default) 74%, transparent 26%);
-  background: color-mix(in srgb, var(--surface-primary) 94%, transparent 6%);
+  border-color: var(--border-default);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-md);
 }
 
 .header-search-panel[hidden] {
@@ -178,16 +161,16 @@
 
 .header-search-result-link {
   color: inherit;
+  text-decoration: none;
   transition:
-    transform var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
+    border-color var(--duration-base) var(--ease-out),
+    background-color var(--duration-base) var(--ease-out);
 }
 
 .header-search-result-link:hover,
 .header-search-result-item.is-active .header-search-result-link {
-  border-color: color-mix(in srgb, var(--selected-border) 74%, transparent 26%);
-  background: color-mix(in srgb, var(--selected-bg) 68%, var(--surface-primary) 32%);
+  border-color: var(--selected-border);
+  background: color-mix(in srgb, var(--brand-accent) 8%, var(--surface-elevated));
 }
 
 .header-search-result-type {
@@ -290,7 +273,7 @@
   min-width: 0;
   font-size: 1rem;
   color: var(--text-primary);
-  caret-color: var(--text-primary);
+  caret-color: var(--brand-accent);
 }
 
 .header-search-dialog .header-search-input::placeholder,
