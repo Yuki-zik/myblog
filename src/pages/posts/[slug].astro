@@ -4,7 +4,6 @@ import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
 import { buildTocTree } from "../../components/article/toc-utils";
-import DiscoverAmbient from "../../components/discover/DiscoverAmbient.astro";
 import PostToc from "../../components/post/PostToc.astro";
 import PostPager from "../../components/post/PostPager.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
@@ -176,11 +175,11 @@ const structuredData = site
   modifiedTime={post.data.updated}
   openGraphImage={`/og/posts/${post.id}.png`}
   runtime="reading"
-  mainClass="shell--article-reading"
+  headerVariant="drawing"
+  mainClass="shell--article-reading reading-drawing"
   structuredData={structuredData}
 >
-  <div class="post-reading-page">
-    <DiscoverAmbient />
+  <div class="post-reading-page" data-reading-design="edge">
     <!-- Reading progress bar -->
     <div role="region" aria-label="阅读状态" data-reading-progress-region>
       <div

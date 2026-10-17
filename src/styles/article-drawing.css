@@ -1,0 +1,344 @@
+/*
+ * Edge annotations for posts. This layer only changes paint and entry layout;
+ * article.css retains the reading measure, three-column tracks and rail flow.
+ */
+[data-reading-design="edge"] {
+  --article-page-bg: var(--surface-primary);
+  --article-page-bg-strong: var(--surface-primary);
+  --article-paper: var(--surface-primary);
+  --article-paper-deep: var(--surface-subtle);
+  --article-paper-border: var(--border-default);
+  --article-paper-shadow: none;
+  --article-paper-emboss: none;
+  --article-ink: var(--text-primary);
+  --article-ink-soft: var(--text-secondary);
+  --article-ink-faint: var(--text-secondary);
+  --article-rule: var(--border-default);
+  --article-rule-strong: var(--border-strong);
+  --article-accent: var(--drawing-accent-ink);
+  --article-chip-bg: transparent;
+  --article-chip-border: transparent;
+  --article-chip-text: var(--drawing-accent-ink);
+  --reading-ink: var(--text-primary);
+  --reading-ink-subtle: var(--text-secondary);
+  --reading-accent: var(--drawing-accent-ink);
+  --reading-link: var(--drawing-accent-ink);
+  --reading-rule: var(--border-default);
+  --reading-rule-strong: var(--border-strong);
+  --reading-code-bg: var(--surface-subtle);
+  --code-foreground: var(--text-primary);
+  --code-border: var(--border-default);
+  background: var(--surface-primary);
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri::after,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article::before {
+  display: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article {
+  border: 0;
+  border-radius: 0;
+  background: var(--surface-primary);
+  box-shadow: none;
+}
+
+/* All existing header facts remain visible, ordered as one reading entry. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 50rem;
+  margin: 0;
+  padding: 0;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly > .post-header-meta-row .post-header-meta {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly h1 {
+  max-width: none;
+  margin: 0.125rem 0;
+  color: var(--text-primary);
+  font-family: var(--reading-serif);
+  font-size: 2.375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly > .post-header-dek {
+  max-width: none;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  min-width: 0;
+  margin: 0;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-stat {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-topics {
+  gap: 0.5rem 1rem;
+  margin-top: 0.125rem;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-topic-item a,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-topic-item a:visited {
+  min-height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--drawing-accent-ink);
+  font-size: 0.75rem;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-divider {
+  width: 100%;
+  height: 1px;
+  margin-top: 0.375rem;
+  background: var(--border-default);
+}
+
+/* The original cover stays a figure; its duplicate glow image stays in the DOM. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
+  --title-cover-width: 100%;
+  width: min(100%, 11.25rem);
+  max-width: 11.25rem;
+  justify-self: start;
+  justify-items: start;
+  margin: 0.25rem 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack {
+  width: 100%;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img {
+  height: auto;
+  max-height: none;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--ghost {
+  display: none;
+  opacity: 0;
+  filter: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--main,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--main {
+  border: 1px solid var(--border-default);
+  box-shadow: none;
+  transform: none;
+  animation: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-credit {
+  padding: 0.375rem 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  line-height: 1.65;
+}
+
+/* Use the existing bleed track so the cover never overlays long titles. */
+@media (min-width: 1420px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
+    grid-template-columns: minmax(0, calc(100% - var(--article-title-rail-bleed))) minmax(0, 1fr);
+    column-gap: 1.25rem;
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+  }
+}
+
+/* Existing counters and anchors stay authoritative; only their ink changes. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h2 {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-primary);
+  font-size: 1.5625rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h2::before {
+  content: counter(article-h2, decimal-leading-zero);
+  position: static;
+  margin-right: 0.8125rem;
+  padding: 0;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: inherit;
+  letter-spacing: 0.04em;
+  vertical-align: baseline;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h2::after {
+  display: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h3,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h4 {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly h3::before {
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly a {
+  color: var(--drawing-accent-ink);
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly table {
+  border-color: var(--border-default);
+  border-radius: 0;
+  background: var(--surface-primary);
+  box-shadow: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly pre {
+  border-color: var(--border-default);
+  border-left-color: var(--drawing-accent-ink);
+  border-radius: 0;
+  /* Shiki keeps its paired light/dark background and syntax palette. */
+}
+
+/* TOC geometry, progress transforms, collapse state and scroll ownership stay intact. */
+[data-reading-design="edge"] .post-reading-toc-rail .toc-sidebar {
+  --toc-accent: var(--drawing-accent-ink);
+  --toc-track: var(--border-default);
+  --toc-text: var(--text-secondary);
+  --toc-text-strong: var(--text-primary);
+  --toc-text-faint: var(--text-secondary);
+  --toc-hover: var(--surface-subtle);
+  --toc-child-track: var(--border-default);
+}
+
+[data-reading-design="edge"] .post-toc-mobile-container .post-toc-mobile {
+  border-color: var(--border-default);
+  border-radius: 0;
+  background: var(--surface-primary);
+}
+
+[data-reading-design="edge"] .post-toc-mobile-container .post-toc-link.is-active {
+  background: var(--drawing-accent-wash);
+  color: var(--drawing-accent-ink);
+  box-shadow: inset 2px 0 0 var(--drawing-accent-ink);
+}
+
+[data-reading-design="edge"] .post-toc-mobile-container .post-toc-link.is-active::before {
+  background: var(--drawing-accent-ink);
+}
+
+[data-reading-design="edge"] .post-toc-mobile-container .post-toc-link.is-active .post-toc-number {
+  color: var(--drawing-accent-ink);
+}
+
+/* Margin notes retain their controller-assigned positions and target links. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type] {
+  border-left-color: var(--border-default);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type].is-linked-hover {
+  border-left-color: var(--drawing-accent-ink);
+  background: var(--drawing-accent-wash);
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-number,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-body a {
+  color: var(--drawing-accent-ink);
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-body,
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-item-content p {
+  color: var(--text-secondary);
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble[data-note-type] .post-scholar-item-type-tag {
+  padding-inline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+[data-reading-design="edge"] .post-pager-link,
+[data-reading-design="edge"] .post-pager-link:hover {
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (max-width: 560px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly h1 {
+    font-size: 1.875rem;
+    line-height: 1.35;
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
+    width: min(100%, 9rem);
+  }
+}

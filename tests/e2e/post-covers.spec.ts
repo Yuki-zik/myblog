@@ -203,61 +203,26 @@ test("post detail uses minimal reading header without hero cover", async ({ page
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });
 
-test("post detail title cover renders a subtle ghost image for floating depth", async ({ page }) => {
+test("edge reader keeps a compact clear cover beside its title without a duplicate glow", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
-
-  const heroCover = page.locator(".post-title-card .post-cover--hero");
-  await expect(heroCover).toBeVisible();
-  await expect(page.locator(".post-title-card .post-cover-img--main")).toBeVisible();
-  await expect(page.locator(".post-title-card .post-cover-img--ghost")).toHaveCount(1);
+  const image = page.locator(".post-title-card .post-cover-img--main");
+  await expect(image).toBeVisible();
+  await expect(image).toHaveAttribute("alt", /.+/);
   await waitForEntranceAnimations(page);
-
-  const collectMetrics = () =>
-    page.evaluate(() => {
-      const hero = document.querySelector(".post-title-card .post-cover--hero") as HTMLElement | null;
-      const main = document.querySelector(".post-title-card .post-cover-img--main") as HTMLElement | null;
-      const ghost = document.querySelector(".post-title-card .post-cover-img--ghost") as HTMLElement | null;
-      const heroStyles = hero ? getComputedStyle(hero) : null;
-      const mainStyles = main ? getComputedStyle(main) : null;
-      const ghostStyles = ghost ? getComputedStyle(ghost) : null;
-      const mainBox = main?.getBoundingClientRect();
-      const ghostBox = ghost?.getBoundingClientRect();
-
-      return {
-        heroShadow: heroStyles?.boxShadow ?? "",
-        mainFilter: mainStyles?.filter ?? "",
-        mainShadow: mainStyles?.boxShadow ?? "",
-        mainBorderWidth: mainStyles ? Number.parseFloat(mainStyles.borderTopWidth) : 0,
-        ghostFilter: ghostStyles?.filter ?? "",
-        ghostOpacity: ghostStyles ? Number.parseFloat(ghostStyles.opacity) : 0,
-        ghostPosition: ghostStyles?.position ?? "",
-        ghostTransform: ghostStyles?.transform ?? "",
-        ghostCount: document.querySelectorAll(".post-title-card .post-cover-img--ghost").length,
-        ghostOffsetY: mainBox && ghostBox ? ghostBox.top - mainBox.top : 0,
-        ghostWidth: ghostBox?.width ?? 0,
-        mainWidth: mainBox?.width ?? 0,
-        mainTop: mainBox?.top ?? 0,
-        mainOpacity: mainStyles ? Number.parseFloat(mainStyles.opacity) : 0
-      };
-    });
-
-  const initialMetrics = await collectMetrics();
-
-  expect(initialMetrics.heroShadow).toBe("none");
-  expect(initialMetrics.mainFilter).not.toContain("drop-shadow");
-  expect(initialMetrics.mainShadow).not.toBe("none");
-  expect(initialMetrics.mainBorderWidth).toBeGreaterThanOrEqual(1);
-  expect(initialMetrics.ghostFilter).toContain("blur");
-  expect(initialMetrics.ghostOpacity).toBeGreaterThan(0.52);
-  expect(initialMetrics.ghostOpacity).toBeLessThan(0.88);
-  expect(initialMetrics.ghostPosition).toBe("absolute");
-  expect(initialMetrics.ghostTransform).not.toBe("none");
-  expect(initialMetrics.ghostCount).toBe(1);
-  expect(initialMetrics.ghostOffsetY).toBeGreaterThan(24);
-  expect(initialMetrics.ghostOffsetY).toBeLessThan(56);
-  expect(initialMetrics.ghostWidth).toBeLessThan(initialMetrics.mainWidth);
-  expect(initialMetrics.mainOpacity).toBeGreaterThan(0.75);
+  await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 0)).toBe(true);
+  const imageBox = (await image.boundingBox())!;
+  const titleBox = (await page.locator(".post-header--scholarly").boundingBox())!;
+  const paragraphBox = (await page.locator(".post-body p[data-anchor]").first().boundingBox())!;
+  expect(imageBox.width).toBeGreaterThanOrEqual(140);
+  expect(imageBox.width).toBeLessThanOrEqual(190);
+  expect(imageBox.x).toBeGreaterThanOrEqual(titleBox.x + titleBox.width + 16);
+  expect(imageBox.y + imageBox.height).toBeLessThan(paragraphBox.y);
+  const styles = await image.evaluate((node) => ({ filter: getComputedStyle(node).filter, opacity: getComputedStyle(node).opacity, fit: getComputedStyle(node).objectFit }));
+  expect(styles.filter).not.toContain("blur");
+  expect(Number(styles.opacity)).toBeGreaterThan(0.75);
+  expect(styles.fit).toBe("contain");
+  await expect(page.locator(".post-title-card .post-cover-img--ghost")).toBeHidden();
 });
 
 test("desktop header search stays between brand and navigation", async ({ page }) => {

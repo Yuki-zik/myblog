@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-17 (PR #12 drawing discover pages live and verified; reading pages unchanged with review-only design previews)
+Last updated: 2026-10-17 (user approved edge-annotation article and metadata-first paper readers; implementation and versioned visual acceptance in progress)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -164,6 +164,8 @@ When browser review is triggered, keep it scoped:
 3. Capture screenshot evidence only for the surfaces touched by the change; do not mechanically screenshot the whole site.
 4. If the change is responsive or theme-sensitive, inspect only the impacted breakpoint/theme combinations rather than every matrix permutation.
 
+The user requested versioned visual backups on 2026-10-17. For visual redesigns, retain before/proposal/implementation/production screenshots with route, theme, viewport and source revision under `docs/visual-history/`; append versions instead of overwriting prior captures. Keep this scoped to the affected surfaces and states.
+
 ## 6) Key Files Index (for new agent)
 
 - Project config:
@@ -210,7 +212,7 @@ When browser review is triggered, keep it scoped:
 ## 9) Frontend Rewrite Guardrails
 
 - The homepage now follows the user-approved full-canvas architectural drawing direction: white paper, cool blue-gray line art, a large A-Znk name at upper-left and the complete `research.ts` signature as an opaque lower-left annotation. Its `headerVariant="drawing"` is a flat, thin-line navigation band. Other routes retain the shared editorial shell. Keep the real author-profile tracks/counts and the single native details/controller hooks. See `docs/architectural-home.md` for the design, asset provenance and validation scope.
-- Topics, topic detail, archives and papers index now opt into `DrawingIndexShell`/`DrawingPageHeader` and the drawing header. Their CSS is scoped to `.drawing-index` or discover+drawing. `PostCard compactMetadata` defaults to false. Article and paper detail readers remain unchanged until the user approves the separate reading preview. See `docs/drawing-discover-design.md`; never infer approval to change reading from approval of an index page.
+- Topics, topic detail, archives and papers index opt into `DrawingIndexShell`/`DrawingPageHeader` and the drawing header. Their CSS is scoped to `.drawing-index` or discover+drawing. `PostCard compactMetadata` defaults to false. On 2026-10-17 the user explicitly approved the separate edge-annotation article and metadata-first paper previews for implementation and deployment after screenshot review. Preserve TOC pinning, scholar rail, footnotes, anchors and content; archive before/after visual versions. See `docs/drawing-discover-design.md`.
 - Both discover and reading bodies must use `overflow-x: clip`, not `hidden`: hidden creates a competing body scroll container and breaks viewport sticky positioning. TOC tests must assert actual viewport pinning after document scroll, not only active-item state inside the TOC.
 
 ### 9.0 Styling stack: Tailwind CSS v4 (authoritative)

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { waitForEntranceAnimations } from "./helpers/page-state";
 
-test("desktop reading entry prioritizes title and summary before a compact cover", async ({ page }) => {
+test("desktop reading entry prioritizes title and summary beside a supporting cover", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/posts/paragraph-anchor-design");
   await page.evaluate(() => document.fonts.ready);
@@ -21,7 +21,8 @@ test("desktop reading entry prioritizes title and summary before a compact cover
   expect(titleBox).not.toBeNull();
   expect(summaryBox).not.toBeNull();
   expect(coverBox).not.toBeNull();
-  expect(coverBox!.y).toBeGreaterThan(summaryBox!.y + summaryBox!.height);
+  expect(summaryBox!.y).toBeGreaterThan(titleBox!.y + titleBox!.height);
+  expect(coverBox!.x).toBeGreaterThanOrEqual(summaryBox!.x + summaryBox!.width + 16);
   expect(coverBox!.height).toBeLessThanOrEqual(240);
   await expect(page.locator(".post-title-card .post-cover-img--ghost")).toHaveCount(1);
 });

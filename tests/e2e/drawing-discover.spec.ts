@@ -139,11 +139,11 @@ for (const width of [390, 320]) {
   });
 }
 
-test("post and scholarly detail readers keep their existing runtime and default header", async ({ page }) => {
+test("post and scholarly readers remain isolated from the drawing index shell", async ({ page }) => {
   for (const path of ["/posts/paragraph-anchor-design", "/papers/duap-multilingual-speech-privacy"]) {
     await page.goto(path);
     await expect(page.locator("body")).toHaveAttribute("data-runtime", "reading");
-    await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+    await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
     await expect(page.locator("[data-drawing-index]")).toHaveCount(0);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   }

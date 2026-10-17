@@ -698,7 +698,7 @@ test("runtime matrix marks discover and reading routes explicitly", async ({
   }
 
   await page.goto("/posts/paragraph-anchor-design");
-  await expect(page.locator(".discover-page__ambient")).toBeVisible();
+  await expect(page.locator(".discover-page__ambient")).toHaveCount(0);
 });
 
 test("non-home discover routes follow dark OS when theme stays on system", async ({
@@ -1039,24 +1039,26 @@ test("article toc sidebar keeps the last section visible and the progress rail i
   );
 });
 
-test("mobile article toc closes after selecting a heading on tablet widths", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1024, height: 900 });
-  await page.goto("/posts/paragraph-anchor-design");
-
-  const mobileToc = page.locator("[data-post-toc-mobile]");
-  await expect(mobileToc).toBeVisible();
-  await mobileToc.evaluate((node) => {
-    (node as HTMLDetailsElement).open = true;
+for (const width of [390, 1024, 1240]) {
+  test(`mobile article toc closes before placing its heading in view at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/posts/myblog-design-manual");
+    await waitForFontsSettled(page);
+    const mobileToc = page.locator("[data-post-toc-mobile]");
+    await expect(mobileToc).toBeVisible();
+    await mobileToc.locator("summary").click();
+    await expect(mobileToc).toHaveAttribute("open", "");
+    await mobileToc.locator("[data-toc-link]").filter({ hasText: "Overview" }).click();
+    await expect(mobileToc).not.toHaveAttribute("open", "");
+    await waitForScrollSettled(page);
+    await expect(page).toHaveURL(/#overview/);
+    const heading = page.locator('[data-post-body] h2[id="overview概述"]');
+    await expect(heading).toBeInViewport({ ratio: 1 });
+    const top = (await heading.boundingBox())!.y;
+    expect(top).toBeGreaterThanOrEqual(60);
+    expect(top).toBeLessThanOrEqual(200);
   });
-  await mobileToc
-    .locator("[data-toc-link]")
-    .filter({ hasText: "工程边界" })
-    .click();
-
-  await expect(mobileToc).not.toHaveAttribute("open", "");
-});
+}
 
 test("desktop article toc collapses with a real height animation and remembers the choice", async ({
   page,
@@ -1243,7 +1245,8 @@ test("header geometry is a continuous function of scroll offset", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
 
   const supportsScrollTimeline = await page.evaluate(() =>
@@ -1332,7 +1335,8 @@ test("header geometry is a continuous function of scroll offset", async ({
 
 test("header content contracts along with the surface", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
 
   const supportsScrollTimeline = await page.evaluate(() =>
@@ -1354,12 +1358,10 @@ test("header content contracts along with the surface", async ({ page }) => {
     await page.evaluate((offset) => {
       window.scrollTo(0, offset);
     }, scrollY);
-    await page.evaluate(
-      () =>
-        new Promise<void>((resolve) => {
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-        }),
-    );
+    // Width transitions begin after scroll styles are applied, so collecting
+    // animations immediately can miss them. Wait for the scroll to settle first.
+    await waitForScrollSettled(page);
+    await waitForEntranceAnimations(page);
     return page.evaluate(() => {
       const brand = document.querySelector(".site-header .brand");
       const toggle = document.querySelector(".site-header .theme-toggle");
@@ -1398,7 +1400,8 @@ test("header content contracts along with the surface", async ({ page }) => {
 test("collapsed header keeps its content clear of the pill edge", async ({
   page,
 }) => {
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
 
   /*
@@ -1446,7 +1449,8 @@ test("collapsed header keeps its content clear of the pill edge", async ({
 
 test("collapsed header uses continuous-curvature corners", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
 
   const supportsSquircle = await page.evaluate(() =>
     CSS.supports("corner-shape: squircle"),
@@ -1476,7 +1480,8 @@ test("header surface keeps one material across the state threshold", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
 
   /*
@@ -1531,7 +1536,8 @@ test("header content stays put while the surface collapses", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
 
   /*
@@ -1594,7 +1600,8 @@ test("header remains compact long enough to finish its geometry morph before hid
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
-  await page.goto("/posts/paragraph-anchor-design");
+  await page.goto("/author");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
   await disableSmoothScroll(page);
   await page.evaluate(() => {
     const header = document.querySelector(".site-header");
@@ -1832,6 +1839,9 @@ test("article reading layout keeps restrained desktop proportions", async ({
       bodyFontSize: bodyStyles ? Number.parseFloat(bodyStyles.fontSize) : 0,
       bodyLineHeight: bodyStyles ? Number.parseFloat(bodyStyles.lineHeight) : 0,
       firstParagraphWidth: firstParagraph?.getBoundingClientRect().width ?? 0,
+      firstParagraphLeft: firstParagraph?.getBoundingClientRect().left ?? 0,
+      titleGroupRight: titleGroup?.getBoundingClientRect().right ?? 0,
+      coverLeft: cover?.getBoundingClientRect().left ?? 0,
       titleCardWidth: titleCard?.getBoundingClientRect().width ?? 0,
       titleCardRadius: titleCardStyles
         ? Number.parseFloat(titleCardStyles.borderTopLeftRadius)
@@ -1889,6 +1899,7 @@ test("article reading layout keeps restrained desktop proportions", async ({
       articleBackgroundImage: articleStyles?.backgroundImage ?? "",
       articleBackgroundColor: articleStyles?.backgroundColor ?? "",
       paperBandBackgroundImage: layoutBandStyles?.backgroundImage ?? "",
+      paperBandDisplay: layoutBandStyles?.display ?? "",
       paperBandShadow: layoutBandStyles?.boxShadow ?? "",
       paperBandRadius: layoutBandStyles
         ? Number.parseFloat(layoutBandStyles.borderTopLeftRadius)
@@ -1941,13 +1952,11 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.titleCardBackgroundImage).toBe("none");
   expect(metrics.firstParagraphWidth).toBeGreaterThan(715);
   expect(metrics.firstParagraphWidth).toBeLessThan(810);
-  expect(metrics.paperBandRadius).toBeGreaterThanOrEqual(20);
-  expect(metrics.paperBandShadow).not.toBe("none");
-  expect(metrics.paperBandBackgroundImage).toContain("gradient");
+  expect(metrics.paperBandDisplay).toBe("none");
   expect(metrics.articleRadius).toBe(0);
   expect(metrics.articleShadow).toBe("none");
   expect(metrics.articleBackgroundImage).toBe("none");
-  expect(metrics.articleBackgroundColor).toBe("rgba(0, 0, 0, 0)");
+  expect(metrics.articleBackgroundColor).toBe("rgb(255, 255, 255)");
   expect(metrics.scholarRailPaddingLeft).toBeGreaterThanOrEqual(2);
   expect(metrics.scholarRailPaddingLeft).toBeLessThanOrEqual(6);
   expect(metrics.scholarRailPaddingRight).toBeGreaterThanOrEqual(8);
@@ -1960,7 +1969,8 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(
     metrics.scholarRailRight - metrics.scholarNoteRight,
   ).toBeGreaterThanOrEqual(6);
-  expect(metrics.coverTop).toBeGreaterThan(metrics.dividerTop);
+  // Approved edge layout places the supporting cover beside the title.
+  expect(metrics.coverLeft - metrics.titleGroupRight).toBeGreaterThanOrEqual(16);
   expect(metrics.coverBottom).toBeLessThan(metrics.firstParagraphTop);
   expect(metrics.firstParagraphTop).toBeLessThan(960);
   expect(metrics.coverBorderWidth).toBe(0);
@@ -1970,37 +1980,36 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.titleTop).toBeLessThan(metrics.statsTop);
   expect(metrics.statsTop).toBeLessThan(metrics.topicsTop);
   expect(
-    Math.abs(metrics.statsLeft - metrics.firstParagraphRight),
+    Math.abs(metrics.statsLeft - metrics.firstParagraphLeft),
   ).toBeLessThanOrEqual(72);
   expect(metrics.statsRight).toBeLessThanOrEqual(
-    metrics.firstParagraphRight + 240,
+    metrics.firstParagraphRight + 1,
   );
   expect(metrics.dekTop).toBeLessThan(metrics.topicsTop);
   expect(metrics.topicsTop).toBeLessThan(metrics.dividerTop);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.statsFontSize);
-  expect(metrics.dividerWidth).toBeGreaterThan(70);
-  expect(metrics.dividerWidth).toBeLessThan(148);
+  expect(metrics.dividerWidth).toBeGreaterThan(metrics.firstParagraphWidth * 0.95);
+  expect(metrics.dividerWidth).toBeLessThan(metrics.firstParagraphWidth * 1.05);
   expect(metrics.firstH2Counter).not.toBe("none");
-  expect(metrics.firstH2Counter).toContain("SECTION");
+  expect(metrics.firstH2Counter).toContain("article-h2");
   expect(metrics.firstH2CounterColor).not.toBe("rgb(47, 52, 64)");
   expect(metrics.firstH2CounterFontSize).toBeGreaterThanOrEqual(10.5);
   expect(metrics.firstH2PaddingLeft).toBeLessThanOrEqual(2);
   expect(metrics.firstH3Counter).not.toBe("none");
-  expect(metrics.firstH3CounterFontFamily).toContain("Source Serif");
-  expect(metrics.firstH3CounterFontSize).toBeGreaterThanOrEqual(14.5);
+  expect(metrics.firstH3CounterFontFamily).toBe(metrics.firstH2CounterFontFamily);
+  expect(metrics.firstH3CounterFontSize).toBeGreaterThanOrEqual(12);
   expect(metrics.firstH3PaddingLeft).toBeGreaterThanOrEqual(35);
-  expect(metrics.titleToBodyGap).toBeGreaterThan(38);
+  expect(metrics.titleToBodyGap).toBeGreaterThanOrEqual(24);
+  expect(metrics.titleToBodyGap).toBeLessThanOrEqual(64);
   expect(metrics.coverRadius).toBe(0);
-  expect(metrics.coverImageRadius).toBeGreaterThanOrEqual(15);
-  expect(metrics.coverImageShadow).not.toBe("none");
+  expect(metrics.coverImageRadius).toBe(0);
+  expect(metrics.coverImageShadow).toBe("none");
   expect(metrics.coverImageBorderWidth).toBeGreaterThanOrEqual(1);
   expect(metrics.coverGhostCount).toBe(1);
-  expect(metrics.coverGhostFilter).toContain("blur");
-  expect(metrics.coverGhostOpacity).toBeGreaterThan(0.52);
-  expect(metrics.coverGhostOpacity).toBeLessThan(0.88);
+  expect(metrics.coverGhostFilter).toBe("none");
+  expect(metrics.coverGhostOpacity).toBe(0);
   expect(metrics.coverGhostPosition).toBe("absolute");
-  expect(metrics.coverGhostTransform).not.toBe("none");
   expect(metrics.coverImageFilter).not.toContain("drop-shadow");
   expect(metrics.coverImageOpacity).toBeGreaterThan(0.75);
   expect(metrics.dekFontStyle).toBe("normal");
@@ -2048,7 +2057,7 @@ test("article reading runtime keeps its paper background separate from discover"
     };
   });
 
-  expect(metrics.bodyBackground).toBe("rgb(252, 252, 253)");
+  expect(metrics.bodyBackground).toBe("rgb(255, 255, 255)");
   expect(metrics.beforeOpacity).toBe("0");
 });
 

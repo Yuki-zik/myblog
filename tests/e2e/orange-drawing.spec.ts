@@ -88,7 +88,7 @@ for (const scheme of ["light", "dark"] as const) {
     expect((await readPaint(filename)).contrast).toBeGreaterThanOrEqual(4.5);
   });
 
-  test(`orange drawing labels stay readable and the default article header stays independent in ${scheme}`, async ({ page }) => {
+  test(`orange drawing labels stay readable and the default editorial header stays independent in ${scheme}`, async ({ page }) => {
     await openHome(page, scheme);
     const indices = page.locator(".home-reference-section-index");
     await expect(indices).toHaveText(["01", "02", "03"]);
@@ -113,7 +113,7 @@ for (const scheme of ["light", "dark"] as const) {
     expectWarmOrange(activePaint.color);
     expect(activePaint.contrast).toBeGreaterThanOrEqual(4.5);
 
-    await page.goto("/posts/paragraph-anchor-design");
+    await page.goto("/concepts/anchor-id");
     await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
     for (const [selector, token] of [
       ['a[aria-current="page"]', "--chrome-text"],
