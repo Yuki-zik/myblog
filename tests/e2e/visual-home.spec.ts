@@ -145,14 +145,14 @@ for (const scheme of ["light", "dark"] as const) {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
-    await page.goto("/topics");
+    await page.goto("/concepts/anchor-id");
     await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
     const ambient = page.locator(".discover-page__ambient");
     await expect(ambient).toHaveAttribute("aria-hidden", "true");
     await expect(ambient.locator(".discover-page__orb")).toHaveCount(2);
     const layers = await page.evaluate(() => {
       const ambient = document.querySelector(".discover-page__ambient")!;
-      const card = document.querySelector(".discover-entity-card")!;
+      const card = document.querySelector(".discover-mini-card")!;
       const grid = document.querySelector(".discover-page__grid")!;
       return {
         pointerEvents: getComputedStyle(ambient).pointerEvents,

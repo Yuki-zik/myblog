@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-17 (PR #11 orange drafting accents live; PR and merge CI plus production acceptance passed)
+Last updated: 2026-10-17 (drawing discover pages locally verified; reading pages frozen pending user design review)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -210,6 +210,7 @@ When browser review is triggered, keep it scoped:
 ## 9) Frontend Rewrite Guardrails
 
 - The homepage now follows the user-approved full-canvas architectural drawing direction: white paper, cool blue-gray line art, a large A-Znk name at upper-left and the complete `research.ts` signature as an opaque lower-left annotation. Its `headerVariant="drawing"` is a flat, thin-line navigation band. Other routes retain the shared editorial shell. Keep the real author-profile tracks/counts and the single native details/controller hooks. See `docs/architectural-home.md` for the design, asset provenance and validation scope.
+- Topics, topic detail, archives and papers index now opt into `DrawingIndexShell`/`DrawingPageHeader` and the drawing header. Their CSS is scoped to `.drawing-index` or discover+drawing. `PostCard compactMetadata` defaults to false. Article and paper detail readers remain unchanged until the user approves the separate reading preview. See `docs/drawing-discover-design.md`; never infer approval to change reading from approval of an index page.
 - Both discover and reading bodies must use `overflow-x: clip`, not `hidden`: hidden creates a competing body scroll container and breaks viewport sticky positioning. TOC tests must assert actual viewport pinning after document scroll, not only active-item state inside the TOC.
 
 ### 9.0 Styling stack: Tailwind CSS v4 (authoritative)
