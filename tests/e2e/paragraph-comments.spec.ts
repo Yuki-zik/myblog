@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 test("scholarly reading page keeps rail interactions and mounts waline comments", async ({ page }) => {
+  // This case exercises the desktop rail. At <=1280px the native disclosure
+  // is the visible TOC; its selection/landing is covered by theme-layout.
+  await page.setViewportSize({ width: 1440, height: 960 });
   await page.route("https://waline.example/api/comment**", async (route) => {
     await route.fulfill({
       status: 200,
