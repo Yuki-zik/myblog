@@ -1,0 +1,451 @@
+[
+  {
+    "file": "v0-article-desktop-light.jpg",
+    "phase": "before",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "commit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "b79898c946103f5e1777da47408c94d38853cd5c14ba9aa34f3492c459296c62",
+    "capturedAt": "2026-10-17T08:50:52.540947+00:00"
+  },
+  {
+    "file": "v0-article-mobile-light.jpg",
+    "phase": "before",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "commit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "7281cc2752c8bc05f310633e2c259c15035f5bcb07ae15dc4315dba592b6a1e6",
+    "capturedAt": "2026-10-17T08:50:53.178594+00:00"
+  },
+  {
+    "file": "v0-paper-mobile-light.jpg",
+    "phase": "before",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "commit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "49ef370bc5f191564d20ffae5548ce26d7c0e6e0dac7956a4842f9b2b58be5e1",
+    "capturedAt": "2026-10-17T08:50:53.920276+00:00"
+  },
+  {
+    "file": "v0-paper-desktop-light.jpg",
+    "phase": "before",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "commit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "5cf03ed3f71f5c98e907bab8b255385707932e122c9a341a5c89511f4027753e",
+    "capturedAt": "2026-10-17T08:50:54.168982+00:00"
+  },
+  {
+    "file": "v1-proposal-edge.jpg",
+    "phase": "proposal",
+    "variant": "文章·边缘标注",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "source": "reading-drafting-review.html",
+    "fullPage": true,
+    "imageSize": [
+      1440,
+      1417
+    ],
+    "format": "JPEG",
+    "sha256": "f123fcbd274ba34105e471b5b786d0325d7b59ce6da8cddea2d87eb80a3b64cd",
+    "capturedAt": "2026-10-17T08:52:38.816169+00:00",
+    "sourceSha256": "8a55cd1671fa89003fd14cd17ac5a25d502cdaa63f2d6f5a247c4b55a6058a90"
+  },
+  {
+    "file": "v1-proposal-titleblock.jpg",
+    "phase": "proposal",
+    "variant": "文章·题签强化",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "source": "reading-drafting-review.html",
+    "fullPage": true,
+    "imageSize": [
+      1440,
+      1417
+    ],
+    "format": "JPEG",
+    "sha256": "663660f2f02447b94541db9cadc49bb55a29bcd8e9b20615778f5e6daa78bba1",
+    "capturedAt": "2026-10-17T08:53:13.503982+00:00",
+    "sourceSha256": "8a55cd1671fa89003fd14cd17ac5a25d502cdaa63f2d6f5a247c4b55a6058a90"
+  },
+  {
+    "file": "v1-proposal-metadata.jpg",
+    "phase": "proposal",
+    "variant": "论文·元数据优先",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "source": "reading-drafting-review.html",
+    "fullPage": true,
+    "imageSize": [
+      1440,
+      1417
+    ],
+    "format": "JPEG",
+    "sha256": "fc96ff95b52b6383556d86e420b1c868564954a50d45c02de16196d728c37d56",
+    "capturedAt": "2026-10-17T08:53:15.144584+00:00",
+    "sourceSha256": "8a55cd1671fa89003fd14cd17ac5a25d502cdaa63f2d6f5a247c4b55a6058a90"
+  },
+  {
+    "file": "v0-paper-desktop-dark.jpg",
+    "phase": "before",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "commit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "6fffa20239e1c04e2f887b9b019e224abdae5ea33ca6be84577847278ff0cda6",
+    "capturedAt": "2026-10-17T08:54:06.111314+00:00"
+  },
+  {
+    "file": "v0-article-desktop-dark.jpg",
+    "phase": "before",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "commit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "c44e4f3e2ee75902341ba16cfe85c2279bce355238102c073ddd474fcf82fb70",
+    "capturedAt": "2026-10-17T09:05:00.286169+00:00"
+  },
+  {
+    "file": "v2a-article-desktop-light.jpg",
+    "phase": "implementation-first-pass",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "7d49ec1b09ec22ff043e38b5243913ea03a78cd04b501486d50076c5597b1426",
+    "capturedAt": "2026-10-17T09:00:27.183948+00:00"
+  },
+  {
+    "file": "v2a-paper-desktop-light.jpg",
+    "phase": "implementation-first-pass",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "9580edd1b7879f32069c4f17262ec334a9d307fb8f7bdb9bd3e3e059a55f92dc",
+    "capturedAt": "2026-10-17T09:01:17.662064+00:00"
+  },
+  {
+    "file": "v2b-article-desktop-light.jpg",
+    "phase": "implementation-reviewed",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "f5a49097e7d28b5253f4bd24edccfbdbdb6255558074bd0d1b9602a736a8ea13",
+    "capturedAt": "2026-10-17T09:05:00.385810+00:00"
+  },
+  {
+    "file": "v2b-article-toc-scroll-light.jpg",
+    "phase": "implementation-reviewed",
+    "route": "/posts/myblog-design-manual#foundations基础",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "metrics": {
+      "active": [
+        "2.1Color（色彩）",
+        "2.1Color（色彩）"
+      ],
+      "bodyWidth": 721.5859375,
+      "scrollY": 1092.5,
+      "tocTop": 85.59375
+    },
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "73b3bca3324145884c06e08da9989f06697b2486cbd58df464caeba246daf20c",
+    "capturedAt": "2026-10-17T09:05:33.085463+00:00"
+  },
+  {
+    "file": "v2b-article-desktop-dark.jpg",
+    "phase": "implementation-reviewed",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "fc0c7d235a36ff3f11865c04a1029f6a22b6452b603cd3220f4cc01d8fc9dcee",
+    "capturedAt": "2026-10-17T09:07:21.423333+00:00"
+  },
+  {
+    "file": "v2b-article-mobile-dark.jpg",
+    "phase": "implementation-reviewed",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "dark",
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "5d8af0d7d43de7400638efd920b786915710716f68b35a673a1a03f0b5c2399a",
+    "capturedAt": "2026-10-17T09:07:33.836002+00:00"
+  },
+  {
+    "file": "v2b-article-mobile-light.jpg",
+    "phase": "implementation-reviewed",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#foundations%E5%9F%BA%E7%A1%80",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "fc75f9a99f82982034aaaa895e8baddf6553cc8225a23907748f755a5c134058",
+    "capturedAt": "2026-10-17T09:08:26.810350+00:00"
+  },
+  {
+    "file": "v2a-mobile-toc-offset.jpg",
+    "phase": "implementation-issue",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#overview%E6%A6%82%E8%BF%B0",
+    "scrollY": 1601,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "note": "目录折叠后沿用旧滚动目标；标题移出视口，保留为修复前证据。",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "ab7772ba1d4e5220205a7c7fe2bbd80dca15dbc67afa593275465eb7ec738df7",
+    "capturedAt": "2026-10-17T09:08:41.281832+00:00"
+  },
+  {
+    "file": "v2b-paper-mobile-authors-light.jpg",
+    "phase": "implementation-reviewed",
+    "overflow": 0,
+    "route": "/papers/oxicams-carbon-dots-machine-learning",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "6ee727ffcf3a76ecc670918f099c440751ce0f62a9dcf8355a54a836467532f1",
+    "capturedAt": "2026-10-17T09:09:20.576457+00:00"
+  },
+  {
+    "file": "v2b-paper-mobile-citation-light.jpg",
+    "phase": "implementation-reviewed",
+    "overflow": 0,
+    "route": "/papers/oxicams-carbon-dots-machine-learning#citation",
+    "scrollY": 2305,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "881ea814d718239e9dd6ded4b64d935685405d6e5885055e3fb057f5ee843933",
+    "capturedAt": "2026-10-17T09:09:34.330411+00:00"
+  },
+  {
+    "file": "v2c-mobile-toc-corrected-light.jpg",
+    "phase": "implementation-reviewed",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#overview%E6%A6%82%E8%BF%B0",
+    "scrollY": 903,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "8a22fd90e14e5acda1c80547c727707858db9c94a78f489299b0f60c8cbb3745",
+    "capturedAt": "2026-10-17T09:13:23.162441+00:00"
+  },
+  {
+    "file": "v2d-mobile-table-final-light.jpg",
+    "phase": "implementation-final",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#overview%E6%A6%82%E8%BF%B0",
+    "scrollY": 903,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "sha256": "02b48308516918c2b454e2f2292e6822a0c858159682d78e12c67e845aa7d8b0",
+    "capturedAt": "2026-10-17T09:17:03.462462+00:00",
+    "sourceSha256": "f303f05a5f4d86f0f7fdbf505e197bcce197e2d9ad6fec7e379fd9156439f4e8"
+  },
+  {
+    "file": "v2d-paper-desktop-light.jpg",
+    "phase": "implementation-final",
+    "overflow": 0,
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "9580edd1b7879f32069c4f17262ec334a9d307fb8f7bdb9bd3e3e059a55f92dc",
+    "capturedAt": "2026-10-17T09:17:21.890540+00:00",
+    "sourceSha256": "f303f05a5f4d86f0f7fdbf505e197bcce197e2d9ad6fec7e379fd9156439f4e8"
+  },
+  {
+    "file": "v2d-paper-desktop-dark.jpg",
+    "phase": "implementation-final",
+    "overflow": 0,
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1440,
+      960
+    ],
+    "baseCommit": "1608094",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "sha256": "92b9cb9c77b27a90292d7147cd4fbca4e302e98ed07e5a54480bd8728a5b810a",
+    "capturedAt": "2026-10-17T09:17:47.727880+00:00",
+    "sourceSha256": "f303f05a5f4d86f0f7fdbf505e197bcce197e2d9ad6fec7e379fd9156439f4e8"
+  }
+]

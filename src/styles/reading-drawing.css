@@ -1,0 +1,73 @@
+/* Reading-only paper and annotation palette. Layout and scroll owners stay
+   in the article/paper runtimes; no overflow or positioning is introduced. */
+:root body[data-runtime="reading"][data-header-variant="drawing"] {
+  --article-page-bg: var(--surface-primary);
+  --article-page-bg-strong: var(--surface-primary);
+  --article-paper: var(--surface-primary);
+  --article-paper-deep: var(--surface-subtle);
+  --article-paper-border: var(--border-default);
+  --article-paper-shadow: none;
+  --article-paper-emboss: none;
+  --article-ink: var(--text-primary);
+  --article-ink-soft: var(--text-secondary);
+  --article-ink-faint: var(--text-meta);
+  --article-rule: var(--border-default);
+  --article-rule-strong: var(--border-strong);
+  --article-accent: var(--drawing-accent-ink);
+  --article-chip-bg: var(--surface-primary);
+  --article-chip-border: var(--border-default);
+  --article-chip-text: var(--text-secondary);
+  --reading-bg: var(--surface-primary);
+  --reading-surface: var(--surface-primary);
+  --reading-ink: var(--text-primary);
+  --reading-ink-subtle: var(--text-secondary);
+  --reading-rule: var(--border-default);
+  --reading-rule-strong: var(--border-strong);
+  --reading-accent: var(--drawing-accent-ink);
+  --reading-link: var(--drawing-accent-ink);
+  --reading-rail-bg: var(--surface-primary);
+  --reading-shadow: none;
+  --link: var(--drawing-accent-ink);
+  --link-hover: var(--text-primary);
+  --brand-accent: var(--drawing-accent-ink);
+  --focus-ring: var(--drawing-focus);
+  --selected-bg: var(--drawing-accent-wash);
+  --selected-border: var(--drawing-accent);
+  --progress-fill: none;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .reading-progress-bar__fill {
+  background-color: var(--drawing-accent);
+  box-shadow: none;
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .home-reference-footer__brand-mark {
+  border-radius: 0;
+  background: var(--drawing-accent);
+  color: var(--drawing-on-accent);
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .home-reference-footer__social-link {
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  background: none;
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .home-reference-footer__social-link:hover {
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
+  color: var(--drawing-accent-ink);
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .waline-comments {
+  --waline-bg-color: var(--surface-primary);
+  --waline-bg-color-light: var(--surface-subtle);
+  --waline-bg-color-hover: var(--drawing-accent-wash);
+  --waline-info-bg-color: var(--surface-subtle);
+}
+
+body[data-runtime="reading"][data-header-variant="drawing"] .waline-comments :is(.wl-panel, .wl-editor, .wl-preview, .wl-input, .wl-header label, .wl-btn) {
+  border-radius: 2px;
+}

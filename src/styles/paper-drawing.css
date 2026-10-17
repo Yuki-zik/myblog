@@ -1,0 +1,342 @@
+/* Metadata-first paper reader. All changes stay inside the paper design root. */
+.paper-reading-page[data-reading-design="metadata"] {
+  min-height: 0;
+  padding: 24px 28px 72px;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+}
+
+[data-reading-design="metadata"] .paper-dossier {
+  width: min(943px, 100%);
+}
+
+[data-reading-design="metadata"] a {
+  color: var(--drawing-accent-ink);
+  text-underline-offset: 4px;
+}
+
+[data-reading-design="metadata"] :is(a, summary):focus-visible {
+  outline: 2px solid var(--drawing-focus);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+[data-reading-design="metadata"] .paper-dossier__back {
+  margin-bottom: 30px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+[data-reading-design="metadata"] .paper-dossier__layout {
+  grid-template-columns: minmax(0, 680px) minmax(190px, 230px);
+  justify-content: center;
+  align-items: start;
+  gap: 33px;
+  padding: 0;
+}
+
+[data-reading-design="metadata"] .paper-dossier__main {
+  min-width: 0;
+  max-width: 680px;
+}
+
+[data-reading-design="metadata"] .paper-dossier__header {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+[data-reading-design="metadata"] .paper-dossier__status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+[data-reading-design="metadata"] .paper-status {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--drawing-accent-ink);
+  font: inherit;
+  font-weight: 500;
+}
+
+[data-reading-design="metadata"] .paper-dossier__masthead h1 {
+  max-width: none;
+  margin: 16px 0;
+  font-family: var(--font-ui);
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+[data-reading-design="metadata"] .paper-dossier__subtitle {
+  margin: 0 0 20px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+[data-reading-design="metadata"] .paper-dossier__authors {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+[data-reading-design="metadata"] .paper-dossier__authors a {
+  color: inherit;
+}
+
+[data-reading-design="metadata"] .paper-dossier__authors .is-self {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+[data-reading-design="metadata"] .paper-primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+  margin: 19px 0 0;
+}
+
+[data-reading-design="metadata"] .paper-primary-actions a {
+  min-height: 44px;
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px solid var(--drawing-accent-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--drawing-accent-ink);
+  font: 500 13px/1.6 var(--font-ui);
+  transform: none;
+}
+
+[data-reading-design="metadata"] .paper-primary-actions a:hover {
+  border-bottom-color: var(--drawing-accent);
+  text-decoration: underline;
+}
+
+[data-reading-design="metadata"] .paper-section-kicker {
+  margin: 0;
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+[data-reading-design="metadata"] .paper-abstract {
+  display: block;
+  margin: 31px 0 0;
+  padding: 24px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+}
+
+[data-reading-design="metadata"] :is(.paper-abstract, .paper-body) {
+  max-width: 680px;
+  color: var(--text-primary);
+  font-family: var(--font-reading);
+  font-size: 18px;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+
+[data-reading-design="metadata"] :is(.paper-abstract, .paper-body) h2 {
+  margin: 28px 0 18px;
+  padding: 0;
+  border: 0;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+[data-reading-design="metadata"] .paper-abstract h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 13px;
+  margin-top: 0;
+}
+
+[data-reading-design="metadata"] :is(.paper-abstract, .paper-body) p {
+  margin: 0 0 23px;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+[data-reading-design="metadata"] .paper-body {
+  margin-top: 28px;
+}
+
+[data-reading-design="metadata"] .paper-body > :first-child {
+  margin-top: 0;
+}
+
+[data-reading-design="metadata"] .paper-body li {
+  color: var(--text-primary);
+}
+
+[data-reading-design="metadata"] .paper-body table {
+  max-width: 100%;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+[data-reading-design="metadata"] .paper-pipeline-cover {
+  margin: 28px 0;
+  padding: 0 0 18px;
+  border-color: var(--border-default);
+}
+
+[data-reading-design="metadata"] .paper-pipeline-cover img {
+  height: auto;
+  border-radius: 0;
+  border-color: var(--border-default);
+}
+
+[data-reading-design="metadata"] .paper-pipeline-cover figcaption span {
+  color: var(--drawing-accent-ink);
+}
+
+[data-reading-design="metadata"] .paper-dossier__keywords {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-default);
+}
+
+[data-reading-design="metadata"] .paper-keywords {
+  gap: 6px 16px;
+  margin-top: 9px;
+}
+
+[data-reading-design="metadata"] .paper-keywords li {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+[data-reading-design="metadata"] .paper-dossier__sidebar {
+  position: static;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: 26px;
+  margin-top: 5px;
+  padding-left: 18px;
+  border-left: 1px solid var(--border-default);
+}
+
+[data-reading-design="metadata"] .paper-dossier__facts {
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 13px;
+  border: 0;
+}
+
+[data-reading-design="metadata"] .paper-dossier__facts > div {
+  gap: 5px;
+  padding: 0 0 14px;
+  border: 0;
+}
+
+[data-reading-design="metadata"] .paper-dossier__facts dt {
+  color: var(--text-secondary);
+  font: 500 11px/1.8 var(--font-ui);
+  letter-spacing: 0.05em;
+}
+
+[data-reading-design="metadata"] .paper-dossier__facts dd {
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+[data-reading-design="metadata"] .paper-dossier__sidebar section {
+  gap: 12px;
+  padding-top: 14px;
+  border-color: var(--border-default);
+}
+
+[data-reading-design="metadata"] #citation {
+  scroll-margin-top: 7rem;
+}
+
+[data-reading-design="metadata"] .paper-dossier__sidebar [data-paper-citation] {
+  font-family: var(--font-reading);
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+[data-reading-design="metadata"] .paper-bibtex summary {
+  display: list-item;
+  min-height: 44px;
+  padding-block: 10px;
+  color: var(--drawing-accent-ink);
+  font: 500 12px/1.8 var(--font-ui);
+}
+
+[data-reading-design="metadata"] .paper-bibtex pre {
+  border-color: var(--border-default);
+  border-radius: 0;
+  background: var(--surface-subtle);
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+[data-reading-design="metadata"] .paper-bibtex code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+@media (max-width: 900px) {
+  [data-reading-design="metadata"] .paper-dossier__layout {
+    grid-template-columns: minmax(0, 680px);
+  }
+
+  [data-reading-design="metadata"] .paper-dossier__sidebar {
+    margin: 0;
+    padding: 22px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--border-default);
+  }
+}
+
+@media (max-width: 640px) {
+  .paper-reading-page[data-reading-design="metadata"] {
+    padding: 20px 20px 48px;
+  }
+
+  [data-reading-design="metadata"] .paper-dossier__back {
+    margin-bottom: 25px;
+  }
+
+  [data-reading-design="metadata"] .paper-dossier__masthead h1 {
+    font-size: 30px;
+    line-height: 1.25;
+  }
+}

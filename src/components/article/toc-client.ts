@@ -7,7 +7,6 @@ const SETTLE_EPSILON = 0.5;
 const SETTLE_STABLE_FRAMES = 2;
 const SETTLE_MAX_FRAMES = 30;
 const ACTIVE_CLASS = "is-active";
-const MOBILE_TOC_MEDIA = "(max-width: 1180px)";
 const HEADING_SCROLL_MARGIN_TOP =
   "calc(var(--site-header-offset, 6.5rem) + 1rem)";
 const MANUAL_ACTIVE_LOCK_MS = 900;
@@ -219,7 +218,7 @@ function observeHeadings(
 function bindTocLinkClicks(
   entries: TocLinkEntry[],
   onActivate: (id: string) => void,
-  afterSelect?: () => void,
+  beforeScroll?: () => void,
 ): () => void {
   const cleanup: Array<() => void> = [];
 
@@ -229,8 +228,8 @@ function bindTocLinkClicks(
 
       onActivate(entry.id);
       window.history.replaceState(null, "", `#${entry.id}`);
+      beforeScroll?.();
       scrollHeadingIntoReadingPosition(entry.heading);
-      afterSelect?.();
     };
 
     entry.link.addEventListener("click", onClick);
@@ -690,12 +689,9 @@ export function initPostToc(root: Element): (() => void) | void {
       if (!(mobileDetails instanceof HTMLDetailsElement)) {
         return;
       }
-      if (!window.matchMedia(MOBILE_TOC_MEDIA).matches) {
-        return;
-      }
-      window.setTimeout(() => {
-        mobileDetails.open = false;
-      }, 40);
+      // Closing the disclosure moves the article. Measure the target only
+      // after that layout change, at every width where this TOC is displayed.
+      mobileDetails.open = false;
     },
   );
 

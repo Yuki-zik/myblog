@@ -55,7 +55,7 @@ test("architectural mobile keeps real topic navigation and the native code discl
   await expect(page.getByRole("heading", { name: "关注领域", exact: true })).toBeVisible();
 });
 
-test("drawing header remains a homepage-only visual variant and preserves search focus", async ({ page }) => {
+test("drawing header preserves search focus across homepage and article entries", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/");
   const header = page.locator(".site-header");
@@ -68,7 +68,7 @@ test("drawing header remains a homepage-only visual variant and preserves search
   await input.press("Escape");
   await expect(trigger).toBeFocused();
   await page.goto("/posts/paragraph-anchor-design");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await expect(page.locator("[data-toc-sidebar]")).toBeVisible();
 });
 
