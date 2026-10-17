@@ -40,6 +40,7 @@ interface Props {
   modifiedTime?: string;
   openGraphImage?: string;
   runtime: "discover" | "reading";
+  bodyClass?: string;
   mainClass?: string;
   headerVariant?: "default" | "drawing";
   hideFooter?: boolean;
@@ -63,6 +64,7 @@ const {
   modifiedTime,
   openGraphImage,
   runtime,
+  bodyClass,
   mainClass,
   headerVariant = "default",
   hideFooter = false,
@@ -197,7 +199,7 @@ const themeInitScript = `(function () {
 
     <script is:inline set:html={themeInitScript} />
   </head>
-  <body data-runtime={runtime} data-header-variant={headerVariant}>
+  <body class={bodyClass} data-runtime={runtime} data-header-variant={headerVariant}>
     <header class="site-header sticky top-0 z-80" data-header-state="top" data-header-variant={headerVariant}>
       <div class="site-header-surface-clip" aria-hidden="true">
         <div class="site-header-inner isolate overflow-hidden origin-top"></div>

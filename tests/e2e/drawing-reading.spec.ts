@@ -100,11 +100,16 @@ test("edge article keeps its reading measure on solid paper with legible orange 
     expect(paper.contrast).toBeGreaterThanOrEqual(4.5);
     expect(await page.locator("body").evaluate((node) => getComputedStyle(node).backgroundImage)).toBe("none");
     const band = await readPaint(page.locator(".post-reading-layout--tri"), "::after");
-    // A removed decorative layer does not paint its legacy computed gradient.
-    if (band.display !== "none") {
-      expect(band.backgroundImage).toBe("none");
-      expect(band.boxShadow).toBe("none");
-    }
+    expect(band.display).not.toBe("none");
+    expect(band.backgroundImage).toBe("none");
+    expect(band.boxShadow).not.toBe("none");
+    const surfaces = await page.evaluate(() => ({
+      paper: getComputedStyle(document.querySelector(".post-reading-layout--tri")!, "::after").backgroundColor,
+      background: getComputedStyle(document.body).backgroundColor,
+      overflow: getComputedStyle(document.body).overflowX,
+    }));
+    expect(surfaces.paper).not.toBe(surfaces.background);
+    expect(surfaces.overflow).toBe("clip");
     const section = page.locator(".post-body--scholarly h2").first();
     await expectOrangeMarker(section, "::before");
     // TOC pinning, section following and rail placement stay covered by
@@ -172,6 +177,15 @@ for (const scheme of ["light", "dark"] as const) {
       ] as const) {
         await openReader(page, reader.path, scheme, reader.design);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+        if (reader.design === "edge") {
+          const surface = await page.locator(".post-reading-article").evaluate(node => ({
+            shadow: getComputedStyle(node).boxShadow,
+            background: getComputedStyle(node).backgroundColor,
+            canvas: getComputedStyle(document.body).backgroundColor,
+          }));
+          expect(surface.shadow).not.toBe("none");
+          expect(surface.background).not.toBe(surface.canvas);
+        }
         if (reader.design === "metadata") {
           const bibtex = page.locator(".paper-bibtex");
           await bibtex.locator("summary").click();

@@ -203,7 +203,7 @@ test("post detail uses minimal reading header without hero cover", async ({ page
   await expect(page.locator(".post-header--scholarly h1")).toBeVisible();
 });
 
-test("edge reader keeps a compact clear cover beside its title without a duplicate glow", async ({ page }) => {
+test("edge reader presents a clear larger cover with restrained depth beside its title", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/posts/paragraph-anchor-design");
   const image = page.locator(".post-title-card .post-cover-img--main");
@@ -214,15 +214,20 @@ test("edge reader keeps a compact clear cover beside its title without a duplica
   const imageBox = (await image.boundingBox())!;
   const titleBox = (await page.locator(".post-header--scholarly").boundingBox())!;
   const paragraphBox = (await page.locator(".post-body p[data-anchor]").first().boundingBox())!;
-  expect(imageBox.width).toBeGreaterThanOrEqual(140);
-  expect(imageBox.width).toBeLessThanOrEqual(190);
+  expect(imageBox.width).toBeGreaterThanOrEqual(260);
+  expect(imageBox.width).toBeLessThanOrEqual(290);
   expect(imageBox.x).toBeGreaterThanOrEqual(titleBox.x + titleBox.width + 16);
   expect(imageBox.y + imageBox.height).toBeLessThan(paragraphBox.y);
   const styles = await image.evaluate((node) => ({ filter: getComputedStyle(node).filter, opacity: getComputedStyle(node).opacity, fit: getComputedStyle(node).objectFit }));
   expect(styles.filter).not.toContain("blur");
   expect(Number(styles.opacity)).toBeGreaterThan(0.75);
   expect(styles.fit).toBe("contain");
-  await expect(page.locator(".post-title-card .post-cover-img--ghost")).toBeHidden();
+  const glow = page.locator(".post-title-card .post-cover-img--ghost");
+  await expect(glow).toBeVisible();
+  await expect(glow).toHaveAttribute("aria-hidden", "true");
+  const opacity = await glow.evaluate(node => Number(getComputedStyle(node).opacity));
+  expect(opacity).toBeGreaterThan(0.1);
+  expect(opacity).toBeLessThanOrEqual(0.35);
 });
 
 test("desktop header search stays between brand and navigation", async ({ page }) => {
