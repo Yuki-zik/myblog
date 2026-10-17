@@ -49,3 +49,9 @@ Browser inspection of the built output confirmed the 1440px light/dark compositi
 - Public homepage, topics, papers, article, search index, sitemap and Google verification file all return 200. Anonymous comments return HTTP 200 / errno 0 and preserve the original one comment.
 - Fresh production browser shows drawing header, loaded artwork and the A-Znk heading; desktop and 390px mobile have no horizontal overflow. Search returns five real results for 设计. The mobile signature starts collapsed. No browser console errors were observed in the checked page.
 - Production screenshots and the compact HTTP/browser reports are saved in the evidence directory. Unrelated workstation notes were preserved byte-for-byte and excluded from the release.
+
+## Orange drafting accents — 2026-10-17
+
+The follow-up retains the approved image and composition while tying UI elements to the drawing through one orange palette. A colored name separator, code-note title strip and leader, numbered section headings, topic IDs, cover registration corner, square article labels and footer controls form the same annotation language. All new colors live in `tokens.css`, scoped to the drawing homepage; brighter surfaces and darker small-text ink are distinct. Dark mode uses the resolved color scheme.
+
+Four new browser checks were demonstrated red before implementation. They verify the unchanged artwork/name, orange accents and code title strip, 3:1 large-type and 4.5:1 small-type contrast, hidden index semantics and isolation from the default article header. 116 unit tests passed. The complete local E2E attempt passed 142/143; the same pre-existing article-header dwell case timed out, then the focused 11-case rerun passed, including that case. Desktop light/dark, 390px collapsed/expanded content and the content sections were visually checked. Exact-head CI and production acceptance are pending. Evidence: ignored `output/orange-drawing-2026-10-17/`.

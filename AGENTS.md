@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-17 (PR #10 architectural drawing homepage live; PR and merge CI plus production browser acceptance passed)
+Last updated: 2026-10-17 (orange drafting accents locally verified; production publication pending)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
@@ -238,6 +238,7 @@ Related invariants:
 - `src/components/post/PostCover.astro` + `src/styles/cards.css` now define the shared **manual cover stack** contract for non-reading surfaces: topic/concept cards, archive tiles, and the home featured card should reuse the same `ghost + main` image structure, white rim, misty blur spread, and hover lift instead of forking bespoke cover treatments. If homepage featured imagery diverges, fix the shared cover primitive first.
 - The author page is no longer exempt from that card language: the "作者文章" section should prefer `PostCard.astro` over ad-hoc text-only lists so users can actually perceive the shared cover/hover system outside the home route. If author posts look visually disconnected again, start by checking whether `src/pages/author.astro` still renders `PostCard`.
 - Archive pages still keep their time-ledger structure, but `archive-post-tile` should behave like a first-class shared card, not a static thumbnail row. Regressions to watch for are: only the image animates while the tile body stays inert, or the read cue/title no longer react on hover.
+- Drawing-page orange tokens live in `tokens.css` under the drawing body and resolved dark selectors. Use bright pigment for surfaces/markers, contrast-safe ink for small text, and retain the original artwork. Keep the author name accessible as A-Znk and decorative section indices hidden from heading names.
 - Home CTAs are underlined text links with visible keyboard focus and real topic/paper destinations. The architectural image uses Astro responsive assets with eager/high-priority loading; dark treatment follows `data-color-scheme="dark"`, including system-on-dark. The code annotation stays opaque in both themes so text contrast does not depend on the drawing behind it.
 - The current `参考项目/` directory contains a small Vite/Tailwind UI demo (`remix_-misty-shadows-ui-gallery.zip`) that is useful as a **visual reference only**. Do not treat it as an architecture reference for routing, content modeling, comments, or build setup.
 - Preserve these contracts unless the user explicitly approves breaking them:

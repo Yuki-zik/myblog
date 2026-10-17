@@ -507,3 +507,22 @@
   --fab-icon-hover: #00366f;
   --fab-shadow: 0 22px 44px rgba(0, 0, 0, 0.46), 0 4px 12px rgba(0, 0, 0, 0.32);
 }
+
+/* The architectural homepage uses orange drafting marks. Bright pigment is
+   for surfaces; small labels use a separate ink with readable paper contrast. */
+body[data-header-variant="drawing"] {
+  --drawing-accent: #ff6a00;
+  --drawing-display-accent: #f15c00;
+  --drawing-accent-ink: #a63b00;
+  --drawing-accent-wash: #fff2e8;
+  --drawing-on-accent: #23180f;
+  --drawing-focus: #a63b00;
+}
+
+html[data-color-scheme="dark"] body[data-header-variant="drawing"] {
+  --drawing-accent: #ff8b3d;
+  --drawing-display-accent: #ff8b3d;
+  --drawing-accent-ink: #ffad76;
+  --drawing-accent-wash: #39291f;
+  --drawing-focus: #ffad76;
+}
