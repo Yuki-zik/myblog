@@ -982,6 +982,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   border-radius: 0;
   background: none;
   box-shadow: none;
+  color: var(--text-primary);
   font-weight: 450;
   letter-spacing: 0.02em;
   text-decoration: none;
@@ -989,16 +990,16 @@ html.is-header-morphing::view-transition-new(site-header) {
 
 .site-header[data-header-variant="drawing"] .site-nav a:hover,
 .site-header[data-header-variant="drawing"] .site-nav a[aria-current="page"] {
-  color: var(--text-primary);
+  color: var(--drawing-accent-ink);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: currentColor;
+  text-decoration-color: var(--drawing-accent);
   text-underline-offset: 0.4em;
 }
 
 .site-header[data-header-variant="drawing"] :is(.brand, .site-nav a):focus-visible {
   border-radius: 0;
-  outline: 2px solid var(--brand-accent);
+  outline: 2px solid var(--drawing-focus);
   outline-offset: 3px;
   box-shadow: none;
 }
@@ -1011,8 +1012,8 @@ html.is-header-morphing::view-transition-new(site-header) {
 }
 
 .site-header[data-header-variant="drawing"] :is(.header-search-trigger, .theme-toggle):hover {
-  border-color: var(--text-secondary);
-  background: var(--state-hover);
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
   color: var(--text-primary);
 }
 
@@ -1033,6 +1034,37 @@ html.is-header-morphing::view-transition-new(site-header) {
 .site-header[data-header-variant="drawing"] :is(.header-search-close, .header-search-result-link),
 body[data-header-variant="drawing"] .header-search-dialog :is(.header-search-field, .header-search-close, .header-search-result-link) {
   border-radius: 2px;
+}
+
+body[data-header-variant="drawing"] :is(.header-search-trigger, .header-search-close, .header-search-result-link, .theme-toggle):focus-visible {
+  outline: 2px solid var(--drawing-focus);
+  box-shadow: none;
+}
+
+body[data-header-variant="drawing"] .header-search-field:focus-within {
+  border-color: var(--drawing-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--drawing-focus) 26%, transparent);
+}
+
+body[data-header-variant="drawing"] .header-search-input {
+  caret-color: var(--drawing-focus);
+}
+
+body[data-header-variant="drawing"] .header-search-close:hover {
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
+  color: var(--text-primary);
+}
+
+body[data-header-variant="drawing"] .header-search-result-link:hover,
+body[data-header-variant="drawing"] .header-search-result-item.is-active .header-search-result-link {
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
+  color: var(--text-primary);
+}
+
+body[data-header-variant="drawing"] .header-search-result-type--paper {
+  color: var(--drawing-accent-ink);
 }
 
 @media (max-width: 900px) {

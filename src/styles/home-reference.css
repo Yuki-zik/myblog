@@ -5,7 +5,7 @@
   --home-muted: #4c667a;
   --home-line: #9baebb;
   --home-soft-line: #d8e1e7;
-  --home-code-accent: #275d86;
+  --home-code-accent: var(--drawing-accent-ink);
   --home-gutter: 2.5rem;
   color: var(--home-ink);
   background: var(--home-paper);
@@ -17,7 +17,6 @@ html[data-color-scheme="dark"] .home-reference {
   --home-muted: var(--text-secondary);
   --home-line: #758697;
   --home-soft-line: #435363;
-  --home-code-accent: #a6d4f5;
 }
 
 .home-reference :where(a),
@@ -79,7 +78,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-hero__kicker {
-  color: var(--home-muted);
+  color: var(--home-code-accent);
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 400;
@@ -90,9 +89,9 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-hero__kicker::before {
   content: "";
   width: 2.25rem;
-  height: 1px;
+  height: 3px;
   margin-right: 0.375rem;
-  background: var(--home-line);
+  background: var(--drawing-accent);
 }
 
 .home-reference-hero__title {
@@ -103,6 +102,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   font-weight: 550;
   line-height: 0.98;
   letter-spacing: -0.075em;
+}
+
+.home-reference-hero__title-accent {
+  color: var(--drawing-display-accent);
 }
 
 .home-reference-hero__topics {
@@ -169,6 +172,31 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   border-bottom-color: var(--home-code-accent);
 }
 
+.home-reference-hero__button--primary,
+.home-reference-hero__button--primary:visited {
+  border-bottom-color: var(--drawing-accent);
+  color: var(--home-code-accent);
+}
+
+.home-reference-hero__arrow {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  color: var(--home-code-accent);
+  font-size: 1.125rem;
+  transition: transform 180ms ease;
+}
+
+.home-reference-hero__button--primary .home-reference-hero__arrow {
+  background: var(--drawing-accent);
+  color: var(--drawing-on-accent);
+}
+
+.home-reference-hero__button:is(:hover, :focus-visible) .home-reference-hero__arrow {
+  transform: translate(2px, -2px);
+}
+
 /* The complete research.ts signature remains one native disclosure. */
 .home-reference-terminal-wrap {
   position: absolute;
@@ -182,10 +210,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   content: "";
   position: absolute;
   top: 0;
-  right: -4rem;
-  width: 4rem;
+  right: -6rem;
+  width: 6rem;
   height: 1px;
-  background: var(--home-line);
+  background: var(--drawing-display-accent);
   transform: rotate(-30deg);
   transform-origin: left;
   pointer-events: none;
@@ -206,7 +234,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-terminal,
 .home-reference-terminal:hover {
-  padding: 0 1rem 0.625rem 0;
+  padding: 0;
   background: var(--home-paper);
   transform: none;
 }
@@ -225,8 +253,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   gap: 0.75rem;
   min-height: 44px;
   margin: 0;
-  padding: 0.625rem 0;
-  border-top: 1px solid var(--home-ink);
+  padding: 0.625rem 0.875rem;
+  border-top: 1px solid var(--drawing-accent);
+  background: var(--drawing-accent);
+  color: var(--drawing-on-accent);
   cursor: pointer;
   list-style: none;
 }
@@ -238,7 +268,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-terminal__header::after {
   content: "+";
   margin-left: auto;
-  color: var(--home-ink);
+  color: var(--drawing-on-accent);
   font-size: 1rem;
 }
 
@@ -256,13 +286,14 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-terminal__filename {
-  color: var(--home-ink);
+  color: var(--drawing-on-accent);
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  letter-spacing: 0.015em;
 }
 
 .home-reference-terminal__body {
-  padding: 0;
+  padding: 0.5rem 0.875rem;
   font-family: var(--font-mono);
   font-size: 0.78125rem;
   line-height: 1.65;
@@ -276,7 +307,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-terminal__line + .home-reference-terminal__line {
-  margin-top: 0.1rem;
+  margin-top: 0;
 }
 
 .home-reference-terminal__line--indent {
@@ -302,6 +333,8 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   flex-wrap: wrap;
   gap: 0.375rem 0.75rem;
   margin-top: 0.875rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid var(--home-soft-line);
   color: var(--home-muted);
   font-size: 0.6875rem;
 }
@@ -318,7 +351,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   display: inline-block;
   width: 0.4rem;
   height: 0.8rem;
-  background: currentColor;
+  background: var(--drawing-display-accent);
 }
 
 .home-reference-hero__caption {
@@ -327,7 +360,8 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   right: var(--home-gutter);
   bottom: 2.5rem;
   padding: 0.5rem 0.75rem;
-  border-left: 1px solid var(--home-line);
+  border-left: 3px solid var(--drawing-accent);
+  border-top: 1px solid var(--home-line);
   color: var(--home-muted);
   background: var(--home-paper);
   font-family: var(--font-mono);
@@ -340,17 +374,44 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-section-head {
+  position: relative;
   border-bottom-color: var(--home-line);
 }
 
+.home-reference-section-head::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 3rem;
+  height: 3px;
+  background: var(--drawing-accent);
+}
+
 .home-reference-section-head h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
   margin: 0;
   color: var(--home-ink);
   font-family: var(--font-ui);
   font-size: 1.0625rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.025em;
   line-height: 1.4;
+}
+
+.home-reference-section-index {
+  color: var(--home-code-accent);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.home-reference-section-index::after {
+  content: " /";
+  color: var(--home-line);
 }
 
 .home-reference-domain-toolbar > span,
@@ -374,6 +435,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-domain-nav__button:hover:not(:disabled) {
   border-bottom-color: var(--home-code-accent);
+  background: var(--drawing-accent-wash);
   color: var(--home-code-accent);
 }
 
@@ -443,7 +505,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-domain-card__id {
-  color: var(--home-muted);
+  color: var(--home-code-accent);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
@@ -452,9 +517,13 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   color: var(--home-ink);
   font-family: var(--font-ui);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.025em;
+}
+
+.home-reference-domain-item:is(:hover, :focus-visible) .home-reference-domain-card {
+  border-bottom-color: var(--drawing-accent);
 }
 
 .home-reference-domain-card p {
@@ -499,10 +568,24 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 /* Preserve both real images, their shared cover behavior and the 4:3 frame. */
 .home-featured-cover-stack {
+  --post-cover-radius: 2px;
   width: 100%;
   max-width: 31.25rem;
   margin: 0;
   aspect-ratio: 4 / 3;
+}
+
+.home-featured-cover-stack::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: -5px;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-top: 2px solid var(--drawing-accent);
+  border-left: 2px solid var(--drawing-accent);
+  pointer-events: none;
 }
 
 .home-featured-cover-fallback {
@@ -513,6 +596,15 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-featured-card__eyebrow {
   color: var(--home-code-accent);
+  font-family: var(--font-mono);
+}
+
+.home-reference-featured-card__eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 2px;
+  margin-right: 0.25rem;
+  background: var(--drawing-accent);
 }
 
 .home-reference-featured-card__title {
@@ -551,12 +643,17 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-recent-item__date {
   color: var(--home-muted);
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
 .home-reference-recent-item__tag {
-  background: var(--surface-subtle);
-  color: var(--home-muted);
+  padding: 0.25rem 0.5rem;
+  border-left: 2px solid var(--drawing-accent);
+  border-radius: 0;
+  background: var(--drawing-accent-wash);
+  color: var(--home-code-accent);
+  font-family: var(--font-mono);
   transition: color 180ms ease;
 }
 
@@ -640,6 +737,44 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 [data-home-reference-footer] .home-reference-footer__grid {
   max-width: none;
   padding-inline: var(--home-gutter);
+}
+
+[data-home-reference-footer] .home-reference-footer__brand-mark {
+  border-radius: 0;
+  background: var(--drawing-accent);
+  color: var(--drawing-on-accent);
+}
+
+[data-home-reference-footer] .home-reference-footer__social-link {
+  border: 1px solid var(--home-soft-line);
+  border-radius: 0;
+  background: none;
+  color: var(--home-ink);
+}
+
+[data-home-reference-footer] .home-reference-footer__social-link:hover {
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
+  color: var(--home-code-accent);
+}
+
+.home-reference-domain-item:focus-visible,
+.home-reference-featured-card:focus-visible,
+.home-reference-recent-item:focus-visible,
+[data-home-reference-footer] .home-reference-footer__social-link:focus-visible {
+  outline: 2px solid var(--drawing-focus);
+  outline-offset: 4px;
+}
+
+body[data-header-variant="drawing"] #back-to-top {
+  --focus-ring: var(--drawing-focus);
+  --fab-bg: var(--surface-primary);
+  --fab-bg-hover: var(--drawing-accent-wash);
+  --fab-border: var(--drawing-accent);
+  --fab-icon: var(--drawing-accent-ink);
+  --fab-icon-hover: var(--drawing-accent-ink);
+  --fab-shadow: none;
+  border-radius: 2px;
 }
 
 @media (max-width: 1100px) {
@@ -838,6 +973,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 @media (prefers-reduced-motion: reduce) {
   .home-reference-card,
   .home-reference-hero__button,
+  .home-reference-hero__arrow,
   .home-reference-domain-nav__button,
   .home-reference-recent-item__tag,
   .home-reference-recent-item__title,
