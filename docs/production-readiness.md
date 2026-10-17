@@ -1,6 +1,14 @@
 # Production readiness
 
-Updated: 2026-10-17. This checklist distinguishes verified code from a verified deployment.
+Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
+
+## Floating article paper and covers — 2026-10-18
+
+[PR #14](https://github.com/Yuki-zik/myblog/pull/14), merge `261dca1`, restores the whole article's floating paper surface while retaining white/dark paper and orange annotations. Covers now display the complete artwork at up to 280px with a paper rim and restrained depth. The single-column breakpoint hides the desktop TOC through 1280px so it cannot displace the title. Paper readers and reading controllers remain unchanged.
+
+116 unit tests, a complete 155-case local E2E run, and targeted responsive/rail follow-ups passed. The final [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39050132934) and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39050526199) each passed 155 E2E cases. Both Production deployments succeeded: frontend GitHub deployment `7142663321`, Waline `7142658377`.
+
+Public HTTP acceptance verified all six readers, canonical URLs, titles, paragraph anchors and footnote targets, plus 13 search records and the original one comment (HTTP 200 / errno 0). The deployed CSS and representative cover match local build bytes. Six local desktop/theme/tablet/mobile screenshots, including the 1240px issue and correction, are archived. **Production browser screenshot/interaction acceptance remains pending:** the Mac is locked and browser automation could not unlock it; local screenshots are not labeled as production captures. Continue after manual unlock. Evidence: `docs/visual-history/2026-10-18-article-paper/` and ignored `output/article-paper-cover-2026-10-18/`.
 
 ## Drafting readers — 2026-10-17
 
