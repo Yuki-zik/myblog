@@ -169,7 +169,7 @@ test("inline code and code-block text stay legible on the new paper in both them
 
 for (const scheme of ["light", "dark"] as const) {
   test(`edge and metadata readers avoid page overflow at narrow and tablet widths in ${scheme}`, async ({ page }) => {
-    for (const width of [320, 390, 1024]) {
+    for (const width of [320, 390, 1024, 1240]) {
       await page.setViewportSize({ width, height: 844 });
       for (const reader of [
         { path: postPath, design: "edge" },
@@ -178,6 +178,8 @@ for (const scheme of ["light", "dark"] as const) {
         await openReader(page, reader.path, scheme, reader.design);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
         if (reader.design === "edge") {
+          await expect(page.locator(".post-reading-toc-rail")).toBeHidden();
+          await expect(page.getByRole("heading", { level: 1 })).toBeInViewport({ ratio: 1 });
           const surface = await page.locator(".post-reading-article").evaluate(node => ({
             shadow: getComputedStyle(node).boxShadow,
             background: getComputedStyle(node).backgroundColor,

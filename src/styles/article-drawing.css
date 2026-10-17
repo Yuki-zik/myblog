@@ -59,6 +59,10 @@
 }
 
 @media (max-width: 1280px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
+    display: none;
+  }
+
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article {
     border: 1px solid var(--article-paper-border);
     border-radius: var(--radius-lg);

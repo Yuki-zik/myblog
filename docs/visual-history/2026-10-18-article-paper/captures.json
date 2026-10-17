@@ -41,7 +41,7 @@
   },
   {
     "file": "v1-tablet-dark.jpg",
-    "phase": "implementation",
+    "phase": "implementation-issue",
     "baseCommit": "8200678",
     "overflow": 0,
     "route": "/posts/myblog-design-manual",
@@ -57,7 +57,8 @@
       900
     ],
     "format": "JPEG",
-    "capturedAt": "2026-10-17T16:22:57.285472+00:00"
+    "capturedAt": "2026-10-17T16:22:57.285472+00:00",
+    "note": "1240px desktop TOC still visible above the single-column article; retained as pre-fix evidence."
   },
   {
     "file": "v1-mobile-light.jpg",
@@ -98,5 +99,25 @@
     ],
     "format": "JPEG",
     "capturedAt": "2026-10-17T16:24:01.012074+00:00"
+  },
+  {
+    "file": "v2-tablet-dark.jpg",
+    "phase": "implementation-corrected",
+    "revision": "0fcffff + tablet fix",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1240,
+      900
+    ],
+    "sha256": "b069e9a1d9bbd5f539b3c7a492994fa14183030a4a96889eee3409583811f563",
+    "imageSize": [
+      1240,
+      900
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:28:59.666219+00:00"
   }
 ]
