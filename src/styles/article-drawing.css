@@ -1,5 +1,5 @@
 /*
- * Edge annotations for posts. This layer only changes paint and entry layout;
+ * Floating paper and edge annotations for posts. This layer changes paint and entry layout;
  * article.css retains the reading measure, three-column tracks and rail flow.
  */
 [data-reading-design="edge"] {
@@ -8,7 +8,7 @@
   --article-paper: var(--surface-primary);
   --article-paper-deep: var(--surface-subtle);
   --article-paper-border: var(--border-default);
-  --article-paper-shadow: none;
+  --article-paper-shadow: var(--shadow-lg);
   --article-paper-emboss: none;
   --article-ink: var(--text-primary);
   --article-ink-soft: var(--text-secondary);
@@ -28,10 +28,13 @@
   --reading-code-bg: var(--surface-subtle);
   --code-foreground: var(--text-primary);
   --code-border: var(--border-default);
-  background: var(--surface-primary);
+  background: transparent;
 }
 
-[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri::after,
+:root body.article-paper-page[data-runtime="reading"][data-header-variant="drawing"] {
+  background: var(--page-bg);
+}
+
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article::before {
   display: none;
 }
@@ -41,6 +44,30 @@
   border-radius: 0;
   background: var(--surface-primary);
   box-shadow: none;
+}
+
+/* The original grid already provides one sheet behind main text and notes.
+   Keep the viewport-sticky TOC outside it, without adding a scroll ancestor. */
+@media (min-width: 1281px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri::after {
+    display: block;
+    background: var(--article-paper);
+    border: 1px solid var(--article-paper-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--article-paper-shadow);
+  }
+}
+
+@media (max-width: 1280px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-toc-rail {
+    display: none;
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article {
+    border: 1px solid var(--article-paper-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--article-paper-shadow);
+  }
 }
 
 /* All existing header facts remain visible, ordered as one reading entry. */
@@ -130,12 +157,12 @@
   background: var(--border-default);
 }
 
-/* The original cover stays a figure; its duplicate glow image stays in the DOM. */
+/* The original artwork gets a readable print size, rim and soft shadow layer. */
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
   --title-cover-width: 100%;
-  width: min(100%, 11.25rem);
-  max-width: 11.25rem;
-  justify-self: start;
+  width: min(100%, 17.5rem);
+  max-width: 17.5rem;
+  justify-self: center;
   justify-items: start;
   margin: 0.25rem 0 0;
   border: 0;
@@ -151,22 +178,38 @@
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img {
   height: auto;
   max-height: none;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   object-fit: contain;
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--ghost {
-  display: none;
-  opacity: 0;
-  filter: none;
+  display: block;
+  opacity: 0.24;
+  border: 0;
+  filter: blur(18px);
+  transform: translateY(12px) scale(0.96);
+  transition: opacity 180ms var(--motion-ease-standard);
+  will-change: auto;
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--main,
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--main {
-  border: 1px solid var(--border-default);
-  box-shadow: none;
+  border: 4px solid var(--surface-primary);
+  box-shadow: var(--shadow-md);
   transform: none;
   animation: none;
+  transition: transform 180ms var(--motion-ease-standard);
+  will-change: auto;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--main {
+    transform: translateY(-3px);
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--ghost {
+    opacity: 0.3;
+  }
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-credit {
@@ -194,6 +237,7 @@
     grid-column: 2;
     grid-row: 1;
     align-self: start;
+    justify-self: start;
   }
 }
 
@@ -339,6 +383,6 @@
   }
 
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
-    width: min(100%, 9rem);
+    width: min(100%, 17.5rem);
   }
 }

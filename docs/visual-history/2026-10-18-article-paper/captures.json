@@ -1,0 +1,123 @@
+[
+  {
+    "file": "v1-desktop-light.jpg",
+    "phase": "implementation",
+    "baseCommit": "8200678",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "sha256": "bf62d90d8615c0e86eb6e84844bd91755a8804e4de10ca1ee987997cb833294f",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:21:42.107332+00:00"
+  },
+  {
+    "file": "v1-desktop-dark.jpg",
+    "phase": "implementation",
+    "baseCommit": "8200678",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1440,
+      960
+    ],
+    "sha256": "a752a2c742df94102cc5fc12028692102399f77c63dad78a214176900086338e",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:22:44.675690+00:00"
+  },
+  {
+    "file": "v1-tablet-dark.jpg",
+    "phase": "implementation-issue",
+    "baseCommit": "8200678",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1240,
+      900
+    ],
+    "sha256": "0045558634a369bfc135faeb8cbe39e6644365cd79a492b524f198483d5a534f",
+    "imageSize": [
+      1240,
+      900
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:22:57.285472+00:00",
+    "note": "1240px desktop TOC still visible above the single-column article; retained as pre-fix evidence."
+  },
+  {
+    "file": "v1-mobile-light.jpg",
+    "phase": "implementation",
+    "baseCommit": "8200678",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "sha256": "af914bdb7cdfce76426df5f0769cbc97edade8d65ea233f675d10668f112c0fb",
+    "imageSize": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:23:40.254647+00:00"
+  },
+  {
+    "file": "v1-raster-cover-dark.jpg",
+    "phase": "implementation",
+    "baseCommit": "8200678",
+    "overflow": 0,
+    "route": "/posts/ant-ai-coding-review",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1440,
+      960
+    ],
+    "sha256": "862a99b8f123da9656e3ede20d582d09380dc97263968af1fb5b040fb779366e",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:24:01.012074+00:00"
+  },
+  {
+    "file": "v2-tablet-dark.jpg",
+    "phase": "implementation-corrected",
+    "revision": "0fcffff + tablet fix",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1240,
+      900
+    ],
+    "sha256": "b069e9a1d9bbd5f539b3c7a492994fa14183030a4a96889eee3409583811f563",
+    "imageSize": [
+      1240,
+      900
+    ],
+    "format": "JPEG",
+    "capturedAt": "2026-10-17T16:28:59.666219+00:00"
+  }
+]

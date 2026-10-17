@@ -1952,7 +1952,8 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.titleCardBackgroundImage).toBe("none");
   expect(metrics.firstParagraphWidth).toBeGreaterThan(715);
   expect(metrics.firstParagraphWidth).toBeLessThan(810);
-  expect(metrics.paperBandDisplay).toBe("none");
+  expect(metrics.paperBandDisplay).not.toBe("none");
+  expect(metrics.paperBandShadow).not.toBe("none");
   expect(metrics.articleRadius).toBe(0);
   expect(metrics.articleShadow).toBe("none");
   expect(metrics.articleBackgroundImage).toBe("none");
@@ -2003,12 +2004,13 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.titleToBodyGap).toBeGreaterThanOrEqual(24);
   expect(metrics.titleToBodyGap).toBeLessThanOrEqual(64);
   expect(metrics.coverRadius).toBe(0);
-  expect(metrics.coverImageRadius).toBe(0);
-  expect(metrics.coverImageShadow).toBe("none");
+  expect(metrics.coverImageRadius).toBeGreaterThanOrEqual(6);
+  expect(metrics.coverImageShadow).not.toBe("none");
   expect(metrics.coverImageBorderWidth).toBeGreaterThanOrEqual(1);
   expect(metrics.coverGhostCount).toBe(1);
-  expect(metrics.coverGhostFilter).toBe("none");
-  expect(metrics.coverGhostOpacity).toBe(0);
+  expect(metrics.coverGhostFilter).toContain("blur");
+  expect(metrics.coverGhostOpacity).toBeGreaterThan(0.1);
+  expect(metrics.coverGhostOpacity).toBeLessThanOrEqual(0.35);
   expect(metrics.coverGhostPosition).toBe("absolute");
   expect(metrics.coverImageFilter).not.toContain("drop-shadow");
   expect(metrics.coverImageOpacity).toBeGreaterThan(0.75);
@@ -2057,7 +2059,7 @@ test("article reading runtime keeps its paper background separate from discover"
     };
   });
 
-  expect(metrics.bodyBackground).toBe("rgb(255, 255, 255)");
+  expect(metrics.bodyBackground).toBe("rgb(245, 245, 247)");
   expect(metrics.beforeOpacity).toBe("0");
 });
 

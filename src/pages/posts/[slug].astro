@@ -175,6 +175,7 @@ const structuredData = site
   modifiedTime={post.data.updated}
   openGraphImage={`/og/posts/${post.id}.png`}
   runtime="reading"
+  bodyClass="article-paper-page"
   headerVariant="drawing"
   mainClass="shell--article-reading reading-drawing"
   structuredData={structuredData}
@@ -255,7 +256,7 @@ const structuredData = site
                     loading="eager"
                     decoding="async"
                     widths={[320, 480, 640, 960]}
-                    sizes="(max-width: 560px) 80vw, 400px"
+                    sizes="(max-width: 360px) 80vw, 280px"
                   />
                   <Image
                     src={post.data.cover.src}
@@ -264,7 +265,7 @@ const structuredData = site
                     loading="eager"
                     decoding="async"
                     widths={[320, 480, 640, 960]}
-                    sizes="(max-width: 560px) 80vw, 400px"
+                    sizes="(max-width: 360px) 80vw, 280px"
                   />
                 </div>
                 {post.data.cover.credit ? (
