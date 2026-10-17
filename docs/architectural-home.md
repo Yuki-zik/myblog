@@ -1,6 +1,6 @@
 # Architectural drawing homepage
 
-Status: live at https://a-znk-blog.vercel.app/ via PR #10, merge `6b77d29acee0401b4bd19a9d5d37b77ccf25af30`.
+Status: live at https://a-znk-blog.vercel.app/. Latest update: PR #11 orange drafting accents, merge `018b53ed3b36610136e0f5e7df69ff7435f963d9`.
 
 ## Approved direction
 
@@ -54,4 +54,6 @@ Browser inspection of the built output confirmed the 1440px light/dark compositi
 
 The follow-up retains the approved image and composition while tying UI elements to the drawing through one orange palette. A colored name separator, code-note title strip and leader, numbered section headings, topic IDs, cover registration corner, square article labels and footer controls form the same annotation language. All new colors live in `tokens.css`, scoped to the drawing homepage; brighter surfaces and darker small-text ink are distinct. Dark mode uses the resolved color scheme.
 
-Four new browser checks were demonstrated red before implementation. They verify the unchanged artwork/name, orange accents and code title strip, 3:1 large-type and 4.5:1 small-type contrast, hidden index semantics and isolation from the default article header. 116 unit tests passed. The complete local E2E attempt passed 142/143; the same pre-existing article-header dwell case timed out, then the focused 11-case rerun passed, including that case. Desktop light/dark, 390px collapsed/expanded content and the content sections were visually checked. Exact-head CI and production acceptance are pending. Evidence: ignored `output/orange-drawing-2026-10-17/`.
+Four new browser checks were demonstrated red before implementation. They verify the unchanged artwork/name, orange accents and code title strip, 3:1 large-type and 4.5:1 small-type contrast, hidden index semantics and isolation from the default article header. 116 unit tests passed. The complete local E2E attempt passed 142/143; the same pre-existing article-header dwell case timed out, then the focused 11-case rerun passed, including that case. Desktop light/dark, 390px collapsed/expanded content and the content sections were visually checked. [PR #11](https://github.com/Yuki-zik/myblog/pull/11) passed all 143 E2E cases in one cloud run, along with the existing verify gates, and merged as `018b53e`. Production acceptance passed. Evidence: ignored `output/orange-drawing-2026-10-17/`.
+
+The GitHub Vercel integration reports successful Production deployments `7135404396` (frontend) and `7135407307` (Waline) for the merge SHA. The public homepage has the new name accent and all three section indices. Browser-computed colors are `rgb(241, 92, 0)` for the name separator and `rgb(255, 106, 0)` for the note title strip; desktop/mobile have no horizontal overflow. Search returns five results and displays orange selection/focus treatment. No console errors were observed. The original illustration hash is unchanged, main routes/SEO resources return 200, and comments return HTTP 200 / errno 0 with the original one comment. [Post-merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39007009306) completed successfully before final handoff.

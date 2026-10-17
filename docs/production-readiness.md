@@ -2,6 +2,12 @@
 
 Updated: 2026-10-17. This checklist distinguishes verified code from a verified deployment.
 
+## Orange drafting refinement — 2026-10-17
+
+[PR #11](https://github.com/Yuki-zik/myblog/pull/11), merge `018b53e`, unifies homepage components with the architectural illustration using orange annotation bars, readable ink, section/topic indices and square controls. The palette remains scoped to the drawing homepage; article headers preserve their default theme.
+
+116 unit tests, 143 PR E2E cases, post-merge CI and both previews passed. Local full-suite timing history is recorded in `docs/architectural-home.md`. Both Production deployments succeeded through the existing GitHub integration. Live desktop/mobile computed colors, original image hash, search, primary routes and comment reads were verified. Evidence: ignored `output/orange-drawing-2026-10-17/`.
+
 ## Architectural drawing homepage — 2026-10-17
 
 [PR #10](https://github.com/Yuki-zik/myblog/pull/10), merge `6b77d29`, publishes the user-approved full-canvas architectural cover, oversized author name, opaque research.ts annotation and homepage-only flat drawing header. Tablet expansion now grows in normal flow; mobile disclosure, dark mode and the existing reading runtime remain functional.
