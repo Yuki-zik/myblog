@@ -447,5 +447,125 @@
     "sha256": "92b9cb9c77b27a90292d7147cd4fbca4e302e98ed07e5a54480bd8728a5b810a",
     "capturedAt": "2026-10-17T09:17:47.727880+00:00",
     "sourceSha256": "f303f05a5f4d86f0f7fdbf505e197bcce197e2d9ad6fec7e379fd9156439f4e8"
+  },
+  {
+    "file": "v3-article-desktop-light.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "sha256": "080df61a71a3f4e4627d017eefb4410a4f57abeb251b21486e32a42144c2dadc",
+    "capturedAt": "2026-10-17T09:26:39.088698+00:00"
+  },
+  {
+    "file": "v3-article-toc-scroll-light.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#foundations%E5%9F%BA%E7%A1%80",
+    "scrollY": 1092.5,
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "sha256": "73b3bca3324145884c06e08da9989f06697b2486cbd58df464caeba246daf20c",
+    "capturedAt": "2026-10-17T09:27:20.542268+00:00"
+  },
+  {
+    "file": "v3-article-desktop-dark.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#foundations%E5%9F%BA%E7%A1%80",
+    "scrollY": 0,
+    "theme": "dark",
+    "viewport": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "sha256": "6ac19ec519ba31acbcaca38c6aa2119196a5daccfcc86fdedd87c99872065d80",
+    "capturedAt": "2026-10-17T09:27:37.943552+00:00"
+  },
+  {
+    "file": "v3-article-mobile-toc-light.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/posts/myblog-design-manual#overview%E6%A6%82%E8%BF%B0",
+    "scrollY": 903,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      390,
+      844
+    ],
+    "sha256": "6f8013058c4895697a38c05c88aaa0c0b3817976e5cd56112f98d26cc9efc5ce",
+    "capturedAt": "2026-10-17T09:28:07.791638+00:00"
+  },
+  {
+    "file": "v3-paper-mobile-authors-light.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/papers/oxicams-carbon-dots-machine-learning",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      390,
+      844
+    ],
+    "sha256": "6ee727ffcf3a76ecc670918f099c440751ce0f62a9dcf8355a54a836467532f1",
+    "capturedAt": "2026-10-17T09:28:36.305973+00:00"
+  },
+  {
+    "file": "v3-paper-desktop-light.jpg",
+    "phase": "production",
+    "commit": "d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5",
+    "overflow": 0,
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "scrollY": 0,
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "format": "JPEG",
+    "imageSize": [
+      1440,
+      960
+    ],
+    "sha256": "9580edd1b7879f32069c4f17262ec334a9d307fb8f7bdb9bd3e3e059a55f92dc",
+    "capturedAt": "2026-10-17T09:29:05.413842+00:00"
   }
 ]

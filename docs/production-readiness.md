@@ -2,6 +2,14 @@
 
 Updated: 2026-10-17. This checklist distinguishes verified code from a verified deployment.
 
+## Drafting readers — 2026-10-17
+
+[PR #13](https://github.com/Yuki-zik/myblog/pull/13), merge `d10beef`, applies the approved edge-annotation article and metadata-first paper layouts. The reading measure and scholar rail remain intact. Screenshot review caught low-contrast inline code and a mobile TOC ordering bug; the latter now closes the disclosure before measuring the scroll target, including the 1181–1280px layout.
+
+116 unit tests and the complete local 155-case E2E suite passed. The final table-shadow refinement was rebuilt and visually checked. Both [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39020682646) and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39020988860) passed all 155 E2E cases directly. Both Production deployments succeeded: frontend GitHub deployment `7137600044`, Waline `7137594036`.
+
+All six public reading routes return 200 and match built titles, paragraph anchors and footnote targets, with correct canonicals. Live browser acceptance confirms the 721.59px/18.24px article measure, pinned TOC at 85.59px after scrolling, corrected mobile heading landing at 119.77px, full paper authors and working Cite focus. Search still has 13 records; comments return HTTP 200 / errno 0 with the original one comment. No database/configuration changes or comment writes were made. See `docs/reading-drawing.md`, the 29-image versioned archive under `docs/visual-history/`, and ignored `output/reading-drawing-2026-10-17/`.
+
 ## Drawing discovery entries — 2026-10-17
 
 [PR #12](https://github.com/Yuki-zik/myblog/pull/12), merge `0bf8296`, extends the white-paper/orange annotation language to the topic directory, topic detail entries, article archive and publication index. Compact headings, numbered rows and smaller supporting covers move real content into the first screen. Reading routes remain unchanged; their separate design comparison is review-only and is not deployed.

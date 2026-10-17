@@ -30,4 +30,16 @@
 | v2c 目录修正 | [手机章节正确落点](v2c-mobile-toc-corrected-light.jpg)，标题top119.77px，目录已收起 |
 | v2d 最终本地构建 | [手机平面表格](v2d-mobile-table-final-light.jpg)，论文桌面[浅色](v2d-paper-desktop-light.jpg) / [深色](v2d-paper-desktop-dark.jpg) |
 
-正式上线截图将在验证后追加。捕获参数见 [captures.json](captures.json)。原生截图为JPEG，保留原字节，不进行重新编码。
+## v3 · 正式站点
+
+来源：`https://a-znk-blog.vercel.app/`，PR #13，合并提交`d10beef2eeee75f4bacfa32ba8b9c5f3924b1ef5`；前端Production `7137600044`。PR与合并CI均完整155项E2E通过。
+
+| 页面/状态 | 正式截图 |
+|---|---|
+| 文章桌面 | [浅色](v3-article-desktop-light.jpg) / [深色](v3-article-desktop-dark.jpg) |
+| 桌面目录跟随 | [滚动后TOC固定](v3-article-toc-scroll-light.jpg) |
+| 手机目录定位 | [折叠后标题准确落点](v3-article-mobile-toc-light.jpg) |
+| 论文桌面 | [DUAP完整元数据](v3-paper-desktop-light.jpg) |
+| 论文手机 | [完整11位作者与资源](v3-paper-mobile-authors-light.jpg) |
+
+共29张截图。捕获参数与字节SHA256见 [captures.json](captures.json)。原生截图为JPEG，保留原字节，不进行重新编码；明暗主题及临时浏览器尺寸已恢复。
