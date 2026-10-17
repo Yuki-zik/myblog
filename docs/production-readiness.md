@@ -2,6 +2,14 @@
 
 Updated: 2026-10-17. This checklist distinguishes verified code from a verified deployment.
 
+## Drawing discovery entries — 2026-10-17
+
+[PR #12](https://github.com/Yuki-zik/myblog/pull/12), merge `0bf8296`, extends the white-paper/orange annotation language to the topic directory, topic detail entries, article archive and publication index. Compact headings, numbered rows and smaller supporting covers move real content into the first screen. Reading routes remain unchanged; their separate design comparison is review-only and is not deployed.
+
+116 unit tests and the complete 148-case local E2E suite passed. After screenshot-driven refinements, 25 targeted cases passed again. Both [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39014419627) and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39014791429) passed all 148 E2E cases directly. Both Production deployments succeeded: frontend GitHub deployment `7136628664`, Waline `7136620000`.
+
+Public acceptance verified all eight changed entries and two reading routes return 200 with correct canonicals, 13 search-index records, and comment HTTP 200 / errno 0 with the original one comment. Desktop topic/publication and 390px archive screenshots were reviewed; archive covers are square and no horizontal overflow was observed. The original article still measures 721.59px wide at 18.24px/1.88; after scrolling 1056px the TOC remains pinned at 85.59px. Nine reading source files retain their baseline hashes. See `docs/drawing-discover-design.md` and ignored `output/drawing-discover-2026-10-17/` for rationale, previews and evidence.
+
 ## Orange drafting refinement — 2026-10-17
 
 [PR #11](https://github.com/Yuki-zik/myblog/pull/11), merge `018b53e`, unifies homepage components with the architectural illustration using orange annotation bars, readable ink, section/topic indices and square controls. The palette remains scoped to the drawing homepage; article headers preserve their default theme.

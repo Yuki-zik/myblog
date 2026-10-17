@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-17 (drawing discover pages locally verified; reading pages frozen pending user design review)
+Last updated: 2026-10-17 (PR #12 drawing discover pages live and verified; reading pages unchanged with review-only design previews)
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。
 
