@@ -1,0 +1,25 @@
+---
+interface Props {
+  kicker: string;
+  title: string;
+  description?: string;
+  count?: number;
+  countLabel?: string;
+}
+
+const { kicker, title, description, count, countLabel } = Astro.props;
+---
+
+<header class="drawing-index-header" data-discover-hero>
+  <p class="drawing-index-kicker">{kicker}</p>
+  <div class="drawing-index-header__title-row">
+    <h1>{title}</h1>
+    {count !== undefined && (
+      <p class="drawing-index-total"><strong>{String(count).padStart(2, "0")}</strong><span>{countLabel}</span></p>
+    )}
+  </div>
+  <div class="drawing-index-header__context">
+    {description && <p class="drawing-index-description">{description}</p>}
+    {Astro.slots.has("actions") && <nav class="drawing-index-links" aria-label="页面入口"><slot name="actions" /></nav>}
+  </div>
+</header>

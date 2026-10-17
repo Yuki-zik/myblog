@@ -1,11 +1,9 @@
 ---
 import { getCollection, getEntry, render, type CollectionEntry } from "astro:content";
-import DiscoverShell from "../../components/discover/DiscoverShell.astro";
+import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
+import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
-import PageHero from "../../components/discover/PageHero.astro";
-import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
-import { formatPostDisplayDate } from "../../lib/posts/date";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
@@ -53,9 +51,11 @@ const inboundRelatedTopics = allTopicEntries.filter(
 );
 const relatedTopics = [...outboundRelatedTopics, ...inboundRelatedTopics];
 
-const primaryEntry = entryPosts[0] ?? topicPosts[0] ?? null;
-const additionalEntryPosts = entryPosts.slice(1);
-const topicDescription = `${topic.data.summary} ${topic.data.why}`;
+// Author-selected entries lead the list; each remaining article appears once.
+const readingPosts = [...new Map(
+  [...entryPosts, ...topicPosts].map((post) => [post.id, post] as const)
+).values()];
+const topicDescription = topic.data.summary;
 
 const site = Astro.site;
 const structuredData = site
@@ -77,174 +77,72 @@ const structuredData = site
   title={topic.data.title}
   description={topicDescription}
   runtime="discover"
+  headerVariant="drawing"
   openGraphImage={`/og/topics/${topic.id}.png`}
   structuredData={structuredData}
 >
-  <DiscoverShell>
-    <PageHero
-      variant="split"
-      kicker="Discover / Topic"
+  <DrawingIndexShell kind="topic">
+    <DrawingPageHeader
+      kicker="Topic"
       title={topic.data.title}
       description={topicDescription}
-      actions={[
-        primaryEntry
-          ? {
-              href: `/posts/${primaryEntry.id}`,
-              label: `从《${primaryEntry.data.title}》开始`,
-              variant: "primary",
-              icon: "arrow"
-            }
-          : {
-              href: "/archives",
-              label: "浏览归档",
-              variant: "primary",
-              icon: "archive"
-            },
-        {
-          href: "/topics",
-          label: "返回主题列表",
-          variant: "secondary",
-          icon: "topic"
-        }
-      ]}
+      count={readingPosts.length}
+      countLabel="篇文章"
     >
-      <div slot="aside">
-        <div class="discover-hero__panel-copy">
-          <p class="discover-hero__panel-label">Topic Thesis</p>
-          <p>{topic.data.why}</p>
-        </div>
-        <div class="discover-hero__panel-stats">
-          <div class="discover-hero__panel-stat">
-            <strong>{String(topicPosts.length).padStart(2, "0")}</strong>
-            <span>相关文章</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(relatedConcepts.length).padStart(2, "0")}</strong>
-            <span>相关概念</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(entryPosts.length).padStart(2, "0")}</strong>
-            <span>入门文章</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(relatedTopics.length).padStart(2, "0")}</strong>
-            <span>相关主题</span>
-          </div>
-        </div>
-      </div>
-    </PageHero>
+      <a slot="actions" href="/topics">全部主题 <span aria-hidden="true">↗</span></a>
+    </DrawingPageHeader>
 
-    <section class="discover-section">
-      <SectionHead
-        kicker="Overview"
-        title="主题说明"
-        description="了解这个主题关注的问题、背景与阅读线索。"
-      />
-      <div class="discover-surface discover-rich">
+    <section class="discover-section drawing-index-section" data-topic-posts aria-label="阅读列表">
+      <h2 class="drawing-section-title">阅读列表</h2>
+      {
+        readingPosts.length === 0 ? (
+          <EmptyState title="这个主题还没有笔记。" body="可以先浏览其他主题，找到感兴趣的文章。" />
+        ) : (
+          <div class="discover-post-grid" data-ux-stagger>
+            {readingPosts.map((post) => <PostCard post={post} compactMetadata={true} />)}
+          </div>
+        )
+      }
+    </section>
+
+    <section class="discover-section drawing-index-section drawing-topic-about">
+      <h2 class="drawing-section-title">关于这个主题</h2>
+      <div class="discover-rich drawing-topic-about__body">
+        <p>{topic.data.why}</p>
         <Content />
       </div>
     </section>
 
-    <section class="discover-section">
-      <SectionHead
-        kicker="Entry"
-        title="入门路径"
-        description="优先给出作者明确指定的入口文章；如果主题尚未整理完成，就退回到最新相关文章。"
-        countLabel={`${entryPosts.length || topicPosts.length} items`}
-      />
-      {
-        primaryEntry ? (
-          <div class="discover-stream-list">
-            <a href={`/posts/${primaryEntry.id}`} class="discover-surface discover-stream-item">
-              <span class="discover-stream-item__eyebrow">Primary Entry</span>
-              <div class="discover-stream-item__row">
-                <h3 class="discover-stream-item__title">{primaryEntry.data.title}</h3>
-                <span class="discover-inline-meta">{formatPostDisplayDate(primaryEntry.data.date)}</span>
-              </div>
-              <p class="discover-stream-item__summary">{primaryEntry.data.summary ?? "从这里进入这个主题的第一层脉络。"}</p>
-            </a>
-
-            {additionalEntryPosts.map((post) => (
-              <a href={`/posts/${post.id}`} class="discover-surface discover-stream-item">
-                <span class="discover-stream-item__eyebrow">Entry Extension</span>
-                <div class="discover-stream-item__row">
-                  <h3 class="discover-stream-item__title">{post.data.title}</h3>
-                  <span class="discover-inline-meta">{formatPostDisplayDate(post.data.date)}</span>
-                </div>
-                <p class="discover-stream-item__summary">{post.data.summary ?? "作为入门路径的后续延展阅读。"}</p>
-              </a>
-            ))}
-          </div>
-        ) : (
-          <EmptyState title="暂无入门文章。" body="这个主题还没有显式指定入门路径，后续会在整理主题地图时补上。" />
-        )
-      }
-    </section>
-
-    <section class="discover-section" data-topic-posts>
-      <SectionHead
-        kicker="Posts"
-        title="相关文章"
-        description="围绕这个主题继续阅读，从具体问题走向相关实践。"
-        countLabel={`${topicPosts.length} posts`}
-      />
-      {
-        topicPosts.length === 0 ? (
-          <EmptyState title="该主题下暂无文章。" body="等文章发布后，这里会自动接入统一的文章卡片列表。" />
-        ) : (
-          <div class="discover-post-grid" data-ux-stagger>
-            {topicPosts.map((post) => <PostCard post={post} />)}
-          </div>
-        )
-      }
-    </section>
-
-    <section class="discover-section">
-      <SectionHead
-        kicker="Concepts"
-        title="相关概念"
-        description="主题下文章标注出的概念会汇总成二级入口，帮助读者从叙述层切回概念层。"
-        countLabel={`${relatedConcepts.length} linked`}
-      />
-      {
-        relatedConcepts.length === 0 ? (
-          <EmptyState title="暂无相关概念。" body="当前主题文章还没有标注概念节点，后续补标后会自动出现在这里。" />
-        ) : (
-          <div class="discover-mini-grid" data-ux-stagger>
+    {
+      relatedConcepts.length > 0 ? (
+        <section class="discover-section drawing-index-section" data-topic-concepts>
+          <h2 class="drawing-section-title">相关概念</h2>
+          <div class="discover-mini-grid drawing-related-grid" data-ux-stagger>
             {relatedConcepts.map((concept) => (
-              <a href={`/concepts/${concept.id}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
-                <span class="discover-mini-card__meta">Concept</span>
+              <a href={`/concepts/${concept.id}`} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
                 <h3>{concept.data.title}</h3>
                 <p>{concept.data.summary}</p>
               </a>
             ))}
           </div>
-        )
-      }
-    </section>
+        </section>
+      ) : null
+    }
 
-    <section class="discover-section">
-      <SectionHead
-        kicker="Network"
-        title="相关主题"
-        description="显式关联主题保持同一套卡片语言，避免相关主题只退化成底部标签列表。"
-        countLabel={`${relatedTopics.length} related`}
-      />
-      {
-        relatedTopics.length === 0 ? (
-          <EmptyState title="暂无显式关联主题。" body="当主题地图完成交叉链接后，这里会继续展开成更完整的网络。" />
-        ) : (
-          <div class="discover-mini-grid" data-ux-stagger>
+    {
+      relatedTopics.length > 0 ? (
+        <section class="discover-section drawing-index-section" data-topic-related>
+          <h2 class="drawing-section-title">相关主题</h2>
+          <div class="discover-mini-grid drawing-related-grid" data-ux-stagger>
             {relatedTopics.map((entry) => (
-              <a href={`/topics/${entry.id}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
-                <span class="discover-mini-card__meta">Topic</span>
+              <a href={`/topics/${entry.id}`} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
                 <h3>{entry.data.title}</h3>
                 <p>{entry.data.summary}</p>
               </a>
             ))}
           </div>
-        )
-      }
-    </section>
-  </DiscoverShell>
+        </section>
+      ) : null
+    }
+  </DrawingIndexShell>
 </BaseLayout>

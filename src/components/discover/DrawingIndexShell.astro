@@ -1,0 +1,16 @@
+---
+import "../../styles/drawing-index.css";
+
+interface Props {
+  kind: "topics" | "topic" | "papers" | "archives";
+  bodyClass?: string;
+}
+
+const { kind, bodyClass } = Astro.props;
+---
+
+<div class="discover-page drawing-index" data-discover-page data-drawing-index={kind}>
+  <div class:list={["drawing-index__body", bodyClass]}>
+    <slot />
+  </div>
+</div>

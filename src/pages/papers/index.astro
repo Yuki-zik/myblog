@@ -1,9 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import DiscoverShell from "../../components/discover/DiscoverShell.astro";
-import PageHero from "../../components/discover/PageHero.astro";
-import SectionHead from "../../components/discover/SectionHead.astro";
+import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
+import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
@@ -17,9 +16,7 @@ const paperGroups = [...new Set(papers.map((paper) => paper.data.year))].map((ye
   year,
   papers: papers.filter((paper) => paper.data.year === year)
 }));
-const featuredPaper = papers.find((paper) => paper.data.featured) ?? papers[0] ?? null;
-const keywordCount = new Set(papers.flatMap((paper) => paper.data.keywords)).size;
-const description = "集中展示论文、预印本与研究原型，并保留可引用的元数据、摘要、贡献和资源入口。";
+const description = "按年份浏览论文，查找研究摘要、发表信息与原文。";
 const site = Astro.site;
 const canonicalUrl = site ? new URL("/papers", site).toString() : "";
 const structuredData = site
@@ -60,51 +57,21 @@ const resourceLabels = {
   description={description}
   canonical="/papers"
   runtime="discover"
+  headerVariant="drawing"
   structuredData={structuredData}
 >
-  <DiscoverShell bodyClass="papers-index-page">
-    <PageHero
+  <DrawingIndexShell kind="papers" bodyClass="papers-index-page">
+    <DrawingPageHeader
       kicker="Research / Papers"
       title="论文与研究成果"
-      description="这里不是文章归档，而是一份研究档案：每个条目都明确区分发表状态、作者、摘要、关键词与可引用信息。"
-      variant="split"
-      actions={featuredPaper
-        ? [
-            {
-              href: `/papers/${featuredPaper.id}`,
-              label: "查看代表条目",
-              variant: "primary",
-              icon: "arrow"
-            },
-            {
-              href: "/author",
-              label: "研究者简介",
-              variant: "secondary",
-              icon: "topic"
-            }
-          ]
-        : []}
-      stats={[
-        { value: String(papers.length).padStart(2, "0"), label: "项研究成果" },
-        { value: String(keywordCount).padStart(2, "0"), label: "个研究关键词" }
-      ]}
+      description={description}
+      count={papers.length}
+      countLabel="项研究成果"
     >
-      <div slot="aside" class="paper-index-ledger" aria-label="论文索引说明">
-        <p class="paper-index-ledger__eyebrow">RESEARCH REGISTER</p>
-        <strong>从研究问题进入，而不是从发布日期离开。</strong>
-        <p>正式成果、预印本和页面样稿会被清楚标记，避免把进行中的研究误写成已发表论文。</p>
-        <span aria-hidden="true">Σ / {String(papers.length).padStart(2, "0")}</span>
-      </div>
-    </PageHero>
+      <a slot="actions" href="/author">研究者简介</a>
+    </DrawingPageHeader>
 
     <section class="discover-section">
-      <SectionHead
-        kicker="Index"
-        title="研究条目"
-        description="按时间倒序排列，状态与出处优先于装饰。"
-        countLabel={`${papers.length} papers indexed`}
-      />
-
       <div class="paper-year-list" data-ux-stagger>
         {paperGroups.map((group) => (
           <section class="paper-year-group" data-paper-year={group.year} data-ux-reveal="fade-up">
@@ -167,7 +134,7 @@ const resourceLabels = {
 
                   <nav class="paper-index-row__resources" aria-label={`${paper.data.title} 资源`}>
                     <a class="paper-resource-link paper-resource-link--detail" href={`/papers/${paper.id}`}>
-                      Details
+                      阅读详情
                     </a>
                     {paper.data.resources.map((resource) => (
                       <a class="paper-resource-link" href={resource.url} target="_blank" rel="noreferrer">
@@ -182,5 +149,5 @@ const resourceLabels = {
         ))}
       </div>
     </section>
-  </DiscoverShell>
+  </DrawingIndexShell>
 </BaseLayout>

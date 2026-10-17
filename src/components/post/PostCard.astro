@@ -7,6 +7,7 @@ import { getPostReadingMinutes } from "../../lib/posts/readingTime";
 
 interface Props {
   post: CollectionEntry<"posts">;
+  compactMetadata?: boolean;
 }
 
 type MetaItem = {
@@ -21,7 +22,7 @@ type StatItem = {
   ariaLabel: string;
 };
 
-const { post } = Astro.props;
+const { post, compactMetadata = false } = Astro.props;
 const topics = await getCollection("topics");
 const topicTitleBySlug = new Map(topics.map((topic) => [topic.id, topic.data.title]));
 const publishedLabel = formatPostDisplayDate(post.data.date);
@@ -43,7 +44,7 @@ const metaItems = [
         ariaLabel: `更新日期 ${updatedLabel}`
       }
     : null,
-  {
+  compactMetadata ? null : {
     icon: "article" as const,
     label: "文章",
     ariaLabel: "文章类型"
@@ -55,12 +56,12 @@ const statItems = [
     label: readingTimeLabel,
     ariaLabel: `预计阅读时间 ${readingTimeLabel}`
   },
-  {
+  compactMetadata ? null : {
     icon: "tag" as const,
     label: topicCountLabel,
     ariaLabel: topicCountLabel
   },
-  conceptCountLabel
+  conceptCountLabel && !compactMetadata
     ? {
         icon: "nodes" as const,
         label: conceptCountLabel,

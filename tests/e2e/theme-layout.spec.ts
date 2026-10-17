@@ -729,7 +729,9 @@ test("non-home discover routes follow dark OS when theme stays on system", async
       // as the rendered body, including a future color-mix() token value.
       const probe = document.createElement("span");
       probe.hidden = true;
-      probe.style.backgroundColor = "var(--page-bg)";
+      probe.style.backgroundColor = document.body.dataset.headerVariant === "drawing"
+        ? "var(--surface-primary)"
+        : "var(--page-bg)";
       document.body.append(probe);
       const pageBackground = getComputedStyle(probe).backgroundColor;
       probe.remove();
@@ -741,7 +743,7 @@ test("non-home discover routes follow dark OS when theme stays on system", async
     });
     expect(
       colors.bodyBackground,
-      `${route} should use the shared page background under system+dark OS`,
+      `${route} should use its semantic page surface under system+dark OS`,
     ).toBe(colors.pageBackground);
     // Token equality alone would miss a broken theme that resolves both
     // surfaces to light. Keep an independent dark-background requirement.

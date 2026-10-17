@@ -1,15 +1,13 @@
 ---
 import { getCollection } from "astro:content";
-import DiscoverShell from "../../components/discover/DiscoverShell.astro";
+import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
+import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
-import PageHero from "../../components/discover/PageHero.astro";
-import SectionHead from "../../components/discover/SectionHead.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-const [topics, posts, concepts] = await Promise.all([
+const [topics, posts] = await Promise.all([
   getCollection("topics"),
-  getCollection("posts", ({ data }) => !data.draft),
-  getCollection("concepts")
+  getCollection("posts", ({ data }) => !data.draft)
 ]);
 
 const sortedTopics = [...topics].sort((a, b) => {
@@ -28,77 +26,45 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
   return acc;
 }, {});
 
-const primaryTopic = sortedTopics[0] ?? null;
 const topicsPageDescription =
-  "按主题进入知识网络，而不是沿时间流被动翻找；这里汇总每个研究主题的摘要、写作理由与文章规模。";
+  "按主题查找研究笔记与工程实践，这里汇总每个主题的摘要与相关文章。";
 ---
 
-<BaseLayout title="主题列表" description={topicsPageDescription} runtime="discover">
-  <DiscoverShell>
-    <PageHero
-      kicker="Discover / Topics"
+<BaseLayout title="主题列表" description={topicsPageDescription} runtime="discover" headerVariant="drawing">
+  <DrawingIndexShell kind="topics">
+    <DrawingPageHeader
+      kicker="Topics"
       title="主题列表"
-      description="选择感兴趣的主题，按问题查找相关笔记和实践记录。"
-      actions={[
-	        primaryTopic
-	          ? {
-	              href: `/topics/${primaryTopic.id}`,
-	              label: `进入 ${primaryTopic.data.title}`,
-              variant: "primary",
-              icon: "arrow"
-            }
-          : {
-              href: "/archives",
-              label: "翻阅归档",
-              variant: "primary",
-              icon: "archive"
-            },
-        {
-          href: "/map",
-          label: "知识图谱",
-          variant: "secondary",
-          icon: "topic"
-        }
-      ]}
-      stats={[
-        { value: String(sortedTopics.length).padStart(2, "0"), label: "个主题" },
-        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
-        { value: String(concepts.length).padStart(2, "0"), label: "个概念" }
-      ]}
-    />
+      description="选择感兴趣的问题，继续阅读相关笔记与实践记录。"
+      count={sortedTopics.length}
+      countLabel="个主题"
+    >
+      <a slot="actions" href="/map">知识图谱 <span aria-hidden="true">↗</span></a>
+    </DrawingPageHeader>
 
-    <section class="discover-section" data-ux-stagger>
-      <SectionHead
-        kicker="Browse"
-        title="按主题进入知识网络"
-        description="主题页不是归档替身，而是压缩后的研究入口。每张卡都保留主题摘要、写作理由与文章规模。"
-        countLabel={`${sortedTopics.length} topics indexed`}
-      />
-
+    <section class="drawing-topic-index" aria-label="主题目录" data-ux-stagger>
       {
         sortedTopics.length === 0 ? (
           <EmptyState title="暂时还没有主题。" body="主题整理完成后，你可以从这里找到相关笔记。" />
         ) : (
-          <div class="discover-entity-grid" data-ux-stagger>
-            {sortedTopics.map((topic, index) => (
-              <a
-	                href={`/topics/${topic.id}`}
-                class="discover-surface discover-entity-card"
-                data-ux-reveal="fade-up"
-                aria-label={`进入主题：${topic.data.title}`}
-              >
-                <div class="discover-entity-card__top">
-                  <span class="discover-entity-card__id">{String(index + 1).padStart(2, "0")}</span>
-	                  <span class="discover-entity-card__meta">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
-                </div>
-                <h3>{topic.data.title}</h3>
-                <p>{topic.data.summary}</p>
-                <p>{topic.data.why}</p>
-              </a>
-            ))}
-          </div>
+          sortedTopics.map((topic, index) => (
+            <a
+              href={`/topics/${topic.id}`}
+              class="drawing-topic-row discover-entity-card"
+              data-drawing-topic
+              data-ux-reveal="fade-up"
+              aria-label={`进入主题：${topic.data.title}`}
+            >
+              <span class="drawing-topic-row__number">{String(index + 1).padStart(2, "0")}</span>
+              <div class="drawing-topic-row__copy">
+                <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
+                <p class="drawing-topic-row__summary">{topic.data.summary}</p>
+              </div>
+              <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+            </a>
+          ))
         )
       }
     </section>
-  </DiscoverShell>
+  </DrawingIndexShell>
 </BaseLayout>

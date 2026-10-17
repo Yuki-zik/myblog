@@ -1,60 +1,30 @@
 ---
 import { getCollection } from "astro:content";
-import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import DrawingIndexShell from "../components/discover/DrawingIndexShell.astro";
+import DrawingPageHeader from "../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
-import PageHero from "../components/discover/PageHero.astro";
-import SectionHead from "../components/discover/SectionHead.astro";
 import ArchivePostTile from "../components/post/ArchivePostTile.astro";
 import { buildArchiveGroups, getPostAuthor, getPostDateISO } from "../lib/posts/archive";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 const archiveGroups = buildArchiveGroups(posts);
-const latestPost = [...posts].sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())[0] ?? null;
-const archivesDescription = "按年月浏览全部文章，像时间账本一样回看研究记录、实现过程与复盘。";
+const archivesDescription = "按年月倒序排列全部文章，较新的记录在前。";
 ---
 
-<BaseLayout title="文章归档" description={archivesDescription} runtime="discover">
-  <DiscoverShell>
-    <PageHero
+<BaseLayout title="文章归档" description={archivesDescription} runtime="discover" headerVariant="drawing">
+  <DrawingIndexShell kind="archives">
+    <DrawingPageHeader
       kicker="Archive / Ledger"
-      title="时间归档"
-      description="按年月浏览全部文章，回看研究与工程实践中的记录，也可以从最近的笔记开始阅读。"
-      actions={[
-        latestPost
-          ? {
-              href: `/posts/${latestPost.id}`,
-              label: `阅读《${latestPost.data.title}》`,
-              variant: "primary",
-              icon: "arrow"
-            }
-          : {
-              href: "/topics",
-              label: "浏览主题",
-              variant: "primary",
-              icon: "topic"
-            },
-        {
-          href: "/topics",
-          label: "主题列表",
-          variant: "secondary",
-          icon: "topic"
-        }
-      ]}
-      stats={[
-        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
-        { value: String(archiveGroups.length).padStart(2, "0"), label: "个年份" }
-      ]}
-    />
+      title="文章归档"
+      description={archivesDescription}
+      count={posts.length}
+      countLabel="篇文章"
+    >
+      <a slot="actions" href="/topics">浏览主题</a>
+    </DrawingPageHeader>
 
     <section class="discover-section">
-      <SectionHead
-        kicker="Ledger"
-        title="按年份检索文章"
-        description="文章按发布时间排列，较新的记录在前。"
-        countLabel={`${posts.length} posts tracked`}
-      />
-
       {
         archiveGroups.length === 0 ? (
           <EmptyState title="归档暂时为空。" body="等第一批文章发布后，这里会按年月自动生成时间账本。" />
@@ -92,5 +62,5 @@ const archivesDescription = "按年月浏览全部文章，像时间账本一样
         )
       }
     </section>
-  </DiscoverShell>
+  </DrawingIndexShell>
 </BaseLayout>
