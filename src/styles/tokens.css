@@ -1,4 +1,15 @@
 :root {
+  /* Site identity: bright drafting marks, separate readable small-text ink. */
+  --drawing-accent: #ff6a00;
+  --drawing-display-accent: #f15c00;
+  --drawing-accent-ink: #a63b00;
+  --drawing-accent-wash: #fff2e8;
+  --drawing-on-accent: #23180f;
+  --drawing-focus: #a63b00;
+  --radius-control: 2px;
+  --radius-panel: 2px;
+  --site-content-max: 80rem;
+  --type-index-title: clamp(2rem, 3.5vw, 3rem);
   /* ========================================= */
   /* Foundations (Do NOT use directly in components) */
   /* ========================================= */
@@ -49,10 +60,10 @@
   /* ========================================= */
   /* Accent & Emphasis */
   /* ========================================= */
-  --brand-accent: #0069d1;
+  --brand-accent: var(--drawing-accent-ink);
   --accent-soft: color-mix(in srgb, var(--brand-accent) 10%, transparent);
-  --link: #0066cc;
-  --link-hover: #004f9f;
+  --link: var(--drawing-accent-ink);
+  --link-hover: #7a2b00;
   --progress-track: linear-gradient(90deg, var(--divider), var(--divider));
   --progress-fill: linear-gradient(90deg, var(--brand-accent), var(--link-hover));
 
@@ -62,8 +73,8 @@
   --button-primary-bg: var(--brand-accent);
   --button-primary-text: #fff;
   --button-primary-border: var(--brand-accent);
-  --button-primary-hover-bg: #0057b0;
-  --button-primary-active-bg: #004992;
+  --button-primary-hover-bg: #873000;
+  --button-primary-active-bg: #6d2600;
 
   --button-secondary-bg: var(--surface-primary);
   --button-secondary-text: var(--text-primary);
@@ -274,6 +285,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="system"] {
+    --drawing-accent: #ff8b3d;
+    --drawing-display-accent: #ff8b3d;
+    --drawing-accent-ink: #ffad76;
+    --drawing-accent-wash: #39291f;
+    --drawing-focus: #ffad76;
     --page-bg: #161618;
     --page-bg-ambient: none;
     --surface-primary: #222225;
@@ -300,13 +316,13 @@
     --disabled-border: color-mix(in srgb, var(--c-navy) 60%, transparent 40%);
     --disabled-text: color-mix(in srgb, var(--c-lace) 36%, var(--c-navy) 64%);
 
-    --brand-accent: #8abbff;
-    --button-primary-text: #102746;
-    --button-primary-hover-bg: #a6cbff;
-    --button-primary-active-bg: #bedaff;
+    --brand-accent: var(--drawing-accent-ink);
+    --button-primary-text: #23180f;
+    --button-primary-hover-bg: #ffc59e;
+    --button-primary-active-bg: #ffd8bd;
     --accent-soft: color-mix(in srgb, var(--brand-accent) 10%, transparent);
-    --link: #8abbff;
-    --link-hover: #afd1ff;
+    --link: var(--drawing-accent-ink);
+    --link-hover: #ffc59e;
     --progress-track: linear-gradient(90deg, var(--divider), var(--divider));
     --progress-fill: linear-gradient(90deg, var(--brand-accent), var(--link-hover));
 
@@ -385,13 +401,18 @@
     --fab-bg: color-mix(in srgb, var(--c-lace) 94%, transparent 6%);
     --fab-bg-hover: color-mix(in srgb, var(--c-lace) 99%, transparent 1%);
     --fab-border: color-mix(in srgb, var(--c-midnight) 16%, transparent 84%);
-    --fab-icon: #004b99;
-    --fab-icon-hover: #00366f;
+    --fab-icon: #873000;
+    --fab-icon-hover: #6d2600;
     --fab-shadow: 0 22px 44px rgba(0, 0, 0, 0.46), 0 4px 12px rgba(0, 0, 0, 0.32);
   }
 }
 
 :root[data-color-scheme="dark"] {
+  --drawing-accent: #ff8b3d;
+  --drawing-display-accent: #ff8b3d;
+  --drawing-accent-ink: #ffad76;
+  --drawing-accent-wash: #39291f;
+  --drawing-focus: #ffad76;
   --page-bg: #161618;
   --page-bg-ambient: none;
   --surface-primary: #222225;
@@ -418,13 +439,13 @@
   --disabled-border: color-mix(in srgb, var(--c-navy) 60%, transparent 40%);
   --disabled-text: color-mix(in srgb, var(--c-lace) 36%, var(--c-navy) 64%);
 
-  --brand-accent: #8abbff;
-  --button-primary-text: #102746;
-  --button-primary-hover-bg: #a6cbff;
-  --button-primary-active-bg: #bedaff;
+  --brand-accent: var(--drawing-accent-ink);
+  --button-primary-text: #23180f;
+  --button-primary-hover-bg: #ffc59e;
+  --button-primary-active-bg: #ffd8bd;
   --accent-soft: color-mix(in srgb, var(--brand-accent) 10%, transparent);
-  --link: #8abbff;
-  --link-hover: #afd1ff;
+  --link: var(--drawing-accent-ink);
+  --link-hover: #ffc59e;
   --progress-track: linear-gradient(90deg, var(--divider), var(--divider));
   --progress-fill: linear-gradient(90deg, var(--brand-accent), var(--link-hover));
 
@@ -503,26 +524,7 @@
   --fab-bg: color-mix(in srgb, var(--c-lace) 94%, transparent 6%);
   --fab-bg-hover: color-mix(in srgb, var(--c-lace) 99%, transparent 1%);
   --fab-border: color-mix(in srgb, var(--c-midnight) 16%, transparent 84%);
-  --fab-icon: #004b99;
-  --fab-icon-hover: #00366f;
+  --fab-icon: #873000;
+  --fab-icon-hover: #6d2600;
   --fab-shadow: 0 22px 44px rgba(0, 0, 0, 0.46), 0 4px 12px rgba(0, 0, 0, 0.32);
-}
-
-/* The architectural homepage uses orange drafting marks. Bright pigment is
-   for surfaces; small labels use a separate ink with readable paper contrast. */
-body[data-header-variant="drawing"] {
-  --drawing-accent: #ff6a00;
-  --drawing-display-accent: #f15c00;
-  --drawing-accent-ink: #a63b00;
-  --drawing-accent-wash: #fff2e8;
-  --drawing-on-accent: #23180f;
-  --drawing-focus: #a63b00;
-}
-
-html[data-color-scheme="dark"] body[data-header-variant="drawing"] {
-  --drawing-accent: #ff8b3d;
-  --drawing-display-accent: #ff8b3d;
-  --drawing-accent-ink: #ffad76;
-  --drawing-accent-wash: #39291f;
-  --drawing-focus: #ffad76;
 }

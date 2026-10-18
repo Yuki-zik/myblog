@@ -88,7 +88,7 @@ for (const scheme of ["light", "dark"] as const) {
     expect((await readPaint(filename)).contrast).toBeGreaterThanOrEqual(4.5);
   });
 
-  test(`orange drawing labels stay readable and the default editorial header stays independent in ${scheme}`, async ({ page }) => {
+  test(`orange drawing labels stay readable and every editorial header shares the site identity in ${scheme}`, async ({ page }) => {
     await openHome(page, scheme);
     const indices = page.locator(".home-reference-section-index");
     await expect(indices).toHaveText(["01", "02", "03"]);
@@ -114,10 +114,10 @@ for (const scheme of ["light", "dark"] as const) {
     expect(activePaint.contrast).toBeGreaterThanOrEqual(4.5);
 
     await page.goto("/concepts/anchor-id");
-    await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+    await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
     for (const [selector, token] of [
-      ['a[aria-current="page"]', "--chrome-text"],
-      ['a[href="/"]', "--chrome-text-muted"],
+      ['a[aria-current="page"]', "--drawing-accent-ink"],
+      ['a[href="/"]', "--text-primary"],
     ]) {
       const defaultLink = page.locator(`.site-header .site-nav ${selector}`);
       const defaultColors = await defaultLink.evaluate((node, token) => {

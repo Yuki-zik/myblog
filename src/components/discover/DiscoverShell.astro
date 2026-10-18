@@ -1,5 +1,4 @@
 ---
-import DiscoverAmbient from "./DiscoverAmbient.astro";
 
 interface Props {
   bodyClass?: string;
@@ -8,12 +7,10 @@ interface Props {
 const { bodyClass } = Astro.props;
 ---
 
-<div class="discover-page relative min-h-screen" data-discover-page>
-  <DiscoverAmbient />
-
+<div class="discover-page relative min-h-[70vh]" data-discover-page>
   <div
     class:list={[
-      "discover-page__body relative z-[1] mx-auto flex w-full max-w-[70rem] flex-col gap-16 px-6 pt-12 pb-0",
+      "discover-page__body relative z-[1] flex flex-col",
       bodyClass
     ]}
   >

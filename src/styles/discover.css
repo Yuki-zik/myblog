@@ -17,7 +17,7 @@ html.theme-transitioning body[data-runtime="reading"] *::after {
 
 /* The content layer is quiet and opaque; translucent material belongs to chrome. */
 body[data-runtime="discover"] {
-  background: var(--page-bg);
+  background: var(--surface-primary);
   /* Clip decoration without changing the sticky header's document scroller. */
   overflow-x: clip;
 }
@@ -50,48 +50,30 @@ main[data-runtime="discover"] {
   z-index: 1;
 }
 
-.discover-page__ambient {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-primary) 40%, transparent), transparent 36rem);
+/* Shared paper canvas and measure. Reading layouts retain their own width. */
+.discover-page__body {
+  width: calc(100% - 80px);
+  max-width: var(--site-content-max);
+  margin-inline: auto;
+  gap: 3rem;
+  padding: 1.5rem 0 4rem;
 }
 
-/* Color lives behind the opaque content. Reading routes share the wrapper,
-   but these static layers belong only to the discover runtime. */
-body[data-runtime="discover"] .discover-page__grid {
-  background-image: radial-gradient(rgb(111 137 167 / 0.14) 0.7px, transparent 0.7px);
-  background-size: 28px 28px;
-  opacity: 0.4;
+.discover-hero {
+  position: relative;
+  padding: 1.25rem 0 1.5rem;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-strong);
 }
 
-body[data-runtime="discover"] .discover-page__orb {
-  width: clamp(22rem, 48vw, 44rem);
-  height: clamp(22rem, 48vw, 44rem);
-  filter: blur(90px);
-}
-
-body[data-runtime="discover"] .discover-page__orb--blue {
-  top: -14%;
-  left: -14%;
-  background: rgb(96 165 250 / 0.24);
-}
-
-body[data-runtime="discover"] .discover-page__orb--amber {
-  right: -12%;
-  bottom: -14%;
-  width: clamp(22rem, 40vw, 38rem);
-  height: clamp(22rem, 40vw, 38rem);
-  background: rgb(251 191 36 / 0.16);
-}
-
-html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__grid {
-  background-image: radial-gradient(rgb(140 162 196 / 0.18) 0.7px, transparent 0.7px);
-}
-
-html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__orb--blue {
-  background: rgb(37 99 235 / 0.24);
-}
-
-html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__orb--amber {
-  background: rgb(217 119 6 / 0.12);
+.discover-hero::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 3rem;
+  height: 3px;
+  background: var(--drawing-accent);
 }
 
 .discover-surface,
@@ -101,8 +83,8 @@ html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__orb
   position: relative;
   background: var(--surface-primary);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-panel);
+  box-shadow: none;
   transition:
     transform 220ms var(--ease-out),
     box-shadow 220ms var(--ease-out),
@@ -115,9 +97,9 @@ html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__orb
 .discover-page .post-card:hover,
 .discover-page .archive-post-tile:hover,
 .discover-page .author-social-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--drawing-accent);
+  box-shadow: none;
 }
 
 .discover-surface:is(a, button):focus-visible {
@@ -141,8 +123,11 @@ html[data-color-scheme="dark"] body[data-runtime="discover"] .discover-page__orb
 
 .discover-hero__kicker,
 .discover-section-head__kicker {
-  color: var(--link);
-  font-family: var(--font-ui);
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
 }
 
 html[data-color-scheme="dark"] .discover-hero__kicker,
@@ -154,9 +139,9 @@ html[data-color-scheme="dark"] .discover-section-head__kicker {
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2.125rem, 4vw, 3.35rem);
-  font-weight: 620;
-  line-height: 1.1;
+  font-size: var(--type-index-title);
+  font-weight: 600;
+  line-height: 1.15;
   letter-spacing: -0.04em;
 }
 
@@ -173,51 +158,39 @@ html[data-color-scheme="dark"] .discover-hero__description {
 }
 
 .discover-action {
-  font-family: var(--font-ui);
-  transition:
-    transform 220ms var(--ease-out),
-    box-shadow 220ms var(--ease-out),
-    background-color 220ms var(--ease-out),
-    border-color 300ms ease,
-    color 300ms ease;
-}
-
-.discover-action svg {
-  width: 1rem;
-  height: 1rem;
-  flex: 0 0 auto;
-}
-
-.discover-action:hover {
-  transform: translateY(-2px);
-}
-
-.discover-action--primary {
-  background: var(--button-primary-bg);
-  color: var(--button-primary-text);
-}
-
-.discover-action--primary:hover {
-  background: var(--button-primary-hover-bg);
-  color: var(--button-primary-text);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--brand-accent) 16%, transparent);
-}
-
-.discover-action--secondary {
-  background: var(--surface-primary);
-  border-color: var(--border-default);
+  max-width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: transparent;
   color: var(--text-primary);
+  font-family: var(--font-ui);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 180ms ease, border-color 180ms ease;
 }
-
-.discover-action--secondary:hover {
-  background: var(--surface-subtle);
-  box-shadow: var(--shadow-sm);
+.discover-action svg { width: 1rem; height: 1rem; flex: 0 0 auto; }
+.discover-action__icon {
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--drawing-accent-ink);
+  transition: transform 180ms ease;
 }
+.discover-action:hover {
+  border-color: var(--drawing-accent);
+  color: var(--drawing-accent-ink);
+}
+.discover-action:is(:hover, :focus-visible) .discover-action__icon { transform: translateX(2px); }
+.discover-action:focus-visible { outline: 2px solid var(--drawing-focus); outline-offset: 4px; }
+.discover-action--primary { border-color: var(--drawing-accent); color: var(--drawing-accent-ink); }
+.discover-action--primary .discover-action__icon { background: var(--drawing-accent); color: var(--drawing-on-accent); }
+.discover-action--secondary { color: var(--text-primary); }
 
 .discover-hero__stat {
   border: 1px solid var(--border-default);
+  border-radius: var(--radius-panel);
   background: var(--surface-primary);
-
 }
 
 html[data-color-scheme="dark"] .discover-hero__stat {
@@ -226,12 +199,12 @@ html[data-color-scheme="dark"] .discover-hero__stat {
 }
 
 .discover-hero__stat strong {
-  color: var(--text-primary);
-  font-family: var(--font-display);
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-mono);
 }
 
 html[data-color-scheme="dark"] .discover-hero__stat strong {
-  color: var(--text-primary);
+  color: var(--drawing-accent-ink);
 }
 
 .discover-hero__stat span {
@@ -278,7 +251,7 @@ html[data-color-scheme="dark"] .discover-hero__panel-copy p {
   display: grid;
   gap: 0.16rem;
   padding: 0.8rem 0.88rem;
-  border-radius: 0.9rem;
+  border-radius: var(--radius-panel);
   background: var(--surface-subtle);
   border: 1px solid var(--border-default);
 }
@@ -289,13 +262,13 @@ html[data-color-scheme="dark"] .discover-hero__panel-stat {
 }
 
 .discover-hero__panel-stat strong {
-  color: var(--text-primary);
-  font-family: var(--font-display);
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-mono);
   font-size: 1.15rem;
 }
 
 html[data-color-scheme="dark"] .discover-hero__panel-stat strong {
-  color: var(--text-primary);
+  color: var(--drawing-accent-ink);
 }
 
 .discover-hero__panel-stat span {
@@ -568,10 +541,7 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
 
 
 @media (max-width: 1024px) {
-  .discover-page__body {
-    gap: 4rem;
-    padding-top: 2.6rem;
-  }
+  .discover-page__body { width: calc(100% - 40px); }
 
   .discover-hero--split {
     grid-template-columns: 1fr;
@@ -603,11 +573,7 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
 }
 
 @media (max-width: 767px) {
-  .discover-page__body {
-    gap: 3rem;
-    padding-inline: 1rem;
-    padding-top: 2rem;
-  }
+  .discover-page__body { width: calc(100% - 32px); gap: 2.5rem; padding: 1.25rem 0 3rem; }
 
   .discover-entity-grid,
   .discover-mini-grid,
@@ -635,7 +601,7 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
   }
 
   .discover-hero__title {
-    font-size: 2.125rem;
+    font-size: 2rem;
   }
 
   .discover-hero__description {
@@ -647,13 +613,13 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
 /* Author/concept editorial proportions. The drawing and reading shells keep their own scale. */
 .discover-page__body.discover-editorial {
   width: calc(100% - 80px);
-  max-width: 80rem;
+  max-width: var(--site-content-max);
   gap: 3rem;
-  padding: 2.5rem 0 0;
+  padding: 1.5rem 0 4rem;
 }
 
 .discover-editorial .discover-hero__title {
-  font-size: clamp(2.75rem, 4.5vw, 4rem);
+  font-size: var(--type-index-title);
   line-height: 1.12;
 }
 
@@ -724,8 +690,8 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
 }
 
 @media (max-width: 767px) {
-  .discover-page__body.discover-editorial { width: calc(100% - 32px); padding-top: 1.75rem; gap: 2.5rem; }
-  .discover-editorial .discover-hero__title { font-size: 2.5rem; }
+  .discover-page__body.discover-editorial { width: calc(100% - 32px); padding-top: 1.25rem; gap: 2.5rem; }
+  .discover-editorial .discover-hero__title { font-size: 2rem; }
   .discover-editorial .discover-hero__description { font-size: 1.0625rem; }
   .discover-editorial .discover-hero__panel { padding: 1rem; }
   .discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -737,4 +703,22 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
   .discover-editorial .discover-section-head { gap: 0.75rem; }
   .discover-editorial .author-profile-summary { grid-template-columns: 64px minmax(0, 1fr); gap: 0.75rem; }
   .discover-editorial .author-avatar { width: 64px; }
+}
+
+/* Metadata remains subordinate, but follows the same ruled-paper vocabulary. */
+.discover-page .pill-list :is(a, li) {
+  border-radius: var(--radius-control);
+  background: transparent;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.discover-page .pill-list a:hover { background: var(--drawing-accent-wash); color: var(--drawing-accent-ink); }
+.discover-rich a {
+  color: var(--drawing-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .discover-action__icon { transition: none; }
+  .discover-action:is(:hover, :focus-visible) .discover-action__icon { transform: none; }
 }
