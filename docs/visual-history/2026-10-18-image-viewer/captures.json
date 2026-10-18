@@ -1,0 +1,337 @@
+[
+  {
+    "file": "../2026-10-18-cover-air/v3-production-desktop.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "motion": "no-preference",
+    "phase": "before-production",
+    "sourceRevision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c",
+    "capturedAt": "2026-10-18T06:06:56.117849+00:00",
+    "sha256": "4766cfb77254ee2c5c33f70bb6358a2b03a909236611c2b77505201284e089d4"
+  },
+  {
+    "file": "v1-cover.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "closed",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:08.603Z",
+    "metrics": {
+      "open": false,
+      "modal": false,
+      "caption": "",
+      "status": "",
+      "image": {
+        "width": 0,
+        "height": 0,
+        "naturalWidth": 0,
+        "naturalHeight": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "4fcbca156a26c8dfbb869d6765618327a13a82905bfb374a745b830ed2bb591c"
+  },
+  {
+    "file": "v1-fit.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:09.043Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 83%",
+      "image": {
+        "width": 1320,
+        "height": 743,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "33867ca19837c788327162ac4406c5ed6a1c11747561f482b977b6dd63e41531"
+  },
+  {
+    "file": "v1-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:09.516Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "30e1f3fdc4f1c9165eef2ea97028e685f7279cf37607c36ae01769bf7a5762f8",
+    "finding": "Image dimensions inherited a global transition; zoom initially remained at the top-left. Corrected in v2."
+  },
+  {
+    "file": "v1-dark.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "mode": "fit",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:10.160Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 83%",
+      "image": {
+        "width": 1320,
+        "height": 743,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "33d0cabe24176f781899ca892e7ec24bec38a477e5779708c06717196bbee063"
+  },
+  {
+    "file": "v1-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:10.703Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 21%",
+      "image": {
+        "width": 340,
+        "height": 191,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "aa872895f24c7a0e72a735e66af4962f40c289eccaec4fbc9ec6e9c6f889372d"
+  },
+  {
+    "file": "v1-mobile-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:11.031Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "719873923f52af91da9012beb062418cd1bc9cc5963148941b9ed5ca9c799af5",
+    "finding": "Image dimensions inherited a global transition; zoom initially remained at the top-left. Corrected in v2."
+  },
+  {
+    "file": "v1-raster.png",
+    "route": "/posts/ant-ai-coding-review",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:38:11.549Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "蚂蚁 AI Coding 笔试复盘封面",
+      "status": "1280 × 721 · 100%",
+      "image": {
+        "width": 1280,
+        "height": 721,
+        "naturalWidth": 1280,
+        "naturalHeight": 721
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "working implementation before synchronous image sizing fix",
+    "sha256": "b20b8a74e5256842688be16785d5fd50c4d211f0e094f8af663e06e206589f96"
+  },
+  {
+    "file": "v2-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:56:27.518Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 129,
+        "y": 79
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "final working implementation",
+    "sourceFilesSha256": {
+      "src/components/UiControllers.astro": "f4959ebc8b94015164c2d557b34c64360c87de5f19b66cf9377565b68b2f06ae",
+      "src/components/media/ImageViewer.astro": "ccb9b53bc6b66901e554c08be40bca12016613a2e463811896c3b88038fb6d65",
+      "src/styles/image-viewer.css": "72e053e85f700a298723ebb924f7b90aa49102b338de58aef14cff0a50d1728f",
+      "src/pages/posts/[slug].astro": "368f0ad62168d3a20eedf25e8646e3155cec6ffd4a318a1eb56b8ae992d5366d"
+    },
+    "sha256": "d973f33b50c7418245fd52a32d9cf7926d6e7dac7567745f6ab97f6371196859"
+  },
+  {
+    "file": "v2-mobile-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:56:27.942Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 630,
+        "y": 154
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "final working implementation",
+    "sourceFilesSha256": {
+      "src/components/UiControllers.astro": "f4959ebc8b94015164c2d557b34c64360c87de5f19b66cf9377565b68b2f06ae",
+      "src/components/media/ImageViewer.astro": "ccb9b53bc6b66901e554c08be40bca12016613a2e463811896c3b88038fb6d65",
+      "src/styles/image-viewer.css": "72e053e85f700a298723ebb924f7b90aa49102b338de58aef14cff0a50d1728f",
+      "src/pages/posts/[slug].astro": "368f0ad62168d3a20eedf25e8646e3155cec6ffd4a318a1eb56b8ae992d5366d"
+    },
+    "sha256": "c25ff3113a60b4d235fea2661a461ef1e9574cdbac915df7a3ec3f37d5371146"
+  },
+  {
+    "file": "v2-landscape.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      844,
+      390
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T07:56:28.369Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 19%",
+      "image": {
+        "width": 307,
+        "height": 173,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+    "sourceState": "final working implementation",
+    "sourceFilesSha256": {
+      "src/components/UiControllers.astro": "f4959ebc8b94015164c2d557b34c64360c87de5f19b66cf9377565b68b2f06ae",
+      "src/components/media/ImageViewer.astro": "ccb9b53bc6b66901e554c08be40bca12016613a2e463811896c3b88038fb6d65",
+      "src/styles/image-viewer.css": "72e053e85f700a298723ebb924f7b90aa49102b338de58aef14cff0a50d1728f",
+      "src/pages/posts/[slug].astro": "368f0ad62168d3a20eedf25e8646e3155cec6ffd4a318a1eb56b8ae992d5366d"
+    },
+    "sha256": "97fc52b9073d864ba92d11c96d2a175b7f19333ad66712ec0d62305c6c5d3a4a"
+  }
+]

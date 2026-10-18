@@ -1,0 +1,26 @@
+{
+  "sourceBaseRevision": "ad39b6b6a436ad431f46e7b4ea4ff76eae06a0f1",
+  "sourceFilesSha256": {
+    "src/components/UiControllers.astro": "f4959ebc8b94015164c2d557b34c64360c87de5f19b66cf9377565b68b2f06ae",
+    "src/components/media/ImageViewer.astro": "ccb9b53bc6b66901e554c08be40bca12016613a2e463811896c3b88038fb6d65",
+    "src/styles/image-viewer.css": "72e053e85f700a298723ebb924f7b90aa49102b338de58aef14cff0a50d1728f",
+    "src/pages/posts/[slug].astro": "368f0ad62168d3a20eedf25e8646e3155cec6ffd4a318a1eb56b8ae992d5366d"
+  },
+  "local": {
+    "unit": {
+      "passed": 116,
+      "log": "output/image-viewer-2026-10-18/unit-final.log"
+    },
+    "targeted": {
+      "passed": 7,
+      "log": "output/image-viewer-2026-10-18/final-targeted.log"
+    },
+    "earlierFullSuite": {
+      "passed": 180,
+      "failed": 1,
+      "reason": "Image dimensions inherited a global transition; fixed by transition-property:none, then all seven viewer tests including centered-scroll assertions passed.",
+      "log": "output/image-viewer-2026-10-18/e2e.log"
+    }
+  },
+  "production": "pending"
+}

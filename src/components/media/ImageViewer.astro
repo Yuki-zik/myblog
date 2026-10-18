@@ -1,0 +1,55 @@
+---
+import "../../styles/image-viewer.css";
+---
+
+<dialog
+  id="post-image-viewer"
+  class="image-viewer"
+  data-image-viewer
+  aria-labelledby="image-viewer-title"
+  aria-describedby="image-viewer-caption"
+>
+  <div class="image-viewer__toolbar">
+    <h2 id="image-viewer-title" class="image-viewer__title">图片预览</h2>
+    <div class="image-viewer__actions">
+      <button
+        class="image-viewer__control image-viewer__size-toggle"
+        type="button"
+        data-image-viewer-toggle
+      >原始尺寸</button>
+      <a
+        class="image-viewer__control image-viewer__original"
+        data-image-viewer-original
+        target="_blank"
+        rel="noopener noreferrer"
+      >查看原图</a>
+    </div>
+    <button
+      class="image-viewer__control image-viewer__close"
+      type="button"
+      data-image-viewer-close
+      aria-label="关闭图片预览"
+      autofocus
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="image-viewer__viewport" data-image-viewer-viewport>
+    <button
+      class="image-viewer__image-toggle"
+      type="button"
+      data-image-viewer-image-toggle
+      aria-label="放大到原始尺寸"
+    >
+      <img class="image-viewer__image" data-image-viewer-image hidden alt="" draggable="false" />
+    </button>
+  </div>
+
+  <div class="image-viewer__footer">
+    <p id="image-viewer-caption" class="image-viewer__caption" data-image-viewer-caption></p>
+    <p class="image-viewer__status" data-image-viewer-status role="status" aria-live="polite"></p>
+  </div>
+</dialog>
