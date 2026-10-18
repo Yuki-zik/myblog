@@ -9,7 +9,9 @@ for (const scheme of ["light", "dark"] as const) {
       await page.goto(route);
       await waitForFontsSettled(page);
       await page.mouse.move(1430, 940);
-      await page.evaluate(() => window.scrollTo({ top: 96, behavior: "instant" }));
+      // The page must first travel behind the sticky 68px header before
+      // the 96px capsule-collapse range starts.
+      await page.evaluate(() => window.scrollTo({ top: 164, behavior: "instant" }));
       const surface = page.locator(".site-header-inner");
       await expect.poll(() => surface.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThanOrEqual(20);
       await expect.poll(() => surface.evaluate(el => el.getBoundingClientRect().width)).toBeLessThanOrEqual(1180);
@@ -54,3 +56,37 @@ for (const motion of ["reduce", "no-preference"] as const) {
     }
   });
 }
+
+/**
+ * The header occupies normal document flow. Until the first content surface
+ * reaches the viewport top, its background must still cover the full header
+ * band; otherwise a collapsing pill exposes an empty strip when scrolling up.
+ */
+test("capsule reveals the page only after content scrolls behind it", async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await waitForFontsSettled(page);
+    const headerHeight = await page.locator(".site-header").evaluate((el) => el.getBoundingClientRect().height);
+    const assertCovered = async () => {
+      await expect.poll(() => page.evaluate(() => {
+        const rect = document.querySelector(".site-header-inner")!.getBoundingClientRect();
+        const band = document.querySelector(".site-header")!.getBoundingClientRect();
+        return rect.left <= 0 && rect.right >= innerWidth && rect.top <= 1 && rect.bottom >= band.bottom - 1;
+      })).toBe(true);
+    };
+
+    for (const scroll of [0, Math.floor(headerHeight / 2), Math.floor(headerHeight) - 1]) {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), scroll);
+      await assertCovered();
+    }
+
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), headerHeight + 110);
+    await expect.poll(() => page.locator(".site-header-inner").evaluate(el => el.getBoundingClientRect().width)).toBeLessThan(width);
+
+    // The page remains covered when a reader reverses the gesture.
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), headerHeight / 2);
+    await assertCovered();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+  }
+});

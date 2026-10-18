@@ -216,6 +216,10 @@
         if (pillWidth <= 0 || pillHeight <= 0) return;
 
         var band = header.offsetHeight || pillHeight;
+        // The header occupies this much document flow. Keep the surface full
+        // width until page content has scrolled behind that reserved band.
+        // Mobile has two rows, so its actual height exceeds --header-band.
+        header.style.setProperty("--header-collapse-start", band + "px");
         // Overscan so the pill's rounded corners and side borders finish
         // outside the viewport, which is what reads as a full-bleed bar.
         var overscan = 96;

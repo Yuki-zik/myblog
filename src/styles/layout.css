@@ -640,6 +640,9 @@ html.is-header-morphing::view-transition-new(site-header) {
   --header-pill-top: 7px;
   --header-pill-height: 54px;
   --header-collapse-end: 96px;
+  /* Wait until main content passes underneath the sticky header before the
+     full-width glass contracts, avoiding a blank strip on upward scrolling. */
+  --header-collapse-start: var(--header-band);
   --header-pill-width: 1120px;
   /* Clearance between the pill edge and the first/last piece of content. */
   --header-content-inset: 26px;
@@ -712,7 +715,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transition: none;
   animation: site-header-collapse var(--header-collapse-ease) both;
   animation-timeline: scroll(root block);
-  animation-range: 0 var(--header-collapse-end);
+  animation-range: var(--header-collapse-start) calc(var(--header-collapse-start) + var(--header-collapse-end));
 }
 
 /*
@@ -889,7 +892,7 @@ html.is-header-morphing::view-transition-new(site-header) {
    */
   animation: site-header-content-collapse var(--header-collapse-ease) both;
   animation-timeline: scroll(root block);
-  animation-range: 0 var(--header-collapse-end);
+  animation-range: var(--header-collapse-start) calc(var(--header-collapse-start) + var(--header-collapse-end));
 
   /* Interpolated by the progress value above: 1 at the top, 0 when collapsed. */
   --header-content-expansion: calc(1 - var(--header-collapse-progress));

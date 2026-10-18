@@ -1277,7 +1277,7 @@ test("header geometry is a continuous function of scroll offset", async ({
     });
 
   const samples: Array<{ y: number; width: number; top: number }> = [];
-  for (const y of [0, 24, 48, 72, 96]) {
+  for (const y of [0, 92, 116, 140, 164]) {
     await page.evaluate((offset) => {
       window.scrollTo(0, offset);
     }, y);
@@ -1379,8 +1379,8 @@ test("header content contracts along with the surface", async ({ page }) => {
   };
 
   const expanded = await sample(0);
-  const middle = await sample(48);
-  const collapsed = await sample(96);
+  const middle = await sample(116);
+  const collapsed = await sample(164);
 
   expect(expanded).not.toBeNull();
 
@@ -1416,7 +1416,7 @@ test("collapsed header keeps its content clear of the pill edge", async ({
   for (const width of [1440, 1280, 1024]) {
     await page.setViewportSize({ width, height: 900 });
     await page.evaluate(() => {
-      window.scrollTo(0, 96);
+      window.scrollTo(0, 164);
     });
     await page.evaluate(
       () =>
