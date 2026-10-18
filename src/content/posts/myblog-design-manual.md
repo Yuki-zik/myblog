@@ -12,7 +12,7 @@ cover:
   alt: 用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面
 ---
 
-`A-Znk的blog` 不是先做一个视觉壳，再往里填文章；它的设计从一开始就服务于“主题化知识网络”和“可长时间阅读的文章页”。参考 Apple Human Interface Guidelines 的分类方式[^ref-hig]，本文按 `Overview → Foundations → Patterns → Components` 组织，同时保留一份完全等价的 Markdown 原文在 `/design.md`。这篇文章的真源不是历史快照，而是当前线上体验、现有 runtime 边界和已经写进测试的设计契约[^note-current-source]。
+A-Znk的blog 不是先做一个视觉壳，再往里填文章；它的设计从一开始就服务于“主题化知识网络”和“可长时间阅读的文章页”。参考 Apple Human Interface Guidelines 的分类方式[^ref-hig]，本文按 Overview → Foundations → Patterns → Components 组织，同时保留一份完全等价的 Markdown 原文在 `/design.md`。这篇文章的真源不是历史快照，而是当前线上体验、现有 runtime 边界和已经写进测试的设计契约[^note-current-source]。
 
 ## Overview（概述）
 
@@ -151,7 +151,7 @@ Don’t：
 下列来源分别塑造了本文的章节组织、阅读观和评论系统边界。
 
 [^note-current-source]: 本文描述的都是当前仓库中已经落地的设计事实。具体真源来自现有 runtime 边界、文章结构、组件实现与测试约束，而不是历史版设计快照的文字描述。
-[^ref-hig]: Apple Human Interface Guidelines. 这里主要借用了 `Clarity / Consistency / Deference` 的三原则，以及从 `Foundations` 到 `Patterns` 的组织方式。 <https://developer.apple.com/design/human-interface-guidelines/>
-[^ref-tufte]: Tufte CSS. A-Znk的blog 对边注、脚注和“正文主线优先”的理解，和这类纸面阅读式设计有明显亲缘关系。 <https://edwardtufte.github.io/tufte-css/>
-[^ref-waline]: Waline. 当前博客评论系统采用 Waline，通过独立 wrapper 集成到文章页中。 <https://waline.js.org/>
+[^ref-hig]: [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)。这里主要借用了 Clarity / Consistency / Deference 的三原则，以及从 Foundations 到 Patterns 的组织方式。
+[^ref-tufte]: [Tufte CSS](https://edwardtufte.github.io/tufte-css/)。A-Znk的blog 对边注、脚注和“正文主线优先”的理解，和这类纸面阅读式设计有明显亲缘关系。
+[^ref-waline]: [Waline](https://waline.js.org/)。当前博客评论系统采用 Waline，通过独立 wrapper 集成到文章页中。
 [^ref-misty-shadows]: Misty Shadows UI Gallery. 首页视觉整理的参考之一，影响了背景光晕、代码式研究签名与 editorial hero；当前界面将这些特征与系统 UI 字体、实色内容卡片结合，站点架构仍保持原有分工。

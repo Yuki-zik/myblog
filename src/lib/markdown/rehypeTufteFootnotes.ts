@@ -74,7 +74,8 @@ function getProperty(properties: Record<string, unknown> | undefined, key: strin
 
 function hasTruthyDataProperty(element: Element, key: string): boolean {
   const value = getProperty(element.properties as Record<string, unknown> | undefined, key);
-  return value === true;
+  // GFM emits presence-only data attributes as empty strings in HAST.
+  return value === true || value === "";
 }
 
 function toClassList(value: unknown): string[] {
