@@ -1,8 +1,8 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-18 (PR #15 article cover composition live; original artwork retained, CI and production visual/reading checks verified)
+Last updated: 2026-10-18 (PR #16 discover typography/proportions live; full CI, production screenshots and reading/content checks verified)
 
-Active follow-up (2026-10-18): discover editorial proportions implemented, local checks and v0–v3 screenshots complete; CI/release pending. Preserve the 1100px topic-index two-column boundary, 200px home topic cards, normal-flow research signature and discover-editorial author/concept scope. See docs/visual-history/2026-10-18-discover-proportions/.
+Discover proportions (2026-10-18, PR #16 live): preserve the 1100px topic-index two-column boundary, 200px home topic cards, normal-flow research signature and discover-editorial author/concept scope. The signature remains one native details with its existing 1024px controller. Default discover headers must cover both mobile rows in reduced-motion mode. See docs/visual-history/2026-10-18-discover-proportions/ for sources and v0–v4 acceptance.
 
 Article covers (2026-10-18): PR #15 is live. Preserve original artwork, the 1.45:1 title/cover layout and 400–440px image plate limits. Local/production screenshots and checks are archived in docs/visual-history/2026-10-18-cover-composition/.
 

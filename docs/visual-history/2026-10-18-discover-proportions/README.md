@@ -44,4 +44,10 @@
 
 ## 验证状态
 
-116项单测通过；首轮全量168/170通过，两个失败均为首页主题卡留白，已在原断言下修复；最终18项相关生产构建E2E通过。新增双列测试先失败后通过，移动导航高度也以真实53/75.05px差值复现后修复。当前待精确提交CI与正式部署验收。
+116项单测通过；首轮全量168/170通过，两个失败均为首页主题卡留白，已在原断言下修复；最终18项相关生产构建E2E通过。新增双列测试先失败后通过，移动导航高度也以真实53/75.05px差值复现后修复。[PR #16](https://github.com/Yuki-zik/myblog/pull/16)精确提交`3b5c19b`的[完整CI](https://github.com/Yuki-zik/myblog/actions/runs/39099913200)171/171通过，[合并CI](https://github.com/Yuki-zik/myblog/actions/runs/39100270187)同样171/171通过，合并为`d26427c`，Git树完全一致。前端Production `7150360880`与Waline `7150364130`均成功。
+
+## v4 正式发布
+
+[首页](v4-production-home-wide.png)、[首页内容区](v4-production-home-index.png)、[主题](v4-production-topics-wide.png)、[主题详情](v4-production-topic.png)、[论文](v4-production-papers.png)、[归档](v4-production-archives.png)、[作者](v4-production-author.png)、[概念](v4-production-concept.png)均已正式截图验收。补充[手机首页](v4-production-home-mobile.png)、[手机主题](v4-production-topics-mobile.png)、[手机论文](v4-production-papers-mobile.png)、[手机作者](v4-production-author-mobile.png)、[深色首页](v4-production-home-dark.png)、[深色主题](v4-production-topics-dark.png)。
+
+14张正式截图均HTTP200且无横向溢出，13张与最终本地版本逐字节一致；手机首页另经视觉检查。6个文章/论文阅读页标题、canonical、段落及脚注与构建相同，搜索13项、评论HTTP200/errno0且原1条保留。结果见[verification.json](verification.json)。档案共46张页面截图及2张原始用户参考图，所有旧版保留。

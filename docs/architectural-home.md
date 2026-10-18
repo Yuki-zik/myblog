@@ -1,12 +1,12 @@
 # Architectural drawing homepage
 
-Status: live at https://a-znk-blog.vercel.app/. Latest update: PR #11 orange drafting accents, merge `018b53ed3b36610136e0f5e7df69ff7435f963d9`.
+Status: live at https://a-znk-blog.vercel.app/. Latest update: PR #16 editorial proportions, merge `d26427c`. The original architectural image and orange accents are retained.
 
 ## Approved direction
 
 The user approved the full-canvas architectural poster after rejecting rounded controls, red/black Soviet references, and conventional two-column or equal-card hero layouts. The homepage uses an oversized A-Znk name, a single dominant white architectural drawing, a lower-left technical annotation and thin navigation lines. The full research signature remains real content sourced from the existing author profile and collections.
 
-Only the homepage selects `headerVariant="drawing"`. Other discover routes and scholarly reading pages retain their own shell. Search, theme resolution, native details, four-card domain carousel, featured ghost/main covers, paragraph anchors, TOC and Waline contracts remain in place.
+Home, drawing indexes and the approved scholarly readers select `headerVariant="drawing"`; author/concept pages retain their existing default chrome. Search, theme resolution, native details, four-card domain carousel, featured ghost/main covers, paragraph anchors, TOC and Waline contracts remain in place.
 
 ## Asset provenance
 
@@ -19,8 +19,8 @@ Only the homepage selects `headerVariant="drawing"`. Other discover routes and s
 ## Rendering contract
 
 - Desktop: full-width drawing; large upper-left identity; lower-left opaque paper annotation; flat header with 40px edge insets.
-- Tablet: the research disclosure participates in normal flow at 768–1023px, so expansion increases hero height without covering the introduction.
-- Mobile: identity followed by a cropped drawing and one native collapsible research note. Header navigation remains immediately available.
+- Desktop/tablet: the introduction and research disclosure participate in normal flow, so larger type and expansion increase hero height without overlap. Desktop introduction is 17px, research directions 21px, code 15.5px in a 400px annotation; the native disclosure/controller is unchanged.
+- Mobile: identity/CTAs, a 256–352px original drawing band, one native collapsible research note, then the caption. Body copy is 16px and code 14px; navigation stays immediately available.
 - Dark: the resolved color scheme controls both paper/ink tokens and drawing inversion. Explicit dark and system-on-dark must match.
 - Code text is painted on an opaque surface so its contrast is independent of the image. CTAs use underlines, 44px targets and visible focus.
 - The art remains behind interactive content. Content is server-rendered and usable without adding a new animation runtime.
@@ -57,3 +57,7 @@ The follow-up retains the approved image and composition while tying UI elements
 Four new browser checks were demonstrated red before implementation. They verify the unchanged artwork/name, orange accents and code title strip, 3:1 large-type and 4.5:1 small-type contrast, hidden index semantics and isolation from the default article header. 116 unit tests passed. The complete local E2E attempt passed 142/143; the same pre-existing article-header dwell case timed out, then the focused 11-case rerun passed, including that case. Desktop light/dark, 390px collapsed/expanded content and the content sections were visually checked. [PR #11](https://github.com/Yuki-zik/myblog/pull/11) passed all 143 E2E cases in one cloud run, along with the existing verify gates, and merged as `018b53e`. Production acceptance passed. Evidence: ignored `output/orange-drawing-2026-10-17/`.
 
 The GitHub Vercel integration reports successful Production deployments `7135404396` (frontend) and `7135407307` (Waline) for the merge SHA. The public homepage has the new name accent and all three section indices. Browser-computed colors are `rgb(241, 92, 0)` for the name separator and `rgb(255, 106, 0)` for the note title strip; desktop/mobile have no horizontal overflow. Search returns five results and displays orange selection/focus treatment. No console errors were observed. The original illustration hash is unchanged, main routes/SEO resources return 200, and comments return HTTP 200 / errno 0 with the original one comment. [Post-merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39007009306) completed successfully before final handoff.
+
+## Editorial scale — 2026-10-18
+
+PR #16 raises the lower content headings and summaries, while keeping four topic cards and their 200px height. Screenshot feedback caught excess summary-to-count spacing and the original assertions now pass. The complete rationale, before/implementation/production screenshots and verification are in [the discover proportions archive](visual-history/2026-10-18-discover-proportions/README.md).

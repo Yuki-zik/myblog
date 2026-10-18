@@ -2,6 +2,12 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Discover typography and proportions — 2026-10-18
+
+[PR #16](https://github.com/Yuki-zik/myblog/pull/16), merge `d26427c`, improves readable type and content grouping across home, topics, topic detail, papers index, archives, author and concept pages. Original artwork and the article/paper reading templates remain unchanged. Topic indexes use two columns from 1100px; the home research signature remains one native disclosure in normal flow.
+
+116 unit tests and 18 final targeted E2E checks passed. The [exact PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39099913200) passed 171 E2E cases; [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39100270187) also passed all 171 cases, and the deployed Git tree is identical. Production deployments `7150360880` (frontend) and `7150364130` (Waline) succeeded. Fourteen production captures show no horizontal overflow; thirteen match local screenshot bytes. Six readers retain their content/anchor metadata; search has 13 records and comments return 200/errno 0 with the original comment. Design references, all iterations and machine-readable verification are in [the visual archive](visual-history/2026-10-18-discover-proportions/README.md).
+
 ## Article cover composition — 2026-10-18
 
 [PR #15](https://github.com/Yuki-zik/myblog/pull/15), merge `6b18cb8`, preserves all cover artwork while giving the title and image a 1.45:1 composition. Desktop covers measure about 410px at 1440px (440px cap), single-column covers cap at 400px and phones fit their content width. Paper rims, offset backing and orange registration corners refine depth. The reading measure, TOC and scholar rail remain unchanged.
