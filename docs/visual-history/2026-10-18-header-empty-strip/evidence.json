@@ -1,0 +1,16 @@
+{
+  "before": {
+    "scrollY": 45,
+    "surfaceLeft": 104.896240234375,
+    "surfaceRight": 1335.103759765625,
+    "heroTop": 23,
+    "headerHeight": 68
+  },
+  "after": {
+    "scrollY": 45,
+    "surfaceLeft": -48,
+    "surfaceRight": 1488,
+    "heroTop": 23,
+    "headerHeight": 68
+  }
+}

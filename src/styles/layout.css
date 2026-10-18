@@ -640,6 +640,9 @@ html.is-header-morphing::view-transition-new(site-header) {
   --header-pill-top: 7px;
   --header-pill-height: 54px;
   --header-collapse-end: 96px;
+  /* Wait until main content passes underneath the sticky header before the
+     full-width glass contracts, avoiding a blank strip on upward scrolling. */
+  --header-collapse-start: var(--header-band);
   --header-pill-width: 1120px;
   /* Clearance between the pill edge and the first/last piece of content. */
   --header-content-inset: 26px;
@@ -712,7 +715,7 @@ html.is-header-morphing::view-transition-new(site-header) {
   transition: none;
   animation: site-header-collapse var(--header-collapse-ease) both;
   animation-timeline: scroll(root block);
-  animation-range: 0 var(--header-collapse-end);
+  animation-range: var(--header-collapse-start) calc(var(--header-collapse-start) + var(--header-collapse-end));
 }
 
 /*
@@ -802,7 +805,10 @@ html.is-header-morphing::view-transition-new(site-header) {
    * place. The inset shrinks because there is far less room to give away.
    */
   .site-header[data-header-state] {
-    --header-band: 58px;
+    /* Reserve the full two-row height in both expanded and compact states.
+       Without this floor, shrinking typography takes 5px out of document
+       flow and mobile search's scroll lock restores to the wrong position. */
+    --header-band: 96px;
     --header-pill-top: 5px;
     --header-pill-height: 48px;
     --header-collapse-end: 72px;
@@ -889,7 +895,7 @@ html.is-header-morphing::view-transition-new(site-header) {
    */
   animation: site-header-content-collapse var(--header-collapse-ease) both;
   animation-timeline: scroll(root block);
-  animation-range: 0 var(--header-collapse-end);
+  animation-range: var(--header-collapse-start) calc(var(--header-collapse-start) + var(--header-collapse-end));
 
   /* Interpolated by the progress value above: 1 at the top, 0 when collapsed. */
   --header-content-expansion: calc(1 - var(--header-collapse-progress));
