@@ -540,3 +540,43 @@ test("reading toc clearly separates h2 and h3 hierarchy on desktop", async ({ pa
   expect(h2Metrics.fontWeight).toBeGreaterThan(h3Metrics.fontWeight);
   expect(h3Metrics.textLeft - h2Metrics.textLeft).toBeGreaterThan(10);
 });
+
+
+test("article cover leaves air inside the paper and before the reading body", async ({ page }) => {
+  await page.emulateMedia({reducedMotion:"reduce"});
+  for (const width of [1440,1728,1920,2560]) {
+    await page.setViewportSize({width,height:1000});
+    await page.goto("/posts/myblog-design-manual");
+    await page.evaluate(()=>document.fonts.ready);
+    const metrics=await page.evaluate(()=>{
+      const box=(s:string)=>document.querySelector(s)!.getBoundingClientRect();
+      const cover=box(".post-cover-img--main");
+      const title=box(".post-header--scholarly");
+      const entry=box(".post-title-card");
+      return {edge:box(".post-reading-rail").right-cover.right,gap:cover.left-title.right,bodyGap:box(".post-body").top-entry.bottom,overflow:document.documentElement.scrollWidth-innerWidth};
+    });
+    expect(metrics.edge, `paper edge at ${width}px`).toBeGreaterThanOrEqual(40);
+    expect(metrics.gap, `title/image gap at ${width}px`).toBeGreaterThanOrEqual(40);
+    expect(metrics.bodyGap).toBeGreaterThanOrEqual(48);
+    expect(metrics.overflow).toBeLessThanOrEqual(0);
+  }
+});
+
+test("article cover floats above soft depth without a hard backing plate", async ({ page }) => {
+  await page.setViewportSize({width:1440,height:960});
+  for(const scheme of ["light","dark"] as const){
+    await page.emulateMedia({colorScheme:scheme,reducedMotion:"reduce"});
+    await page.goto("/posts/myblog-design-manual");
+    const paint=await page.evaluate(()=>{
+      const stack=document.querySelector(".post-title-card .post-cover-stack")!;
+      const ghost=getComputedStyle(stack.querySelector(".post-cover-img--ghost")!);
+      const main=getComputedStyle(stack.querySelector(".post-cover-img--main")!);
+      return {backing:getComputedStyle(stack,"::before").content,opacity:parseFloat(ghost.opacity),blur:parseFloat(ghost.filter.replace("blur(","")),shadow:main.boxShadow,fit:main.objectFit};
+    });
+    expect(paint.backing).toBe("none");
+    expect(paint.opacity).toBeGreaterThanOrEqual(0.26);
+    expect(paint.blur).toBeGreaterThanOrEqual(20);
+    expect(paint.shadow).not.toBe("none");
+    expect(paint.fit).toBe("contain");
+  }
+});
