@@ -2,6 +2,12 @@
 
 Public name: **A-Znk的blog**. The shared name, alternate names and description live in `src/lib/site.ts`. Page titles, visible brand, `og:site_name`, the existing `WebSite` node, RSS and the reading index use the same identity. Existing content URLs remain valid.
 
+## Public project entrypoints (2026-10-18)
+
+The author profile README and three relevant public project READMEs now link to the blog, AI Coding retrospective/topic and publication list. Public unauthenticated readback verified all four; existing source attribution, report blocks and product URLs were preserved. The blog repository also uses relevant topic labels and explicit topic/paper/author links. This is author-controlled discovery, not independent endorsement or confirmed search indexing. See [audit and evidence](discovery-audit.md) and [reference commits](discovery-links.json).
+
+The site retrieval index now includes author/paper links, with publication status and draft/prototype filtering. Person JSON-LD points to the canonical author profile by default. The existing sitemap, canonical and crawler policy remain in place.
+
 ## Current public hostname (2026-10-16)
 
 Primary URL: **https://a-znk-blog.vercel.app/**. The previous `myblog-silk-one.vercel.app` hostname remains an accessible alias. The same Vercel projects serve the site and Waline; their public `SITE_URL` values now use the branded origin. Release `1a05291` completed both production deployments. All 19 production canonicals, the sitemap, robots/RSS and the original verification file were checked; anonymous comments remain healthy with the original one comment.

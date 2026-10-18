@@ -17,6 +17,8 @@ export interface LlmsEntry {
 export interface LlmsTxtInput {
   siteName: string;
   tagline?: string;
+  author?: LlmsEntry;
+  papers?: LlmsEntry[];
   posts: LlmsEntry[];
   topics: LlmsEntry[];
   concepts: LlmsEntry[];
@@ -39,6 +41,8 @@ export function buildLlmsTxt(input: LlmsTxtInput): string {
   if (input.tagline) {
     lines.push(`> ${input.tagline}`, "");
   }
+  section(lines, "Author", input.author ? [input.author] : []);
+  section(lines, "Papers", input.papers ?? []);
   section(lines, "Posts", input.posts);
   section(lines, "Topics", input.topics);
   section(lines, "Concepts", input.concepts);

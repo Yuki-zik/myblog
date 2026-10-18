@@ -1,5 +1,26 @@
 import { expect, test, type Page } from "@playwright/test";
 
+test("retrieval clients can follow author and paper URLs from the public index", async ({ page, request }) => {
+  const index = await request.get("/llms.txt");
+  expect(index.ok()).toBe(true);
+  const text = await index.text();
+  expect(text).toContain("## Author");
+  expect(text).toContain("https://myblog.example/author");
+  expect(text).toContain("## Papers");
+  expect(text).toContain("https://myblog.example/papers/duap-multilingual-speech-privacy");
+  expect(text).toContain("https://myblog.example/papers/oxicams-carbon-dots-machine-learning");
+  const homepage = await request.get("/");
+  const people = await page.evaluate(html => {
+    const document = new DOMParser().parseFromString(html, "text/html");
+    return Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
+      .flatMap(script => JSON.parse(script.textContent ?? "{}")["@graph"] ?? [])
+      .filter(node => node["@type"] === "Person");
+  }, await homepage.text());
+  expect(people).toHaveLength(1);
+  expect(people[0].url).toBe("https://myblog.example/author");
+  expect(people[0].sameAs).toContain("https://github.com/yuki-zik");
+});
+
 async function sitemapLocations(page: Page, xml: string): Promise<string[]> {
   const parsed = await page.evaluate((source) => {
     const document = new DOMParser().parseFromString(source, "application/xml");

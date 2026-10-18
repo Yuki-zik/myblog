@@ -2,6 +2,17 @@ import { describe, expect, it } from "vitest";
 import { buildLlmsTxt } from "./llms";
 
 describe("buildLlmsTxt", () => {
+  it("lets retrieval clients discover the author and scholarly paper pages", () => {
+    const index = buildLlmsTxt({
+      siteName: "Blog",
+      author: { title: "A-Znk", url: "https://x/author" },
+      papers: [{ title: "DUAP", url: "https://x/papers/duap", summary: "Published research" }],
+      posts: [], topics: [], concepts: []
+    });
+    expect(index).toContain("## Author\n\n- [A-Znk](https://x/author)");
+    expect(index).toContain("## Papers\n\n- [DUAP](https://x/papers/duap): Published research");
+  });
+
   const txt = buildLlmsTxt({
     siteName: "A-Znk的blog",
     tagline: "主题化知识网络",

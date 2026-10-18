@@ -57,7 +57,7 @@ export function buildBaseNodes(siteUrl: string, author: SiteAuthorProfile): Json
     "@id": personId(siteUrl),
     name: author.name,
     ...(author.publicationName ? { alternateName: author.publicationName } : {}),
-    ...(author.homepage ? { url: author.homepage } : {}),
+    url: author.homepage || abs("/author", siteUrl),
     ...(sameAs.length ? { sameAs } : {})
   };
 

@@ -24,6 +24,14 @@ const author: SiteAuthorProfile = {
 };
 
 describe("buildBaseNodes", () => {
+  it("links the author identity to its canonical profile when no homepage is supplied", () => {
+    expect(buildBaseNodes(SITE, author)[1].url).toBe("https://blog.example.com/author");
+  });
+
+  it("preserves an explicitly configured author homepage", () => {
+    expect(buildBaseNodes(SITE, { ...author, homepage: "https://author.example/" })[1].url).toBe("https://author.example/");
+  });
+
   it("emits a WebSite and Person with stable absolute @ids", () => {
     const [website, person] = buildBaseNodes(SITE, author);
 

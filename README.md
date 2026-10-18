@@ -2,6 +2,8 @@
 
 [在线访问 A-Znk的blog](https://a-znk-blog.vercel.app/)
 
+[主题笔记](https://a-znk-blog.vercel.app/topics) · [论文与研究成果](https://a-znk-blog.vercel.app/papers) · [作者](https://a-znk-blog.vercel.app/author)
+
 > AI 代理请先阅读 [AGENTS.md](./AGENTS.md) 了解项目背景、设计决策与协作规范。
 
 Astro + React + Waline 的主题化知识博客首版，当前采用“博客前端 + 独立 Waline 服务 + Supabase PostgreSQL”三段式评论架构。

@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-18 (PR #21 capsule navigation restored; mobile rows, search/theme, Unicode TOC fragments and reading behavior verified live)
 
+Discovery work (2026-10-18, external links published; site release pending): profile/three related project READMEs link to the blog with public readback. Preserve those contextual links, existing project homepages and source attribution. llms.txt includes author and non-draft/non-prototype papers with status; Person.url defaults to /author. Keep indexability and author-controlled links separate from confirmed search indexing. Evidence: docs/discovery-audit.md and docs/discovery-links.json.
+
 Capsule header (2026-10-18, PR #21 live): drawing pages reuse the default floating capsule surface, scroll geometry and content inset; drawing remains a palette marker. Mobile surfaces cover both rows in normal/reduced motion with 8px block padding. Preserve the shared controller/search nodes and do not reintroduce drawing surface/content-width overrides. Margin-note hash lookup decodes the URL fragment and uses getElementById; encoded heading fragments are not CSS selectors. See docs/visual-history/2026-10-18-capsule-header/.
 
 Reading typography (2026-10-18, PR #20 live): article h2/h3 markers scale at 0.8/0.84em, with hanging h2 text for narrow multiline headings. Keep reading serif text, UI numerals/labels and genuine mono code roles. Keep the note-number gutter at 6px so larger UI numerals preserve the existing readable note measure. GFM presence-only data flags may be true or empty strings; strip rail backrefs without removing source links or changing anchor IDs. See docs/visual-history/2026-10-18-reading-typography/.

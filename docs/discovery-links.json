@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-18",
+  "origin": "https://a-znk-blog.vercel.app/",
+  "references": [
+    {
+      "repo": "Yuki-zik/Yuki-zik",
+      "path": "README.md",
+      "branch": "main",
+      "beforeSha": "e630cd3303e600bde363edfd23ea3a9496d7686e",
+      "afterSha": "72f73cb1c08190e10aece93a250482a169fb006e",
+      "commit": "9d3f4fd0ad0e8f823d326fc738804fbeb33ed647",
+      "commitUrl": "https://github.com/Yuki-zik/Yuki-zik/commit/9d3f4fd0ad0e8f823d326fc738804fbeb33ed647",
+      "readmeUrl": "https://github.com/Yuki-zik/Yuki-zik/blob/main/README.md",
+      "addedUrls": [
+        "https://a-znk-blog.vercel.app/",
+        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+        "https://a-znk-blog.vercel.app/papers"
+      ],
+      "apiReadbackMatches": true
+    },
+    {
+      "repo": "Yuki-zik/ai-coding-assessment-toolkit",
+      "path": "README.md",
+      "branch": "main",
+      "beforeSha": "67a93fa781bec8dcd5fb6cda3d43a8893f566f15",
+      "afterSha": "1e89f8fed9f9d4a422f18d01780ae7a0a5d4fe32",
+      "commit": "bca054d5594d579e4417e39d5aa717ab0ba3356c",
+      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/commit/bca054d5594d579e4417e39d5aa717ab0ba3356c",
+      "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/blob/main/README.md",
+      "addedUrls": [
+        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+      ],
+      "apiReadbackMatches": true
+    },
+    {
+      "repo": "Yuki-zik/ai-coding-assessment-toolkit-zh",
+      "path": "README.md",
+      "branch": "main",
+      "beforeSha": "9992c831eaaa6a6fc29fddcc4a7083879cad8d59",
+      "afterSha": "d5cbb8af916657253f777890df9859c6386721ba",
+      "commit": "5e77de554a201690ba4f6ff854ee343fc8da31c6",
+      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/commit/5e77de554a201690ba4f6ff854ee343fc8da31c6",
+      "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/blob/main/README.md",
+      "addedUrls": [
+        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+      ],
+      "apiReadbackMatches": true
+    },
+    {
+      "repo": "Yuki-zik/Better-Call-Codex",
+      "path": "README.md",
+      "branch": "main",
+      "beforeSha": "f07d29cff328629ac4c80011f920370135c0564e",
+      "afterSha": "0f81ac6aa5eb8430b645f331b06a7dd81ed7d559",
+      "commit": "327aaf4f2d9ab5b9ec000e14a01c3def32155d81",
+      "commitUrl": "https://github.com/Yuki-zik/Better-Call-Codex/commit/327aaf4f2d9ab5b9ec000e14a01c3def32155d81",
+      "readmeUrl": "https://github.com/Yuki-zik/Better-Call-Codex/blob/main/README.md",
+      "addedUrls": [
+        "https://a-znk-blog.vercel.app/topics/ai-coding",
+        "https://a-znk-blog.vercel.app/"
+      ],
+      "apiReadbackMatches": true
+    }
+  ],
+  "readback": {
+    "repositories": [
+      {
+        "repo": "Yuki-zik/Yuki-zik",
+        "readmeUrl": "https://github.com/Yuki-zik/Yuki-zik/blob/main/README.md",
+        "rawStatus": 200,
+        "publicLinksPresent": true,
+        "addedUrls": [
+          "https://a-znk-blog.vercel.app/",
+          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+          "https://a-znk-blog.vercel.app/papers"
+        ]
+      },
+      {
+        "repo": "Yuki-zik/ai-coding-assessment-toolkit",
+        "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/blob/main/README.md",
+        "rawStatus": 200,
+        "publicLinksPresent": true,
+        "addedUrls": [
+          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+        ]
+      },
+      {
+        "repo": "Yuki-zik/ai-coding-assessment-toolkit-zh",
+        "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/blob/main/README.md",
+        "rawStatus": 200,
+        "publicLinksPresent": true,
+        "addedUrls": [
+          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+        ]
+      },
+      {
+        "repo": "Yuki-zik/Better-Call-Codex",
+        "readmeUrl": "https://github.com/Yuki-zik/Better-Call-Codex/blob/main/README.md",
+        "rawStatus": 200,
+        "publicLinksPresent": true,
+        "addedUrls": [
+          "https://a-znk-blog.vercel.app/topics/ai-coding",
+          "https://a-znk-blog.vercel.app/"
+        ]
+      }
+    ],
+    "profile": {
+      "status": 200,
+      "blogLinkVisible": true
+    }
+  },
+  "blogTopics": [
+    "agent-engineering",
+    "ai-coding",
+    "astro",
+    "knowledge-management",
+    "llm",
+    "model-security",
+    "personal-blog"
+  ]
+}
