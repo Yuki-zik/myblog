@@ -2,6 +2,14 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Reading typography and citations — 2026-10-18
+
+[PR #20](https://github.com/Yuki-zik/myblog/pull/20), merge `33c75f4`, scales chapter numbers with their headings, raises note text to 15.5px, uses consistent UI numerals/labels and lightens genuine inline code. Hanging indentation keeps narrow multiline titles aligned. Prose/source names in the design manual are ordinary text with named links. The GFM extractor now recognizes empty-string data flags and removes stray return arrows while preserving note/source targets and the existing return control.
+
+118 unit tests and related reading/typography/width cases pass. [Final PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39112664914) passes all 186 E2E cases; [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39113002250) also passes all 186 cases. The earlier 185/186 run exposed a real note-width reduction from larger numerals; the gutter is now 6px and the original 275px minimum is retained. The old h2 padding assertion now checks the equivalent hanging-indent geometry, with actual 320px text-line alignment checked independently. Tested/released trees are identical.
+
+Frontend `7152268358` and Waline `7152275316` Production deployments succeed. Live type metrics match the intended hierarchy; source notes contain no GFM return arrows and their number buttons return focus to the first citation. TOC top is 85.59px; cover hover, full-resolution zoom and exact scroll/focus restoration pass. Six readers match built titles/anchors/footnotes, search has 13 entries and comments retain errno 0/count 1. Nine production screenshots and prior versions are archived: [design and evidence](visual-history/2026-10-18-reading-typography/README.md), [machine-readable verification](visual-history/2026-10-18-reading-typography/verification.json).
+
 ## Article cover image viewer — 2026-10-18
 
 [PR #19](https://github.com/Yuki-zik/myblog/pull/19), merge `dc61387`, adds full-resolution cover viewing with fit/original-size modes, native panning, an original-file link and close/Escape/backdrop dismissal. Focus and exact reading scroll are restored; cover depth, TOC pinning and marginalia remain intact. No dependency or backend changes.

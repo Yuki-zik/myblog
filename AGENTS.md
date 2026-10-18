@@ -1,8 +1,8 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-18 (PR #19 full-resolution cover viewer live; keyboard/mobile, scroll restoration and production screenshots verified)
+Last updated: 2026-10-18 (PR #20 reading type hierarchy and clean citations live; responsive typography, TOC, notes and cover viewer verified)
 
-Reading typography (2026-10-18, implemented; release pending): article h2/h3 markers scale at 0.8/0.84em, with hanging h2 text for narrow multiline headings. Keep reading serif text, UI numerals/labels and genuine mono code roles. GFM presence-only data flags may be true or empty strings; strip rail backrefs without removing source links or changing anchor IDs. See docs/visual-history/2026-10-18-reading-typography/.
+Reading typography (2026-10-18, PR #20 live): article h2/h3 markers scale at 0.8/0.84em, with hanging h2 text for narrow multiline headings. Keep reading serif text, UI numerals/labels and genuine mono code roles. Keep the note-number gutter at 6px so larger UI numerals preserve the existing readable note measure. GFM presence-only data flags may be true or empty strings; strip rail backrefs without removing source links or changing anchor IDs. See docs/visual-history/2026-10-18-reading-typography/.
 
 Article cover viewer (2026-10-18, PR #19 live): Article cover links keep the original asset href and open the conditional ImageViewer native dialog through UiControllers. Preserve fit/original-size modes, close/Esc/backdrop dismissal, focus/scroll restoration and the cover/rail pointer contracts. Image dimensions must switch synchronously (transition-property:none) so native zoom centering uses current scroll bounds. See docs/visual-history/2026-10-18-image-viewer/.
 

@@ -185,7 +185,220 @@
         "width": 279.15625,
         "gap": "6px"
       }
+    },
+    "pr": {
+      "runId": 39112664914,
+      "status": "success",
+      "e2ePassed": 186
+    },
+    "merge": {
+      "runId": 39113002250,
+      "status": "success",
+      "e2ePassed": 186
     }
   },
-  "production": "pending"
+  "production": {
+    "origin": "https://a-znk-blog.vercel.app",
+    "frontend": {
+      "githubDeploymentId": 7152268358,
+      "status": "success",
+      "url": "https://myblog-jhd73b7l7-qianlimaxai-5994s-projects.vercel.app"
+    },
+    "waline": {
+      "githubDeploymentId": 7152275316,
+      "status": "success",
+      "url": "https://waline-avy7ujg54-qianlimaxai-5994s-projects.vercel.app"
+    },
+    "metrics": {
+      "h2": {
+        "font": "\"Source Serif 4\", \"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+        "size": 26,
+        "lineHeight": "36.4px",
+        "padding": "17.6px 0px 0px 40px",
+        "border": "",
+        "letterSpacing": "-0.26px"
+      },
+      "h2Marker": {
+        "font": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Noto Sans SC\", system-ui, sans-serif",
+        "size": 20.8,
+        "lineHeight": "29.12px",
+        "padding": "0px",
+        "border": "0px none rgb(166, 59, 0)",
+        "letterSpacing": "normal"
+      },
+      "h3": {
+        "font": "\"Source Serif 4\", \"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+        "size": 21,
+        "lineHeight": "28.56px",
+        "padding": "0px 0px 0px 45.6px",
+        "border": "0px none rgb(29, 29, 31)",
+        "letterSpacing": "-0.21px"
+      },
+      "h3Marker": {
+        "font": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Noto Sans SC\", system-ui, sans-serif",
+        "size": 17.64,
+        "lineHeight": "23.9904px",
+        "padding": "0px",
+        "border": "0px none rgb(166, 59, 0)",
+        "letterSpacing": "normal"
+      },
+      "body": {
+        "font": "\"Source Serif 4\", \"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+        "size": 18.24,
+        "lineHeight": "34.2912px",
+        "padding": "0px 11.2px 0px 0px",
+        "border": "0px none rgb(29, 29, 31)",
+        "letterSpacing": "0.05472px"
+      },
+      "code": {
+        "font": "\"IBM Plex Mono\", SFMono-Regular, Consolas, monospace",
+        "size": 15.96,
+        "lineHeight": "30.0048px",
+        "padding": "0.3192px 3.5112px",
+        "border": "0px none rgb(29, 29, 31)",
+        "letterSpacing": "normal"
+      },
+      "note": {
+        "font": "\"Source Serif 4\", \"Noto Serif SC\", \"Songti SC\", Georgia, serif",
+        "size": 15.5,
+        "lineHeight": "27.125px",
+        "padding": "0px",
+        "border": "0px none rgb(98, 98, 107)",
+        "letterSpacing": "normal"
+      },
+      "noteNumber": {
+        "font": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Noto Sans SC\", system-ui, sans-serif",
+        "size": 15,
+        "lineHeight": "21px",
+        "padding": "0.32px 2.88px",
+        "border": "0px none rgb(166, 59, 0)",
+        "letterSpacing": "normal"
+      },
+      "tag": {
+        "font": "-apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Noto Sans SC\", system-ui, sans-serif",
+        "size": 12,
+        "lineHeight": "18px",
+        "padding": "0.32px 0px",
+        "border": "0px none rgb(98, 98, 107)",
+        "letterSpacing": "0.48px"
+      },
+      "backrefs": 0
+    },
+    "browser": {
+      "backrefs": 0,
+      "noteReturn": {
+        "focused": true,
+        "top": 532.3125
+      },
+      "type": {
+        "h2": 26,
+        "h2Marker": 20.8,
+        "h3Marker": 17.64,
+        "note": 15.5
+      },
+      "origin": "https://a-znk-blog.vercel.app",
+      "capturedAt": "2026-10-18T08:52:09.306Z",
+      "hover": "matrix(1, 0, 0, 1, 0, -6)",
+      "opened": {
+        "modal": true,
+        "focus": "关闭图片预览",
+        "image": 1600,
+        "scrollLocked": true
+      },
+      "zoom": {
+        "zoomed": "true",
+        "x": 129,
+        "y": 79,
+        "width": 1600
+      },
+      "before": 120,
+      "restored": {
+        "scrollY": 120,
+        "focused": true,
+        "overflowX": "clip"
+      },
+      "toc": {
+        "top": 85.59375,
+        "pin": 85.6
+      },
+      "pageErrors": []
+    },
+    "readback": {
+      "pages": [
+        {
+          "route": "/posts/paragraph-anchor-design",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+          "design": "edge",
+          "title": "段落锚点短评的最小实现",
+          "paragraphAnchors": 20,
+          "footnoteTargets": 20,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/ant-ai-coding-review",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+          "design": "edge",
+          "title": "蚂蚁 AI Coding 笔试复盘",
+          "paragraphAnchors": 21,
+          "footnoteTargets": 16,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/why-topic-first",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+          "design": "edge",
+          "title": "为什么主题页应成为博客第一入口",
+          "paragraphAnchors": 5,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/myblog-design-manual",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+          "design": "edge",
+          "title": "A-Znk的blog：设计说明书",
+          "paragraphAnchors": 36,
+          "footnoteTargets": 9,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/papers/duap-multilingual-speech-privacy",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+          "design": "metadata",
+          "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+          "paragraphAnchors": 4,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/papers/oxicams-carbon-dots-machine-learning",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+          "design": "metadata",
+          "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
+          "paragraphAnchors": 5,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        }
+      ],
+      "searchEntries": 13,
+      "comments": {
+        "status": 200,
+        "errno": 0,
+        "count": 1
+      }
+    },
+    "screenshots": 9
+  },
+  "release": {
+    "pr": "https://github.com/Yuki-zik/myblog/pull/20",
+    "testedHead": "b4fe2e94e357e3307606426fff023da6c162c044",
+    "mergeRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sameGitTreeAsTestedHead": true
+  }
 }

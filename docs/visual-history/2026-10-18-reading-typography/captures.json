@@ -286,5 +286,142 @@
       "src/content/posts/myblog-design-manual.md": "405c18ee432e14d07a6c2f99cb2d414e75d8248fb6c5d7e4570a73af0884d580"
     },
     "sha256": "c36e1d57838e352f35185d83152f94e5718026cdcae59133e1d9fdbcf77a8fd2"
+  },
+  {
+    "file": "v3-production-entry.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:14.230Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "c36e1d57838e352f35185d83152f94e5718026cdcae59133e1d9fdbcf77a8fd2",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-headings.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:14.548Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "2871079e93252433237ee6f56df9b49f7b47f632e415e0a10e4944d162dd6695",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-inline.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:14.803Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "8c93de65f01db28e57dab7b993cbc09b2b18f38d0e6cd14f09ed273fcf522fd1",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      390,
+      844
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:15.159Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "2bdf5ce58a2651a56f352863f5dfce1319a64322507765686998e013d805d9a0",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-dark.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "dark",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:15.938Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "1a7a2605c4c60f7e2b3472d4e6b2590311f1093b378640c057909233b8cda7a5",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-small.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      320,
+      844
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:16.492Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "bedd309e875dc181eb60038dd930cc744f1e0a5c8bb1b0562bdee2827dc8225e",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-raster.png",
+    "route": "/posts/ant-ai-coding-review",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:52:17.183Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "f689504d789d053f435b566431de5197be325d61b4654e165bd306397c39765f",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-heading-detail.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "captureKind": "element",
+    "selector": ".post-body--scholarly h2:nth-of-type(2)",
+    "capturedAt": "2026-10-18T08:52:17.535Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "c1db71b0f377435c8d14f62ea75c16c642de2d5a1698f7b61d130089dbd83050",
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
+  },
+  {
+    "file": "v3-production-note-detail.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "production",
+    "captureKind": "element",
+    "selector": "[data-footnote-rail-item=\"ref-hig\"]",
+    "capturedAt": "2026-10-18T08:52:17.601Z",
+    "sourceRevision": "33c75f4d79aa3ab895d4c4fe9b3d08eab6b62ff0",
+    "sha256": "53cfe098485e3abf3b9c6601fa69e75850b4d6978f5cf69d24700353081b9e26",
+    "visualReview": "accepted; direct inspection or identical to inspected implementation"
   }
 ]

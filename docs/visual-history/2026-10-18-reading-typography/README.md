@@ -34,3 +34,11 @@
 首次 PR CI 为185/186，Linux下较大的UI编号使旁注正文宽度为274.25px，低于原275px门槛。编号与正文列距从7.68px收至6px，正文宽度门槛保留；本地原阅读比例检查与5项新排版验收共6/6通过。旧的“h2不能有左padding”改为验证padding与负text-indent抵消，保持首行编号在正文边缘；320px实际文本行的对齐断言仍独立生效。
 
 [v2b旁注列距修正](v2b-entry.png)保留新的字号和原阅读宽度；本地旁注容器实测279.16px。最终源hash和首次失败证据保留在verification.json。
+
+## v3 正式发布
+
+[PR #20](https://github.com/Yuki-zik/myblog/pull/20)合并为`33c75f4`，发布树与被测提交`b4fe2e9`一致。[最终PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39112664914)186/186通过，[合并CI](https://github.com/Yuki-zik/myblog/actions/runs/39113002250)同样186/186通过。前端Production `7152268358`、Waline `7152275316`均成功。
+
+正式页面实测主/子编号20.8/17.64px，旁注15.5px、UI编号15px/标签12px，原图大图加载1600px，退出滚动120→120px且焦点恢复；目录仍固定85.59px、封面上浮6px。来源旁注没有残留回链，数字按钮返回首次引用并恢复焦点，来源链接保留。六阅读页的正文/锚点/脚注与构建相同，搜索13项、评论errno0且原1条保留。
+
+新增9张正式截图（7页视图及2张元素细节），其中5张页面视图与已复核的本地实现逐字节相同，其余直接复核。当前共28张页面/元素版本截图和3张用户参考图。正式[章节细节](v3-production-heading-detail.png)、[旁注细节](v3-production-note-detail.png)、[完整章节](v3-production-headings.png)、[手机](v3-production-mobile.png)与[320px](v3-production-small.png)均已保存。
