@@ -72,7 +72,8 @@
     },
     "sourceBaseRevision": "d6f6c65ba9f33db8630c1685425436b713a98875",
     "sourceDiffSha256": "a6957b0166e5d16f40e01174508c4d1fc7473524ba847ce03906a503e4c3d6e1",
-    "sha256": "2671d2a595ffe0bbaa34c3527a8f914ab81235ed6b89a5bb598b9b8587c7682b"
+    "sha256": "2671d2a595ffe0bbaa34c3527a8f914ab81235ed6b89a5bb598b9b8587c7682b",
+    "sourceRevision": "1a0a117d823affce240918dd08a8160323407470"
   },
   {
     "file": "v1-desktop-dark.png",
@@ -121,7 +122,8 @@
     },
     "sourceBaseRevision": "d6f6c65ba9f33db8630c1685425436b713a98875",
     "sourceDiffSha256": "a6957b0166e5d16f40e01174508c4d1fc7473524ba847ce03906a503e4c3d6e1",
-    "sha256": "650faae3a5adb0b9cec682b0eee178c98c4d294e8d1cb7eedc78eabbfb6a197e"
+    "sha256": "650faae3a5adb0b9cec682b0eee178c98c4d294e8d1cb7eedc78eabbfb6a197e",
+    "sourceRevision": "1a0a117d823affce240918dd08a8160323407470"
   },
   {
     "file": "v1-tablet-light.png",
@@ -170,7 +172,8 @@
     },
     "sourceBaseRevision": "d6f6c65ba9f33db8630c1685425436b713a98875",
     "sourceDiffSha256": "a6957b0166e5d16f40e01174508c4d1fc7473524ba847ce03906a503e4c3d6e1",
-    "sha256": "bc42ef1a64e97c73250c8117c72e2b8da35991d568638baa8d1da09093118a6a"
+    "sha256": "bc42ef1a64e97c73250c8117c72e2b8da35991d568638baa8d1da09093118a6a",
+    "sourceRevision": "1a0a117d823affce240918dd08a8160323407470"
   },
   {
     "file": "v1-mobile-light.png",
@@ -219,7 +222,8 @@
     },
     "sourceBaseRevision": "d6f6c65ba9f33db8630c1685425436b713a98875",
     "sourceDiffSha256": "a6957b0166e5d16f40e01174508c4d1fc7473524ba847ce03906a503e4c3d6e1",
-    "sha256": "7bd188f85172f4ff4270b331c06477708195e643525698b4cef1b7a537f85537"
+    "sha256": "7bd188f85172f4ff4270b331c06477708195e643525698b4cef1b7a537f85537",
+    "sourceRevision": "1a0a117d823affce240918dd08a8160323407470"
   },
   {
     "file": "v1-raster-cover-light.png",
@@ -268,6 +272,252 @@
     },
     "sourceBaseRevision": "d6f6c65ba9f33db8630c1685425436b713a98875",
     "sourceDiffSha256": "a6957b0166e5d16f40e01174508c4d1fc7473524ba847ce03906a503e4c3d6e1",
+    "sha256": "fa094047147c9e5a24eae76948b457a22c3b71a549cc47edde2cb3985df60391",
+    "sourceRevision": "1a0a117d823affce240918dd08a8160323407470"
+  },
+  {
+    "file": "v2-production-desktop-light.png",
+    "route": "/posts/myblog-design-manual",
+    "status": 200,
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "production",
+    "capturedAt": "2026-10-18T04:26:05.635Z",
+    "metrics": {
+      "cover": {
+        "x": 715.046875,
+        "y": 128.515625,
+        "width": 409.578125,
+        "height": 235.625,
+        "top": 128.515625,
+        "right": 1124.625,
+        "bottom": 364.140625,
+        "left": 715.046875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 593.90625,
+        "height": 240.234375,
+        "top": 126.21875,
+        "right": 683.046875,
+        "bottom": 366.453125,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 392.046875,
+        "width": 721.59375,
+        "height": 171.984375,
+        "top": 392.046875,
+        "right": 810.734375,
+        "bottom": 564.03125,
+        "left": 89.140625
+      },
+      "fontSize": "18.24px",
+      "lineHeight": "34.2912px",
+      "overflow": 0
+    },
+    "sourceRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
+    "sha256": "891ca1b51839d6f2bc101d7d74cde20358badfd180980c0ab4dc9541d0eb83d6"
+  },
+  {
+    "file": "v2-production-desktop-dark.png",
+    "route": "/posts/myblog-design-manual",
+    "status": 200,
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "phase": "production",
+    "capturedAt": "2026-10-18T04:26:06.215Z",
+    "metrics": {
+      "cover": {
+        "x": 715.046875,
+        "y": 128.515625,
+        "width": 409.578125,
+        "height": 235.625,
+        "top": 128.515625,
+        "right": 1124.625,
+        "bottom": 364.140625,
+        "left": 715.046875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 593.90625,
+        "height": 240.234375,
+        "top": 126.21875,
+        "right": 683.046875,
+        "bottom": 366.453125,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 392.046875,
+        "width": 721.59375,
+        "height": 171.984375,
+        "top": 392.046875,
+        "right": 810.734375,
+        "bottom": 564.03125,
+        "left": 89.140625
+      },
+      "fontSize": "18.24px",
+      "lineHeight": "34.2912px",
+      "overflow": 0
+    },
+    "sourceRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
+    "sha256": "650faae3a5adb0b9cec682b0eee178c98c4d294e8d1cb7eedc78eabbfb6a197e"
+  },
+  {
+    "file": "v2-production-tablet-light.png",
+    "route": "/posts/myblog-design-manual",
+    "status": 200,
+    "viewport": [
+      1240,
+      900
+    ],
+    "theme": "light",
+    "phase": "production",
+    "capturedAt": "2026-10-18T04:26:06.530Z",
+    "metrics": {
+      "cover": {
+        "x": 426.5625,
+        "y": 359.484375,
+        "width": 400,
+        "height": 230.25,
+        "top": 359.484375,
+        "right": 826.5625,
+        "bottom": 589.734375,
+        "left": 426.5625
+      },
+      "title": {
+        "x": 42.515625,
+        "y": 120.4375,
+        "width": 800,
+        "height": 215.046875,
+        "top": 120.4375,
+        "right": 842.515625,
+        "bottom": 335.484375,
+        "left": 42.515625
+      },
+      "paragraph": {
+        "x": 42.515625,
+        "y": 727.890625,
+        "width": 1168.09375,
+        "height": 103.453125,
+        "top": 727.890625,
+        "right": 1210.609375,
+        "bottom": 831.34375,
+        "left": 42.515625
+      },
+      "fontSize": "18.24px",
+      "lineHeight": "34.2912px",
+      "overflow": 0
+    },
+    "sourceRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
+    "sha256": "bc42ef1a64e97c73250c8117c72e2b8da35991d568638baa8d1da09093118a6a"
+  },
+  {
+    "file": "v2-production-mobile-light.png",
+    "route": "/posts/myblog-design-manual",
+    "status": 200,
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "phase": "production",
+    "capturedAt": "2026-10-18T04:26:06.788Z",
+    "metrics": {
+      "cover": {
+        "x": 30.109375,
+        "y": 384.390625,
+        "width": 329.78125,
+        "height": 190.75,
+        "top": 384.390625,
+        "right": 359.890625,
+        "bottom": 575.140625,
+        "left": 30.109375
+      },
+      "title": {
+        "x": 30.109375,
+        "y": 104.828125,
+        "width": 329.78125,
+        "height": 255.5625,
+        "top": 104.828125,
+        "right": 359.890625,
+        "bottom": 360.390625,
+        "left": 30.109375
+      },
+      "paragraph": {
+        "x": 30.109375,
+        "y": 711.6875,
+        "width": 329.78125,
+        "height": 361.65625,
+        "top": 711.6875,
+        "right": 359.890625,
+        "bottom": 1073.34375,
+        "left": 30.109375
+      },
+      "fontSize": "17.6px",
+      "lineHeight": "32.736px",
+      "overflow": 0
+    },
+    "sourceRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
+    "sha256": "7bd188f85172f4ff4270b331c06477708195e643525698b4cef1b7a537f85537"
+  },
+  {
+    "file": "v2-production-raster-cover-light.png",
+    "route": "/posts/ant-ai-coding-review",
+    "status": 200,
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "production",
+    "capturedAt": "2026-10-18T04:26:07.629Z",
+    "metrics": {
+      "cover": {
+        "x": 715.046875,
+        "y": 126.21875,
+        "width": 409.578125,
+        "height": 235.625,
+        "top": 126.21875,
+        "right": 1124.625,
+        "bottom": 361.84375,
+        "left": 715.046875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 593.90625,
+        "height": 235.625,
+        "top": 126.21875,
+        "right": 683.046875,
+        "bottom": 361.84375,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 541.03125,
+        "width": 721.59375,
+        "height": 102.796875,
+        "top": 541.03125,
+        "right": 810.734375,
+        "bottom": 643.828125,
+        "left": 89.140625
+      },
+      "fontSize": "18.24px",
+      "lineHeight": "34.2912px",
+      "overflow": 0
+    },
+    "sourceRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
     "sha256": "fa094047147c9e5a24eae76948b457a22c3b71a549cc47edde2cb3985df60391"
   }
 ]

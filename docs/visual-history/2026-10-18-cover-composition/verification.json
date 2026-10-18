@@ -1,0 +1,104 @@
+{
+  "pr": 15,
+  "testedRevision": "1a0a117d823affce240918dd08a8160323407470",
+  "productionRevision": "6b18cb82062cc2c9ec7dcb8400778cdf1dbc7090",
+  "identicalGitTrees": true,
+  "prCI": "https://github.com/Yuki-zik/myblog/actions/runs/39096690060",
+  "unitTests": 116,
+  "localE2E": 68,
+  "prE2E": 156,
+  "productionToc": [
+    {
+      "scrollY": 900,
+      "top": 85.59375,
+      "active": "01Overview（概述）"
+    },
+    {
+      "scrollY": 1600,
+      "top": 85.59375,
+      "active": "01Overview（概述）"
+    }
+  ],
+  "productionMobileToc": {
+    "open": false,
+    "headingTop": 120.140625,
+    "hash": "#overview%E6%A6%82%E8%BF%B0",
+    "overflow": 0
+  },
+  "publicChecks": {
+    "pages": [
+      {
+        "route": "/posts/paragraph-anchor-design",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+        "design": "edge",
+        "title": "段落锚点短评的最小实现",
+        "paragraphAnchors": 20,
+        "footnoteTargets": 20,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/ant-ai-coding-review",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+        "design": "edge",
+        "title": "蚂蚁 AI Coding 笔试复盘",
+        "paragraphAnchors": 21,
+        "footnoteTargets": 16,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/why-topic-first",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+        "design": "edge",
+        "title": "为什么主题页应成为博客第一入口",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/myblog-design-manual",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+        "design": "edge",
+        "title": "A-Znk的blog：设计说明书",
+        "paragraphAnchors": 36,
+        "footnoteTargets": 9,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/duap-multilingual-speech-privacy",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+        "design": "metadata",
+        "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+        "paragraphAnchors": 4,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/oxicams-carbon-dots-machine-learning",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+        "design": "metadata",
+        "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      }
+    ],
+    "searchEntries": 13,
+    "comments": {
+      "status": 200,
+      "errno": 0,
+      "count": 1
+    }
+  },
+  "mergeCI": "https://github.com/Yuki-zik/myblog/actions/runs/39096990544",
+  "mergeE2E": 156,
+  "productionDeployments": {
+    "frontend": 7149879978,
+    "waline": 7149883314
+  }
+}

@@ -16,6 +16,8 @@
 | v1 本地实现 | [桌面浅色](v1-desktop-light.png) / [深色](v1-desktop-dark.png) | 1440×960 |
 | v1 本地实现 | [平板](v1-tablet-light.png) / [手机](v1-mobile-light.png) | 1240×900 / 390×844，浅色 |
 | v1 本地实现 | [深色原图](v1-raster-cover-light.png) | 1440×960，浅色 |
+| v2 正式发布 | [桌面浅色](v2-production-desktop-light.png) / [深色](v2-production-desktop-dark.png) | 1440×960 |
+| v2 正式发布 | [平板](v2-production-tablet-light.png) / [手机](v2-production-mobile-light.png) / [深色原图](v2-production-raster-cover-light.png) | 与v1对应视口相同 |
 
 截图来自真实Chromium页面输出。v0同时补齐前次因Mac锁屏未取得的正式桌面/手机截图；独立无头浏览器不依赖桌面解锁。本轮未替换或生成封面源图。
 
@@ -23,4 +25,6 @@
 
 新增几何约束首先以280px旧封面失败，调整后116项单测、68项相关E2E通过。测量宽屏正文仍721.59px、18.24px/1.88；新封面409.58px、标题组593.91px，首段top392.05px。手机封面329.78px，平板400px，所有截图无横向溢出。现有TOC吸顶、390/1024/1240px章节落点、旁注对齐和完整图片比例检查通过。
 
-构建来源、各截图SHA256、视口与测量见[captures.json](captures.json)。PR与正式发布验收待补。
+构建来源、各截图SHA256、视口与测量见[captures.json](captures.json)。[PR #15](https://github.com/Yuki-zik/myblog/pull/15)合并为`6b18cb8`；[完整PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39096690060)156/156通过，[合并CI](https://github.com/Yuki-zik/myblog/actions/runs/39096990544)同样156/156通过，发布Git树与被测版本完全相同。前端Production `7149879978`、Waline `7149883314`均成功。
+
+正式5张截图已检查：封面/正文几何与本地完全一致，其中4张PNG与本地逐字节一致。在线滚动900/1600px时目录top均85.59px；390px点击Overview后目录同步关闭、标题top120.14px。6个阅读页HTTP200，标题/段落/脚注与构建一致，搜索13项，评论HTTP200/errno0且原1条保留。可机器读取的结果见[verification.json](verification.json)。

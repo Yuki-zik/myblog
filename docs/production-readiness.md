@@ -2,13 +2,19 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Article cover composition — 2026-10-18
+
+[PR #15](https://github.com/Yuki-zik/myblog/pull/15), merge `6b18cb8`, preserves all cover artwork while giving the title and image a 1.45:1 composition. Desktop covers measure about 410px at 1440px (440px cap), single-column covers cap at 400px and phones fit their content width. Paper rims, offset backing and orange registration corners refine depth. The reading measure, TOC and scholar rail remain unchanged.
+
+116 unit tests, 68 relevant local E2E tests and all 156 [PR E2E tests](https://github.com/Yuki-zik/myblog/actions/runs/39096690060) passed; the merge Git tree is identical to the tested tree and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39096990544) also passed all 156 E2E cases. Production deployments succeeded: frontend `7149879978`, Waline `7149883314`. Five production screenshots match local geometry. Desktop TOC stays at 85.59px after 900/1600px scroll; mobile selection closes the disclosure and places the heading at 120.14px. Six public readers, 13 search records and the original comment pass readback. Twelve before/local/production screenshots plus machine-readable verification are archived in [the cover composition record](visual-history/2026-10-18-cover-composition/README.md).
+
 ## Floating article paper and covers — 2026-10-18
 
 [PR #14](https://github.com/Yuki-zik/myblog/pull/14), merge `261dca1`, restores the whole article's floating paper surface while retaining white/dark paper and orange annotations. Covers now display the complete artwork at up to 280px with a paper rim and restrained depth. The single-column breakpoint hides the desktop TOC through 1280px so it cannot displace the title. Paper readers and reading controllers remain unchanged.
 
 116 unit tests, a complete 155-case local E2E run, and targeted responsive/rail follow-ups passed. The final [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39050132934) and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39050526199) each passed 155 E2E cases. Both Production deployments succeeded: frontend GitHub deployment `7142663321`, Waline `7142658377`.
 
-Public HTTP acceptance verified all six readers, canonical URLs, titles, paragraph anchors and footnote targets, plus 13 search records and the original one comment (HTTP 200 / errno 0). The deployed CSS and representative cover match local build bytes. Six local desktop/theme/tablet/mobile screenshots, including the 1240px issue and correction, are archived. **Production browser screenshot/interaction acceptance remains pending:** the Mac is locked and browser automation could not unlock it; local screenshots are not labeled as production captures. Continue after manual unlock. Evidence: `docs/visual-history/2026-10-18-article-paper/` and ignored `output/article-paper-cover-2026-10-18/`.
+Public HTTP acceptance verified all six readers, canonical URLs, titles, paragraph anchors and footnote targets, plus 13 search records and the original one comment (HTTP 200 / errno 0). The deployed CSS and representative cover match local build bytes. Six local desktop/theme/tablet/mobile screenshots, including the 1240px issue and correction, are archived. Production capture was initially blocked by the locked Mac. The follow-up above recovered old-release desktop/mobile screenshots using an independent browser, then completed the new production screenshot/interaction acceptance. Evidence: `docs/visual-history/2026-10-18-article-paper/` and ignored `output/article-paper-cover-2026-10-18/`.
 
 ## Drafting readers — 2026-10-17
 
