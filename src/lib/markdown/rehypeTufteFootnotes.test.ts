@@ -102,6 +102,28 @@ function createFootnoteTree(): {
 }
 
 describe("rehypeTufteFootnotes", () => {
+  it.each(["dataFootnoteBackref", "data-footnote-backref"])("strips repeated GFM backrefs with an empty %s flag while preserving sources", (flag) => {
+    const { tree, footnoteRefLink, footnotes, footnoteItem, footnoteBackref } = createFootnoteTree();
+    footnoteRefLink.properties!.dataFootnoteRef = "";
+    footnotes.properties!.dataFootnotes = "";
+    footnoteBackref.properties = { href: "#user-content-fnref-1", [flag]: "" };
+    const paragraph = footnoteItem.children[0] as Element;
+    paragraph.children.push(
+      { type: "text", value: " " },
+      { type: "element", tagName: "a", properties: { href: "#user-content-fnref-1-2", [flag]: "" }, children: [{ type: "text", value: "↩2" }] },
+      { type: "element", tagName: "a", properties: { href: "https://example.org/source" }, children: [{ type: "text", value: "Source" }] }
+    );
+    const file = { path: "/repo/src/content/posts/example.md", data: {} };
+    rehypeTufteFootnotes()(tree, file);
+    const extracted = (file.data as any).astro.frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY];
+    expect(extracted).toHaveLength(1);
+    expect(extracted[0].html).not.toMatch(/↩|fnref-|data-footnote-backref/);
+    expect(extracted[0].html).toContain('<a href="https://example.org/source">Source</a>');
+    expect(extracted[0].html).toContain("<code>code</code>");
+    expect(extracted[0].anchorId).toBe("root::p1");
+    expect(footnoteRefLink.properties?.href).toBe(`#${TUFTE_RAIL_FOOTNOTE_ID_PREFIX}1`);
+  });
+
   it("adds stable classes and data hooks for footnote refs and footnote section", () => {
     const { tree, footnoteRefLink, footnotes, footnoteItem, footnoteBackref } = createFootnoteTree();
 
