@@ -1841,6 +1841,7 @@ test("article reading layout keeps restrained desktop proportions", async ({
       firstParagraphWidth: firstParagraph?.getBoundingClientRect().width ?? 0,
       firstParagraphLeft: firstParagraph?.getBoundingClientRect().left ?? 0,
       titleGroupRight: titleGroup?.getBoundingClientRect().right ?? 0,
+      titleGroupWidth: titleGroup?.getBoundingClientRect().width ?? 0,
       coverLeft: cover?.getBoundingClientRect().left ?? 0,
       titleCardWidth: titleCard?.getBoundingClientRect().width ?? 0,
       titleCardRadius: titleCardStyles
@@ -1934,9 +1935,9 @@ test("article reading layout keeps restrained desktop proportions", async ({
         ? Number.parseFloat(getComputedStyle(firstH3).paddingLeft)
         : 0,
       titleToBodyGap:
-        body && titleGroup
+        body && titleCard
           ? body.getBoundingClientRect().top -
-            titleGroup.getBoundingClientRect().bottom
+            titleCard.getBoundingClientRect().bottom
           : 0,
     };
   });
@@ -1990,8 +1991,8 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.topicsTop).toBeLessThan(metrics.dividerTop);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.metaFontSize);
   expect(metrics.titleFontSize).toBeGreaterThan(metrics.statsFontSize);
-  expect(metrics.dividerWidth).toBeGreaterThan(metrics.firstParagraphWidth * 0.95);
-  expect(metrics.dividerWidth).toBeLessThan(metrics.firstParagraphWidth * 1.05);
+  expect(metrics.dividerWidth).toBeGreaterThan(metrics.titleGroupWidth * 0.95);
+  expect(metrics.dividerWidth).toBeLessThan(metrics.titleGroupWidth * 1.05);
   expect(metrics.firstH2Counter).not.toBe("none");
   expect(metrics.firstH2Counter).toContain("article-h2");
   expect(metrics.firstH2CounterColor).not.toBe("rgb(47, 52, 64)");

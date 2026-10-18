@@ -214,8 +214,8 @@ test("edge reader presents a clear larger cover with restrained depth beside its
   const imageBox = (await image.boundingBox())!;
   const titleBox = (await page.locator(".post-header--scholarly").boundingBox())!;
   const paragraphBox = (await page.locator(".post-body p[data-anchor]").first().boundingBox())!;
-  expect(imageBox.width).toBeGreaterThanOrEqual(260);
-  expect(imageBox.width).toBeLessThanOrEqual(290);
+  expect(imageBox.width).toBeGreaterThanOrEqual(360);
+  expect(imageBox.width).toBeLessThanOrEqual(440);
   expect(imageBox.x).toBeGreaterThanOrEqual(titleBox.x + titleBox.width + 16);
   expect(imageBox.y + imageBox.height).toBeLessThan(paragraphBox.y);
   const styles = await image.evaluate((node) => ({ filter: getComputedStyle(node).filter, opacity: getComputedStyle(node).opacity, fit: getComputedStyle(node).objectFit }));

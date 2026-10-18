@@ -203,3 +203,53 @@ for (const scheme of ["light", "dark"] as const) {
     }
   });
 }
+
+
+test("article covers have a substantial image area without crowding title or reading tracks", async ({ page }) => {
+  for (const [width, path] of [
+    [1420, "/posts/paragraph-anchor-design"],
+    [1440, "/posts/myblog-design-manual"],
+    [1920, "/posts/ant-ai-coding-review"],
+    [1240, "/posts/myblog-design-manual"],
+    [390, "/posts/ant-ai-coding-review"],
+    [320, "/posts/myblog-design-manual"],
+  ] as const) {
+    await page.setViewportSize({ width, height: 960 });
+    await openReader(page, path, "light", "edge");
+    const image = page.locator(".post-title-card .post-cover-img--main");
+    await expect(image).toBeVisible();
+    const geometry = await image.evaluate((node) => {
+      const image = node as HTMLImageElement;
+      const rect = image.getBoundingClientRect();
+      const style = getComputedStyle(image);
+      const box = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
+      const title = box(".post-header--scholarly");
+      const card = box(".post-title-card");
+      const paragraph = box(".post-body--scholarly p[data-anchor]");
+      return {
+        width: rect.width, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom,
+        titleRight: title.right, titleBottom: title.bottom, cardLeft: card.left, cardWidth: card.width,
+        paragraphTop: paragraph.top, paragraphWidth: paragraph.width,
+        fit: style.objectFit, border: parseFloat(style.borderLeftWidth),
+        ratio: (rect.width - 2 * parseFloat(style.borderLeftWidth)) / (rect.height - 2 * parseFloat(style.borderTopWidth)),
+        sourceRatio: image.naturalWidth / image.naturalHeight,
+        overflow: document.documentElement.scrollWidth - innerWidth,
+      };
+    });
+    expect(geometry.fit).toBe("contain");
+    expect(geometry.ratio).toBeCloseTo(geometry.sourceRatio, 1);
+    expect(geometry.overflow).toBeLessThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThan(geometry.paragraphTop);
+    if (width >= 1420) {
+      expect(geometry.width).toBeGreaterThanOrEqual(360);
+      expect(geometry.width).toBeLessThanOrEqual(440);
+      expect(geometry.left - geometry.titleRight).toBeGreaterThanOrEqual(24);
+      expect(geometry.paragraphTop).toBeLessThan(680);
+      if (width === 1440) expect(geometry.paragraphWidth).toBeGreaterThan(715);
+    } else {
+      expect(geometry.top).toBeGreaterThan(geometry.titleBottom);
+      expect(geometry.width).toBeCloseTo(Math.min(400, geometry.cardWidth), 0);
+      expect(geometry.left - geometry.cardLeft).toBeCloseTo((geometry.cardWidth - geometry.width) / 2, 0);
+    }
+  }
+});
