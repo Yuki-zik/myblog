@@ -580,3 +580,26 @@ test("article cover floats above soft depth without a hard backing plate", async
     expect(paint.fit).toBe("contain");
   }
 });
+
+
+test("the cover receives pointer hover across the notes track without disabling note controls", async ({ page }) => {
+  await page.setViewportSize({width:1440,height:960});
+  await page.emulateMedia({reducedMotion:"no-preference"});
+  await page.goto("/posts/myblog-design-manual");
+  await page.evaluate(()=>document.fonts.ready);
+  await waitForEntranceAnimations(page);
+  const cover=page.locator(".post-title-card .post-cover-img--main");
+  const paragraph=page.locator(".post-body p[data-anchor]").first();
+  const before=(await paragraph.boundingBox())!.y;
+  const width=(await cover.boundingBox())!.width;
+  await cover.hover({position:{x:width-16,y:80},timeout:5000});
+  await expect.poll(()=>cover.evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m42)).toBeLessThanOrEqual(-5);
+  expect((await paragraph.boundingBox())!.y).toBeCloseTo(before,0);
+  const note=page.locator(".post-reading-rail .post-scholar-footnote-number-button").first();
+  await note.click({trial:true});
+  const source=page.locator(".post-reading-rail .post-scholar-footnote-body a[href^='https']").first();
+  await source.click({trial:true});
+  await page.emulateMedia({reducedMotion:"reduce"});
+  await cover.hover();
+  await expect.poll(()=>cover.evaluate(el=>getComputedStyle(el).transform)).toBe("none");
+});
