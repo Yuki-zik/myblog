@@ -1,6 +1,6 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Header blank-strip repair (2026-10-18): do not start shrinking the sticky capsule before the header's reserved document-flow height has scrolled away. `UiControllers.astro` exports measured `header.offsetHeight` as `--header-collapse-start`; keep both surface and content scroll timelines synchronized, including mobile two-row header geometry. Evidence and regression: `docs/visual-history/2026-10-18-header-empty-strip/` and `tests/e2e/capsule-header.spec.ts`.
+Header blank-strip repair (2026-10-18): do not start shrinking the sticky capsule before the header's reserved document-flow height has scrolled away. `UiControllers.astro` exports measured `header.offsetHeight` as `--header-collapse-start`; keep both surface and content scroll timelines synchronized, including mobile two-row header geometry. At <=900px keep a stable `--header-band: 96px` minimum across scroll states, or search dialog body-scroll-lock will lose ~5px of reading position. Evidence and regression: `docs/visual-history/2026-10-18-header-empty-strip/` and `tests/e2e/capsule-header.spec.ts`.
 
 Last updated: 2026-10-18 (author/paper retrieval and contextual public repository links live; 121 unit / 191 E2E checks and public readback verified)
 

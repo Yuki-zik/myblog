@@ -805,7 +805,10 @@ html.is-header-morphing::view-transition-new(site-header) {
    * place. The inset shrinks because there is far less room to give away.
    */
   .site-header[data-header-state] {
-    --header-band: 58px;
+    /* Reserve the full two-row height in both expanded and compact states.
+       Without this floor, shrinking typography takes 5px out of document
+       flow and mobile search's scroll lock restores to the wrong position. */
+    --header-band: 96px;
     --header-pill-top: 5px;
     --header-pill-height: 48px;
     --header-collapse-end: 72px;

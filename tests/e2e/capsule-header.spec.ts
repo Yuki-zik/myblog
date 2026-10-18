@@ -90,3 +90,21 @@ test("capsule reveals the page only after content scrolls behind it", async ({ p
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
   }
 });
+
+/** The search dialog's body scroll lock must not change the sticky header's
+ * document-flow height when the scroll timeline jumps between top/compact. */
+test("mobile capsule keeps a stable flow height while opening search", async ({ page }) => {
+  await page.setViewportSize({ width: 393, height: 700 });
+  await page.goto("/posts/paragraph-anchor-design");
+  await waitForFontsSettled(page);
+  const measureHeight = () => page.locator(".site-header").evaluate(el => el.getBoundingClientRect().height);
+  const topHeight = await measureHeight();
+  await page.evaluate(() => window.scrollTo({ top: 650, behavior: "instant" }));
+  await expect.poll(measureHeight).toBeCloseTo(topHeight, 0);
+  const before = await page.evaluate(() => window.scrollY);
+  await page.keyboard.press("/");
+  await expect(page.locator("[data-search-dialog]")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("[data-search-dialog]")).not.toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
+});
