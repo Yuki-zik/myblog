@@ -1,0 +1,608 @@
+[
+  {
+    "file": "v0-desktop.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "before-production",
+    "capturedAt": "2026-10-18T05:36:28.607Z",
+    "metrics": {
+      "cover": {
+        "x": 715.046875,
+        "y": 128.515625,
+        "width": 409.578125,
+        "height": 235.625,
+        "top": 128.515625,
+        "right": 1124.625,
+        "bottom": 364.140625,
+        "left": 715.046875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 593.90625,
+        "height": 240.234375,
+        "top": 126.21875,
+        "right": 683.046875,
+        "bottom": 366.453125,
+        "left": 89.140625
+      },
+      "entry": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 1035.5,
+        "height": 240.234375,
+        "top": 126.21875,
+        "right": 1124.640625,
+        "bottom": 366.453125,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 392.046875,
+        "width": 721.59375,
+        "height": 171.984375,
+        "top": 392.046875,
+        "right": 810.734375,
+        "bottom": 564.03125,
+        "left": 89.140625
+      },
+      "rail": {
+        "x": 832.859375,
+        "y": 96.796875,
+        "width": 336,
+        "height": 8240.90625,
+        "top": 96.796875,
+        "right": 1168.859375,
+        "bottom": 8337.703125,
+        "left": 832.859375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "891ca1b51839d6f2bc101d7d74cde20358badfd180980c0ab4dc9541d0eb83d6"
+  },
+  {
+    "file": "v0-wide.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "theme": "light",
+    "phase": "before-production",
+    "capturedAt": "2026-10-18T05:36:28.897Z",
+    "metrics": {
+      "cover": {
+        "x": 1036.953125,
+        "y": 132.609375,
+        "width": 440,
+        "height": 252.75,
+        "top": 132.609375,
+        "right": 1476.953125,
+        "bottom": 385.359375,
+        "left": 1036.953125
+      },
+      "title": {
+        "x": 236.28125,
+        "y": 132.609375,
+        "width": 715.328125,
+        "height": 252.75,
+        "top": 132.609375,
+        "right": 951.609375,
+        "bottom": 385.359375,
+        "left": 236.28125
+      },
+      "entry": {
+        "x": 236.28125,
+        "y": 132.609375,
+        "width": 1240.671875,
+        "height": 252.75,
+        "top": 132.609375,
+        "right": 1476.953125,
+        "bottom": 385.359375,
+        "left": 236.28125
+      },
+      "paragraph": {
+        "x": 236.28125,
+        "y": 410.953125,
+        "width": 832,
+        "height": 172.203125,
+        "top": 410.953125,
+        "right": 1068.28125,
+        "bottom": 583.15625,
+        "left": 236.28125
+      },
+      "rail": {
+        "x": 1171.484375,
+        "y": 103.1875,
+        "width": 312,
+        "height": 7976.90625,
+        "top": 103.1875,
+        "right": 1483.484375,
+        "bottom": 8080.09375,
+        "left": 1171.484375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "1120925e90a6c8eb4056242b6bb4d220aa03693c6bd57688f8150d4c0faafe45"
+  },
+  {
+    "file": "v0-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "phase": "before-production",
+    "capturedAt": "2026-10-18T05:36:29.128Z",
+    "metrics": {
+      "cover": {
+        "x": 30.109375,
+        "y": 384.390625,
+        "width": 329.78125,
+        "height": 190.75,
+        "top": 384.390625,
+        "right": 359.890625,
+        "bottom": 575.140625,
+        "left": 30.109375
+      },
+      "title": {
+        "x": 30.109375,
+        "y": 104.828125,
+        "width": 329.78125,
+        "height": 255.5625,
+        "top": 104.828125,
+        "right": 359.890625,
+        "bottom": 360.390625,
+        "left": 30.109375
+      },
+      "entry": {
+        "x": 30.109375,
+        "y": 104.828125,
+        "width": 329.78125,
+        "height": 470.3125,
+        "top": 104.828125,
+        "right": 359.890625,
+        "bottom": 575.140625,
+        "left": 30.109375
+      },
+      "paragraph": {
+        "x": 30.109375,
+        "y": 711.6875,
+        "width": 329.78125,
+        "height": 361.65625,
+        "top": 711.6875,
+        "right": 359.890625,
+        "bottom": 1073.34375,
+        "left": 30.109375
+      },
+      "rail": {
+        "x": 16,
+        "y": 12244.65625,
+        "width": 358,
+        "height": 634.15625,
+        "top": 12244.65625,
+        "right": 374,
+        "bottom": 12878.8125,
+        "left": 16
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "7bd188f85172f4ff4270b331c06477708195e643525698b4cef1b7a537f85537"
+  },
+  {
+    "file": "v1-desktop.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:27.922Z",
+    "metrics": {
+      "cover": {
+        "x": 700.671875,
+        "y": 169.1875,
+        "width": 391.953125,
+        "height": 223.09375,
+        "top": 169.1875,
+        "right": 1092.625,
+        "bottom": 392.28125,
+        "left": 700.671875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 146.21875,
+        "width": 568.34375,
+        "height": 269.046875,
+        "top": 146.21875,
+        "right": 657.484375,
+        "bottom": 415.265625,
+        "left": 89.140625
+      },
+      "entry": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 1035.5,
+        "height": 297.046875,
+        "top": 126.21875,
+        "right": 1124.640625,
+        "bottom": 423.265625,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 480.859375,
+        "width": 721.59375,
+        "height": 171.984375,
+        "top": 480.859375,
+        "right": 810.734375,
+        "bottom": 652.84375,
+        "left": 89.140625
+      },
+      "rail": {
+        "x": 832.859375,
+        "y": 96.796875,
+        "width": 336,
+        "height": 8329.90625,
+        "top": 96.796875,
+        "right": 1168.859375,
+        "bottom": 8426.703125,
+        "left": 832.859375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "61e4aa6360fe34289dcbd72051f969cddd17a7bdf270d9bb97d18d64083f8760",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "v1-wide.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "theme": "light",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:28.195Z",
+    "metrics": {
+      "cover": {
+        "x": 990.03125,
+        "y": 162.0625,
+        "width": 440,
+        "height": 250.125,
+        "top": 162.0625,
+        "right": 1430.03125,
+        "bottom": 412.1875,
+        "left": 990.03125
+      },
+      "title": {
+        "x": 236.28125,
+        "y": 152.609375,
+        "width": 681.25,
+        "height": 269.046875,
+        "top": 152.609375,
+        "right": 917.53125,
+        "bottom": 421.65625,
+        "left": 236.28125
+      },
+      "entry": {
+        "x": 236.28125,
+        "y": 132.609375,
+        "width": 1240.671875,
+        "height": 297.046875,
+        "top": 132.609375,
+        "right": 1476.953125,
+        "bottom": 429.65625,
+        "left": 236.28125
+      },
+      "paragraph": {
+        "x": 236.28125,
+        "y": 487.25,
+        "width": 832,
+        "height": 172.203125,
+        "top": 487.25,
+        "right": 1068.28125,
+        "bottom": 659.453125,
+        "left": 236.28125
+      },
+      "rail": {
+        "x": 1171.484375,
+        "y": 103.1875,
+        "width": 312,
+        "height": 8052.90625,
+        "top": 103.1875,
+        "right": 1483.484375,
+        "bottom": 8156.09375,
+        "left": 1171.484375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "3064838080c9bb894e53f7f8d787845dc11dbf4d3e64e95f975769e88f026fe1",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "v1-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:28.479Z",
+    "metrics": {
+      "cover": {
+        "x": 30.109375,
+        "y": 428.078125,
+        "width": 329.78125,
+        "height": 188.125,
+        "top": 428.078125,
+        "right": 359.890625,
+        "bottom": 616.203125,
+        "left": 30.109375
+      },
+      "title": {
+        "x": 30.109375,
+        "y": 112.828125,
+        "width": 329.78125,
+        "height": 283.25,
+        "top": 112.828125,
+        "right": 359.890625,
+        "bottom": 396.078125,
+        "left": 30.109375
+      },
+      "entry": {
+        "x": 30.109375,
+        "y": 104.828125,
+        "width": 329.78125,
+        "height": 519.375,
+        "top": 104.828125,
+        "right": 359.890625,
+        "bottom": 624.203125,
+        "left": 30.109375
+      },
+      "paragraph": {
+        "x": 30.109375,
+        "y": 770.359375,
+        "width": 329.78125,
+        "height": 361.65625,
+        "top": 770.359375,
+        "right": 359.890625,
+        "bottom": 1132.015625,
+        "left": 30.109375
+      },
+      "rail": {
+        "x": 16,
+        "y": 12303.328125,
+        "width": 358,
+        "height": 634.15625,
+        "top": 12303.328125,
+        "right": 374,
+        "bottom": 12937.484375,
+        "left": 16
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "b66dc824b6d51dda65788e63dd7cfe9fdfc419b83e727358f0804b8b90b087af",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "v1-dark.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "theme": "dark",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:28.861Z",
+    "metrics": {
+      "cover": {
+        "x": 990.03125,
+        "y": 162.0625,
+        "width": 440,
+        "height": 250.125,
+        "top": 162.0625,
+        "right": 1430.03125,
+        "bottom": 412.1875,
+        "left": 990.03125
+      },
+      "title": {
+        "x": 236.28125,
+        "y": 152.609375,
+        "width": 681.25,
+        "height": 269.046875,
+        "top": 152.609375,
+        "right": 917.53125,
+        "bottom": 421.65625,
+        "left": 236.28125
+      },
+      "entry": {
+        "x": 236.28125,
+        "y": 132.609375,
+        "width": 1240.671875,
+        "height": 297.046875,
+        "top": 132.609375,
+        "right": 1476.953125,
+        "bottom": 429.65625,
+        "left": 236.28125
+      },
+      "paragraph": {
+        "x": 236.28125,
+        "y": 487.25,
+        "width": 832,
+        "height": 172.203125,
+        "top": 487.25,
+        "right": 1068.28125,
+        "bottom": 659.453125,
+        "left": 236.28125
+      },
+      "rail": {
+        "x": 1171.484375,
+        "y": 103.1875,
+        "width": 312,
+        "height": 8052.90625,
+        "top": 103.1875,
+        "right": 1483.484375,
+        "bottom": 8156.09375,
+        "left": 1171.484375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "e9a0bcdc852e053bb44128757b8e44fb1c8b9a0ebebffa71f86f34d9d367a644",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "v1-tablet.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1240,
+      900
+    ],
+    "theme": "light",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:29.141Z",
+    "metrics": {
+      "cover": {
+        "x": 426.5625,
+        "y": 441.484375,
+        "width": 400,
+        "height": 227.625,
+        "top": 441.484375,
+        "right": 826.5625,
+        "bottom": 669.109375,
+        "left": 426.5625
+      },
+      "title": {
+        "x": 42.515625,
+        "y": 140.4375,
+        "width": 800,
+        "height": 269.046875,
+        "top": 140.4375,
+        "right": 842.515625,
+        "bottom": 409.484375,
+        "left": 42.515625
+      },
+      "entry": {
+        "x": 42.515625,
+        "y": 120.4375,
+        "width": 1168.09375,
+        "height": 556.671875,
+        "top": 120.4375,
+        "right": 1210.609375,
+        "bottom": 677.109375,
+        "left": 42.515625
+      },
+      "paragraph": {
+        "x": 42.515625,
+        "y": 847.265625,
+        "width": 1168.09375,
+        "height": 103.453125,
+        "top": 847.265625,
+        "right": 1210.609375,
+        "bottom": 950.71875,
+        "left": 42.515625
+      },
+      "rail": {
+        "x": 16,
+        "y": 7417.1875,
+        "width": 1208,
+        "height": 679.265625,
+        "top": 7417.1875,
+        "right": 1224,
+        "bottom": 8096.453125,
+        "left": 16
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "5e99a145ad54948e5e8cd5e9d91a5a054dbf52648b8ce5db7d79b5d4035a0d1f",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "v1-raster.png",
+    "route": "/posts/ant-ai-coding-review",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "implementation",
+    "capturedAt": "2026-10-18T05:38:29.367Z",
+    "metrics": {
+      "cover": {
+        "x": 700.671875,
+        "y": 169.1875,
+        "width": 391.953125,
+        "height": 223.09375,
+        "top": 169.1875,
+        "right": 1092.625,
+        "bottom": 392.28125,
+        "left": 700.671875
+      },
+      "title": {
+        "x": 89.140625,
+        "y": 146.21875,
+        "width": 568.34375,
+        "height": 269.046875,
+        "top": 146.21875,
+        "right": 657.484375,
+        "bottom": 415.265625,
+        "left": 89.140625
+      },
+      "entry": {
+        "x": 89.140625,
+        "y": 126.21875,
+        "width": 1035.5,
+        "height": 297.046875,
+        "top": 126.21875,
+        "right": 1124.640625,
+        "bottom": 423.265625,
+        "left": 89.140625
+      },
+      "paragraph": {
+        "x": 89.140625,
+        "y": 634.453125,
+        "width": 721.59375,
+        "height": 102.796875,
+        "top": 634.453125,
+        "right": 810.734375,
+        "bottom": 737.25,
+        "left": 89.140625
+      },
+      "rail": {
+        "x": 832.859375,
+        "y": 96.796875,
+        "width": 336,
+        "height": 4634.90625,
+        "top": 96.796875,
+        "right": 1168.859375,
+        "bottom": 4731.703125,
+        "left": 832.859375
+      },
+      "overflow": 0
+    },
+    "sourceBaseRevision": "230ad0f7233b3d2dfdb60fa9dfa814c7e00c4e0d",
+    "sha256": "17ad9bbdc7185fe95cdfd9258b6cde95e4236c3f3d52b6064f670b6ef11b2c1a",
+    "sourceDiffSha256": "9cbebe09dd9f1e30f13bdbce3a7a4b473573280e0e26321386c8d39cc2dde097"
+  },
+  {
+    "file": "user-reference.png",
+    "phase": "user-reference",
+    "source": "user attachment; CSS viewport and zoom unknown",
+    "sha256": "97373e19e3e7a92573e559ce3ff4a87b686cac1625e0828617fd6e3d306628e8"
+  }
+]

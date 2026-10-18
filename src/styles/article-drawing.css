@@ -10,6 +10,8 @@
   --article-paper-border: var(--border-default);
   --article-paper-shadow: var(--shadow-lg);
   --article-paper-emboss: none;
+  --article-cover-shadow: 0 24px 48px -12px color-mix(in srgb, var(--shadow-tint) 26%, transparent), 0 8px 18px -5px color-mix(in srgb, var(--shadow-tint) 14%, transparent);
+  --article-cover-shadow-hover: 0 30px 58px -12px color-mix(in srgb, var(--shadow-tint) 30%, transparent), 0 12px 22px -5px color-mix(in srgb, var(--shadow-tint) 16%, transparent);
   --article-ink: var(--text-primary);
   --article-ink-soft: var(--text-secondary);
   --article-ink-faint: var(--text-secondary);
@@ -74,7 +76,9 @@
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.25rem;
+  gap: 1.75rem;
+  padding-block: 1.25rem 0.5rem;
+  margin-bottom: 3.5rem;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -85,7 +89,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.75rem;
+  gap: 1rem;
   width: 100%;
   max-width: 50rem;
   margin: 0;
@@ -116,8 +120,8 @@
   max-width: none;
   color: var(--text-secondary);
   font-family: var(--font-ui);
-  font-size: 0.875rem;
-  line-height: 1.8;
+  font-size: 1rem;
+  line-height: 1.85;
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header-stats-row {
@@ -157,7 +161,7 @@
   background: var(--border-default);
 }
 
-/* A framed image plate, substantial enough to balance the title without changing the artwork. */
+/* The original image floats on a soft shadow and its own diffused color, with no rigid backing. */
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero {
   --title-cover-width: 100%;
   width: min(100%, 25rem);
@@ -176,18 +180,6 @@
   isolation: isolate;
 }
 
-[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  background: var(--surface-subtle);
-  transform: translate(5px, 7px);
-  pointer-events: none;
-}
-
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-stack::after {
   content: "";
   position: absolute;
@@ -204,38 +196,38 @@
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img {
   height: auto;
   max-height: none;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   object-fit: contain;
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--ghost {
   display: block;
-  opacity: 0.18;
+  opacity: 0.3;
   border: 0;
-  filter: blur(14px);
-  transform: translateY(12px) scale(0.96);
+  filter: blur(24px);
+  transform: translateY(18px) scale(1.04);
   transition: opacity 180ms var(--motion-ease-standard);
   will-change: auto;
 }
 
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover-img--main,
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--main {
-  border: 6px solid var(--surface-primary);
-  outline: 1px solid var(--border-default);
-  box-shadow: var(--shadow-md);
+  border: 3px solid var(--surface-primary);
+  box-shadow: var(--article-cover-shadow);
   transform: none;
   animation: none;
-  transition: transform 180ms var(--motion-ease-standard);
+  transition: transform 240ms var(--motion-ease-standard), box-shadow 240ms var(--motion-ease-standard);
   will-change: auto;
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--main {
-    transform: translateY(-3px);
+    transform: translateY(-6px);
+    box-shadow: var(--article-cover-shadow-hover);
   }
 
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-cover--hero:hover .post-cover-img--ghost {
-    opacity: 0.24;
+    opacity: 0.35;
   }
 }
 
@@ -252,7 +244,8 @@
 @media (min-width: 1420px) {
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-    column-gap: 2rem;
+    column-gap: clamp(2.5rem, 3vw, 3.75rem);
+    padding-inline-end: 2rem;
   }
 
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
@@ -267,7 +260,7 @@
     max-width: 27.5rem;
     margin-top: 0;
     align-self: center;
-    justify-self: end;
+    justify-self: center;
   }
 }
 
@@ -407,6 +400,15 @@
 }
 
 @media (max-width: 560px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
+    padding-block: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly > .post-header-dek {
+    font-size: 0.9375rem;
+  }
+
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly h1 {
     font-size: 1.875rem;
     line-height: 1.35;
