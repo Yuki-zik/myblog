@@ -333,5 +333,276 @@
       "src/pages/posts/[slug].astro": "368f0ad62168d3a20eedf25e8646e3155cec6ffd4a318a1eb56b8ae992d5366d"
     },
     "sha256": "97fc52b9073d864ba92d11c96d2a175b7f19333ad66712ec0d62305c6c5d3a4a"
+  },
+  {
+    "file": "v3-production-cover.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "closed",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:51.907Z",
+    "metrics": {
+      "open": false,
+      "modal": false,
+      "caption": "",
+      "status": "",
+      "image": {
+        "width": 0,
+        "height": 0,
+        "naturalWidth": 0,
+        "naturalHeight": 0
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "ab53db0f547048cecb481d0841e2046a6aaa7c14aec9f5a7873cb82fecfdf3bb",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-fit.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:52.308Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 83%",
+      "image": {
+        "width": 1320,
+        "height": 743,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "53ece4d4be2a64171d5d5f2fde4c5cdb8cd1395fe3ca788b11f98586a15ee146",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:52.751Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 129,
+        "y": 79
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "d973f33b50c7418245fd52a32d9cf7926d6e7dac7567745f6ab97f6371196859",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-dark.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "mode": "fit",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:53.222Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 83%",
+      "image": {
+        "width": 1320,
+        "height": 743,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "33d0cabe24176f781899ca892e7ec24bec38a477e5779708c06717196bbee063",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:53.668Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 21%",
+      "image": {
+        "width": 340,
+        "height": 191,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "5efd0969dfd3023f55d65fcf76f220e6947f19c950f75530a637b8529db03115",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-mobile-original.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "mode": "original",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:53.999Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "true",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 100%",
+      "image": {
+        "width": 1600,
+        "height": 900,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 630,
+        "y": 154
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "05fc356d5e6c35003ccb1fb25839aee1d1b805c92fe42fbdf91e62156193316d",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-raster.png",
+    "route": "/posts/ant-ai-coding-review",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:55.026Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "蚂蚁 AI Coding 笔试复盘封面",
+      "status": "1280 × 721 · 100%",
+      "image": {
+        "width": 1280,
+        "height": 721,
+        "naturalWidth": 1280,
+        "naturalHeight": 721
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "dfdeca5f18f035208b73921c8a16165a002ff229d3d24cdf4f6cd588b079d90a",
+    "matchesLocalCaptureBytes": false,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
+  },
+  {
+    "file": "v3-production-landscape.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      844,
+      390
+    ],
+    "theme": "light",
+    "mode": "fit",
+    "phase": "production",
+    "capturedAt": "2026-10-18T08:08:55.917Z",
+    "metrics": {
+      "open": true,
+      "modal": true,
+      "zoomed": "false",
+      "caption": "用纸面卡片、目录轨道与暖色光晕概括 A-Znk的blog 设计语言的抽象封面",
+      "status": "1600 × 900 · 19%",
+      "image": {
+        "width": 307,
+        "height": 173,
+        "naturalWidth": 1600,
+        "naturalHeight": 900
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "pageOverflow": 0
+    },
+    "sourceRevision": "dc61387fdb9148789920b26390e73433f1628ddd",
+    "sha256": "97fc52b9073d864ba92d11c96d2a175b7f19333ad66712ec0d62305c6c5d3a4a",
+    "matchesLocalCaptureBytes": true,
+    "visualReview": "accepted; direct inspection or byte-identical to inspected local capture"
   }
 ]

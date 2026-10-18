@@ -1,8 +1,8 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-18 (PR #17/#18 article spacing, soft cover depth and real hover verified live)
+Last updated: 2026-10-18 (PR #19 full-resolution cover viewer live; keyboard/mobile, scroll restoration and production screenshots verified)
 
-Article cover viewer (2026-10-18, implemented; release pending): Article cover links keep the original asset href and open the conditional ImageViewer native dialog through UiControllers. Preserve fit/original-size modes, close/Esc/backdrop dismissal, focus/scroll restoration and the cover/rail pointer contracts. Image dimensions must switch synchronously (transition-property:none) so native zoom centering uses current scroll bounds. See docs/visual-history/2026-10-18-image-viewer/.
+Article cover viewer (2026-10-18, PR #19 live): Article cover links keep the original asset href and open the conditional ImageViewer native dialog through UiControllers. Preserve fit/original-size modes, close/Esc/backdrop dismissal, focus/scroll restoration and the cover/rail pointer contracts. Image dimensions must switch synchronously (transition-property:none) so native zoom centering uses current scroll bounds. See docs/visual-history/2026-10-18-image-viewer/.
 
 Article spacing/depth (2026-10-18, PR #17/#18 live): preserve wide-screen paper clearance, 56px desktop entry-to-body spacing, soft cover/ghost depth and real hover. Empty wide scholar rails pass pointers through; actual .post-scholar-item nodes keep pointer-events:auto. See docs/visual-history/2026-10-18-cover-air/.
 

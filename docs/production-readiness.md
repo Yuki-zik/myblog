@@ -2,6 +2,14 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Article cover image viewer — 2026-10-18
+
+[PR #19](https://github.com/Yuki-zik/myblog/pull/19), merge `dc61387`, adds full-resolution cover viewing with fit/original-size modes, native panning, an original-file link and close/Escape/backdrop dismissal. Focus and exact reading scroll are restored; cover depth, TOC pinning and marginalia remain intact. No dependency or backend changes.
+
+116 unit tests and seven targeted viewer cases pass. [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39109831429) and [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39110207475) each pass all 181 E2E cases directly, with identical tested/released Git trees. The earlier local full-suite sizing-transition failure is documented with its correction and added centering assertions.
+
+Frontend `7151841125` and Waline `7151840199` Production deployments succeed. Public browser verification loads the 1600px original, centers 100% zoom at 129/79px, restores scroll 120→120px and cover focus on Escape, and retains TOC top 85.59px and hover lift -6px. All six readers match built titles/anchors/footnotes; search has 13 entries and comments retain errno 0/count 1. Eight production views have no horizontal overflow; 18 implementation/production screenshots and the previous-release reference are retained in the [visual archive](visual-history/2026-10-18-image-viewer/README.md). Machine-readable [verification](visual-history/2026-10-18-image-viewer/verification.json) includes deployment URLs and live readback.
+
 ## Article spacing and floating covers — 2026-10-18
 
 [PR #17](https://github.com/Yuki-zik/myblog/pull/17) restores cover depth and breathing room, then [PR #18](https://github.com/Yuki-zik/myblog/pull/18), merge `f910599`, fixes the empty scholar rail intercepting cover hover. Wide paper clearance and the original artwork/reading tracks remain intact. Real note items retain pointer interaction.
