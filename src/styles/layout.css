@@ -1076,3 +1076,11 @@ body[data-header-variant="drawing"] .header-search-result-type--paper {
     inset-inline: 16px;
   }
 }
+
+/* Reduced motion freezes the default header surface; its mobile content has two rows. */
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  body[data-runtime="discover"] .site-header[data-header-variant="default"][data-header-state] .site-header-inner {
+    inset-block-start: 0;
+    height: 100%;
+  }
+}

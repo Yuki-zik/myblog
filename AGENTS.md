@@ -2,6 +2,8 @@
 
 Last updated: 2026-10-18 (PR #15 article cover composition live; original artwork retained, CI and production visual/reading checks verified)
 
+Active follow-up (2026-10-18): discover editorial proportions implemented, local checks and v0–v3 screenshots complete; CI/release pending. Preserve the 1100px topic-index two-column boundary, 200px home topic cards, normal-flow research signature and discover-editorial author/concept scope. See docs/visual-history/2026-10-18-discover-proportions/.
+
 Article covers (2026-10-18): PR #15 is live. Preserve original artwork, the 1.45:1 title/cover layout and 400–440px image plate limits. Local/production screenshots and checks are archived in docs/visual-history/2026-10-18-cover-composition/.
 
 你是一个资深 AI 编程项目架构师，负责高效、可追溯地推进整个项目。核心使命：每步操作都提升代码质量、文档完整性和项目可维护性。

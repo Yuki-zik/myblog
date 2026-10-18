@@ -174,8 +174,7 @@ test("home reference hero and header stay structured on desktop", async ({
     metrics.navBox!.x,
   );
   // The approved architectural poster places the code annotation below the
-  // title on the left, rather than in a second sticky hero column.
-  expect(metrics.terminalPosition).toBe("absolute");
+  // title on the left, with real separation even when the code expands.
   expect(Math.abs(metrics.terminalBox!.x - metrics.heroCopyBox!.x)).toBeLessThan(16);
   expect(metrics.terminalBox!.y).toBeGreaterThan(
     metrics.heroCopyBox!.y + metrics.heroCopyBox!.height,

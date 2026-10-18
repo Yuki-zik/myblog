@@ -642,3 +642,99 @@ html[data-color-scheme="dark"] .home-reference-footer--reading {
     font-size: 1rem;
   }
 }
+
+
+/* Author/concept editorial proportions. The drawing and reading shells keep their own scale. */
+.discover-page__body.discover-editorial {
+  width: calc(100% - 80px);
+  max-width: 80rem;
+  gap: 3rem;
+  padding: 2.5rem 0 0;
+}
+
+.discover-editorial .discover-hero__title {
+  font-size: clamp(2.75rem, 4.5vw, 4rem);
+  line-height: 1.12;
+}
+
+.discover-editorial .discover-hero__description {
+  max-width: 36rem;
+  font-size: 1.1875rem;
+  line-height: 1.8;
+}
+
+.discover-editorial .discover-hero__copy { gap: 1.25rem; }
+.discover-editorial .discover-action { font-size: 1rem; line-height: 1.4; }
+.discover-editorial .discover-hero__panel { padding: 1.5rem; }
+.discover-editorial .discover-hero__panel-copy { margin-bottom: 1rem; }
+.discover-editorial .discover-hero__panel-label { font-size: 0.875rem; }
+.discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+.discover-editorial .discover-hero__panel-stat { padding: 0.75rem 0.5rem; }
+.discover-editorial .discover-hero__panel-stat strong { font-size: 1.5rem; }
+.discover-editorial .discover-hero__panel-stat span { font-size: 0.875rem; line-height: 1.5; }
+
+.discover-editorial .author-profile-summary {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+}
+.discover-editorial .author-profile-summary .discover-hero__panel-label { grid-column: 1 / -1; margin: 0; }
+.discover-editorial .author-avatar { grid-column: 1; grid-row: 2 / 4; width: 88px; }
+.discover-editorial .author-profile-summary p:not(.discover-hero__panel-label) { grid-column: 2; margin: 0; }
+
+.discover-editorial .discover-entity-grid,
+.discover-editorial .discover-mini-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
+  gap: 1.5rem;
+}
+.discover-editorial .discover-entity-card,
+.discover-editorial .discover-mini-card { padding: 1.5rem; gap: 0.875rem; align-content: start; }
+.discover-editorial .discover-entity-card h3,
+.discover-editorial .discover-mini-card h3,
+.discover-editorial .discover-stream-item__title { font-size: 1.5rem; line-height: 1.4; }
+.discover-editorial .discover-entity-card p,
+.discover-editorial .discover-mini-card p,
+.discover-editorial .discover-stream-item__summary,
+.discover-editorial .discover-section-head__copy > p:last-child { font-size: 1.0625rem; line-height: 1.8; }
+.discover-editorial .discover-section-head__count,
+.discover-editorial .discover-section-head__link,
+.discover-editorial .discover-entity-card__meta,
+.discover-editorial .discover-mini-card__meta,
+.discover-editorial .discover-stream-item__eyebrow { font-size: 0.875rem; }
+.discover-editorial .discover-section-head h2 { font-size: clamp(1.75rem, 2.2vw, 2rem); line-height: 1.3; }
+.discover-editorial .discover-rich { font-size: 1.125rem; padding: 1.5rem; }
+.discover-editorial .discover-rich > :first-child { margin-top: 0; }
+.discover-editorial .discover-rich > :last-child { margin-bottom: 0; }
+.discover-editorial .discover-rich code { font-size: 0.95em; }
+.discover-editorial .post-card-title { max-width: none; font-size: 1.625rem; line-height: 1.35; }
+.discover-editorial .post-card-summary { font-size: 1.0625rem; line-height: 1.8; }
+.discover-editorial .post-card-title a,
+.discover-editorial .post-card-summary { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.discover-editorial .post-card-meta-row { font-size: 0.875rem; }
+.discover-editorial .post-card-stat { font-size: 0.875rem; }
+
+.discover-concept-tags { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.5rem; margin-top: -1.5rem; }
+.discover-concept-tags h2 { margin: 0; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
+.discover-concept-tags ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
+.discover-concept-tags li { padding-block: 0.25rem; font-size: 1rem; color: var(--text-primary); }
+
+@media (min-width: 1025px) {
+  .discover-editorial .discover-hero--split .discover-hero__copy { grid-column: span 7; }
+  .discover-editorial .discover-hero--split .discover-hero__panel { grid-column: span 5; }
+}
+
+@media (max-width: 767px) {
+  .discover-page__body.discover-editorial { width: calc(100% - 32px); padding-top: 1.75rem; gap: 2.5rem; }
+  .discover-editorial .discover-hero__title { font-size: 2.5rem; }
+  .discover-editorial .discover-hero__description { font-size: 1.0625rem; }
+  .discover-editorial .discover-hero__panel { padding: 1rem; }
+  .discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .discover-editorial .discover-entity-card,
+  .discover-editorial .discover-mini-card,
+  .discover-editorial .discover-rich { padding: 1.125rem; }
+  .discover-editorial .discover-rich { font-size: 1.0625rem; }
+  .discover-editorial .post-card-title { font-size: 1.5rem; }
+  .discover-editorial .discover-section-head { gap: 0.75rem; }
+  .discover-editorial .author-profile-summary { grid-template-columns: 64px minmax(0, 1fr); gap: 0.75rem; }
+  .discover-editorial .author-avatar { width: 64px; }
+}

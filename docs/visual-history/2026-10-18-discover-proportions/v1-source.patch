@@ -1,0 +1,651 @@
+--- a/src/pages/author.astro
++++ b/src/pages/author.astro
+@@ -84 +84 @@
+-  <DiscoverShell>
++  <DiscoverShell bodyClass="discover-editorial">
+@@ -108 +108 @@
+-        <div class="discover-hero__panel-copy">
++        <div class="discover-hero__panel-copy author-profile-summary">
+@@ -147 +146,0 @@
+-        description="围绕系统能力、行为控制与工程化闭环展开，而不是把模型能力停留在单点演示。"
+@@ -170 +168,0 @@
+-        description="只保留能体现方法与落地能力的实践，不写空泛的能力陈述。"
+@@ -190 +187,0 @@
+-        description="研究问题、工程方法和写作范围保持同一条主线，避免作者页与博客内容脱节。"
+@@ -250 +247 @@
+-                  <span class="author-social-name font-display text-[1rem] font-semibold tracking-[-0.02em]">{network.label}</span>
++                  <span class="author-social-name font-display text-[1.125rem] font-semibold tracking-[-0.02em]">{network.label}</span>
+@@ -252 +249 @@
+-                    <span class="author-social-description text-[0.82rem] leading-[1.55]">{network.description}</span>
++                    <span class="author-social-description text-[0.9375rem] leading-[1.55]">{network.description}</span>
+@@ -261 +258 @@
+-                    <span class="text-[0.82rem]" data-social-label>
++                    <span class="text-sm" data-social-label>
+--- a/src/pages/concepts/[slug].astro
++++ b/src/pages/concepts/[slug].astro
+@@ -67 +67 @@
+-  <DiscoverShell>
++  <DiscoverShell bodyClass="discover-editorial">
+@@ -97,2 +97 @@
+-          <p class="discover-hero__panel-label">Definition</p>
+-          <p>{concept.data.summary}</p>
++          <p class="discover-hero__panel-label">关联索引</p>
+@@ -125 +123,0 @@
+-        description="概念页比 topic detail 更轻，但仍使用相同的 poster hero、surface 与 section 节奏。"
+@@ -132,21 +130,6 @@
+-    {
+-      (concept.data.tags?.length ?? 0) > 0 ? (
+-        <section class="discover-section">
+-          <SectionHead
+-            kicker="Tags"
+-            title="概念标签"
+-            description="标签继续保留在概念详情中，但不再以裸 pill 列表漂浮在页面里。"
+-            countLabel={`${concept.data.tags?.length ?? 0} tags`}
+-          />
+-          <div class="discover-mini-grid" data-ux-stagger>
+-            {concept.data.tags?.map((tag) => (
+-              <div class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+-                <span class="discover-mini-card__meta">Tag</span>
+-                <h3>{tag}</h3>
+-                <p>作为概念索引标签，用来帮助读者从不同文章里反向识别这一概念。</p>
+-              </div>
+-            ))}
+-          </div>
+-        </section>
+-      ) : null
+-    }
++    {concept.data.tags?.length ? (
++      <div class="discover-concept-tags">
++        <h2>概念标签</h2>
++        <ul>{concept.data.tags.map((tag) => <li>{tag}</li>)}</ul>
++      </div>
++    ) : null}
+@@ -158 +140,0 @@
+-        description="概念页的核心仍然是反向追踪：从概念返回到引用它的文章与上下文。"
+@@ -176 +157,0 @@
+-        description="这里直接从真实引用该概念的文章 topics 反推主题，而不是再依赖 entryPosts 的间接猜测。"
+--- a/src/pages/topics/index.astro
++++ b/src/pages/topics/index.astro
+@@ -60 +60,4 @@
+-                <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
++                <div class="drawing-topic-row__heading">
++                  <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
++                  <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
++                </div>
+@@ -63 +65,0 @@
+-              <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+--- a/src/styles/discover.css
++++ b/src/styles/discover.css
+@@ -644,0 +645,96 @@
++
++
++/* Author/concept editorial proportions. The drawing and reading shells keep their own scale. */
++.discover-page__body.discover-editorial {
++  width: calc(100% - 80px);
++  max-width: 80rem;
++  gap: 3rem;
++  padding: 2.5rem 0 0;
++}
++
++.discover-editorial .discover-hero__title {
++  font-size: clamp(2.75rem, 4.5vw, 4rem);
++  line-height: 1.12;
++}
++
++.discover-editorial .discover-hero__description {
++  max-width: 36rem;
++  font-size: 1.1875rem;
++  line-height: 1.8;
++}
++
++.discover-editorial .discover-hero__copy { gap: 1.25rem; }
++.discover-editorial .discover-action { font-size: 1rem; line-height: 1.4; }
++.discover-editorial .discover-hero__panel { padding: 1.5rem; }
++.discover-editorial .discover-hero__panel-copy { margin-bottom: 1rem; }
++.discover-editorial .discover-hero__panel-label { font-size: 0.875rem; }
++.discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
++.discover-editorial .discover-hero__panel-stat { padding: 0.75rem 0.5rem; }
++.discover-editorial .discover-hero__panel-stat strong { font-size: 1.5rem; }
++.discover-editorial .discover-hero__panel-stat span { font-size: 0.875rem; line-height: 1.5; }
++
++.discover-editorial .author-profile-summary {
++  display: grid;
++  grid-template-columns: 88px minmax(0, 1fr);
++  gap: 0.75rem 1rem;
++}
++.discover-editorial .author-profile-summary .discover-hero__panel-label { grid-column: 1 / -1; margin: 0; }
++.discover-editorial .author-avatar { grid-column: 1; grid-row: 2 / 4; width: 88px; }
++.discover-editorial .author-profile-summary p:not(.discover-hero__panel-label) { grid-column: 2; margin: 0; }
++
++.discover-editorial .discover-entity-grid,
++.discover-editorial .discover-mini-grid {
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
++  gap: 1.5rem;
++}
++.discover-editorial .discover-entity-card,
++.discover-editorial .discover-mini-card { padding: 1.5rem; gap: 0.875rem; align-content: start; }
++.discover-editorial .discover-entity-card h3,
++.discover-editorial .discover-mini-card h3,
++.discover-editorial .discover-stream-item__title { font-size: 1.5rem; line-height: 1.4; }
++.discover-editorial .discover-entity-card p,
++.discover-editorial .discover-mini-card p,
++.discover-editorial .discover-stream-item__summary,
++.discover-editorial .discover-section-head__copy > p:last-child { font-size: 1.0625rem; line-height: 1.8; }
++.discover-editorial .discover-section-head__count,
++.discover-editorial .discover-section-head__link,
++.discover-editorial .discover-entity-card__meta,
++.discover-editorial .discover-mini-card__meta,
++.discover-editorial .discover-stream-item__eyebrow { font-size: 0.875rem; }
++.discover-editorial .discover-section-head h2 { font-size: clamp(1.75rem, 2.2vw, 2rem); line-height: 1.3; }
++.discover-editorial .discover-rich { font-size: 1.125rem; padding: 1.5rem; }
++.discover-editorial .discover-rich > :first-child { margin-top: 0; }
++.discover-editorial .discover-rich > :last-child { margin-bottom: 0; }
++.discover-editorial .discover-rich code { font-size: 0.95em; }
++.discover-editorial .post-card-title { max-width: none; font-size: 1.625rem; line-height: 1.35; }
++.discover-editorial .post-card-summary { font-size: 1.0625rem; line-height: 1.8; }
++.discover-editorial .post-card-title a,
++.discover-editorial .post-card-summary { display: block; -webkit-line-clamp: unset; overflow: visible; }
++.discover-editorial .post-card-meta-row { font-size: 0.875rem; }
++.discover-editorial .post-card-stat { font-size: 0.875rem; }
++
++.discover-concept-tags { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.5rem; margin-top: -1.5rem; }
++.discover-concept-tags h2 { margin: 0; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
++.discover-concept-tags ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
++.discover-concept-tags li { padding-block: 0.25rem; font-size: 1rem; color: var(--text-primary); }
++
++@media (min-width: 1025px) {
++  .discover-editorial .discover-hero--split .discover-hero__copy { grid-column: span 7; }
++  .discover-editorial .discover-hero--split .discover-hero__panel { grid-column: span 5; }
++}
++
++@media (max-width: 767px) {
++  .discover-page__body.discover-editorial { width: calc(100% - 32px); padding-top: 1.75rem; gap: 2.5rem; }
++  .discover-editorial .discover-hero__title { font-size: 2.5rem; }
++  .discover-editorial .discover-hero__description { font-size: 1.0625rem; }
++  .discover-editorial .discover-hero__panel { padding: 1rem; }
++  .discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
++  .discover-editorial .discover-entity-card,
++  .discover-editorial .discover-mini-card,
++  .discover-editorial .discover-rich { padding: 1.125rem; }
++  .discover-editorial .discover-rich { font-size: 1.0625rem; }
++  .discover-editorial .post-card-title { font-size: 1.5rem; }
++  .discover-editorial .discover-section-head { gap: 0.75rem; }
++  .discover-editorial .author-profile-summary { grid-template-columns: 64px minmax(0, 1fr); gap: 0.75rem; }
++  .discover-editorial .author-avatar { width: 64px; }
++}
+--- a/src/styles/drawing-index.css
++++ b/src/styles/drawing-index.css
+@@ -16 +16 @@
+-  gap: 2rem;
++  gap: 1.5rem;
+@@ -20 +20 @@
+-  padding: 2rem 0 4rem;
++  padding: 1.5rem 0 4rem;
+@@ -41 +41 @@
+-  margin: 0 0 1rem;
++  margin: 0 0 0.75rem;
+@@ -44 +44 @@
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+@@ -61 +61 @@
+-  font-size: clamp(2rem, 4vw, 3.5rem);
++  font-size: clamp(2rem, 3.5vw, 3rem);
+@@ -76 +76 @@
+-  font-size: 0.8125rem;
++  font-size: 0.875rem;
+@@ -100,2 +100,2 @@
+-  font-size: 1rem;
+-  line-height: 1.8;
++  font-size: 1.125rem;
++  line-height: 1.7;
+@@ -116 +116 @@
+-  font-size: 0.875rem;
++  font-size: 1rem;
+@@ -129,4 +129,4 @@
+-  grid-template-columns: 3.5rem minmax(0, 1fr) 6rem;
+-  align-items: center;
+-  gap: 1.5rem;
+-  min-height: 7.5rem;
++  grid-template-columns: 3rem minmax(0, 1fr);
++  align-items: start;
++  gap: 1.25rem;
++  min-height: 0;
+@@ -150 +150 @@
+-  padding-top: 0.2rem;
++  padding-top: 0.3rem;
+@@ -159 +159,7 @@
+-  grid-template-columns: minmax(13rem, 20rem) minmax(0, 1fr);
++  gap: 0.5rem;
++  min-width: 0;
++}
++
++.drawing-topic-row__heading {
++  display: flex;
++  flex-wrap: wrap;
+@@ -161,2 +167 @@
+-  gap: 2rem;
+-  min-width: 0;
++  gap: 0.375rem 1.25rem;
+@@ -168 +173 @@
+-  font-size: 1.375rem;
++  font-size: 1.875rem;
+@@ -170 +175 @@
+-  line-height: 1.4;
++  line-height: 1.3;
+@@ -174,0 +180 @@
++  max-width: 52rem;
+@@ -177,2 +183,2 @@
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.125rem;
++  line-height: 1.7;
+@@ -182 +188 @@
+-  justify-self: end;
++  flex-shrink: 0;
+@@ -185 +191 @@
+-  font-size: 0.8125rem;
++  font-size: 0.875rem;
+@@ -203 +209 @@
+-  font-size: 1.125rem;
++  font-size: 1.25rem;
+@@ -209 +215 @@
+-  grid-template-columns: minmax(0, 32%) minmax(0, 1fr);
++  grid-template-columns: minmax(0, 28%) minmax(0, 1fr);
+@@ -211 +217 @@
+-  gap: 1rem;
++  gap: 1.5rem;
+@@ -213 +219 @@
+-  padding: 0.5rem 0 1.5rem;
++  padding: 0.5rem 0 1.75rem;
+@@ -229 +235 @@
+-  gap: 0.75rem;
++  gap: 0.625rem;
+@@ -236,2 +242,10 @@
+-  font-size: 1.25rem;
+-  line-height: 1.45;
++  font-size: 1.625rem;
++  line-height: 1.4;
++  letter-spacing: -0.025em;
++}
++
++.drawing-index.discover-page .post-card-title a,
++.drawing-index.discover-page .post-card-summary {
++  display: block;
++  -webkit-line-clamp: unset;
++  overflow: visible;
+@@ -247,0 +262 @@
++  padding: 0;
+@@ -251,2 +266,9 @@
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.75;
++}
++
++.drawing-index.discover-page .post-card-meta-row,
++.drawing-index.discover-page .post-card-stat,
++.drawing-index.discover-page .post-card-more,
++.drawing-index.discover-page .post-card-topics a {
++  font-size: 0.875rem;
+@@ -286 +308 @@
+-  font-size: 1rem;
++  font-size: 1.0625rem;
+@@ -301,0 +324,16 @@
++}
++
++.drawing-index.discover-page .drawing-related-grid {
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: 1.5rem;
++}
++
++.drawing-index.discover-page .drawing-related-link h3 {
++  font-family: var(--font-ui);
++  font-size: 1.375rem;
++  line-height: 1.4;
++}
++
++.drawing-index.discover-page .drawing-related-link p {
++  font-size: 1.0625rem;
++  line-height: 1.75;
+@@ -317,0 +356,2 @@
++  font-size: 0.8125rem;
++  letter-spacing: 0.02em;
+@@ -322 +362 @@
+-  gap: 1rem;
++  gap: 0.75rem;
+@@ -330 +370 @@
+-  font-size: clamp(1.25rem, 2.15vw, 1.75rem);
++  font-size: 1.875rem;
+@@ -332 +372 @@
+-  line-height: 1.4;
++  line-height: 1.35;
+@@ -340,0 +381,10 @@
++.drawing-index.discover-page .paper-index-row__authors {
++  font-size: 1rem;
++  line-height: 1.65;
++}
++
++.drawing-index.discover-page .paper-index-row__meta {
++  font-size: 0.875rem;
++  letter-spacing: 0.025em;
++}
++
+@@ -345,2 +395,2 @@
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.75;
+@@ -353,0 +404 @@
++  font-size: 0.8125rem;
+@@ -359,0 +411 @@
++  max-width: none;
+@@ -370 +422 @@
+-  font-size: 0.8125rem;
++  font-size: 1rem;
+@@ -404,0 +457,2 @@
++  grid-template-columns: 11rem minmax(0, 1fr);
++  gap: 1.5rem;
+@@ -405,0 +460,4 @@
++}
++
++.drawing-index.discover-page .archive-grid {
++  grid-template-columns: 1fr;
+@@ -418,0 +477 @@
++  font-size: 1.625rem;
+@@ -419,0 +479,19 @@
++  line-height: 1.4;
++  letter-spacing: -0.025em;
++}
++
++.drawing-index.discover-page .archive-post-content {
++  gap: 0.625rem;
++  align-content: start;
++}
++
++.drawing-index.discover-page .archive-post-meta,
++.drawing-index.discover-page .archive-post-kicker,
++.drawing-index.discover-page .archive-month-label {
++  font-size: 0.875rem;
++}
++
++.drawing-index.discover-page .archive-post-summary {
++  max-width: 52rem;
++  font-size: 1.0625rem;
++  line-height: 1.75;
+@@ -456,0 +535,5 @@
++@media (min-width: 601px) and (max-width: 1100px) {
++  .drawing-index.discover-page .discover-post-grid { grid-template-columns: 1fr; }
++  .drawing-index.discover-page .post-card { grid-template-columns: minmax(0, 22%) minmax(0, 1fr); }
++}
++
+@@ -459 +542,2 @@
+-  .drawing-topic-row__copy { grid-template-columns: 1fr; gap: 0.5rem; }
++  .drawing-index.discover-page .paper-year-group { grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1.5rem; }
++  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.625rem; }
+@@ -470 +554 @@
+-  .drawing-index-description { font-size: 0.9375rem; }
++  .drawing-index-description { font-size: 1rem; }
+@@ -472,2 +556,5 @@
+-  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.125rem; }
+-  .drawing-topic-row__count { grid-column: 2; justify-self: start; }
++  .drawing-topic-row__heading { gap: 0.375rem 1rem; }
++  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.375rem; }
++  .drawing-index.discover-page .drawing-topic-row__summary { font-size: 1rem; }
++  .drawing-topic-row__number { padding-top: 0.1rem; font-size: 1rem; }
++  .drawing-index.discover-page .drawing-related-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+@@ -476,4 +563,7 @@
+-  .drawing-index.discover-page .post-card-title { font-size: 1.25rem; }
+-  .drawing-index.discover-page .post-card { grid-template-columns: 1fr; }
+-  .drawing-index.discover-page .post-card-cover-link { width: min(100%, 12rem); }
+-  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.25rem; overflow-wrap: anywhere; }
++  .drawing-index.discover-page .post-card-title { font-size: 1.5rem; }
++  .drawing-index.discover-page .post-card { grid-template-columns: 1fr; gap: 1rem; }
++  .drawing-index.discover-page .post-card-cover-link { width: min(100%, 11rem); }
++  .drawing-index.discover-page .post-card-summary,
++  .drawing-index.discover-page .paper-index-row__summary,
++  .drawing-index.discover-page .archive-post-summary { font-size: 1rem; }
++  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.375rem; overflow-wrap: anywhere; }
+@@ -481,0 +572,3 @@
++  .drawing-index.discover-page .archive-post-link { grid-template-columns: 1fr; gap: 1rem; }
++  .drawing-index.discover-page .archive-post-media { width: min(100%, 9rem); }
++  .drawing-index.discover-page .archive-post-content h3 { font-size: 1.5rem; }
+--- a/src/styles/home-reference.css
++++ b/src/styles/home-reference.css
+@@ -37,0 +38,3 @@
++  display: flex;
++  flex-direction: column;
++  gap: 1.5rem;
+@@ -39,0 +43 @@
++  padding: 2.75rem var(--home-gutter) 2rem;
+@@ -71 +75 @@
+-  position: absolute;
++  position: relative;
+@@ -73,3 +77,2 @@
+-  top: 4.375rem;
+-  left: var(--home-gutter);
+-  width: min(36rem, calc(100% - 2 * var(--home-gutter)));
++  flex-shrink: 0;
++  width: min(36rem, 100%);
+@@ -83 +86 @@
+-  font-size: 0.6875rem;
++  font-size: 0.78125rem;
+@@ -85 +88 @@
+-  line-height: 1.7;
++  line-height: 1.6;
+@@ -98 +101 @@
+-  margin: 1.3125rem 0 1.5rem;
++  margin: 1rem 0 1.25rem;
+@@ -117,3 +120,3 @@
+-  font-size: 0.8125rem;
+-  line-height: 1.8;
+-  letter-spacing: 0.04em;
++  font-size: 1.3125rem;
++  line-height: 1.5;
++  letter-spacing: 0.015em;
+@@ -124 +127 @@
+-  max-width: 24rem;
++  max-width: 30rem;
+@@ -129,2 +132,2 @@
+-  font-size: 0.75rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.7;
+@@ -140 +143 @@
+-  margin-top: 0.75rem;
++  margin-top: 1rem;
+@@ -156 +159 @@
+-  font-size: 0.8125rem;
++  font-size: 1rem;
+@@ -200 +203 @@
+-/* The complete research.ts signature remains one native disclosure. */
++/* Keep both text blocks in flow so the complete signature never covers the copy. */
+@@ -202 +205 @@
+-  position: absolute;
++  position: relative;
+@@ -204,3 +207,3 @@
+-  left: var(--home-gutter);
+-  bottom: 2.5rem;
+-  width: 20rem;
++  flex-shrink: 0;
++  width: min(25rem, 100%);
++  margin-top: auto;
+@@ -256 +259 @@
+-  padding: 0.625rem 0.875rem;
++  padding: 0.625rem 1rem;
+@@ -259,0 +263,2 @@
++  font-size: 0.875rem;
++  line-height: 1.5;
+@@ -291 +296 @@
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+@@ -296 +301 @@
+-  padding: 0.5rem 0.875rem;
++  padding: 0.625rem 1rem;
+@@ -298,2 +303,2 @@
+-  font-size: 0.78125rem;
+-  line-height: 1.65;
++  font-size: 0.96875rem;
++  line-height: 1.5;
+@@ -335,2 +340,2 @@
+-  margin-top: 0.875rem;
+-  padding-top: 0.625rem;
++  margin-top: 0.75rem;
++  padding-top: 0.5rem;
+@@ -339 +344 @@
+-  font-size: 0.6875rem;
++  font-size: 0.75rem;
+@@ -346 +351 @@
+-  margin-top: 0.75rem;
++  margin-top: 0.5rem;
+@@ -361 +366 @@
+-  bottom: 2.5rem;
++  bottom: 2rem;
+@@ -368 +373 @@
+-  font-size: 0.6875rem;
++  font-size: 0.75rem;
+@@ -398 +403 @@
+-  font-size: 1.0625rem;
++  font-size: 1.75rem;
+@@ -400 +405 @@
+-  letter-spacing: 0.025em;
++  letter-spacing: -0.025em;
+@@ -407 +412 @@
+-  font-size: 0.8125rem;
++  font-size: 0.9375rem;
+@@ -421 +426 @@
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+@@ -489 +494 @@
+-  min-height: 11.5rem;
++  min-height: 14rem;
+@@ -495 +500 @@
+-  margin-bottom: 0.625rem;
++  margin-bottom: 0.75rem;
+@@ -516 +521 @@
+-  margin: 0 0 0.4rem;
++  margin: 0 0 0.625rem;
+@@ -519 +524 @@
+-  font-size: 1rem;
++  font-size: 1.375rem;
+@@ -531,2 +536,2 @@
+-  font-size: 0.8125rem;
+-  line-height: 1.65;
++  font-size: 1rem;
++  line-height: 1.7;
+@@ -537 +542 @@
+-  padding-top: 0.5rem;
++  padding-top: 1rem;
+@@ -541 +546 @@
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+@@ -599,0 +605 @@
++  font-size: 0.875rem;
+@@ -614 +620 @@
+-  font-size: clamp(1.5rem, 2.1vw, 1.875rem);
++  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+@@ -628 +634 @@
+-  font-size: 0.9375rem;
++  font-size: 1.125rem;
+@@ -646,0 +653 @@
++  font-size: 0.875rem;
+@@ -656,0 +664 @@
++  font-size: 0.8125rem;
+@@ -668 +676 @@
+-  font-size: 1rem;
++  font-size: 1.3125rem;
+@@ -808 +816 @@
+-/* Tablet disclosure height must participate in the cover's natural height. */
++/* The same flowing left column also owns an expanded tablet disclosure. */
+@@ -811,2 +818,0 @@
+-    display: flex;
+-    flex-direction: column;
+@@ -814,18 +819,0 @@
+-    padding: 4.375rem var(--home-gutter) 2.5rem;
+-  }
+-
+-  .home-reference-hero__copy {
+-    position: relative;
+-    top: auto;
+-    left: auto;
+-    flex-shrink: 0;
+-    width: min(36rem, 100%);
+-  }
+-
+-  .home-reference-terminal-wrap {
+-    position: relative;
+-    left: auto;
+-    bottom: auto;
+-    flex-shrink: 0;
+-    max-width: 100%;
+-    margin-top: auto;
+@@ -845,0 +834,4 @@
++    display: grid;
++    grid-template-columns: minmax(0, 1fr);
++    grid-template-rows: auto clamp(16rem, 60vw, 22rem) auto auto;
++    gap: 0;
+@@ -847 +839 @@
+-    padding-top: 2.25rem;
++    padding: 2.25rem 0 0;
+@@ -851,2 +843,5 @@
+-    inset: 11.875rem 0 auto;
+-    height: 26.875rem;
++    position: relative;
++    grid-column: 1;
++    grid-row: 2;
++    inset: auto;
++    height: 100%;
+@@ -861,3 +856,2 @@
+-    position: relative;
+-    top: auto;
+-    left: auto;
++    grid-column: 1;
++    grid-row: 1;
+@@ -873 +867 @@
+-    font-size: 0.625rem;
++    font-size: 0.6875rem;
+@@ -887 +881 @@
+-    font-size: 0.75rem;
++    font-size: 1.0625rem;
+@@ -891 +885,15 @@
+-    max-width: 20rem;
++    max-width: 30rem;
++    font-size: 1rem;
++  }
++
++  .home-reference-hero__actions {
++    gap: 0.5rem 1rem;
++  }
++
++  .home-reference-hero__button {
++    gap: 0.5rem;
++  }
++
++  .home-reference-hero__arrow {
++    width: 1.5rem;
++    height: 1.5rem;
+@@ -895,3 +903,2 @@
+-    position: relative;
+-    left: auto;
+-    bottom: auto;
++    grid-column: 1;
++    grid-row: 3;
+@@ -899,2 +906,2 @@
+-    max-width: 20rem;
+-    margin: clamp(13rem, 55vw, 18rem) var(--home-gutter) 1.25rem;
++    max-width: 25rem;
++    margin: 0 var(--home-gutter) 1.25rem;
+@@ -906,0 +914,5 @@
++  .home-reference-terminal__body {
++    font-size: 0.875rem;
++    line-height: 1.6;
++  }
++
+@@ -908,0 +921,2 @@
++    grid-column: 1;
++    grid-row: 4;
+@@ -912,0 +927,5 @@
++  }
++
++  .home-reference-section-head h2 {
++    gap: 0.75rem;
++    font-size: 1.5rem;
