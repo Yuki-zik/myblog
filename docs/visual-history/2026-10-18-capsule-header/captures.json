@@ -1,0 +1,759 @@
+[
+  {
+    "file": "v0-home-top.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 0,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:07:44.337Z",
+    "metrics": {
+      "state": "top",
+      "width": 1536,
+      "height": 68,
+      "top": 0,
+      "left": -48,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": 88,
+      "rightClearance": 88,
+      "navBottom": 53.1875,
+      "surfaceBottom": 68,
+      "overflow": 0
+    },
+    "sha256": "0991baa4b8c25eaa0cc8cbed85aec42c0cbeea2aba0dc4879e807f3cf7c8ad4d",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v0-home-capsule.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:07:44.621Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": -120,
+      "rightClearance": -120,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "8d598858fb76311d1a7a42b27a49246eba8caddbe6b98066f8e0131be68312cd",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v0-reader-capsule.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:07:45.474Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": -120,
+      "rightClearance": -120,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "0f68a2985a80196f719c95e29ed8f8550a8c3ebf6758334e4b726ce8764e022d",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v0-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:07:45.757Z",
+    "metrics": {
+      "state": "top",
+      "width": 370.796875,
+      "height": 48,
+      "top": 5,
+      "left": 9.59375,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": 6.40625,
+      "rightClearance": 6.390625,
+      "navBottom": 75.046875,
+      "surfaceBottom": 53,
+      "overflow": 0
+    },
+    "sha256": "76c081140fad90a4dc4039bbf44df65f724173be0804f57efa2b83050362b44d",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v0b-home-top.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 0,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:15:04.327Z",
+    "metrics": {
+      "state": "top",
+      "width": 1536,
+      "height": 68,
+      "top": 0,
+      "left": -48,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": 88,
+      "rightClearance": 88,
+      "navBottom": 53.1875,
+      "surfaceBottom": 68,
+      "overflow": 0
+    },
+    "sha256": "b2016a590a44592bd8527bbaa7ff2ceaf17ced5acc0dc43a2909f6a175cd0fd9"
+  },
+  {
+    "file": "v0b-home-capsule.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:15:05.252Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": -120,
+      "rightClearance": -120,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "6f4165cdadb78069309be99c7f529f1c180b5b835a739edc3df546633d206fc0"
+  },
+  {
+    "file": "v0b-reader-capsule.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:15:05.946Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": -120,
+      "rightClearance": -120,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "ce1beb309ed43689418613b76370111640c91af82f5c100645ed988b73407ed8"
+  },
+  {
+    "file": "v0b-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "before-production",
+    "sourceRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:15:06.260Z",
+    "metrics": {
+      "state": "top",
+      "width": 370.796875,
+      "height": 48,
+      "top": 5,
+      "left": 9.59375,
+      "radius": 0,
+      "shadow": "none",
+      "background": "rgba(0, 0, 0, 0)",
+      "leftClearance": 6.40625,
+      "rightClearance": 6.390625,
+      "navBottom": 75.046875,
+      "surfaceBottom": 53,
+      "overflow": 0
+    },
+    "sha256": "76c081140fad90a4dc4039bbf44df65f724173be0804f57efa2b83050362b44d"
+  },
+  {
+    "file": "v1-home-top.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:12.209Z",
+    "metrics": {
+      "state": "top",
+      "width": 1536,
+      "height": 68,
+      "top": 0,
+      "left": -48,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 234,
+      "rightClearance": 234,
+      "navBottom": 53.1875,
+      "surfaceBottom": 68,
+      "overflow": 0
+    },
+    "sha256": "d612df36d3abb569340e5e468745ee05790464be51c500752b15e80c642e4dfa",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-home-capsule.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:12.473Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "4a579c5e328c4d99ad5dc91bea83c4fe44caee297242cf10326be51cc2dc3af3",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-reader-capsule.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:16.475Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "1dc4fdb83bb45132fd48b9cb239371643302f3ea7060217fa89ac0347909bf50",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:16.736Z",
+    "metrics": {
+      "state": "top",
+      "width": 370.796875,
+      "height": 75.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 75.046875,
+      "surfaceBottom": 75.046875,
+      "overflow": 0
+    },
+    "sha256": "1d7fd5cbd3b2fe71be68bad03785fa153fa02597178be5e7b4f6e21de9e9379c",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-mobile-compact.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:16.922Z",
+    "metrics": {
+      "state": "compact",
+      "width": 370.796875,
+      "height": 48,
+      "top": 5,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 75.046875,
+      "surfaceBottom": 53,
+      "overflow": 0
+    },
+    "sha256": "f804037de4726ae2d66dcfcc5b1ec11787c491b24f6fb83b2f682bfe4e9ab763",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures.",
+    "finding": "Original 48px mobile surface did not cover the second navigation row; corrected in v2."
+  },
+  {
+    "file": "v1-small.png",
+    "route": "/",
+    "viewport": [
+      320,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:17.112Z",
+    "metrics": {
+      "state": "top",
+      "width": 300.796875,
+      "height": 75.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 75.046875,
+      "surfaceBottom": 75.046875,
+      "overflow": 0
+    },
+    "sha256": "f797c97cb81d19f2918611e3e91c3ad173e50d66be999fc448e1ddf5b8ff4ba2",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-dark.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:17.389Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0 0 0 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 0.141176 0.141176 0.153725 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "fc09793035fe6860c4e75badb074f282abb99c4bafc2b7b421881eb9701dcbe4",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v1-paper.png",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:10:21.437Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "83142a8a6ee4b954c1ad5ff7166291b5fe498d0e43a56a24056f8eaf999e0486",
+    "captureNote": "Early entrance-animation sample; final visual acceptance uses settled v0b/v2 captures."
+  },
+  {
+    "file": "v2-home-top.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:45.150Z",
+    "metrics": {
+      "state": "top",
+      "width": 1536,
+      "height": 68,
+      "top": 0,
+      "left": -48,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 234,
+      "rightClearance": 234,
+      "navBottom": 53.1875,
+      "surfaceBottom": 68,
+      "overflow": 0
+    },
+    "sha256": "d612df36d3abb569340e5e468745ee05790464be51c500752b15e80c642e4dfa",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-home-capsule.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:45.942Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "8a4872ed6c591fb012362ff2af7b6ec7f69114d2e20216a54082d5576c94d7fa",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-reader-capsule.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:46.530Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "c16ccb59e05b24bcfed09759b363f93f6916e480b8016f53341f6b77659cc8fe",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:46.835Z",
+    "metrics": {
+      "state": "top",
+      "width": 370.796875,
+      "height": 91.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 91.046875,
+      "overflow": 0
+    },
+    "sha256": "35aa119f203d4bc3fa575172c2b10d4f4f9d19ec80f6133012e0051ce85252fa",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-mobile-compact.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:47.317Z",
+    "metrics": {
+      "state": "compact",
+      "width": 370.796875,
+      "height": 91.046875,
+      "top": 5,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 96.046875,
+      "overflow": 0
+    },
+    "sha256": "7d83ddc132e7e1fa8f7f96303fef8ba8c62a9a88d3411b3befc07fea94a6195a",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-small.png",
+    "route": "/",
+    "viewport": [
+      320,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:47.544Z",
+    "metrics": {
+      "state": "top",
+      "width": 300.796875,
+      "height": 91.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 91.046875,
+      "overflow": 0
+    },
+    "sha256": "df96fd4460492bfa17cab1405f935251d1dec45e8139c71cc396019242e89c69",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-dark.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:48.338Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0 0 0 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 0.141176 0.141176 0.153725 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "9408354189afc25df1a9a006bdd2d366e62bad9999de849c96e2d1eeed976491",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  },
+  {
+    "file": "v2-paper.png",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "implementation",
+    "sourceBaseRevision": "c491d7e",
+    "capturedAt": "2026-10-18T09:19:48.842Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sha256": "ec071fddec34b7896ef43445eeba2d38483854a07dd54dc507fbc1683e030dde",
+    "sourceFilesSha256": {
+      "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    }
+  }
+]
