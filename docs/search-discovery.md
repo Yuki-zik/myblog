@@ -46,3 +46,7 @@ The local AEO audit remains a sample-based technical heuristic, not a Google ran
 Google decides crawling, indexing and the displayed site name. Updating metadata or submitting a sitemap does not guarantee immediate inclusion or a particular ranking.
 
 Sources: [Google site names](https://developers.google.com/search/docs/appearance/site-names), [request recrawling](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl), [site: operator limitations](https://developers.google.com/search/docs/monitor-debug/search-operators/all-search-site).
+
+## Primary-domain migration (2026-10-18)
+
+New canonical: `https://a-znk.com/`. The existing branded `.vercel.app` and old project alias must permanently redirect non-verification content to the new domain with each path preserved. The original `googleb326e1b2b17b02a1.html` stays reachable on each legacy hostname so existing GSC ownership can be verified after migration. `www.a-znk.com` has a Vercel project-domain 301 redirect to the apex host. `SITE_URL` is updated for Production and Preview. New Google Search Console property/sitemap submission still requires a verified Google account action; check these after deployment.

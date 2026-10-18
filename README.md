@@ -1,8 +1,8 @@
 # A-Znk的blog
 
-[在线访问 A-Znk的blog](https://a-znk-blog.vercel.app/)
+[在线访问 A-Znk的blog](https://a-znk.com/)
 
-[主题笔记](https://a-znk-blog.vercel.app/topics) · [论文与研究成果](https://a-znk-blog.vercel.app/papers) · [作者](https://a-znk-blog.vercel.app/author)
+[主题笔记](https://a-znk.com/topics) · [论文与研究成果](https://a-znk.com/papers) · [作者](https://a-znk.com/author)
 
 > AI 代理请先阅读 [AGENTS.md](./AGENTS.md) 了解项目背景、设计决策与协作规范。
 

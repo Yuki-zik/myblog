@@ -47,5 +47,29 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/:path((?!googleb326e1b2b17b02a1\\.html$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "a-znk-blog.vercel.app"
+        }
+      ],
+      "destination": "https://a-znk.com/:path",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path((?!googleb326e1b2b17b02a1\\.html$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "myblog-silk-one.vercel.app"
+        }
+      ],
+      "destination": "https://a-znk.com/:path",
+      "statusCode": 301
+    }
   ]
 }
