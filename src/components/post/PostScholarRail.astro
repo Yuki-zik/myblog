@@ -344,7 +344,13 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
       const hash = window.location.hash || "";
       if (!hash) return;
 
-      const target = document.querySelector(hash);
+      let targetId;
+      try {
+        targetId = decodeURIComponent(hash.slice(1));
+      } catch {
+        return;
+      }
+      const target = document.getElementById(targetId);
       if (!(target instanceof HTMLElement) || !target.matches("[data-marginalia-bubble]")) return;
 
       target.classList.remove("is-flash");

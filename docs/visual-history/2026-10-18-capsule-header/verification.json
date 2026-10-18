@@ -1,7 +1,8 @@
 {
   "sourceBaseRevision": "c491d7e96665de58d5e9f14c145656435d4eab8c",
   "sourceFilesSha256": {
-    "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+    "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a",
+    "src/components/post/PostScholarRail.astro": "57d16f9738e1ed01acecb50ea1b600e6103fcade9a64324a9ca2fa397613bdfe"
   },
   "checks": {
     "unit": {
@@ -23,6 +24,13 @@
     "red": {
       "failed": 3,
       "log": "output/capsule-header-2026-10-18/red.log"
+    },
+    "fragmentFollowup": {
+      "redFailed": 3,
+      "greenPassed": 4,
+      "unitPassed": 118,
+      "log": "output/capsule-header-2026-10-18/hash-green-final.log",
+      "production": "pending"
     }
   },
   "production": "pending"

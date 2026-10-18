@@ -20,3 +20,7 @@
 3项新增行为测试在旧版先失败。118单测、29项顶部/搜索回归、最终20项胶囊/阅读/搜索回归及3项移动目录落点检查通过。新增验收覆盖4类drawing路由的圆角、居中及内部留白，还有两种motion偏好、320/390px和0/96px滚动时两行导航的实际边界。
 
 [稳定旧版](v0b-home-capsule.png) / [恢复后的首页胶囊](v2-home-capsule.png) / [文章](v2-reader-capsule.png) / [论文](v2-paper.png) / [手机滚动](v2-mobile-compact.png) / [320px](v2-small.png)。参数、源版本与图像hash见[captures.json](captures.json)，自动验证见[verification.json](verification.json)。正式发布记录待追加。
+
+## 中文标题链接回查
+
+顶部栏发布后，真实手机目录回查发现旧旁注监听器将编码后的中文fragment直接传入querySelector，虽然标题能跳转，但触发了脚本异常。改为解码fragment并用getElementById查找目标，仅对旁注执行原有flash。3项既有移动目录测试加入pageerror断言后先失败；修后118单测、4项目录/旁注/评论验收通过。胶囊的PR及合并CI均190/190，片段修复的最终发布检查待追加。

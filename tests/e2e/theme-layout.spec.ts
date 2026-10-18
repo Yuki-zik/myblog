@@ -1040,6 +1040,8 @@ test("article toc sidebar keeps the last section visible and the progress rail i
 
 for (const width of [390, 1024, 1240]) {
   test(`mobile article toc closes before placing its heading in view at ${width}px`, async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on("pageerror", error => pageErrors.push(error.message));
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/posts/myblog-design-manual");
     await waitForFontsSettled(page);
@@ -1056,6 +1058,7 @@ for (const width of [390, 1024, 1240]) {
     const top = (await heading.boundingBox())!.y;
     expect(top).toBeGreaterThanOrEqual(60);
     expect(top).toBeLessThanOrEqual(200);
+    expect(pageErrors).toEqual([]);
   });
 }
 
