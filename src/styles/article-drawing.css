@@ -242,6 +242,15 @@
 
 /* Use the existing bleed track so the cover never overlays long titles. */
 @media (min-width: 1420px) {
+  /* Only actual notes catch pointers; empty rail space must not shield the cover. */
+  [data-reading-design="edge"] .post-reading-rail {
+    pointer-events: none;
+  }
+
+  [data-reading-design="edge"] .post-reading-rail .post-scholar-item {
+    pointer-events: auto;
+  }
+
   [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card {
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     column-gap: clamp(2.5rem, 3vw, 3.75rem);
