@@ -2,6 +2,12 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Article spacing and floating covers — 2026-10-18
+
+[PR #17](https://github.com/Yuki-zik/myblog/pull/17) restores cover depth and breathing room, then [PR #18](https://github.com/Yuki-zik/myblog/pull/18), merge `f910599`, fixes the empty scholar rail intercepting cover hover. Wide paper clearance and the original artwork/reading tracks remain intact. Real note items retain pointer interaction.
+
+116 unit tests, 70 initial reading checks and 20 final pointer/reading checks pass. Final [PR CI](https://github.com/Yuki-zik/myblog/actions/runs/39102400338) passes all 174 E2E cases; [merge CI](https://github.com/Yuki-zik/myblog/actions/runs/39102758477) also passes all 174 cases, with the same Git tree deployed. Frontend `7150725468` and Waline `7150730089` are successful. Live hover moves the image by -6px while the body stays at 480.859375px; note targeting and reduced motion pass. The six readers, search and comment readback remain healthy. [Versioned screenshots and verification](visual-history/2026-10-18-cover-air/README.md) retain both the visual fix and the pointer defect discovered during production acceptance.
+
 ## Discover typography and proportions — 2026-10-18
 
 [PR #16](https://github.com/Yuki-zik/myblog/pull/16), merge `d26427c`, improves readable type and content grouping across home, topics, topic detail, papers index, archives, author and concept pages. Original artwork and the article/paper reading templates remain unchanged. Topic indexes use two columns from 1100px; the home research signature remains one native disclosure in normal flow.

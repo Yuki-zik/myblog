@@ -1,0 +1,127 @@
+{
+  "finalPr": 18,
+  "visualPr": 17,
+  "testedRevision": "aec3f9feda4aa3e48f126c6703ea31f6d371f81c",
+  "productionRevision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c",
+  "identicalGitTrees": true,
+  "unitTests": 116,
+  "initialTargetedE2E": 70,
+  "pointerTargetedE2E": 20,
+  "finalPrE2E": 174,
+  "prCI": "https://github.com/Yuki-zik/myblog/actions/runs/39102400338",
+  "deployments": [
+    {
+      "id": 7150730089,
+      "environment": "Production – waline",
+      "state": "success",
+      "url": "https://waline-cf3l1wi7j-qianlimaxai-5994s-projects.vercel.app",
+      "revision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c"
+    },
+    {
+      "id": 7150725468,
+      "environment": "Production – myblog",
+      "state": "success",
+      "url": "https://myblog-a3l2me730-qianlimaxai-5994s-projects.vercel.app",
+      "revision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c"
+    }
+  ],
+  "beforeHover": {
+    "paragraphTop": 480.859375,
+    "transform": "none",
+    "railPointer": "none"
+  },
+  "hover": {
+    "transform": "matrix(1, 0, 0, 1, 0, -6)",
+    "paragraphTop": 480.859375,
+    "noteReceivesPointer": true
+  },
+  "reducedMotion": {
+    "reducedTransform": "none",
+    "overflow": 0
+  },
+  "tocBeforePointerOnlyFix": {
+    "reducedMotionTransform": "none",
+    "toc": [
+      {
+        "scrollY": 900,
+        "top": 85.59375
+      },
+      {
+        "scrollY": 1600,
+        "top": 85.59375
+      }
+    ]
+  },
+  "http": {
+    "pages": [
+      {
+        "route": "/posts/paragraph-anchor-design",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+        "design": "edge",
+        "title": "段落锚点短评的最小实现",
+        "paragraphAnchors": 20,
+        "footnoteTargets": 20,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/ant-ai-coding-review",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+        "design": "edge",
+        "title": "蚂蚁 AI Coding 笔试复盘",
+        "paragraphAnchors": 21,
+        "footnoteTargets": 16,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/why-topic-first",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+        "design": "edge",
+        "title": "为什么主题页应成为博客第一入口",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/myblog-design-manual",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+        "design": "edge",
+        "title": "A-Znk的blog：设计说明书",
+        "paragraphAnchors": 36,
+        "footnoteTargets": 9,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/duap-multilingual-speech-privacy",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+        "design": "metadata",
+        "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+        "paragraphAnchors": 4,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/oxicams-carbon-dots-machine-learning",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+        "design": "metadata",
+        "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      }
+    ],
+    "searchEntries": 13,
+    "comments": {
+      "status": 200,
+      "errno": 0,
+      "count": 1
+    }
+  },
+  "mergeCI": "https://github.com/Yuki-zik/myblog/actions/runs/39102758477",
+  "mergeE2E": 174
+}

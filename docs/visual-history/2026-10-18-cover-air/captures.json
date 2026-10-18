@@ -1006,5 +1006,47 @@
     },
     "sourceRevision": "63bd4a90d85fcbd8377f9e9edf22a94c51b1999a",
     "sha256": "a89d7db4793addd0f2f093e54621a91f67a90e6106b6b65664926c6782c70dff"
+  },
+  {
+    "file": "v3-production-desktop.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "motion": "no-preference",
+    "phase": "production",
+    "sourceRevision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c",
+    "capturedAt": "2026-10-18T06:06:56.117849+00:00",
+    "sha256": "4766cfb77254ee2c5c33f70bb6358a2b03a909236611c2b77505201284e089d4"
+  },
+  {
+    "file": "v3-production-hover.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "motion": "hover",
+    "phase": "production",
+    "sourceRevision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c",
+    "capturedAt": "2026-10-18T06:07:41.735884+00:00",
+    "sha256": "8adf2b234f987b9b3fe3b8908eacaa7904fd9da8fb41d2b88dd4285a644cfb51"
+  },
+  {
+    "file": "v3-production-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "motion": "reduce",
+    "phase": "production",
+    "sourceRevision": "f9105995923d5131e7c047cc0d1afbd5aef0c61c",
+    "capturedAt": "2026-10-18T06:07:46.136842+00:00",
+    "sha256": "b66dc824b6d51dda65788e63dd7cfe9fdfc419b83e727358f0804b8b90b087af"
   }
 ]
