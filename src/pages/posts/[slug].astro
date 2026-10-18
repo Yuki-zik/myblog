@@ -9,6 +9,7 @@ import PostPager from "../../components/post/PostPager.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
 import ActionPair from "../../components/discover/ActionPair.astro";
 import MetaIcon from "../../components/ui/MetaIcon.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
 import type { TufteRailFootnote } from "../../lib/markdown/rehypeTufteFootnotes";
 import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFootnotes";
 import { resolvePostAuthor } from "../../lib/posts/author";
@@ -247,7 +248,17 @@ const structuredData = site
             </header>
             {post.data.cover ? (
               <div class="post-cover post-cover--hero">
-                <div class="post-cover-stack">
+                <a
+                  class="post-cover-stack post-cover-trigger"
+                  href={post.data.cover.src.src}
+                  aria-label={`放大封面：${post.data.cover.alt}`}
+                  aria-haspopup="dialog"
+                  aria-controls="post-image-viewer"
+                  data-image-viewer-trigger
+                  data-image-alt={post.data.cover.alt}
+                  data-image-width={post.data.cover.src.width}
+                  data-image-height={post.data.cover.src.height}
+                >
                   <Image
                     src={post.data.cover.src}
                     alt=""
@@ -267,7 +278,11 @@ const structuredData = site
                     widths={[320, 480, 640, 960]}
                     sizes="(min-width: 1420px) 440px, (min-width: 560px) 400px, 88vw"
                   />
-                </div>
+                  <span class="post-cover-zoom-hint" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M3 3l6 6m12-6-6 6M3 21l6-6m12 6-6-6" /></svg>
+                    放大
+                  </span>
+                </a>
                 {post.data.cover.credit ? (
                   <p class="post-cover-credit">{post.data.cover.credit}</p>
                 ) : null}
@@ -348,4 +363,5 @@ const structuredData = site
       </aside>
     </div>
   </div>
+  {post.data.cover && <ImageViewer />}
 </BaseLayout>

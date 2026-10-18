@@ -743,6 +743,170 @@
       });
     }
 
+    function initImageViewer() {
+      var dialog = document.querySelector("[data-image-viewer]");
+      if (!dialog || typeof dialog.showModal !== "function") return;
+      var viewport = dialog.querySelector("[data-image-viewer-viewport]");
+      var image = dialog.querySelector("[data-image-viewer-image]");
+      var imageToggle = dialog.querySelector("[data-image-viewer-image-toggle]");
+      var toggle = dialog.querySelector("[data-image-viewer-toggle]");
+      var original = dialog.querySelector("[data-image-viewer-original]");
+      var close = dialog.querySelector("[data-image-viewer-close]");
+      var caption = dialog.querySelector("[data-image-viewer-caption]");
+      var status = dialog.querySelector("[data-image-viewer-status]");
+      if (!viewport || !image || !imageToggle || !toggle || !original || !close || !caption || !status) return;
+
+      var trigger = null;
+      var savedScroll = null;
+      var loaded = false;
+      var zoomed = false;
+      var backgroundPress = null;
+      var lockedProperties = ["position", "top", "left", "right", "width", "overflow"];
+
+      // Match the existing search dialog's fixed-body lock and exact scroll restoration.
+      function lockScroll() {
+        savedScroll = {
+          x: window.scrollX, y: window.scrollY,
+          body: lockedProperties.map(function (property) { return document.body.style.getPropertyValue(property); }),
+          htmlOverflow: document.documentElement.style.overflow
+        };
+        Object.assign(document.body.style, {
+          position: "fixed", top: -savedScroll.y + "px", left: -savedScroll.x + "px",
+          right: "0", width: "100%", overflow: "hidden"
+        });
+        document.documentElement.style.overflow = "hidden";
+      }
+
+      function contentSize() {
+        var style = getComputedStyle(viewport);
+        return {
+          width: Math.max(1, viewport.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)),
+          height: Math.max(1, viewport.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom))
+        };
+      }
+
+      function sizeImage() {
+        if (!dialog.open || !loaded) return;
+        var available = contentSize();
+        var fit = Math.min(1, available.width / image.naturalWidth, available.height / image.naturalHeight);
+        var canZoom = fit < 1;
+        if (!canZoom) zoomed = false;
+        var scale = zoomed ? 1 : fit;
+        image.style.width = Math.floor(image.naturalWidth * scale) + "px";
+        image.style.height = Math.floor(image.naturalHeight * scale) + "px";
+        dialog.dataset.zoomed = String(zoomed);
+        toggle.textContent = zoomed ? "适应窗口" : "原始尺寸";
+        toggle.disabled = !canZoom;
+        imageToggle.disabled = !canZoom;
+        imageToggle.setAttribute("aria-label", zoomed ? "缩小到适应窗口" : "放大到原始尺寸");
+        status.textContent = image.naturalWidth + " × " + image.naturalHeight + " · " + Math.round(scale * 100) + "%";
+      }
+
+      function toggleSize() {
+        if (!loaded || toggle.disabled) return;
+        zoomed = !zoomed;
+        sizeImage();
+        var available = contentSize();
+        viewport.scrollTo({
+          left: zoomed ? Math.max(0, (image.naturalWidth - available.width) / 2) : 0,
+          top: zoomed ? Math.max(0, (image.naturalHeight - available.height) / 2) : 0,
+          behavior: "instant"
+        });
+      }
+
+      function imageLoaded() {
+        if (!dialog.open || !image.naturalWidth) return;
+        loaded = true;
+        dialog.dataset.imageState = "ready";
+        sizeImage();
+        image.hidden = false;
+      }
+
+      image.addEventListener("load", imageLoaded);
+      image.addEventListener("error", function () {
+        if (!dialog.open) return;
+        loaded = false;
+        image.hidden = true;
+        toggle.disabled = imageToggle.disabled = true;
+        dialog.dataset.imageState = "error";
+        status.textContent = "图片加载失败，可尝试查看原图。";
+      });
+
+      document.querySelectorAll("[data-image-viewer-trigger]").forEach(function (link) {
+        link.addEventListener("click", function (event) {
+          // Modified clicks and the no-JS path keep the real original-image link.
+          if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          if (dialog.open) return;
+          trigger = link;
+          zoomed = false;
+          loaded = false;
+          dialog.dataset.zoomed = "false";
+          dialog.dataset.imageState = "loading";
+          toggle.textContent = "原始尺寸";
+          toggle.disabled = imageToggle.disabled = true;
+          image.hidden = true;
+          image.alt = link.dataset.imageAlt || "";
+          caption.textContent = image.alt;
+          original.href = link.href;
+          status.textContent = "正在加载图片…";
+          viewport.scrollTo(0, 0);
+          lockScroll();
+          dialog.showModal();
+          close.focus({ preventScroll: true });
+          image.src = link.href;
+          if (image.complete && image.naturalWidth > 0) imageLoaded();
+        });
+      });
+
+      close.addEventListener("click", function () { dialog.close(); });
+      toggle.addEventListener("click", toggleSize);
+      imageToggle.addEventListener("click", toggleSize);
+      dialog.addEventListener("keydown", function (event) {
+        // Keep sequential focus in the viewer, including browsers that tab into chrome.
+        if (event.key === "Tab") {
+          var controls = Array.from(dialog.querySelectorAll("button:not(:disabled), a[href]")).filter(function (element) {
+            return element.getClientRects().length > 0;
+          });
+          var first = controls[0];
+          var last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus({ preventScroll: true });
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus({ preventScroll: true });
+          }
+        }
+        // Escape keeps its native default; page shortcuts stay behind the modal.
+        event.stopPropagation();
+      });
+      dialog.addEventListener("pointerdown", function (event) {
+        backgroundPress = event.target === dialog || event.target === viewport
+          ? { x: event.clientX, y: event.clientY } : null;
+      });
+      dialog.addEventListener("click", function (event) {
+        event.stopPropagation();
+        if ((event.target === dialog || event.target === viewport) && backgroundPress &&
+            Math.hypot(event.clientX - backgroundPress.x, event.clientY - backgroundPress.y) < 8) dialog.close();
+        backgroundPress = null;
+      });
+      dialog.addEventListener("close", function () {
+        loaded = false;
+        image.hidden = true;
+        image.removeAttribute("src");
+        if (savedScroll) {
+          var saved = savedScroll;
+          savedScroll = null;
+          lockedProperties.forEach(function (property, index) { document.body.style.setProperty(property, saved.body[index]); });
+          document.documentElement.style.overflow = saved.htmlOverflow;
+          window.scrollTo({ left: saved.x, top: saved.y, behavior: "instant" });
+        }
+        if (trigger && trigger.isConnected) trigger.focus({ preventScroll: true });
+      });
+      new ResizeObserver(sizeImage).observe(viewport);
+    }
+
     function initResearchSignature() {
       var signatures = document.querySelectorAll("details[data-home-research-signature]");
       if (!signatures.length) return;
@@ -766,5 +930,6 @@
     initSocialStats();
     initReadingProgress();
     initSpoilers();
+    initImageViewer();
   })();
 </script>
