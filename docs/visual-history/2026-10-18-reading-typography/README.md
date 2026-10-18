@@ -28,3 +28,9 @@
 旧版先复现2项单测与4项浏览器失败。修后118单测、24项阅读/目录/注释/大图/对比度回归通过；悬挂缩进后11项排版与阅读检查再通过。未对没有改动的运行时重复跑本地全量；精确提交CI负责整站验证。后续正式发布记录待追加。
 
 [章节前](v0-headings.png) / [章节后](v2-headings.png) / [旁注后](v2-entry.png) / [行内代码](v2-inline.png) / [320px换行](v2-small.png)。路由、主题、视口、时间与源版本见[captures.json](captures.json)，量化数据见[verification.json](verification.json)。所有版本追加保存。
+
+## 旁注列宽复核
+
+首次 PR CI 为185/186，Linux下较大的UI编号使旁注正文宽度为274.25px，低于原275px门槛。编号与正文列距从7.68px收至6px，正文宽度门槛保留；本地原阅读比例检查与5项新排版验收共6/6通过。旧的“h2不能有左padding”改为验证padding与负text-indent抵消，保持首行编号在正文边缘；320px实际文本行的对齐断言仍独立生效。
+
+[v2b旁注列距修正](v2b-entry.png)保留新的字号和原阅读宽度；本地旁注容器实测279.16px。最终源hash和首次失败证据保留在verification.json。

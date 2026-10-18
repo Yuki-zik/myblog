@@ -1925,6 +1925,9 @@ test("article reading layout keeps restrained desktop proportions", async ({
       firstH2PaddingLeft: firstH2
         ? Number.parseFloat(getComputedStyle(firstH2).paddingLeft)
         : 0,
+      firstH2TextIndent: firstH2
+        ? Number.parseFloat(getComputedStyle(firstH2).textIndent)
+        : 0,
       firstH3Counter: h3BeforeStyles?.content ?? "",
       firstH3CounterFontFamily: h3BeforeStyles?.fontFamily ?? "",
       firstH3CounterFontSize: h3BeforeStyles
@@ -1996,7 +1999,9 @@ test("article reading layout keeps restrained desktop proportions", async ({
   expect(metrics.firstH2Counter).toContain("article-h2");
   expect(metrics.firstH2CounterColor).not.toBe("rgb(47, 52, 64)");
   expect(metrics.firstH2CounterFontSize).toBeGreaterThanOrEqual(10.5);
-  expect(metrics.firstH2PaddingLeft).toBeLessThanOrEqual(2);
+  // Hanging indentation keeps the chapter marker at the paragraph edge while
+  // wrapped title lines align with the first title line (covered at 320px).
+  expect(Math.abs(metrics.firstH2PaddingLeft + metrics.firstH2TextIndent)).toBeLessThanOrEqual(2);
   expect(metrics.firstH3Counter).not.toBe("none");
   expect(metrics.firstH3CounterFontFamily).toBe(metrics.firstH2CounterFontFamily);
   expect(metrics.firstH3CounterFontSize).toBeGreaterThanOrEqual(12);

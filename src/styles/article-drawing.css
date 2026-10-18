@@ -397,6 +397,10 @@
 }
 
 /* Margin notes retain their controller-assigned positions and target links. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-footnote-row {
+  column-gap: 0.375rem;
+}
+
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-item--bubble .post-scholar-footnote-number-button {
   font-family: var(--font-ui);
   font-size: 0.9375rem;

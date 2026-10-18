@@ -1,7 +1,7 @@
 {
   "sourceBaseRevision": "246985cf1ab68a7cc429f65157ee430ef50d8b84",
   "sourceFilesSha256": {
-    "src/styles/article-drawing.css": "d31713730511b0eb6ee856c626346fe961bb19b444b9ef5fee105cdf26a2e27f",
+    "src/styles/article-drawing.css": "7432744745362c85b6b41e69ce3b6d28c40f23549f3dde4f36740f27eee65119",
     "src/lib/markdown/rehypeTufteFootnotes.ts": "d1649ba5c8cb34c9080ff42bc9f16430f66ce2586315cf32f76608167306a8f1",
     "src/content/posts/myblog-design-manual.md": "405c18ee432e14d07a6c2f99cb2d414e75d8248fb6c5d7e4570a73af0884d580"
   },
@@ -171,6 +171,20 @@
     "red": {
       "unitFailed": 2,
       "e2eFailed": 4
+    },
+    "firstPr": {
+      "runId": 39112019886,
+      "passed": 185,
+      "failed": 1,
+      "reason": "Larger UI numeral reduced the note text below the existing 275px minimum in Linux. Reduced the number-to-text gap to 6px; retained the minimum."
+    },
+    "widthFollowup": {
+      "passed": 6,
+      "log": "output/reading-typography-2026-10-18/note-width-final.log",
+      "noteWidth": {
+        "width": 279.15625,
+        "gap": "6px"
+      }
     }
   },
   "production": "pending"

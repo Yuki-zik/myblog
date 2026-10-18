@@ -268,5 +268,23 @@
       "src/lib/markdown/rehypeTufteFootnotes.ts": "d1649ba5c8cb34c9080ff42bc9f16430f66ce2586315cf32f76608167306a8f1",
       "src/content/posts/myblog-design-manual.md": "405c18ee432e14d07a6c2f99cb2d414e75d8248fb6c5d7e4570a73af0884d580"
     }
+  },
+  {
+    "file": "v2b-entry.png",
+    "route": "/posts/myblog-design-manual",
+    "theme": "light",
+    "viewport": [
+      1440,
+      960
+    ],
+    "phase": "implementation",
+    "sourceBaseRevision": "dcc2a2c0dd3c7428ddc164d69cc33a854c418695",
+    "capturedAt": "2026-10-18T08:44:12.875Z",
+    "sourceFilesSha256": {
+      "src/styles/article-drawing.css": "7432744745362c85b6b41e69ce3b6d28c40f23549f3dde4f36740f27eee65119",
+      "src/lib/markdown/rehypeTufteFootnotes.ts": "d1649ba5c8cb34c9080ff42bc9f16430f66ce2586315cf32f76608167306a8f1",
+      "src/content/posts/myblog-design-manual.md": "405c18ee432e14d07a6c2f99cb2d414e75d8248fb6c5d7e4570a73af0884d580"
+    },
+    "sha256": "c36e1d57838e352f35185d83152f94e5718026cdcae59133e1d9fdbcf77a8fd2"
   }
 ]
