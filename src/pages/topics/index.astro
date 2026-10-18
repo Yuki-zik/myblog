@@ -57,10 +57,12 @@ const topicsPageDescription =
             >
               <span class="drawing-topic-row__number">{String(index + 1).padStart(2, "0")}</span>
               <div class="drawing-topic-row__copy">
-                <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
+                <div class="drawing-topic-row__heading">
+                  <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
+                  <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+                </div>
                 <p class="drawing-topic-row__summary">{topic.data.summary}</p>
               </div>
-              <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
             </a>
           ))
         )

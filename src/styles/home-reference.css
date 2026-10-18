@@ -35,8 +35,12 @@ html[data-color-scheme="dark"] .home-reference {
 .home-reference-hero {
   position: relative;
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   width: 100%;
   min-height: max(52rem, calc(100svh - 68px));
+  padding: 2.75rem var(--home-gutter) 2rem;
   overflow: hidden;
   background: var(--home-paper);
 }
@@ -68,11 +72,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-hero__copy {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  top: 4.375rem;
-  left: var(--home-gutter);
-  width: min(36rem, calc(100% - 2 * var(--home-gutter)));
+  flex-shrink: 0;
+  width: min(36rem, 100%);
   padding-right: 1rem;
   background: linear-gradient(90deg, var(--home-paper), color-mix(in srgb, var(--home-paper) 95%, transparent) 74%, transparent);
 }
@@ -80,9 +83,9 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-hero__kicker {
   color: var(--home-code-accent);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.78125rem;
   font-weight: 400;
-  line-height: 1.7;
+  line-height: 1.6;
   letter-spacing: 0.08em;
 }
 
@@ -95,7 +98,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-hero__title {
-  margin: 1.3125rem 0 1.5rem;
+  margin: 1rem 0 1.25rem;
   color: var(--home-ink);
   font-family: var(--font-display);
   font-size: clamp(6rem, 10.2vw, 9.5rem);
@@ -114,20 +117,20 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   padding-right: 0.5rem;
   color: var(--home-ink);
   background: var(--home-paper);
-  font-size: 0.8125rem;
-  line-height: 1.8;
-  letter-spacing: 0.04em;
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
 }
 
 .home-reference-hero__description {
   width: fit-content;
-  max-width: 24rem;
+  max-width: 30rem;
   margin: 0.625rem 0 0;
   padding-right: 0.5rem;
   color: var(--home-muted);
   background: var(--home-paper);
-  font-size: 0.75rem;
-  line-height: 1.8;
+  font-size: 1.0625rem;
+  line-height: 1.7;
   text-wrap: pretty;
 }
 
@@ -137,7 +140,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   align-items: center;
   gap: 1.5rem;
   width: fit-content;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
   background: var(--home-paper);
 }
 
@@ -153,7 +156,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   border-radius: 0;
   color: var(--home-ink);
   background: transparent;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   line-height: 1.5;
   transition: color 180ms ease, border-color 180ms ease;
 }
@@ -197,13 +200,13 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   transform: translate(2px, -2px);
 }
 
-/* The complete research.ts signature remains one native disclosure. */
+/* Keep both text blocks in flow so the complete signature never covers the copy. */
 .home-reference-terminal-wrap {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  left: var(--home-gutter);
-  bottom: 2.5rem;
-  width: 20rem;
+  flex-shrink: 0;
+  width: min(25rem, 100%);
+  margin-top: auto;
 }
 
 .home-reference-terminal-wrap::after {
@@ -253,10 +256,12 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   gap: 0.75rem;
   min-height: 44px;
   margin: 0;
-  padding: 0.625rem 0.875rem;
+  padding: 0.625rem 1rem;
   border-top: 1px solid var(--drawing-accent);
   background: var(--drawing-accent);
   color: var(--drawing-on-accent);
+  font-size: 0.875rem;
+  line-height: 1.5;
   cursor: pointer;
   list-style: none;
 }
@@ -288,15 +293,15 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-terminal__filename {
   color: var(--drawing-on-accent);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   letter-spacing: 0.015em;
 }
 
 .home-reference-terminal__body {
-  padding: 0.5rem 0.875rem;
+  padding: 0.625rem 1rem;
   font-family: var(--font-mono);
-  font-size: 0.78125rem;
-  line-height: 1.65;
+  font-size: 0.96875rem;
+  line-height: 1.5;
   overflow-x: auto;
 }
 
@@ -332,18 +337,18 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   display: flex;
   flex-wrap: wrap;
   gap: 0.375rem 0.75rem;
-  margin-top: 0.875rem;
-  padding-top: 0.625rem;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
   border-top: 1px solid var(--home-soft-line);
   color: var(--home-muted);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
 .home-reference-terminal__prompt {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   color: var(--home-code-accent);
 }
 
@@ -358,14 +363,14 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   position: absolute;
   z-index: 2;
   right: var(--home-gutter);
-  bottom: 2.5rem;
+  bottom: 2rem;
   padding: 0.5rem 0.75rem;
   border-left: 3px solid var(--drawing-accent);
   border-top: 1px solid var(--home-line);
   color: var(--home-muted);
   background: var(--home-paper);
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1.7;
 }
 
@@ -395,16 +400,16 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   margin: 0;
   color: var(--home-ink);
   font-family: var(--font-ui);
-  font-size: 1.0625rem;
+  font-size: 1.75rem;
   font-weight: 600;
-  letter-spacing: 0.025em;
+  letter-spacing: -0.025em;
   line-height: 1.4;
 }
 
 .home-reference-section-index {
   color: var(--home-code-accent);
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: 0.06em;
 }
@@ -418,7 +423,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-section-link {
   color: var(--home-muted);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .home-reference-domain-nav__button {
@@ -486,13 +491,13 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-domain-card {
-  min-height: 11.5rem;
+  min-height: 12.5rem;
   padding: 1rem 0;
   border-bottom: 1px solid var(--home-soft-line);
 }
 
 .home-reference-domain-card__head {
-  margin-bottom: 0.625rem;
+  margin-bottom: 0.75rem;
 }
 
 .home-reference-domain-card__glyph {
@@ -513,10 +518,10 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-domain-card h3 {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.625rem;
   color: var(--home-ink);
   font-family: var(--font-ui);
-  font-size: 1rem;
+  font-size: 1.375rem;
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.025em;
@@ -528,17 +533,17 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-domain-card p {
   color: var(--home-muted);
-  font-size: 0.8125rem;
-  line-height: 1.65;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 .home-reference-domain-card__meta {
   margin-top: auto;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
 }
 
 .home-reference-domain-card .home-reference-domain-card__meta {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .home-reference-publishing-grid {
@@ -597,6 +602,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-featured-card__eyebrow {
   color: var(--home-code-accent);
   font-family: var(--font-mono);
+  font-size: 0.875rem;
 }
 
 .home-reference-featured-card__eyebrow::before {
@@ -611,7 +617,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   margin: 0;
   color: var(--home-ink);
   font-family: var(--font-ui);
-  font-size: clamp(1.5rem, 2.1vw, 1.875rem);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: -0.03em;
@@ -625,7 +631,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-featured-card__summary {
   max-width: 36rem;
   color: var(--home-muted);
-  font-size: 0.9375rem;
+  font-size: 1.125rem;
   line-height: 1.8;
 }
 
@@ -644,6 +650,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 .home-reference-recent-item__date {
   color: var(--home-muted);
   font-family: var(--font-mono);
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -654,6 +661,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   background: var(--drawing-accent-wash);
   color: var(--home-code-accent);
   font-family: var(--font-mono);
+  font-size: 0.8125rem;
   transition: color 180ms ease;
 }
 
@@ -665,7 +673,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   margin: 0;
   color: var(--home-ink);
   font-family: var(--font-ui);
-  font-size: 1rem;
+  font-size: 1.3125rem;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.02em;
@@ -805,30 +813,10 @@ body[data-header-variant="drawing"] #back-to-top {
   }
 }
 
-/* Tablet disclosure height must participate in the cover's natural height. */
+/* The same flowing left column also owns an expanded tablet disclosure. */
 @media (min-width: 768px) and (max-width: 1023px) {
   .home-reference-hero {
-    display: flex;
-    flex-direction: column;
     gap: 2rem;
-    padding: 4.375rem var(--home-gutter) 2.5rem;
-  }
-
-  .home-reference-hero__copy {
-    position: relative;
-    top: auto;
-    left: auto;
-    flex-shrink: 0;
-    width: min(36rem, 100%);
-  }
-
-  .home-reference-terminal-wrap {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    flex-shrink: 0;
-    max-width: 100%;
-    margin-top: auto;
   }
 }
 
@@ -843,13 +831,20 @@ body[data-header-variant="drawing"] #back-to-top {
   }
 
   .home-reference-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto clamp(16rem, 60vw, 22rem) auto auto;
+    gap: 0;
     min-height: 0;
-    padding-top: 2.25rem;
+    padding: 2.25rem 0 0;
   }
 
   .home-reference-hero__art {
-    inset: 11.875rem 0 auto;
-    height: 26.875rem;
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    inset: auto;
+    height: 100%;
     object-position: 62% 50%;
   }
 
@@ -858,9 +853,8 @@ body[data-header-variant="drawing"] #back-to-top {
   }
 
   .home-reference-hero__copy {
-    position: relative;
-    top: auto;
-    left: auto;
+    grid-column: 1;
+    grid-row: 1;
     width: auto;
     max-width: none;
     margin-inline: var(--home-gutter);
@@ -870,7 +864,7 @@ body[data-header-variant="drawing"] #back-to-top {
 
   .home-reference-hero__kicker {
     gap: 0.5rem;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     letter-spacing: 0.035em;
   }
 
@@ -884,32 +878,57 @@ body[data-header-variant="drawing"] #back-to-top {
   }
 
   .home-reference-hero__topics {
-    font-size: 0.75rem;
+    font-size: 1.0625rem;
   }
 
   .home-reference-hero__description {
-    max-width: 20rem;
+    max-width: 30rem;
+    font-size: 1rem;
+  }
+
+  .home-reference-hero__actions {
+    gap: 0.5rem 1rem;
+  }
+
+  .home-reference-hero__button {
+    gap: 0.5rem;
+  }
+
+  .home-reference-hero__arrow {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .home-reference-terminal-wrap {
-    position: relative;
-    left: auto;
-    bottom: auto;
+    grid-column: 1;
+    grid-row: 3;
     width: calc(100% - 2 * var(--home-gutter));
-    max-width: 20rem;
-    margin: clamp(13rem, 55vw, 18rem) var(--home-gutter) 1.25rem;
+    max-width: 25rem;
+    margin: 0 var(--home-gutter) 1.25rem;
   }
 
   .home-reference-terminal-wrap::after {
     display: none;
   }
 
+  .home-reference-terminal__body {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
   .home-reference-hero__caption {
     position: relative;
+    grid-column: 1;
+    grid-row: 4;
     right: auto;
     bottom: auto;
     width: fit-content;
     margin: 0 var(--home-gutter) 1.5rem;
+  }
+
+  .home-reference-section-head h2 {
+    gap: 0.75rem;
+    font-size: 1.5rem;
   }
 
   .home-reference-domain-toolbar {

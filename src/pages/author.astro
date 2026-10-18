@@ -81,7 +81,7 @@ const authorContactEntries = [
   authorMeta={SITE_AUTHOR_PROFILE.name}
   runtime="discover"
 >
-  <DiscoverShell>
+  <DiscoverShell bodyClass="discover-editorial">
     <PageHero
       variant="split"
       kicker="About / Author"
@@ -105,7 +105,7 @@ const authorContactEntries = [
       ]}
     >
       <div slot="aside">
-        <div class="discover-hero__panel-copy">
+        <div class="discover-hero__panel-copy author-profile-summary">
           <p class="discover-hero__panel-label">Mission</p>
           {SITE_AUTHOR_PROFILE.avatar ? (
             <img
@@ -144,7 +144,6 @@ const authorContactEntries = [
       <SectionHead
         kicker="Research"
         title="研究 / 技术方向"
-        description="围绕系统能力、行为控制与工程化闭环展开，而不是把模型能力停留在单点演示。"
         countLabel={`${SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0} tracks`}
       />
       <div class="discover-entity-grid" data-ux-stagger>
@@ -167,7 +166,6 @@ const authorContactEntries = [
       <SectionHead
         kicker="Practice"
         title="项目 / 实践"
-        description="只保留能体现方法与落地能力的实践，不写空泛的能力陈述。"
         countLabel={`${SITE_AUTHOR_PROFILE.practiceHighlights?.length ?? 0} items`}
       />
       <div class="discover-stream-list" data-ux-stagger>
@@ -187,7 +185,6 @@ const authorContactEntries = [
       <SectionHead
         kicker="Lens"
         title="当前关注与博客定位"
-        description="研究问题、工程方法和写作范围保持同一条主线，避免作者页与博客内容脱节。"
       />
       <div class="discover-mini-grid" data-ux-stagger>
         <article class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
@@ -247,9 +244,9 @@ const authorContactEntries = [
                 </span>
 
                 <span class="author-social-copy grid min-w-0 gap-[0.18rem]">
-                  <span class="author-social-name font-display text-[1rem] font-semibold tracking-[-0.02em]">{network.label}</span>
+                  <span class="author-social-name font-display text-[1.125rem] font-semibold tracking-[-0.02em]">{network.label}</span>
                   {network.description ? (
-                    <span class="author-social-description text-[0.82rem] leading-[1.55]">{network.description}</span>
+                    <span class="author-social-description text-[0.9375rem] leading-[1.55]">{network.description}</span>
                   ) : null}
                 </span>
 
@@ -258,7 +255,7 @@ const authorContactEntries = [
                     {network.statValue !== undefined ? network.statValue : network.statValueFallback ?? "--"}
                   </strong>
                   {network.statLabel ? (
-                    <span class="text-[0.82rem]" data-social-label>
+                    <span class="text-sm" data-social-label>
                       {network.statLabel}
                     </span>
                   ) : null}

@@ -1,0 +1,1135 @@
+--- a/src/pages/author.astro
++++ b/src/pages/author.astro
+@@ -81,7 +81,7 @@
+   authorMeta={SITE_AUTHOR_PROFILE.name}
+   runtime="discover"
+ >
+-  <DiscoverShell>
++  <DiscoverShell bodyClass="discover-editorial">
+     <PageHero
+       variant="split"
+       kicker="About / Author"
+@@ -105,7 +105,7 @@
+       ]}
+     >
+       <div slot="aside">
+-        <div class="discover-hero__panel-copy">
++        <div class="discover-hero__panel-copy author-profile-summary">
+           <p class="discover-hero__panel-label">Mission</p>
+           {SITE_AUTHOR_PROFILE.avatar ? (
+             <img
+@@ -144,7 +144,6 @@
+       <SectionHead
+         kicker="Research"
+         title="研究 / 技术方向"
+-        description="围绕系统能力、行为控制与工程化闭环展开，而不是把模型能力停留在单点演示。"
+         countLabel={`${SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0} tracks`}
+       />
+       <div class="discover-entity-grid" data-ux-stagger>
+@@ -167,7 +166,6 @@
+       <SectionHead
+         kicker="Practice"
+         title="项目 / 实践"
+-        description="只保留能体现方法与落地能力的实践，不写空泛的能力陈述。"
+         countLabel={`${SITE_AUTHOR_PROFILE.practiceHighlights?.length ?? 0} items`}
+       />
+       <div class="discover-stream-list" data-ux-stagger>
+@@ -187,7 +185,6 @@
+       <SectionHead
+         kicker="Lens"
+         title="当前关注与博客定位"
+-        description="研究问题、工程方法和写作范围保持同一条主线，避免作者页与博客内容脱节。"
+       />
+       <div class="discover-mini-grid" data-ux-stagger>
+         <article class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+@@ -247,9 +244,9 @@
+                 </span>
+ 
+                 <span class="author-social-copy grid min-w-0 gap-[0.18rem]">
+-                  <span class="author-social-name font-display text-[1rem] font-semibold tracking-[-0.02em]">{network.label}</span>
++                  <span class="author-social-name font-display text-[1.125rem] font-semibold tracking-[-0.02em]">{network.label}</span>
+                   {network.description ? (
+-                    <span class="author-social-description text-[0.82rem] leading-[1.55]">{network.description}</span>
++                    <span class="author-social-description text-[0.9375rem] leading-[1.55]">{network.description}</span>
+                   ) : null}
+                 </span>
+ 
+@@ -258,7 +255,7 @@
+                     {network.statValue !== undefined ? network.statValue : network.statValueFallback ?? "--"}
+                   </strong>
+                   {network.statLabel ? (
+-                    <span class="text-[0.82rem]" data-social-label>
++                    <span class="text-sm" data-social-label>
+                       {network.statLabel}
+                     </span>
+                   ) : null}
+--- a/src/pages/concepts/[slug].astro
++++ b/src/pages/concepts/[slug].astro
+@@ -64,7 +64,7 @@
+   openGraphImage={`/og/concepts/${concept.id}.png`}
+   structuredData={structuredData}
+ >
+-  <DiscoverShell>
++  <DiscoverShell bodyClass="discover-editorial">
+     <PageHero
+       variant="split"
+       kicker="Discover / Concept"
+@@ -94,8 +94,7 @@
+     >
+       <div slot="aside">
+         <div class="discover-hero__panel-copy">
+-          <p class="discover-hero__panel-label">Definition</p>
+-          <p>{concept.data.summary}</p>
++          <p class="discover-hero__panel-label">关联索引</p>
+         </div>
+         <div class="discover-hero__panel-stats">
+           <div class="discover-hero__panel-stat">
+@@ -122,40 +121,23 @@
+       <SectionHead
+         kicker="Definition"
+         title="概念说明"
+-        description="概念页比 topic detail 更轻，但仍使用相同的 poster hero、surface 与 section 节奏。"
+       />
+       <div class="discover-surface discover-rich">
+         <Content />
+       </div>
+     </section>
+ 
+-    {
+-      (concept.data.tags?.length ?? 0) > 0 ? (
+-        <section class="discover-section">
+-          <SectionHead
+-            kicker="Tags"
+-            title="概念标签"
+-            description="标签继续保留在概念详情中，但不再以裸 pill 列表漂浮在页面里。"
+-            countLabel={`${concept.data.tags?.length ?? 0} tags`}
+-          />
+-          <div class="discover-mini-grid" data-ux-stagger>
+-            {concept.data.tags?.map((tag) => (
+-              <div class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+-                <span class="discover-mini-card__meta">Tag</span>
+-                <h3>{tag}</h3>
+-                <p>作为概念索引标签，用来帮助读者从不同文章里反向识别这一概念。</p>
+-              </div>
+-            ))}
+-          </div>
+-        </section>
+-      ) : null
+-    }
++    {concept.data.tags?.length ? (
++      <div class="discover-concept-tags">
++        <h2>概念标签</h2>
++        <ul>{concept.data.tags.map((tag) => <li>{tag}</li>)}</ul>
++      </div>
++    ) : null}
+ 
+     <section class="discover-section" data-concept-posts>
+       <SectionHead
+         kicker="Posts"
+         title="引用它的文章"
+-        description="概念页的核心仍然是反向追踪：从概念返回到引用它的文章与上下文。"
+         countLabel={`${referencedPosts.length} posts`}
+       />
+       {
+@@ -173,7 +155,6 @@
+       <SectionHead
+         kicker="Topics"
+         title="引用它的主题"
+-        description="这里直接从真实引用该概念的文章 topics 反推主题，而不是再依赖 entryPosts 的间接猜测。"
+         countLabel={`${referencedTopics.length} topics`}
+       />
+       {
+--- a/src/pages/topics/index.astro
++++ b/src/pages/topics/index.astro
+@@ -57,10 +57,12 @@
+             >
+               <span class="drawing-topic-row__number">{String(index + 1).padStart(2, "0")}</span>
+               <div class="drawing-topic-row__copy">
+-                <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
++                <div class="drawing-topic-row__heading">
++                  <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
++                  <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
++                </div>
+                 <p class="drawing-topic-row__summary">{topic.data.summary}</p>
+               </div>
+-              <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+             </a>
+           ))
+         )
+--- a/src/styles/discover.css
++++ b/src/styles/discover.css
+@@ -642,3 +642,99 @@
+     font-size: 1rem;
+   }
+ }
++
++
++/* Author/concept editorial proportions. The drawing and reading shells keep their own scale. */
++.discover-page__body.discover-editorial {
++  width: calc(100% - 80px);
++  max-width: 80rem;
++  gap: 3rem;
++  padding: 2.5rem 0 0;
++}
++
++.discover-editorial .discover-hero__title {
++  font-size: clamp(2.75rem, 4.5vw, 4rem);
++  line-height: 1.12;
++}
++
++.discover-editorial .discover-hero__description {
++  max-width: 36rem;
++  font-size: 1.1875rem;
++  line-height: 1.8;
++}
++
++.discover-editorial .discover-hero__copy { gap: 1.25rem; }
++.discover-editorial .discover-action { font-size: 1rem; line-height: 1.4; }
++.discover-editorial .discover-hero__panel { padding: 1.5rem; }
++.discover-editorial .discover-hero__panel-copy { margin-bottom: 1rem; }
++.discover-editorial .discover-hero__panel-label { font-size: 0.875rem; }
++.discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
++.discover-editorial .discover-hero__panel-stat { padding: 0.75rem 0.5rem; }
++.discover-editorial .discover-hero__panel-stat strong { font-size: 1.5rem; }
++.discover-editorial .discover-hero__panel-stat span { font-size: 0.875rem; line-height: 1.5; }
++
++.discover-editorial .author-profile-summary {
++  display: grid;
++  grid-template-columns: 88px minmax(0, 1fr);
++  gap: 0.75rem 1rem;
++}
++.discover-editorial .author-profile-summary .discover-hero__panel-label { grid-column: 1 / -1; margin: 0; }
++.discover-editorial .author-avatar { grid-column: 1; grid-row: 2 / 4; width: 88px; }
++.discover-editorial .author-profile-summary p:not(.discover-hero__panel-label) { grid-column: 2; margin: 0; }
++
++.discover-editorial .discover-entity-grid,
++.discover-editorial .discover-mini-grid {
++  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr));
++  gap: 1.5rem;
++}
++.discover-editorial .discover-entity-card,
++.discover-editorial .discover-mini-card { padding: 1.5rem; gap: 0.875rem; align-content: start; }
++.discover-editorial .discover-entity-card h3,
++.discover-editorial .discover-mini-card h3,
++.discover-editorial .discover-stream-item__title { font-size: 1.5rem; line-height: 1.4; }
++.discover-editorial .discover-entity-card p,
++.discover-editorial .discover-mini-card p,
++.discover-editorial .discover-stream-item__summary,
++.discover-editorial .discover-section-head__copy > p:last-child { font-size: 1.0625rem; line-height: 1.8; }
++.discover-editorial .discover-section-head__count,
++.discover-editorial .discover-section-head__link,
++.discover-editorial .discover-entity-card__meta,
++.discover-editorial .discover-mini-card__meta,
++.discover-editorial .discover-stream-item__eyebrow { font-size: 0.875rem; }
++.discover-editorial .discover-section-head h2 { font-size: clamp(1.75rem, 2.2vw, 2rem); line-height: 1.3; }
++.discover-editorial .discover-rich { font-size: 1.125rem; padding: 1.5rem; }
++.discover-editorial .discover-rich > :first-child { margin-top: 0; }
++.discover-editorial .discover-rich > :last-child { margin-bottom: 0; }
++.discover-editorial .discover-rich code { font-size: 0.95em; }
++.discover-editorial .post-card-title { max-width: none; font-size: 1.625rem; line-height: 1.35; }
++.discover-editorial .post-card-summary { font-size: 1.0625rem; line-height: 1.8; }
++.discover-editorial .post-card-title a,
++.discover-editorial .post-card-summary { display: block; -webkit-line-clamp: unset; overflow: visible; }
++.discover-editorial .post-card-meta-row { font-size: 0.875rem; }
++.discover-editorial .post-card-stat { font-size: 0.875rem; }
++
++.discover-concept-tags { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.5rem; margin-top: -1.5rem; }
++.discover-concept-tags h2 { margin: 0; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
++.discover-concept-tags ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
++.discover-concept-tags li { padding-block: 0.25rem; font-size: 1rem; color: var(--text-primary); }
++
++@media (min-width: 1025px) {
++  .discover-editorial .discover-hero--split .discover-hero__copy { grid-column: span 7; }
++  .discover-editorial .discover-hero--split .discover-hero__panel { grid-column: span 5; }
++}
++
++@media (max-width: 767px) {
++  .discover-page__body.discover-editorial { width: calc(100% - 32px); padding-top: 1.75rem; gap: 2.5rem; }
++  .discover-editorial .discover-hero__title { font-size: 2.5rem; }
++  .discover-editorial .discover-hero__description { font-size: 1.0625rem; }
++  .discover-editorial .discover-hero__panel { padding: 1rem; }
++  .discover-editorial .discover-hero__panel-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
++  .discover-editorial .discover-entity-card,
++  .discover-editorial .discover-mini-card,
++  .discover-editorial .discover-rich { padding: 1.125rem; }
++  .discover-editorial .discover-rich { font-size: 1.0625rem; }
++  .discover-editorial .post-card-title { font-size: 1.5rem; }
++  .discover-editorial .discover-section-head { gap: 0.75rem; }
++  .discover-editorial .author-profile-summary { grid-template-columns: 64px minmax(0, 1fr); gap: 0.75rem; }
++  .discover-editorial .author-avatar { width: 64px; }
++}
+--- a/src/styles/drawing-index.css
++++ b/src/styles/drawing-index.css
+@@ -13,11 +13,11 @@
+ .drawing-index__body {
+   display: flex;
+   flex-direction: column;
+-  gap: 2rem;
++  gap: 1.5rem;
+   width: calc(100% - 80px);
+   max-width: 80rem;
+   margin: 0 auto;
+-  padding: 2rem 0 4rem;
++  padding: 1.5rem 0 4rem;
+ }
+ 
+ .drawing-index-header {
+@@ -38,10 +38,10 @@
+ }
+ 
+ .drawing-index-kicker {
+-  margin: 0 0 1rem;
++  margin: 0 0 0.75rem;
+   color: var(--drawing-accent-ink);
+   font-family: var(--font-mono);
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+   letter-spacing: 0.06em;
+   line-height: 1.6;
+   text-transform: uppercase;
+@@ -58,7 +58,7 @@
+   min-width: 0;
+   margin: 0;
+   font-family: var(--font-ui);
+-  font-size: clamp(2rem, 4vw, 3.5rem);
++  font-size: clamp(2rem, 3.5vw, 3rem);
+   font-weight: 600;
+   line-height: 1.15;
+   letter-spacing: -0.045em;
+@@ -73,7 +73,7 @@
+   margin: 0;
+   color: var(--text-secondary);
+   white-space: nowrap;
+-  font-size: 0.8125rem;
++  font-size: 0.875rem;
+ }
+ 
+ .drawing-index-total strong {
+@@ -97,8 +97,8 @@
+   max-width: 48rem;
+   margin: 0;
+   color: var(--text-secondary);
+-  font-size: 1rem;
+-  line-height: 1.8;
++  font-size: 1.125rem;
++  line-height: 1.7;
+ }
+ 
+ .drawing-index-links {
+@@ -113,7 +113,7 @@
+   align-items: center;
+   min-height: 44px;
+   color: var(--drawing-accent-ink);
+-  font-size: 0.875rem;
++  font-size: 1rem;
+   text-decoration: underline;
+   text-underline-offset: 0.35em;
+   text-decoration-thickness: 1px;
+@@ -126,10 +126,10 @@
+ 
+ .drawing-index.discover-page .drawing-topic-row {
+   display: grid;
+-  grid-template-columns: 3.5rem minmax(0, 1fr) 6rem;
+-  align-items: center;
+-  gap: 1.5rem;
+-  min-height: 7.5rem;
++  grid-template-columns: 3rem minmax(0, 1fr);
++  align-items: start;
++  gap: 1.25rem;
++  min-height: 0;
+   padding: 1.25rem 0;
+   border: 0;
+   border-bottom: 1px solid var(--border-default);
+@@ -147,7 +147,7 @@
+ 
+ .drawing-topic-row__number {
+   align-self: start;
+-  padding-top: 0.2rem;
++  padding-top: 0.3rem;
+   color: var(--drawing-accent-ink);
+   font-family: var(--font-mono);
+   font-size: 1.25rem;
+@@ -156,33 +156,39 @@
+ 
+ .drawing-topic-row__copy {
+   display: grid;
+-  grid-template-columns: minmax(13rem, 20rem) minmax(0, 1fr);
++  gap: 0.5rem;
++  min-width: 0;
++}
++
++.drawing-topic-row__heading {
++  display: flex;
++  flex-wrap: wrap;
+   align-items: baseline;
+-  gap: 2rem;
+-  min-width: 0;
++  gap: 0.375rem 1.25rem;
+ }
+ 
+ .drawing-index.discover-page .drawing-topic-row__title {
+   margin: 0;
+   font-family: var(--font-ui);
+-  font-size: 1.375rem;
++  font-size: 1.875rem;
+   font-weight: 550;
+-  line-height: 1.4;
++  line-height: 1.3;
+   letter-spacing: -0.025em;
+ }
+ 
+ .drawing-index.discover-page .drawing-topic-row__summary {
++  max-width: 52rem;
+   margin: 0;
+   color: var(--text-secondary);
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.125rem;
++  line-height: 1.7;
+ }
+ 
+ .drawing-topic-row__count {
+-  justify-self: end;
++  flex-shrink: 0;
+   color: var(--text-secondary);
+   font-family: var(--font-mono);
+-  font-size: 0.8125rem;
++  font-size: 0.875rem;
+ }
+ 
+ .drawing-index.discover-page .drawing-topic-row:hover .drawing-topic-row__title {
+@@ -200,17 +206,17 @@
+   padding-left: 0.75rem;
+   border-left: 3px solid var(--drawing-accent);
+   font-family: var(--font-ui);
+-  font-size: 1.125rem;
++  font-size: 1.25rem;
+   font-weight: 550;
+   line-height: 1.5;
+ }
+ 
+ .drawing-index.discover-page .post-card {
+-  grid-template-columns: minmax(0, 32%) minmax(0, 1fr);
++  grid-template-columns: minmax(0, 28%) minmax(0, 1fr);
+   align-items: start;
+-  gap: 1rem;
++  gap: 1.5rem;
+   min-width: 0;
+-  padding: 0.5rem 0 1.5rem;
++  padding: 0.5rem 0 1.75rem;
+   border: 0;
+   border-bottom: 1px solid var(--border-default);
+   border-radius: 0;
+@@ -226,15 +232,23 @@
+ .drawing-index.discover-page .post-card-body {
+   min-width: 0;
+   padding: 0;
+-  gap: 0.75rem;
++  gap: 0.625rem;
+   align-content: start;
+ }
+ 
+ .drawing-index.discover-page .post-card-title {
+   max-width: none;
+   font-family: var(--font-ui);
+-  font-size: 1.25rem;
+-  line-height: 1.45;
++  font-size: 1.625rem;
++  line-height: 1.4;
++  letter-spacing: -0.025em;
++}
++
++.drawing-index.discover-page .post-card-title a,
++.drawing-index.discover-page .post-card-summary {
++  display: block;
++  -webkit-line-clamp: unset;
++  overflow: visible;
+ }
+ 
+ .drawing-index.discover-page .post-cover--card,
+@@ -245,11 +259,19 @@
+ 
+ .drawing-index.discover-page .post-card-cover-link {
+   align-self: start;
++  padding: 0;
+ }
+ 
+ .drawing-index.discover-page .post-card-summary {
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.75;
++}
++
++.drawing-index.discover-page .post-card-meta-row,
++.drawing-index.discover-page .post-card-stat,
++.drawing-index.discover-page .post-card-more,
++.drawing-index.discover-page .post-card-topics a {
++  font-size: 0.875rem;
+ }
+ 
+ .drawing-index.discover-page .post-card-title a:hover,
+@@ -283,7 +305,7 @@
+   box-shadow: none;
+   color: var(--text-secondary);
+   font-family: var(--font-ui);
+-  font-size: 1rem;
++  font-size: 1.0625rem;
+   line-height: 1.85;
+ }
+ 
+@@ -299,6 +321,22 @@
+ .drawing-index.discover-page .drawing-related-link:hover {
+   border-bottom-color: var(--drawing-accent);
+   box-shadow: none;
++}
++
++.drawing-index.discover-page .drawing-related-grid {
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: 1.5rem;
++}
++
++.drawing-index.discover-page .drawing-related-link h3 {
++  font-family: var(--font-ui);
++  font-size: 1.375rem;
++  line-height: 1.4;
++}
++
++.drawing-index.discover-page .drawing-related-link p {
++  font-size: 1.0625rem;
++  line-height: 1.75;
+ }
+ 
+ .drawing-index.discover-page .paper-year-group {
+@@ -315,11 +353,13 @@
+ 
+ .drawing-index.discover-page .paper-year-heading span {
+   color: var(--text-secondary);
++  font-size: 0.8125rem;
++  letter-spacing: 0.02em;
+ }
+ 
+ .drawing-index.discover-page .paper-index-row {
+   grid-template-columns: minmax(0, 1fr);
+-  gap: 1rem;
++  gap: 0.75rem;
+   padding: 0 0 2rem;
+   border-color: var(--border-default);
+ }
+@@ -327,9 +367,9 @@
+ .drawing-index.discover-page .paper-index-row__main h3 {
+   max-width: 56rem;
+   font-family: var(--font-ui);
+-  font-size: clamp(1.25rem, 2.15vw, 1.75rem);
++  font-size: 1.875rem;
+   font-weight: 500;
+-  line-height: 1.4;
++  line-height: 1.35;
+   letter-spacing: -0.02em;
+ }
+ 
+@@ -338,12 +378,22 @@
+   color: var(--text-secondary);
+ }
+ 
++.drawing-index.discover-page .paper-index-row__authors {
++  font-size: 1rem;
++  line-height: 1.65;
++}
++
++.drawing-index.discover-page .paper-index-row__meta {
++  font-size: 0.875rem;
++  letter-spacing: 0.025em;
++}
++
+ .drawing-index.discover-page .paper-index-row__summary {
+   max-width: 52rem;
+   color: var(--text-secondary);
+   font-family: var(--font-ui);
+-  font-size: 0.9375rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.75;
+ }
+ 
+ .drawing-index.discover-page .paper-status {
+@@ -351,12 +401,14 @@
+   border-radius: 0;
+   background: var(--drawing-accent-wash);
+   color: var(--drawing-accent-ink);
++  font-size: 0.8125rem;
+ }
+ 
+ .drawing-index.discover-page .paper-index-row__resources {
+   justify-content: flex-start;
+   flex-wrap: wrap;
+   gap: 1.25rem;
++  max-width: none;
+ }
+ 
+ .drawing-index.discover-page .paper-resource-link {
+@@ -367,7 +419,7 @@
+   padding: 0.5rem 0;
+   background: none;
+   color: var(--drawing-accent-ink);
+-  font-size: 0.8125rem;
++  font-size: 1rem;
+   line-height: 1.5;
+ }
+ 
+@@ -402,7 +454,13 @@
+ }
+ 
+ .drawing-index.discover-page .archive-post-link {
++  grid-template-columns: 11rem minmax(0, 1fr);
++  gap: 1.5rem;
+   padding: 1.25rem 0;
++}
++
++.drawing-index.discover-page .archive-grid {
++  grid-template-columns: 1fr;
+ }
+ 
+ .drawing-index.discover-page .archive-post-media {
+@@ -416,7 +474,27 @@
+ 
+ .drawing-index.discover-page .archive-post-content h3 {
+   font-family: var(--font-ui);
++  font-size: 1.625rem;
+   font-weight: 550;
++  line-height: 1.4;
++  letter-spacing: -0.025em;
++}
++
++.drawing-index.discover-page .archive-post-content {
++  gap: 0.625rem;
++  align-content: start;
++}
++
++.drawing-index.discover-page .archive-post-meta,
++.drawing-index.discover-page .archive-post-kicker,
++.drawing-index.discover-page .archive-month-label {
++  font-size: 0.875rem;
++}
++
++.drawing-index.discover-page .archive-post-summary {
++  max-width: 52rem;
++  font-size: 1.0625rem;
++  line-height: 1.75;
+ }
+ 
+ .drawing-index.discover-page .archive-post-link:hover {
+@@ -454,9 +532,15 @@
+   color: var(--drawing-accent-ink);
+ }
+ 
++@media (min-width: 601px) and (max-width: 1100px) {
++  .drawing-index.discover-page .discover-post-grid { grid-template-columns: 1fr; }
++  .drawing-index.discover-page .post-card { grid-template-columns: minmax(0, 22%) minmax(0, 1fr); }
++}
++
+ @media (max-width: 900px) {
+   .drawing-index__body { width: calc(100% - 40px); }
+-  .drawing-topic-row__copy { grid-template-columns: 1fr; gap: 0.5rem; }
++  .drawing-index.discover-page .paper-year-group { grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1.5rem; }
++  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.625rem; }
+ }
+ 
+ @media (max-width: 600px) {
+@@ -467,18 +551,27 @@
+   .drawing-index-total { gap: 0.5rem; }
+   .drawing-index-total strong { font-size: 1.25rem; }
+   .drawing-index-header__context { margin-top: 0.75rem; gap: 0.25rem; }
+-  .drawing-index-description { font-size: 0.9375rem; }
++  .drawing-index-description { font-size: 1rem; }
+   .drawing-index.discover-page .drawing-topic-row { grid-template-columns: 2rem minmax(0, 1fr); gap: 0.5rem 0.75rem; min-height: 0; }
+-  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.125rem; }
+-  .drawing-topic-row__count { grid-column: 2; justify-self: start; }
++  .drawing-topic-row__heading { gap: 0.375rem 1rem; }
++  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.375rem; }
++  .drawing-index.discover-page .drawing-topic-row__summary { font-size: 1rem; }
++  .drawing-topic-row__number { padding-top: 0.1rem; font-size: 1rem; }
++  .drawing-index.discover-page .drawing-related-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+   .drawing-index.discover-page .paper-year-group { grid-template-columns: 1fr; gap: 0.75rem; }
+   .drawing-index.discover-page .paper-year-heading { display: flex; align-items: baseline; gap: 1rem; padding-top: 0; }
+-  .drawing-index.discover-page .post-card-title { font-size: 1.25rem; }
+-  .drawing-index.discover-page .post-card { grid-template-columns: 1fr; }
+-  .drawing-index.discover-page .post-card-cover-link { width: min(100%, 12rem); }
+-  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.25rem; overflow-wrap: anywhere; }
++  .drawing-index.discover-page .post-card-title { font-size: 1.5rem; }
++  .drawing-index.discover-page .post-card { grid-template-columns: 1fr; gap: 1rem; }
++  .drawing-index.discover-page .post-card-cover-link { width: min(100%, 11rem); }
++  .drawing-index.discover-page .post-card-summary,
++  .drawing-index.discover-page .paper-index-row__summary,
++  .drawing-index.discover-page .archive-post-summary { font-size: 1rem; }
++  .drawing-index.discover-page .paper-index-row__main h3 { font-size: 1.375rem; overflow-wrap: anywhere; }
+   .drawing-index.discover-page .paper-index-row__resources { gap: 1rem; }
+   .drawing-index.discover-page .paper-index-row__authors { overflow-wrap: anywhere; }
++  .drawing-index.discover-page .archive-post-link { grid-template-columns: 1fr; gap: 1rem; }
++  .drawing-index.discover-page .archive-post-media { width: min(100%, 9rem); }
++  .drawing-index.discover-page .archive-post-content h3 { font-size: 1.5rem; }
+ }
+ 
+ @media (prefers-reduced-motion: reduce) {
+--- a/src/styles/home-reference.css
++++ b/src/styles/home-reference.css
+@@ -35,8 +35,12 @@
+ .home-reference-hero {
+   position: relative;
+   isolation: isolate;
++  display: flex;
++  flex-direction: column;
++  gap: 1.5rem;
+   width: 100%;
+   min-height: max(52rem, calc(100svh - 68px));
++  padding: 2.75rem var(--home-gutter) 2rem;
+   overflow: hidden;
+   background: var(--home-paper);
+ }
+@@ -68,11 +72,10 @@
+ }
+ 
+ .home-reference-hero__copy {
+-  position: absolute;
++  position: relative;
+   z-index: 2;
+-  top: 4.375rem;
+-  left: var(--home-gutter);
+-  width: min(36rem, calc(100% - 2 * var(--home-gutter)));
++  flex-shrink: 0;
++  width: min(36rem, 100%);
+   padding-right: 1rem;
+   background: linear-gradient(90deg, var(--home-paper), color-mix(in srgb, var(--home-paper) 95%, transparent) 74%, transparent);
+ }
+@@ -80,9 +83,9 @@
+ .home-reference-hero__kicker {
+   color: var(--home-code-accent);
+   font-family: var(--font-mono);
+-  font-size: 0.6875rem;
++  font-size: 0.78125rem;
+   font-weight: 400;
+-  line-height: 1.7;
++  line-height: 1.6;
+   letter-spacing: 0.08em;
+ }
+ 
+@@ -95,7 +98,7 @@
+ }
+ 
+ .home-reference-hero__title {
+-  margin: 1.3125rem 0 1.5rem;
++  margin: 1rem 0 1.25rem;
+   color: var(--home-ink);
+   font-family: var(--font-display);
+   font-size: clamp(6rem, 10.2vw, 9.5rem);
+@@ -114,20 +117,20 @@
+   padding-right: 0.5rem;
+   color: var(--home-ink);
+   background: var(--home-paper);
+-  font-size: 0.8125rem;
+-  line-height: 1.8;
+-  letter-spacing: 0.04em;
++  font-size: 1.3125rem;
++  line-height: 1.5;
++  letter-spacing: 0.015em;
+ }
+ 
+ .home-reference-hero__description {
+   width: fit-content;
+-  max-width: 24rem;
++  max-width: 30rem;
+   margin: 0.625rem 0 0;
+   padding-right: 0.5rem;
+   color: var(--home-muted);
+   background: var(--home-paper);
+-  font-size: 0.75rem;
+-  line-height: 1.8;
++  font-size: 1.0625rem;
++  line-height: 1.7;
+   text-wrap: pretty;
+ }
+ 
+@@ -137,7 +140,7 @@
+   align-items: center;
+   gap: 1.5rem;
+   width: fit-content;
+-  margin-top: 0.75rem;
++  margin-top: 1rem;
+   background: var(--home-paper);
+ }
+ 
+@@ -153,7 +156,7 @@
+   border-radius: 0;
+   color: var(--home-ink);
+   background: transparent;
+-  font-size: 0.8125rem;
++  font-size: 1rem;
+   line-height: 1.5;
+   transition: color 180ms ease, border-color 180ms ease;
+ }
+@@ -197,13 +200,13 @@
+   transform: translate(2px, -2px);
+ }
+ 
+-/* The complete research.ts signature remains one native disclosure. */
++/* Keep both text blocks in flow so the complete signature never covers the copy. */
+ .home-reference-terminal-wrap {
+-  position: absolute;
++  position: relative;
+   z-index: 2;
+-  left: var(--home-gutter);
+-  bottom: 2.5rem;
+-  width: 20rem;
++  flex-shrink: 0;
++  width: min(25rem, 100%);
++  margin-top: auto;
+ }
+ 
+ .home-reference-terminal-wrap::after {
+@@ -253,10 +256,12 @@
+   gap: 0.75rem;
+   min-height: 44px;
+   margin: 0;
+-  padding: 0.625rem 0.875rem;
++  padding: 0.625rem 1rem;
+   border-top: 1px solid var(--drawing-accent);
+   background: var(--drawing-accent);
+   color: var(--drawing-on-accent);
++  font-size: 0.875rem;
++  line-height: 1.5;
+   cursor: pointer;
+   list-style: none;
+ }
+@@ -288,15 +293,15 @@
+ .home-reference-terminal__filename {
+   color: var(--drawing-on-accent);
+   font-family: var(--font-mono);
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+   letter-spacing: 0.015em;
+ }
+ 
+ .home-reference-terminal__body {
+-  padding: 0.5rem 0.875rem;
++  padding: 0.625rem 1rem;
+   font-family: var(--font-mono);
+-  font-size: 0.78125rem;
+-  line-height: 1.65;
++  font-size: 0.96875rem;
++  line-height: 1.5;
+   overflow-x: auto;
+ }
+ 
+@@ -332,18 +337,18 @@
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.375rem 0.75rem;
+-  margin-top: 0.875rem;
+-  padding-top: 0.625rem;
++  margin-top: 0.75rem;
++  padding-top: 0.5rem;
+   border-top: 1px solid var(--home-soft-line);
+   color: var(--home-muted);
+-  font-size: 0.6875rem;
++  font-size: 0.75rem;
+ }
+ 
+ .home-reference-terminal__prompt {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+-  margin-top: 0.75rem;
++  margin-top: 0.5rem;
+   color: var(--home-code-accent);
+ }
+ 
+@@ -358,14 +363,14 @@
+   position: absolute;
+   z-index: 2;
+   right: var(--home-gutter);
+-  bottom: 2.5rem;
++  bottom: 2rem;
+   padding: 0.5rem 0.75rem;
+   border-left: 3px solid var(--drawing-accent);
+   border-top: 1px solid var(--home-line);
+   color: var(--home-muted);
+   background: var(--home-paper);
+   font-family: var(--font-mono);
+-  font-size: 0.6875rem;
++  font-size: 0.75rem;
+   line-height: 1.7;
+ }
+ 
+@@ -395,16 +400,16 @@
+   margin: 0;
+   color: var(--home-ink);
+   font-family: var(--font-ui);
+-  font-size: 1.0625rem;
++  font-size: 1.75rem;
+   font-weight: 600;
+-  letter-spacing: 0.025em;
++  letter-spacing: -0.025em;
+   line-height: 1.4;
+ }
+ 
+ .home-reference-section-index {
+   color: var(--home-code-accent);
+   font-family: var(--font-mono);
+-  font-size: 0.8125rem;
++  font-size: 0.9375rem;
+   font-weight: 500;
+   letter-spacing: 0.06em;
+ }
+@@ -418,7 +423,7 @@
+ .home-reference-section-link {
+   color: var(--home-muted);
+   font-family: var(--font-mono);
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+ }
+ 
+ .home-reference-domain-nav__button {
+@@ -486,13 +491,13 @@
+ }
+ 
+ .home-reference-domain-card {
+-  min-height: 11.5rem;
++  min-height: 14rem;
+   padding: 1rem 0;
+   border-bottom: 1px solid var(--home-soft-line);
+ }
+ 
+ .home-reference-domain-card__head {
+-  margin-bottom: 0.625rem;
++  margin-bottom: 0.75rem;
+ }
+ 
+ .home-reference-domain-card__glyph {
+@@ -513,10 +518,10 @@
+ }
+ 
+ .home-reference-domain-card h3 {
+-  margin: 0 0 0.4rem;
++  margin: 0 0 0.625rem;
+   color: var(--home-ink);
+   font-family: var(--font-ui);
+-  font-size: 1rem;
++  font-size: 1.375rem;
+   font-weight: 600;
+   line-height: 1.4;
+   letter-spacing: -0.025em;
+@@ -528,17 +533,17 @@
+ 
+ .home-reference-domain-card p {
+   color: var(--home-muted);
+-  font-size: 0.8125rem;
+-  line-height: 1.65;
++  font-size: 1rem;
++  line-height: 1.7;
+ }
+ 
+ .home-reference-domain-card__meta {
+   margin-top: auto;
+-  padding-top: 0.5rem;
++  padding-top: 1rem;
+ }
+ 
+ .home-reference-domain-card .home-reference-domain-card__meta {
+-  font-size: 0.75rem;
++  font-size: 0.875rem;
+ }
+ 
+ .home-reference-publishing-grid {
+@@ -597,6 +602,7 @@
+ .home-reference-featured-card__eyebrow {
+   color: var(--home-code-accent);
+   font-family: var(--font-mono);
++  font-size: 0.875rem;
+ }
+ 
+ .home-reference-featured-card__eyebrow::before {
+@@ -611,7 +617,7 @@
+   margin: 0;
+   color: var(--home-ink);
+   font-family: var(--font-ui);
+-  font-size: clamp(1.5rem, 2.1vw, 1.875rem);
++  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+   font-weight: 500;
+   line-height: 1.45;
+   letter-spacing: -0.03em;
+@@ -625,7 +631,7 @@
+ .home-reference-featured-card__summary {
+   max-width: 36rem;
+   color: var(--home-muted);
+-  font-size: 0.9375rem;
++  font-size: 1.125rem;
+   line-height: 1.8;
+ }
+ 
+@@ -644,6 +650,7 @@
+ .home-reference-recent-item__date {
+   color: var(--home-muted);
+   font-family: var(--font-mono);
++  font-size: 0.875rem;
+   font-variant-numeric: tabular-nums;
+ }
+ 
+@@ -654,6 +661,7 @@
+   background: var(--drawing-accent-wash);
+   color: var(--home-code-accent);
+   font-family: var(--font-mono);
++  font-size: 0.8125rem;
+   transition: color 180ms ease;
+ }
+ 
+@@ -665,7 +673,7 @@
+   margin: 0;
+   color: var(--home-ink);
+   font-family: var(--font-ui);
+-  font-size: 1rem;
++  font-size: 1.3125rem;
+   font-weight: 500;
+   line-height: 1.5;
+   letter-spacing: -0.02em;
+@@ -805,30 +813,10 @@
+   }
+ }
+ 
+-/* Tablet disclosure height must participate in the cover's natural height. */
++/* The same flowing left column also owns an expanded tablet disclosure. */
+ @media (min-width: 768px) and (max-width: 1023px) {
+   .home-reference-hero {
+-    display: flex;
+-    flex-direction: column;
+     gap: 2rem;
+-    padding: 4.375rem var(--home-gutter) 2.5rem;
+-  }
+-
+-  .home-reference-hero__copy {
+-    position: relative;
+-    top: auto;
+-    left: auto;
+-    flex-shrink: 0;
+-    width: min(36rem, 100%);
+-  }
+-
+-  .home-reference-terminal-wrap {
+-    position: relative;
+-    left: auto;
+-    bottom: auto;
+-    flex-shrink: 0;
+-    max-width: 100%;
+-    margin-top: auto;
+   }
+ }
+ 
+@@ -843,13 +831,20 @@
+   }
+ 
+   .home-reference-hero {
++    display: grid;
++    grid-template-columns: minmax(0, 1fr);
++    grid-template-rows: auto clamp(16rem, 60vw, 22rem) auto auto;
++    gap: 0;
+     min-height: 0;
+-    padding-top: 2.25rem;
++    padding: 2.25rem 0 0;
+   }
+ 
+   .home-reference-hero__art {
+-    inset: 11.875rem 0 auto;
+-    height: 26.875rem;
++    position: relative;
++    grid-column: 1;
++    grid-row: 2;
++    inset: auto;
++    height: 100%;
+     object-position: 62% 50%;
+   }
+ 
+@@ -858,9 +853,8 @@
+   }
+ 
+   .home-reference-hero__copy {
+-    position: relative;
+-    top: auto;
+-    left: auto;
++    grid-column: 1;
++    grid-row: 1;
+     width: auto;
+     max-width: none;
+     margin-inline: var(--home-gutter);
+@@ -870,7 +864,7 @@
+ 
+   .home-reference-hero__kicker {
+     gap: 0.5rem;
+-    font-size: 0.625rem;
++    font-size: 0.6875rem;
+     letter-spacing: 0.035em;
+   }
+ 
+@@ -884,32 +878,57 @@
+   }
+ 
+   .home-reference-hero__topics {
+-    font-size: 0.75rem;
++    font-size: 1.0625rem;
+   }
+ 
+   .home-reference-hero__description {
+-    max-width: 20rem;
++    max-width: 30rem;
++    font-size: 1rem;
++  }
++
++  .home-reference-hero__actions {
++    gap: 0.5rem 1rem;
++  }
++
++  .home-reference-hero__button {
++    gap: 0.5rem;
++  }
++
++  .home-reference-hero__arrow {
++    width: 1.5rem;
++    height: 1.5rem;
+   }
+ 
+   .home-reference-terminal-wrap {
+-    position: relative;
+-    left: auto;
+-    bottom: auto;
++    grid-column: 1;
++    grid-row: 3;
+     width: calc(100% - 2 * var(--home-gutter));
+-    max-width: 20rem;
+-    margin: clamp(13rem, 55vw, 18rem) var(--home-gutter) 1.25rem;
++    max-width: 25rem;
++    margin: 0 var(--home-gutter) 1.25rem;
+   }
+ 
+   .home-reference-terminal-wrap::after {
+     display: none;
+   }
+ 
++  .home-reference-terminal__body {
++    font-size: 0.875rem;
++    line-height: 1.6;
++  }
++
+   .home-reference-hero__caption {
+     position: relative;
++    grid-column: 1;
++    grid-row: 4;
+     right: auto;
+     bottom: auto;
+     width: fit-content;
+     margin: 0 var(--home-gutter) 1.5rem;
++  }
++
++  .home-reference-section-head h2 {
++    gap: 0.75rem;
++    font-size: 1.5rem;
+   }
+ 
+   .home-reference-domain-toolbar {

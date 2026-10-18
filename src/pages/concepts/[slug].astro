@@ -64,7 +64,7 @@ const structuredData = site
   openGraphImage={`/og/concepts/${concept.id}.png`}
   structuredData={structuredData}
 >
-  <DiscoverShell>
+  <DiscoverShell bodyClass="discover-editorial">
     <PageHero
       variant="split"
       kicker="Discover / Concept"
@@ -94,8 +94,7 @@ const structuredData = site
     >
       <div slot="aside">
         <div class="discover-hero__panel-copy">
-          <p class="discover-hero__panel-label">Definition</p>
-          <p>{concept.data.summary}</p>
+          <p class="discover-hero__panel-label">关联索引</p>
         </div>
         <div class="discover-hero__panel-stats">
           <div class="discover-hero__panel-stat">
@@ -122,40 +121,23 @@ const structuredData = site
       <SectionHead
         kicker="Definition"
         title="概念说明"
-        description="概念页比 topic detail 更轻，但仍使用相同的 poster hero、surface 与 section 节奏。"
       />
       <div class="discover-surface discover-rich">
         <Content />
       </div>
     </section>
 
-    {
-      (concept.data.tags?.length ?? 0) > 0 ? (
-        <section class="discover-section">
-          <SectionHead
-            kicker="Tags"
-            title="概念标签"
-            description="标签继续保留在概念详情中，但不再以裸 pill 列表漂浮在页面里。"
-            countLabel={`${concept.data.tags?.length ?? 0} tags`}
-          />
-          <div class="discover-mini-grid" data-ux-stagger>
-            {concept.data.tags?.map((tag) => (
-              <div class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
-                <span class="discover-mini-card__meta">Tag</span>
-                <h3>{tag}</h3>
-                <p>作为概念索引标签，用来帮助读者从不同文章里反向识别这一概念。</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null
-    }
+    {concept.data.tags?.length ? (
+      <div class="discover-concept-tags">
+        <h2>概念标签</h2>
+        <ul>{concept.data.tags.map((tag) => <li>{tag}</li>)}</ul>
+      </div>
+    ) : null}
 
     <section class="discover-section" data-concept-posts>
       <SectionHead
         kicker="Posts"
         title="引用它的文章"
-        description="概念页的核心仍然是反向追踪：从概念返回到引用它的文章与上下文。"
         countLabel={`${referencedPosts.length} posts`}
       />
       {
@@ -173,7 +155,6 @@ const structuredData = site
       <SectionHead
         kicker="Topics"
         title="引用它的主题"
-        description="这里直接从真实引用该概念的文章 topics 反推主题，而不是再依赖 entryPosts 的间接猜测。"
         countLabel={`${referencedTopics.length} topics`}
       />
       {
