@@ -40,7 +40,7 @@
 
 用户参考图保留为[user-home.png](user-home.png)、[user-topics.png](user-topics.png)，未知其浏览器缩放与CSS视口，未把物理像素直接当CSS字号。
 
-每张图的路由、视口、主题、时间、来源和SHA256见[captures.json](captures.json)。v1/v2代码差异根据记录的两轮修改复原，v3为最终实际source diff，均可在基线`c8f130a`上复现视觉；旧图不覆盖。
+每张图的路由、视口、主题、时间、来源和SHA256见[captures.json](captures.json)。v1/v2代码差异根据记录的两轮修改复原，v3为最终实际source diff，均可在基线`c8f130a`上用`git apply --unidiff-zero`复现视觉；旧图不覆盖。
 
 ## 验证状态
 
