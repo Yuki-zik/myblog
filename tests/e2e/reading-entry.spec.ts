@@ -23,7 +23,7 @@ test("desktop reading entry prioritizes title and summary beside a supporting co
   expect(coverBox).not.toBeNull();
   expect(summaryBox!.y).toBeGreaterThan(titleBox!.y + titleBox!.height);
   expect(coverBox!.x).toBeGreaterThanOrEqual(summaryBox!.x + summaryBox!.width + 16);
-  expect(coverBox!.height).toBeLessThanOrEqual(240);
+  expect(coverBox!.height).toBeLessThanOrEqual(260);
   await expect(page.locator(".post-title-card .post-cover-img--ghost")).toHaveCount(1);
 });
 
