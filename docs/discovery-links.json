@@ -117,5 +117,119 @@
     "llm",
     "model-security",
     "personal-blog"
-  ]
+  ],
+  "siteRelease": {
+    "revision": "2292de20564eb16892da99e148d07177580c5a13",
+    "ciRunId": 39120607235,
+    "ciUrl": "https://github.com/Yuki-zik/myblog/actions/runs/39120607235",
+    "unitPassed": 121,
+    "targetedPassed": 9,
+    "e2ePassed": 191,
+    "frontendDeployment": {
+      "id": 7153458329,
+      "status": "success",
+      "url": "https://myblog-ic06a2boa-qianlimaxai-5994s-projects.vercel.app"
+    },
+    "walineDeployment": {
+      "id": 7153453726,
+      "status": "success",
+      "url": "https://waline-79dgneivv-qianlimaxai-5994s-projects.vercel.app"
+    }
+  },
+  "productionSeo": {
+    "llmsLinkCount": 14,
+    "authorIncluded": true,
+    "papersIncluded": 2,
+    "personUrl": "https://a-znk-blog.vercel.app/author",
+    "personSameAs": [
+      "https://github.com/yuki-zik",
+      "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
+    ],
+    "googleVerificationPreserved": true,
+    "blogReadmeEntrypoints": 3
+  },
+  "productionReaderReadback": {
+    "pages": [
+      {
+        "route": "/posts/paragraph-anchor-design",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+        "design": "edge",
+        "title": "段落锚点短评的最小实现",
+        "paragraphAnchors": 20,
+        "footnoteTargets": 20,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/ant-ai-coding-review",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+        "design": "edge",
+        "title": "蚂蚁 AI Coding 笔试复盘",
+        "paragraphAnchors": 21,
+        "footnoteTargets": 16,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/why-topic-first",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+        "design": "edge",
+        "title": "为什么主题页应成为博客第一入口",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/posts/myblog-design-manual",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+        "design": "edge",
+        "title": "A-Znk的blog：设计说明书",
+        "paragraphAnchors": 36,
+        "footnoteTargets": 9,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/duap-multilingual-speech-privacy",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+        "design": "metadata",
+        "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+        "paragraphAnchors": 4,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      },
+      {
+        "route": "/papers/oxicams-carbon-dots-machine-learning",
+        "status": 200,
+        "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+        "design": "metadata",
+        "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
+        "paragraphAnchors": 5,
+        "footnoteTargets": 0,
+        "matchesBuiltContent": true
+      }
+    ],
+    "searchEntries": 13,
+    "comments": {
+      "status": 200,
+      "errno": 0,
+      "count": 1
+    }
+  },
+  "audit": {
+    "before": 79,
+    "after": 79,
+    "pagesBefore": 10,
+    "pagesAfter": 10,
+    "llmsBytesBefore": 1253,
+    "llmsBytesAfter": 1948,
+    "note": "Heuristic foundational score, not a search ranking or indexing guarantee."
+  },
+  "sourceFilesSha256": {
+    "src/lib/seo/jsonLd.ts": "9ffd4805703c18420ca4a0b0b49936fa3912781a44e5fe73fab9c9d033b30e6d",
+    "src/lib/seo/llms.ts": "3f5465c94fffd85f5518807d02a8de583a8f9a1bf3167ae4923f39e15c0f0c0f",
+    "src/pages/llms.txt.ts": "6298bb846880d75a8ca2d0df72ac1d024727e43f43a91317a7805a2793f28515"
+  }
 }

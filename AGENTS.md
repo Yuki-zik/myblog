@@ -1,8 +1,8 @@
 # Agent Context & Handoff (A-Znk的blog)
 
-Last updated: 2026-10-18 (PR #21 capsule navigation restored; mobile rows, search/theme, Unicode TOC fragments and reading behavior verified live)
+Last updated: 2026-10-18 (author/paper retrieval and contextual public repository links live; 121 unit / 191 E2E checks and public readback verified)
 
-Discovery work (2026-10-18, external links published; site release pending): profile/three related project READMEs link to the blog with public readback. Preserve those contextual links, existing project homepages and source attribution. llms.txt includes author and non-draft/non-prototype papers with status; Person.url defaults to /author. Keep indexability and author-controlled links separate from confirmed search indexing. Evidence: docs/discovery-audit.md and docs/discovery-links.json.
+Discovery work (2026-10-18, live): profile/three related project READMEs link to the blog with public readback. Preserve those contextual links, existing project homepages and source attribution. llms.txt includes author and non-draft/non-prototype papers with status; Person.url defaults to /author. Keep indexability and author-controlled links separate from confirmed search indexing. Evidence: docs/discovery-audit.md and docs/discovery-links.json.
 
 Capsule header (2026-10-18, PR #21 live): drawing pages reuse the default floating capsule surface, scroll geometry and content inset; drawing remains a palette marker. Mobile surfaces cover both rows in normal/reduced motion with 8px block padding. Preserve the shared controller/search nodes and do not reintroduce drawing surface/content-width overrides. Margin-note hash lookup decodes the URL fragment and uses getElementById; encoded heading fragments are not CSS selectors. See docs/visual-history/2026-10-18-capsule-header/.
 

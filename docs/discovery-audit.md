@@ -59,10 +59,20 @@
 - llms.txt补齐作者与2篇非草稿论文，保留发表状态；不收录原型论文。llms.txt作为辅助检索入口，不宣称是Google排名信号。
 - 网站界面、文章正文、内容日期、既有域名及爬虫/训练访问策略保持现状。
 
-新增用例先复现2项失败；修后121项单测、9项目标站点/品牌/索引检查通过。最终发布与复测记录待追加。
+新增用例先复现2项失败；修后121项单测、9项目标站点/品牌/索引检查通过。最终发布与复测见下文。
 
 ## 搜索可见性边界
 
 本轮公开检索找到博客源码仓库，尚不能据此确认博客本体已被Google收录。已有Search Console验证/站点地图提交记录见[search-discovery.md](search-discovery.md)；不把2026-10-16记录当作本轮实时索引状态。
 
 自然、可抓取的相关链接帮助发现页面；实际抓取、收录与排名仍由搜索引擎决定。依据：[Google抓取与索引说明](https://developers.google.com/search/docs/fundamentals/how-search-works)、[收录FAQ](https://developers.google.com/search/help/crawling-index-faq?hl=en)。
+
+## 正式发布与复测
+
+站点增强随`2292de2`发布，前端Production `7153458329`与Waline `7153453726`均成功。[完整CI](https://github.com/Yuki-zik/myblog/actions/runs/39120607235)191/191通过，单测121/121，定向索引/品牌检查9/9。
+
+公开llms索引由11个目标增加到14个，新增作者及两篇论文；结构化Person.url为本站/author，GitHub/Scholar关联保留。Google验证文件逐字节保留，六阅读页的内容/锚点/脚注与构建一致；站内搜索13项、评论errno0且原1条保留。博客仓库的新主题/论文/作者入口也已公开回读。
+
+同样10页复测的基础启发式分数仍为79/100。该二值检查原来已经判定llms有效，不衡量新增论文/作者覆盖，也不抓取外部GitHub入口，因此不将分数不变解释为引用无效，更不据此制造排名提升数字。网站正文与日期未变，内容人工评分沿用基线。
+
+机器可读发布记录与公开引用提交见[discovery-links.json](discovery-links.json)。实际Google收录仍未确认。

@@ -6,7 +6,7 @@ Public name: **A-Znk的blog**. The shared name, alternate names and description 
 
 The author profile README and three relevant public project READMEs now link to the blog, AI Coding retrospective/topic and publication list. Public unauthenticated readback verified all four; existing source attribution, report blocks and product URLs were preserved. The blog repository also uses relevant topic labels and explicit topic/paper/author links. This is author-controlled discovery, not independent endorsement or confirmed search indexing. See [audit and evidence](discovery-audit.md) and [reference commits](discovery-links.json).
 
-The site retrieval index now includes author/paper links, with publication status and draft/prototype filtering. Person JSON-LD points to the canonical author profile by default. The existing sitemap, canonical and crawler policy remain in place.
+Release `2292de2` is live: the retrieval index grows from 11 to 14 linked targets, including the author and two papers with publication status and draft/prototype filtering. Person JSON-LD points to the canonical author profile by default. 121 unit tests, 9 targeted checks and all 191 CI E2E cases pass; fresh public readback verifies the index, author graph, repository entrypoints and original Google verification file. The existing sitemap, canonical and crawler policy remain in place.
 
 ## Current public hostname (2026-10-16)
 
