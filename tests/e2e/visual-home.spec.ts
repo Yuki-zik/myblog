@@ -141,49 +141,24 @@ for (const scheme of ["light", "dark"] as const) {
     for (const entry of ratios) expect(entry.ratio, entry.selector).toBeGreaterThanOrEqual(4.5);
   });
 
-  test(`discover pages retain visible ambient color behind opaque content in system ${scheme}`, async ({ page }) => {
+  test(`discover pages share an opaque paper canvas in system ${scheme}`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.addInitScript(() => localStorage.setItem("theme-preference", "system"));
-    await page.goto("/concepts/anchor-id");
-    await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
-    const ambient = page.locator(".discover-page__ambient");
-    await expect(ambient).toHaveAttribute("aria-hidden", "true");
-    await expect(ambient.locator(".discover-page__orb")).toHaveCount(2);
-    const layers = await page.evaluate(() => {
-      const ambient = document.querySelector(".discover-page__ambient")!;
-      const card = document.querySelector(".discover-mini-card")!;
-      const grid = document.querySelector(".discover-page__grid")!;
-      return {
-        pointerEvents: getComputedStyle(ambient).pointerEvents,
-        gridBackground: getComputedStyle(grid).backgroundImage,
-        cardBackground: getComputedStyle(card).backgroundColor,
-        orbs: Array.from(ambient.querySelectorAll(".discover-page__orb")).map((orb) => {
-          const styles = getComputedStyle(orb);
-          return {
-            background: styles.backgroundColor,
-            opacity: Number(styles.opacity),
-            filter: styles.filter,
-            width: orb.getBoundingClientRect().width,
-            animation: styles.animationName,
-          };
-        }),
-        scrollWidth: document.documentElement.scrollWidth,
-        viewportWidth: window.innerWidth,
-      };
-    });
-    expect(layers.pointerEvents).toBe("none");
-    expect(layers.gridBackground).toContain("radial-gradient");
-    expect(layers.cardBackground).toMatch(/^rgb\(/);
-    expect(layers.orbs[0].background).not.toBe(layers.orbs[1].background);
-    for (const orb of layers.orbs) {
-      const channels = orb.background.match(/[\d.]+/g)?.map(Number) ?? [];
-      expect(channels[3] ?? 1).toBeGreaterThan(0.08);
-      expect(orb.opacity).toBeGreaterThan(0);
-      expect(orb.filter).toContain("blur");
-      expect(orb.width).toBeGreaterThan(300);
-      expect(orb.animation).toBe("none");
+    for (const route of ["/concepts/anchor-id", "/author", "/map", "/404"]) {
+      await page.goto(route);
+      await expect(page.locator("html")).toHaveAttribute("data-color-scheme", scheme);
+      await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
+      await expect(page.locator(".discover-page__ambient, .discover-page__orb")).toHaveCount(0);
+      const layers = await page.evaluate(() => {
+        const probe=document.createElement("span");probe.style.background="var(--surface-primary)";
+        document.body.append(probe);const paper=getComputedStyle(probe).backgroundColor;probe.remove();
+        return {paper, background:getComputedStyle(document.body).backgroundColor,
+          scrollWidth:document.documentElement.scrollWidth,viewportWidth:innerWidth};
+      });
+      expect(layers.background, route).toBe(layers.paper);
+      expect(layers.background, route).toMatch(/^rgb\(/);
+      expect(layers.scrollWidth, route).toBeLessThanOrEqual(layers.viewportWidth+1);
     }
-    expect(layers.scrollWidth).toBeLessThanOrEqual(layers.viewportWidth + 1);
   });
 }

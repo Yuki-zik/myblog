@@ -1,8 +1,8 @@
 /* Architectural drawing cover, with real reading indexes below the fold. */
 .home-reference {
   --home-paper: var(--surface-primary);
-  --home-ink: #203b50;
-  --home-muted: #4c667a;
+  --home-ink: var(--text-primary);
+  --home-muted: var(--text-secondary);
   --home-line: #9baebb;
   --home-soft-line: #d8e1e7;
   --home-code-accent: var(--drawing-accent-ink);
@@ -716,8 +716,9 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-footer__brand-mark {
-  background: var(--text-primary);
-  color: var(--surface-primary);
+  border-radius: 0;
+  background: var(--drawing-accent);
+  color: var(--drawing-on-accent);
 }
 
 .home-reference-footer__note,
@@ -727,13 +728,16 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 }
 
 .home-reference-footer__social-link {
-  background: var(--surface-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  background: transparent;
   color: var(--text-secondary);
   transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;
 }
 
 .home-reference-footer__social-link:hover {
-  background: var(--surface-elevated);
+  border-color: var(--drawing-accent);
+  background: var(--drawing-accent-wash);
   color: var(--brand-accent);
   transform: translateY(-2px);
 }

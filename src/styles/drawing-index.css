@@ -15,7 +15,7 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   flex-direction: column;
   gap: 1.5rem;
   width: calc(100% - 80px);
-  max-width: 80rem;
+  max-width: var(--site-content-max);
   margin: 0 auto;
   padding: 1.5rem 0 4rem;
 }
@@ -58,7 +58,7 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   min-width: 0;
   margin: 0;
   font-family: var(--font-ui);
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: var(--type-index-title);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.045em;

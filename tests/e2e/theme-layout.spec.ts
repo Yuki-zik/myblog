@@ -1248,7 +1248,7 @@ test("header geometry is a continuous function of scroll offset", async ({
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
 
   const supportsScrollTimeline = await page.evaluate(() =>
@@ -1338,7 +1338,7 @@ test("header geometry is a continuous function of scroll offset", async ({
 test("header content contracts along with the surface", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
 
   const supportsScrollTimeline = await page.evaluate(() =>
@@ -1403,7 +1403,7 @@ test("collapsed header keeps its content clear of the pill edge", async ({
   page,
 }) => {
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
 
   /*
@@ -1452,7 +1452,7 @@ test("collapsed header keeps its content clear of the pill edge", async ({
 test("collapsed header uses continuous-curvature corners", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
 
   const supportsSquircle = await page.evaluate(() =>
     CSS.supports("corner-shape: squircle"),
@@ -1483,7 +1483,7 @@ test("header surface keeps one material across the state threshold", async ({
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
 
   /*
@@ -1539,7 +1539,7 @@ test("header content stays put while the surface collapses", async ({
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
 
   /*
@@ -1603,7 +1603,7 @@ test("header remains compact long enough to finish its geometry morph before hid
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/author");
-  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "default");
+  await expect(page.locator(".site-header")).toHaveAttribute("data-header-variant", "drawing");
   await disableSmoothScroll(page);
   await page.evaluate(() => {
     const header = document.querySelector(".site-header");
