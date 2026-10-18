@@ -52,9 +52,14 @@ for (const scheme of ["light", "dark"] as const) {
         if (await action.count()) expect(await action.evaluate(el=>parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBe(0);
         const surface=page.locator(".discover-surface").first();
         if (await surface.count()) expect(await surface.evaluate(el=>parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeLessThanOrEqual(2);
+        const footer=page.locator(".home-reference-footer");
+        expect(await footer.evaluate(el=>parseFloat(getComputedStyle(el).borderTopLeftRadius)), `${route}: shared ruled footer`).toBe(0);
         const screenshot=testInfo.outputPath(`style-${name}-${width}-${scheme}.png`);
         await page.screenshot({path:screenshot, timeout:15000});
-        await testInfo.attach(`style-${name}-${width}-${scheme}`, {path:screenshot,contentType:"image/png"});
+        if (name === "author" || name === "article") {
+          const footerShot=testInfo.outputPath(`footer-${name}-${width}-${scheme}.png`);
+          await footer.screenshot({path:footerShot,timeout:15000});
+        }
       }
       expect(errors).toEqual([]);
     });

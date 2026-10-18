@@ -729,7 +729,7 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
 
 .home-reference-footer__social-link {
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-control);
+  border-radius: 0;
   background: transparent;
   color: var(--text-secondary);
   transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;

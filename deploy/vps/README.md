@@ -7,3 +7,5 @@ The mirror provides HTTP on port 80 and HTTPS on port 8443 (`https://vps.a-znk.c
 Nginx inherits the existing vercel.json security headers, serves the real 404 page with status 404, marks raw Markdown noindex, and caches hashed Astro assets. Keep public/googleb326e1b2b17b02a1.html.
 
 Run deploy.sh from a local checkout to rebuild and atomically publish another static release. Server bootstrap, DNS and TLS configuration are documented separately; certbot certificate files stay on the VPS, not in Git. Never change Xray 443/24443 to make the mirror available.
+
+CI also produces a `public-static-site` artifact with the canonical domain and existing public Waline URL, archive SHA-256 and source revision. After the **entire** matching run passes, it can be copied into a new release and atomically promoted without rebuilding on a memory-constrained workstation. The artifact contains only `dist/`, not source or credentials; it does not auto-deploy or alter DNS, TLS, Nginx or Xray.
