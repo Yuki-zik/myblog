@@ -755,5 +755,301 @@
     "sourceFilesSha256": {
       "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
     }
+  },
+  {
+    "file": "v3-production-home-top.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 0,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:03.361Z",
+    "metrics": {
+      "state": "top",
+      "width": 1536,
+      "height": 68,
+      "top": 0,
+      "left": -48,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 234,
+      "rightClearance": 234,
+      "navBottom": 53.1875,
+      "surfaceBottom": 68,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "d612df36d3abb569340e5e468745ee05790464be51c500752b15e80c642e4dfa",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-home-capsule.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:04.506Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "8a4872ed6c591fb012362ff2af7b6ec7f69114d2e20216a54082d5576c94d7fa",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-reader-capsule.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:05.222Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "97d4bc28e29bef8870f42ef412b56f16e75dcb9c0ecce0a87dd34ed3b363ff9d",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-mobile.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:05.614Z",
+    "metrics": {
+      "state": "top",
+      "width": 370.796875,
+      "height": 91.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 91.046875,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "35aa119f203d4bc3fa575172c2b10d4f4f9d19ec80f6133012e0051ce85252fa",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-mobile-compact.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:06.275Z",
+    "metrics": {
+      "state": "compact",
+      "width": 370.796875,
+      "height": 91.046875,
+      "top": 5,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 96.046875,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "7d83ddc132e7e1fa8f7f96303fef8ba8c62a9a88d3411b3befc07fea94a6195a",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-small.png",
+    "route": "/",
+    "viewport": [
+      320,
+      844
+    ],
+    "theme": "light",
+    "reducedMotion": "reduce",
+    "scroll": 0,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:07.283Z",
+    "metrics": {
+      "state": "top",
+      "width": 300.796875,
+      "height": 91.046875,
+      "top": 0,
+      "left": 9.59375,
+      "radius": 23,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 14,
+      "rightClearance": 14,
+      "navBottom": 83.046875,
+      "surfaceBottom": 91.046875,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "db3894961f2457f3e14d9197dea036667d4d09241ab93ddea696c6d5628c3cbb",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-dark.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "dark",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:08.477Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0 0 0 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 0.141176 0.141176 0.153725 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "9408354189afc25df1a9a006bdd2d366e62bad9999de849c96e2d1eeed976491",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-paper.png",
+    "route": "/papers/duap-multilingual-speech-privacy",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "capturedAt": "2026-10-18T09:43:09.211Z",
+    "metrics": {
+      "state": "compact",
+      "width": 1120,
+      "height": 54,
+      "top": 7,
+      "left": 160,
+      "radius": 26,
+      "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px",
+      "background": "color(srgb 1 1 1 / 0.88)",
+      "leftClearance": 26,
+      "rightClearance": 26,
+      "navBottom": 50.796875,
+      "surfaceBottom": 61,
+      "overflow": 0
+    },
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "ec071fddec34b7896ef43445eeba2d38483854a07dd54dc507fbc1683e030dde",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v3-production-header-detail.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "reducedMotion": "no-preference",
+    "scroll": 96,
+    "phase": "production",
+    "captureKind": "element",
+    "selector": ".site-header-inner",
+    "capturedAt": "2026-10-18T09:43:09.842Z",
+    "sourceRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "sha256": "a31888e4fb97ce5903bcb285616585870dc34b50ad1992cfd3cc510b93bddfe2",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v4-production-mobile-toc.png",
+    "route": "/posts/myblog-design-manual",
+    "viewport": [
+      390,
+      844
+    ],
+    "theme": "light",
+    "phase": "production",
+    "sourceRevision": "d5c6b87fec16db8eae2bb2a7611b93fdfc1daf88",
+    "capturedAt": "2026-10-18T09:59:27.207Z",
+    "sha256": "267e8fccaf6c3d26639e88617fbbb546c4d39191ffe0ad224992ef44657082e9",
+    "visualReview": "accepted"
+  },
+  {
+    "file": "v4-production-header-detail.png",
+    "route": "/",
+    "viewport": [
+      1440,
+      960
+    ],
+    "theme": "light",
+    "phase": "production",
+    "captureKind": "element",
+    "selector": ".site-header-inner",
+    "sourceRevision": "d5c6b87fec16db8eae2bb2a7611b93fdfc1daf88",
+    "capturedAt": "2026-10-18T09:59:27.606Z",
+    "sha256": "42bc42b90886a4ef05008d78f1a1b94ceda1dbb2b8ae53e40c7e59891d1bb78e",
+    "visualReview": "accepted"
   }
 ]

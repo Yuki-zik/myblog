@@ -2,6 +2,14 @@
 
 Updated: 2026-10-18. This checklist distinguishes verified code from a verified deployment.
 
+## Restored capsule navigation — 2026-10-18
+
+[PR #21](https://github.com/Yuki-zik/myblog/pull/21), merge `41eda2c`, restores the existing floating capsule, content inset and scroll-driven collapse on drawing pages. Mobile surfaces now cover both rows with 8px vertical padding. Drawing palette markers, shared controller/search nodes and reader styling remain intact.
+
+118 unit tests, 29 chrome checks, 20 final reader/search checks and three mobile TOC cases pass. PR and merge CI each pass 190 E2E cases. Production review caught an older Unicode hash lookup error in the note listener; `d5c6b87` resolves fragments by decoded ID, and the strengthened TOC error assertions and [final 190-case CI](https://github.com/Yuki-zik/myblog/actions/runs/39116964661) pass.
+
+Final frontend `7152886266` and Waline `7152891102` deployments succeed. Live desktop capsule is 1120px wide with 26px corners. Mobile height is 91.05px with 13px bottom clearance while scrolled; search returns seven records, closes with scroll/focus restoration, theme switching works and the Chinese TOC lands at 119.98px without script errors. The article TOC, hover/deep image viewing, six reader routes, 13 search entries and original comment remain verified. [Thirty-five versioned captures and evidence](visual-history/2026-10-18-capsule-header/README.md) are retained.
+
 ## Reading typography and citations — 2026-10-18
 
 [PR #20](https://github.com/Yuki-zik/myblog/pull/20), merge `33c75f4`, scales chapter numbers with their headings, raises note text to 15.5px, uses consistent UI numerals/labels and lightens genuine inline code. Hanging indentation keeps narrow multiline titles aligned. Prose/source names in the design manual are ordinary text with named links. The GFM extractor now recognizes empty-string data flags and removes stray return arrows while preserving note/source targets and the existing return control.

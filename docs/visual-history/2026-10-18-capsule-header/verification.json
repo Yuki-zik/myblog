@@ -30,8 +30,175 @@
       "greenPassed": 4,
       "unitPassed": 118,
       "log": "output/capsule-header-2026-10-18/hash-green-final.log",
-      "production": "pending"
+      "production": "verified"
+    },
+    "pr": {
+      "runId": 39115311611,
+      "e2ePassed": 190,
+      "status": "success"
+    },
+    "capsuleMerge": {
+      "runId": 39115753467,
+      "e2ePassed": 190,
+      "status": "success"
+    },
+    "final": {
+      "runId": 39116964661,
+      "e2ePassed": 190,
+      "status": "success"
     }
   },
-  "production": "pending"
+  "production": {
+    "origin": "https://a-znk-blog.vercel.app",
+    "frontend": {
+      "githubDeploymentId": 7152886266,
+      "status": "success",
+      "url": "https://myblog-i359okx0m-qianlimaxai-5994s-projects.vercel.app"
+    },
+    "waline": {
+      "githubDeploymentId": 7152891102,
+      "status": "success",
+      "url": "https://waline-gkzxdxqnz-qianlimaxai-5994s-projects.vercel.app"
+    },
+    "header": {
+      "origin": "https://a-znk-blog.vercel.app",
+      "capturedAt": "2026-10-18T09:57:43.660Z",
+      "desktop": {
+        "width": 1120,
+        "radius": 26,
+        "left": 160,
+        "shadow": "rgba(255, 255, 255, 0.22) 0px 1px 0px 0px inset, color(srgb 0.113725 0.113725 0.121569 / 0.07) 0px 4px 18px 0px"
+      },
+      "desktopResults": 7,
+      "theme": "dark",
+      "mobile": {
+        "width": 370.796875,
+        "height": 91.046875,
+        "bottomClearance": 13,
+        "overflow": 0
+      },
+      "mobileResults": 7,
+      "searchBeforeScroll": 91,
+      "searchRestoredScroll": 91,
+      "tocTop": 119.984375,
+      "pageErrors": []
+    },
+    "reader": {
+      "backrefs": 0,
+      "noteReturn": {
+        "focused": true,
+        "top": 532.3125
+      },
+      "type": {
+        "h2": 26,
+        "h2Marker": 20.8,
+        "h3Marker": 17.64,
+        "note": 15.5
+      },
+      "origin": "https://a-znk-blog.vercel.app",
+      "capturedAt": "2026-10-18T10:02:20.636Z",
+      "hover": "matrix(1, 0, 0, 1, 0, -6)",
+      "opened": {
+        "modal": true,
+        "focus": "关闭图片预览",
+        "image": 1600,
+        "scrollLocked": true
+      },
+      "zoom": {
+        "zoomed": "true",
+        "x": 129,
+        "y": 79,
+        "width": 1600
+      },
+      "before": 120,
+      "restored": {
+        "scrollY": 120,
+        "focused": true,
+        "overflowX": "clip"
+      },
+      "toc": {
+        "top": 85.59375,
+        "pin": 85.6
+      },
+      "pageErrors": []
+    },
+    "http": {
+      "pages": [
+        {
+          "route": "/posts/paragraph-anchor-design",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+          "design": "edge",
+          "title": "段落锚点短评的最小实现",
+          "paragraphAnchors": 20,
+          "footnoteTargets": 20,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/ant-ai-coding-review",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+          "design": "edge",
+          "title": "蚂蚁 AI Coding 笔试复盘",
+          "paragraphAnchors": 21,
+          "footnoteTargets": 16,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/why-topic-first",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+          "design": "edge",
+          "title": "为什么主题页应成为博客第一入口",
+          "paragraphAnchors": 5,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/posts/myblog-design-manual",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+          "design": "edge",
+          "title": "A-Znk的blog：设计说明书",
+          "paragraphAnchors": 36,
+          "footnoteTargets": 9,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/papers/duap-multilingual-speech-privacy",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+          "design": "metadata",
+          "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+          "paragraphAnchors": 4,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        },
+        {
+          "route": "/papers/oxicams-carbon-dots-machine-learning",
+          "status": 200,
+          "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+          "design": "metadata",
+          "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
+          "paragraphAnchors": 5,
+          "footnoteTargets": 0,
+          "matchesBuiltContent": true
+        }
+      ],
+      "searchEntries": 13,
+      "comments": {
+        "status": 200,
+        "errno": 0,
+        "count": 1
+      }
+    },
+    "screenshots": 11
+  },
+  "release": {
+    "pr": "https://github.com/Yuki-zik/myblog/pull/21",
+    "testedCapsuleHead": "a9eb00ea75f798bc4ec2355563e83118ae380d40",
+    "capsuleMergeRevision": "41eda2cb3379b49c70df69d8e1728c4133637d24",
+    "capsuleMergeMatchesTestedTree": true,
+    "finalRevision": "d5c6b87fec16db8eae2bb2a7611b93fdfc1daf88"
+  }
 }
