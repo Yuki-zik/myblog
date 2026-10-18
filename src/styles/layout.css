@@ -815,6 +815,15 @@ html.is-header-morphing::view-transition-new(site-header) {
     --header-control-size-compact: 1.95rem;
     --header-control-size-delta: 0.2rem;
   }
+
+  /* The narrow layout has two content rows in every scroll/motion state. */
+  .site-header[data-header-state] .shell {
+    padding-block: 8px;
+  }
+
+  .site-header[data-header-state] .site-header-inner {
+    height: 100%;
+  }
 }
 /*
  * Horizontal clip for the expanded surface.
@@ -944,40 +953,8 @@ html.is-header-morphing::view-transition-new(site-header) {
   }
 }
 
-/* Drawing pages use a flat paper band. The surface node and content geometry
-   stay in place so scroll states, search and focus share the default runtime. */
-.site-header[data-header-variant="drawing"] {
-  background: var(--surface-primary);
-}
-
-.site-header[data-header-variant="drawing"]::after {
-  content: "";
-  position: absolute;
-  inset-inline: 40px;
-  inset-block-end: 0;
-  height: 1px;
-  background: var(--border-default);
-  pointer-events: none;
-}
-
-.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner {
-  border: 0;
-  border-radius: 0;
-  background: none;
-  backdrop-filter: none;
-  box-shadow: none;
-}
-
-.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner::before,
-.site-header[data-header-variant="drawing"][data-header-state] .site-header-inner::after {
-  content: none;
-}
-
-.site-header[data-header-variant="drawing"][data-header-state] .shell {
-  width: calc(100% - 80px);
-  max-width: none;
-}
-
+/* Drawing pages share the original capsule surface and scroll geometry;
+   this variant only refines the navigation's paper/orange palette. */
 .site-header[data-header-variant="drawing"] .site-nav a {
   border-radius: 0;
   background: none;
@@ -1067,20 +1044,10 @@ body[data-header-variant="drawing"] .header-search-result-type--paper {
   color: var(--drawing-accent-ink);
 }
 
-@media (max-width: 900px) {
-  .site-header[data-header-variant="drawing"][data-header-state] .shell {
-    width: calc(100% - 32px);
-  }
-
-  .site-header[data-header-variant="drawing"]::after {
-    inset-inline: 16px;
-  }
-}
-
-/* Reduced motion freezes the default header surface; its mobile content has two rows. */
+/* Reduced motion freezes the capsule surface; mobile content has two rows
+   in both runtimes and both palette variants. */
 @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
-  body[data-runtime="discover"] .site-header[data-header-variant="default"][data-header-state] .site-header-inner {
+  .site-header[data-header-state] .site-header-inner {
     inset-block-start: 0;
-    height: 100%;
   }
 }

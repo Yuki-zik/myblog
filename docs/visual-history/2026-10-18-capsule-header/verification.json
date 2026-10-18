@@ -1,0 +1,29 @@
+{
+  "sourceBaseRevision": "c491d7e96665de58d5e9f14c145656435d4eab8c",
+  "sourceFilesSha256": {
+    "src/styles/layout.css": "24e8d0b54853c314b5831b2ca0999183b7f3937829a031586889fba8e8042c5a"
+  },
+  "checks": {
+    "unit": {
+      "passed": 118,
+      "log": "output/capsule-header-2026-10-18/unit.log"
+    },
+    "chrome": {
+      "passed": 29,
+      "log": "output/capsule-header-2026-10-18/targeted.log"
+    },
+    "finalReadingAndSearch": {
+      "passed": 20,
+      "log": "output/capsule-header-2026-10-18/final-targeted.log"
+    },
+    "mobileToc": {
+      "passed": 3,
+      "log": "output/capsule-header-2026-10-18/toc.log"
+    },
+    "red": {
+      "failed": 3,
+      "log": "output/capsule-header-2026-10-18/red.log"
+    }
+  },
+  "production": "pending"
+}
