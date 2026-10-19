@@ -12,6 +12,13 @@ for (const width of [1440, 390]) {
     await expect(hero).toBeVisible();
     await expect(hero.getByRole("heading", { level: 1, name: /A-Znk/ })).toHaveCount(1);
     await expect(hero.locator(".author-atlas-hero__statement")).toBeVisible();
+    // The emphasized Chinese sentence must not leave a two-character orphan line.
+    // Latin ch-based widths previously made it wrap despite sufficient column space.
+    const statementLines = await hero.locator(".author-atlas-hero__statement em").evaluate(el => {
+      const style = getComputedStyle(el);
+      return el.getBoundingClientRect().height / Number.parseFloat(style.lineHeight);
+    });
+    expect(statementLines).toBeLessThanOrEqual(1.1);
     await expect(hero.locator(".author-portrait img")).toBeVisible();
     await expect(hero.getByRole("link", { name: /研究成果/ })).toHaveAttribute("href", "/papers");
     const size = await hero.locator("h1").evaluate(el => Number.parseFloat(getComputedStyle(el).fontSize));

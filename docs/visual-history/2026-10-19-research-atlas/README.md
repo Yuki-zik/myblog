@@ -35,3 +35,11 @@ The screenshots are visual references; complete accessibility, actual responsive
 - 1440 and 390 widths and light/dark variants have 0 document horizontal overflow; all author identity sections, 2 verified published papers, 4 practice records, 4 social platforms and real article cards remain available.
 - Map graph hydrates and displays actual nodes. Missing route returns HTTP 404 with working homepage/topics/archives links.
 - Full PR CI (including existing Playwright suite) must complete before merging into `main` and Vercel production publication.
+
+## Final review refinements
+
+The first full PR run passed 208 tests and exposed five index-spacing regressions: the enlarged masthead pushed first records too far below the fold. The header/section spacing was corrected instead of raising the original tests' thresholds. Topic rationale text stays complete, with tighter row padding and internal gaps. The author statement now measures CJK copy with an `em` bound and the actual column width, so its emphasized final sentence stays on one line on desktop and a 390px phone. The hero's research count is derived from all eligible author publications, independently of the three-item selection, and explicitly labels both published and accepted works.
+
+Acceptance remains the full unchanged index-position tests plus the new author line-wrap test, light/dark/mobile checks, and the protected homepage/article sources. The final test/deployment result is recorded with the PR release evidence.
+
+Final focused rerun: `drawing-discover.spec.ts`, `index-proportions.spec.ts`, and `research-atlas.spec.ts` passed 20/20 without modifying their visibility thresholds. The final screenshots were recaptured from the corrected local build.

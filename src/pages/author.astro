@@ -17,13 +17,13 @@ const authorPosts = [...posts]
 
 const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size;
 const socialNetworks = SITE_AUTHOR_PROFILE.socialNetworks ?? [];
-const selectedPapers = (await getCollection("papers", ({ data }) => !data.draft))
+const authorPublications = (await getCollection("papers", ({ data }) => !data.draft))
   .filter((paper) =>
     (paper.data.status === "published" || paper.data.status === "accepted") &&
     paper.data.authors.some((author) => author.self)
   )
-  .sort((a, b) => b.data.year - a.data.year)
-  .slice(0, 3);
+  .sort((a, b) => b.data.year - a.data.year);
+const selectedPapers = authorPublications.slice(0, 3);
 
 const authorContactEntries = [
   SITE_AUTHOR_PROFILE.email
@@ -125,7 +125,7 @@ const authorContactEntries = [
         </div>
 
         <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label="公开内容概览">
-          <div class="discover-hero__panel-stat"><strong>{String(selectedPapers.length).padStart(2, "0")}</strong><span>已发表成果</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>已发表 / 已接收</span></div>
           <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>公开文章</span></div>
           <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>内容主题</span></div>
           <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>研究轨道</span></div>

@@ -97,7 +97,9 @@
 }
 
 .author-atlas-hero__statement {
-  max-width: 16ch;
+  /* CJK copy uses the available column; ch measures a Latin digit, not a Han glyph. */
+  width: 100%;
+  max-width: 18em;
   margin: 0;
   color: var(--atlas-ink);
   font-family: var(--reading-serif);
