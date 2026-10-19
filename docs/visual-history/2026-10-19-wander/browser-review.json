@@ -1,0 +1,29 @@
+[
+  {
+    "name": "wander-desktop",
+    "overflow": 0,
+    "view": "map",
+    "nodeCount": 11,
+    "routeCount": 3,
+    "navOverflow": 0,
+    "errors": []
+  },
+  {
+    "name": "wander-mobile",
+    "overflow": 0,
+    "view": "list",
+    "nodeCount": 11,
+    "routeCount": 3,
+    "navOverflow": 0,
+    "errors": []
+  },
+  {
+    "name": "wander-dark",
+    "overflow": 0,
+    "view": "map",
+    "nodeCount": 11,
+    "routeCount": 3,
+    "navOverflow": 0,
+    "errors": []
+  }
+]

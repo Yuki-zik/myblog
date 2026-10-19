@@ -1,82 +1,54 @@
 ---
-import { getCollection } from "astro:content";
-import KnowledgeGraph from "../components/discover/KnowledgeGraph.tsx";
-import DrawingIndexShell from "../components/discover/DrawingIndexShell.astro";
-import DrawingPageHeader from "../components/discover/DrawingPageHeader.astro";
-import "../styles/discovery-polish.css";
+import {getCollection} from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { buildCollectionPageGraph } from "../lib/seo/jsonLd";
-
-const [posts, topics, concepts] = await Promise.all([
-  getCollection("posts", ({ data }) => !data.draft),
-  getCollection("topics"),
-  getCollection("concepts")
-]);
-
-const mapDescription =
-  "把主题、概念与文章之间的引用关系画成一张可漫游的知识网络图谱 —— 从任意节点跳进对应页面。";
-
-const site = Astro.site;
-const structuredData = site
-  ? buildCollectionPageGraph({
-      siteUrl: site.toString(),
-      canonicalUrl: new URL("/map", site).toString(),
-      title: "知识图谱",
-      description: mapDescription,
-      breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
-        { name: "知识图谱" }
-      ]
-    })
-  : undefined;
+import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import KnowledgeGraph from "../components/discover/KnowledgeGraph";
+import {buildKnowledgeGraph} from "../lib/knowledge/graph";
+import {buildReadingTrails, NODE_LABELS, EXPLORE_LABEL} from "../lib/knowledge/explore";
+import {buildCollectionPageGraph} from "../lib/seo/jsonLd";
+import "../styles/explore.css";
+const [posts,topics,concepts]=await Promise.all([getCollection("posts",({data})=>!data.draft),getCollection("topics"),getCollection("concepts")]);
+const graph=buildKnowledgeGraph(posts,topics,concepts);
+const trails=buildReadingTrails(graph);
+const description="从一个问题出发，沿着笔记、主题与概念之间的真实联系，找到下一篇值得读的内容。";
+const site=Astro.site;
+const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),canonicalUrl:new URL("/map",site).toString(),title:EXPLORE_LABEL,description,breadcrumbs:[{name:"首页",url:new URL("/",site).toString()},{name:EXPLORE_LABEL}]}):undefined;
 ---
-
-<BaseLayout
-  title="知识图谱"
-  description={mapDescription}
-  runtime="discover"
-  headerVariant="drawing"
-  structuredData={structuredData}
->
-  <DrawingIndexShell kind="map" bodyClass="map-atlas-page">
-    <DrawingPageHeader
-      kicker="Atlas / Relations"
-      title="知识图谱"
-      description="在主题、概念与文章之间移动，沿着真实的引用关系发现下一条阅读路径。"
-      count={posts.length + topics.length + concepts.length}
-      countLabel="个关联节点"
-    >
-      <a slot="actions" href="/topics">主题目录 <span aria-hidden="true">↗</span></a>
-    </DrawingPageHeader>
-
-    <section class="map-atlas" aria-label="知识关系图">
-      <div class="map-atlas__context">
-        <div>
-          <p class="map-atlas__serial">FIG. 01 / RELATIONSHIP MAP</p>
-          <h2>从一个问题，找到另一条线索。</h2>
-          <p>连线表示实际存在的文章—主题、文章—概念关联。选择节点，即可继续探索。</p>
-        </div>
-        <dl class="map-atlas__stats" aria-label="图谱数据统计">
-          <div><dt>文章</dt><dd>{String(posts.length).padStart(2, "0")}</dd></div>
-          <div><dt>主题</dt><dd>{String(topics.length).padStart(2, "0")}</dd></div>
-          <div><dt>概念</dt><dd>{String(concepts.length).padStart(2, "0")}</dd></div>
-        </dl>
+<BaseLayout title="漫游 · 想法之间的路径" description={description} canonical="/map" runtime="discover" structuredData={structuredData}>
+  <DiscoverShell bodyClass="wander-page">
+    <header class="wander-hero" data-discover-hero>
+      <div class="wander-hero__title">
+        <p class="wander-kicker">WANDER / FIELDNOTES</p>
+        <h1>漫游<span aria-hidden="true">↗</span></h1>
       </div>
-      <div class="map-atlas__diagram">
-        <KnowledgeGraph client:visible />
+      <div class="wander-hero__copy">
+        <p class="wander-hero__statement">不必按时间阅读，<br/><em>循着好奇，换一条路。</em></p>
+        <p>{description}</p>
+        <a class="wander-hero__jump" href="#connections">直接自由探索 <span aria-hidden="true">↓</span></a>
       </div>
+      <div class="wander-hero__annotation" aria-label="内容规模">
+        <strong>{String(graph.nodes.length).padStart(2,"0")}</strong><span>个想法入口</span>
+        <a href="/topics">主题目录 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    {trails.length>0&&<section class="explore-trails" aria-labelledby="explore-trails-title">
+      <div class="wander-section-head"><h2 id="explore-trails-title">先挑一条有意思的路线</h2><span>READING PATHS / {String(trails.length).padStart(2,"0")}</span></div>
+      <div class="explore-trails__grid">
+        {trails.map((trail,i)=><article class="explore-trail" data-reading-trail data-tone={i}>
+          <div class="explore-trail__top"><span>{String(i+1).padStart(2,"0")}</span><span>{trail.nodes.length} 个停靠点</span></div>
+          <h3><a href={`/map?focus=${encodeURIComponent(trail.nodes[0].id)}#connections`}>{trail.title}<span aria-hidden="true">↗</span></a></h3>
+          <p>{trail.description}</p>
+          <ol aria-label={`${trail.title}的阅读顺序`}>{trail.nodes.map((node,j)=><li><span aria-hidden="true">{j+1}</span><a href={node.url}>{node.title}</a></li>)}</ol>
+        </article>)}
+      </div>
+    </section>}
+
+    <section class="explore-connections" id="connections" aria-labelledby="explore-connections-title">
+      <div class="wander-section-head"><h2 id="explore-connections-title">看看想法如何相连</h2><p>选一个条目，展开它的上下文。</p></div>
+      <KnowledgeGraph graph={graph} client:load />
+      <noscript><div class="explore-noscript"><p>交互浏览需要 JavaScript。以下条目均可直接阅读。</p>{graph.nodes.map(node=><a href={node.url}><span>{NODE_LABELS[node.type]}</span><strong>{node.title}</strong><p>{node.summary}</p></a>)}</div></noscript>
     </section>
-
-    <section class="map-atlas__routes" aria-labelledby="map-atlas-entry-title">
-      <div class="map-atlas__routes-title">
-        <p class="map-atlas__serial">CONTINUE / INDEX</p>
-        <h2 id="map-atlas-entry-title">从目录继续探索</h2>
-      </div>
-      <nav class="map-atlas__route-list" aria-label="图谱之外的阅读入口">
-        <a href="/topics"><span>01 / Topics</span><strong>按研究主题阅读</strong><span aria-hidden="true">↗</span></a>
-        <a href="/papers"><span>02 / Papers</span><strong>查看研究成果</strong><span aria-hidden="true">↗</span></a>
-        <a href="/archives"><span>03 / Archive</span><strong>按时间浏览文章</strong><span aria-hidden="true">↗</span></a>
-      </nav>
-    </section>
-  </DrawingIndexShell>
+    <footer class="wander-endnote"><span>KEEP FOLLOWING THE THREAD.</span><p>这些联系会随笔记一同生长。也可以回到<a href="/archives">文章归档</a>，从时间的另一端开始。</p></footer>
+  </DiscoverShell>
 </BaseLayout>

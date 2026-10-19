@@ -4,10 +4,13 @@ import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro
 import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ExploreGateway from "../../components/discover/ExploreGateway.astro";
+import {buildKnowledgeGraph} from "../../lib/knowledge/graph";
 
-const [topics, posts] = await Promise.all([
+const [topics, posts, concepts] = await Promise.all([
   getCollection("topics"),
-  getCollection("posts", ({ data }) => !data.draft)
+  getCollection("posts", ({ data }) => !data.draft),
+  getCollection("concepts")
 ]);
 
 const sortedTopics = [...topics].sort((a, b) => {
@@ -39,7 +42,7 @@ const topicsPageDescription =
       count={sortedTopics.length}
       countLabel="个主题"
     >
-      <a slot="actions" href="/map">知识图谱 <span aria-hidden="true">↗</span></a>
+      <a slot="actions" href="/map">进入漫游 <span aria-hidden="true">↗</span></a>
     </DrawingPageHeader>
 
     <section class="drawing-topic-index" aria-label="主题目录" data-ux-stagger>
@@ -69,5 +72,6 @@ const topicsPageDescription =
         )
       }
     </section>
+    <ExploreGateway graph={buildKnowledgeGraph(posts, topics, concepts)} compact />
   </DrawingIndexShell>
 </BaseLayout>
