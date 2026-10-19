@@ -52,7 +52,9 @@
 }
 
 .site-header .shell {
-  grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem) minmax(0, 1fr);
+  /* Size navigation for complete labels; the flexible brand column absorbs
+     the difference instead of shrinking six CJK links into vertical text. */
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem) max-content;
   gap: clamp(0.8rem, 1vw, 1.1rem);
   transition: transform var(--header-motion-surface) var(--header-ease-geometry);
 }
@@ -131,11 +133,17 @@ html.is-header-morphing::view-transition-new(site-header) {
 }
 
 .site-nav a {
+  white-space: nowrap;
+  flex-shrink: 0;
   text-decoration: none;
   transition:
     color var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.site-nav-tools {
+  flex-shrink: 0;
 }
 
 .site-nav a:hover {
@@ -155,7 +163,7 @@ html.is-header-morphing::view-transition-new(site-header) {
 
 @media (max-width: 1100px) {
   .site-header .shell {
-    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem) max-content;
   }
 }
 
