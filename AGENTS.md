@@ -1,6 +1,7 @@
 # Agent Context & Handoff (A-Znk的blog)
 
 Article cover/entry rule (2026-10-19): Keep the entire cover as the existing keyboard-accessible image-viewer trigger, without a visible zoom-label overlay. For posts whose first rendered body block is h2, tighten only the header-to-first-section spacing; preserve the real mobile TOC and paragraph-first breathing room. Regression: tests/e2e/article-entry-clean.spec.ts.
+Waline mainland network repair (2026-10-19 candidate): a first-party `/_waline/api/:path*` Vercel rewrite proxies read/write API calls to the EXISTING Waline deployment; the front-end auto-selects same-origin proxy only for the known legacy backend. VPS mirror calls canonical proxy. Preserve existing Waline DB, comment paths, admin access, and no-cache behavior. Verify production mainland comment readback before claiming fixed. See docs/waline-mainland-access.md.
 
 Style unification in progress (2026-10-18): preserve all accepted reading layouts, artwork, capsule geometry, routes, anchors and interactions. Unify shared orange/paper tokens, page chrome, editorial indexes and controls. Do not replace the site with a template or flatten reading/graph semantics.
 

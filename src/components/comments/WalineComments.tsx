@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { init, type WalineInstance } from "@waline/client";
+import { resolveWalineServerURL } from "./walineServerURL";
 
 interface WalineCommentsProps {
   heading?: string;
@@ -12,7 +13,10 @@ export default function WalineComments({
 }: WalineCommentsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [runtimeError, setRuntimeError] = useState<string | null>(null);
-  const serverURL = import.meta.env.PUBLIC_WALINE_SERVER_URL;
+  const serverURL = resolveWalineServerURL(
+    import.meta.env.PUBLIC_WALINE_SERVER_URL,
+    typeof window === "undefined" ? undefined : window.location.origin,
+  );
 
   useEffect(() => {
     const container = containerRef.current;
