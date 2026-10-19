@@ -1,5 +1,7 @@
 # Agent Context & Handoff (A-Znk的blog)
 
+Waline mainland network repair (2026-10-19 candidate): a first-party `/_waline/api/:path*` Vercel rewrite proxies read/write API calls to the EXISTING Waline deployment; the front-end auto-selects same-origin proxy only for the known legacy backend. VPS mirror calls canonical proxy. Preserve existing Waline DB, comment paths, admin access, and no-cache behavior. Verify production mainland comment readback before claiming fixed. See docs/waline-mainland-access.md.
+
 Style unification in progress (2026-10-18): preserve all accepted reading layouts, artwork, capsule geometry, routes, anchors and interactions. Unify shared orange/paper tokens, page chrome, editorial indexes and controls. Do not replace the site with a template or flatten reading/graph semantics.
 
 Header blank-strip repair (2026-10-18): do not start shrinking the sticky capsule before the header's reserved document-flow height has scrolled away. `UiControllers.astro` exports measured `header.offsetHeight` as `--header-collapse-start`; keep both surface and content scroll timelines synchronized, including mobile two-row header geometry. At <=900px keep a stable `--header-band: 96px` minimum across scroll states, or search dialog body-scroll-lock will lose ~5px of reading position. Evidence and regression: `docs/visual-history/2026-10-18-header-empty-strip/` and `tests/e2e/capsule-header.spec.ts`.

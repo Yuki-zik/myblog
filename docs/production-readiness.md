@@ -217,3 +217,7 @@ Retain the previous known-good production deployment in Vercel. If a new product
 - Preserve audit exceptions as explicit debt: the current gates pass, but low-severity findings and pre-existing Waline exceptions remain. Do not describe this as zero vulnerabilities.
 - Historical runtime logs may contain the old database credential. Coordinate rotation across all consumers and Vercel before changing it; do not publish, copy, or retain raw connection logs in this repository.
 - A successful anonymous comment read proves the read/database path. It does not prove moderation or a new comment submission; no synthetic public comment should be published merely to claim coverage.
+
+## 2026-10-19 — Mainland Waline connectivity repair (candidate, verify before marking production accepted)
+
+Mainland clients can fetch article HTML/static assets from `a-znk.com`, but fail direct DNS/TLS to `waline-smoky-five-24.vercel.app`; the existing backend returns HTTP 200/errno 0 and count 1 from a US VPS. The proposed first-party Vercel rewrite at `/_waline/api/*` and scoped runtime URL selection let CN browsers use the working canonical origin without migrating the Waline service/database. Keep the API rewrite uncached. Record preview and production checks, including comment readback and final browser network routing, in [the dedicated runbook](waline-mainland-access.md).
