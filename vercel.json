@@ -71,5 +71,11 @@
       "destination": "https://a-znk.com/:path",
       "statusCode": 301
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/_waline/api/:path*",
+      "destination": "https://waline-smoky-five-24.vercel.app/api/:path*"
+    }
   ]
 }
