@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly APNIC CN CIDR update for a-znk blog mirror
+
+[Timer]
+OnCalendar=Sun *-*-* 03:40:00 UTC
+RandomizedDelaySec=1h
+Persistent=true
+Unit=a-znk-blog-cn-update.service
+
+[Install]
+WantedBy=timers.target

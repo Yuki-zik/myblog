@@ -1,0 +1,15 @@
+[Unit]
+Description=Refresh APNIC CN CIDR allowlist for a-znk VPS blog mirror
+Documentation=https://ftp.apnic.net/stats/apnic/delegated-apnic-latest
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/update-blog-cn-cidrs
+TimeoutStartSec=90
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/etc/nginx /run/lock

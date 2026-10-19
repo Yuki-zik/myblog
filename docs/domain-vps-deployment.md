@@ -31,3 +31,11 @@
 5. Vercel SEO rollback: change Production `SITE_URL` back, redeploy; revert hostname redirect rules if necessary. Keep both domains verified and the Google owner-verification file.
 
 No additional domain purchases, paid add-ons, Waline database changes or Xray restarts were made.
+
+## 2026-10-19: production mirror bandwidth guard
+
+The Nginx-only guard on 80/8443 was deployed and checked without touching Xray 443/24443, SSH 13424, Vercel, DNS or certbot. For current route semantics, source configuration, updater cadence, testing and rollback, use [`deploy/vps/traffic-guard/README.md`](../deploy/vps/traffic-guard/README.md). The 2026-10-18 description above remains the historical baseline.
+
+The prechange sample of mirrored Nginx logs contained roughly 440 HTTP and 140 HTTPS requests, with 389/133 requests from addresses outside APNIC CN allocations. The recorded response-body bytes for those requests were about 13.0 MB and 2.75 MB. This log sample includes deployment validation and scanners, and it does not measure Xray bandwidth; it illustrates only the avoidable *static mirror* response cost.
+
+Live checks confirmed: Vercel apex 200; unknown HTTP Host/localhost bare-IP drop; `vps` HTTP 308; the external HTTP-01 challenge returns exact content 200; CN/local mirror 8443 200; non-CN source 8443 302 to the same path on Vercel; unknown 8443 SNI fails handshake; missing pages 404 with a 10-byte text body; excessive requests 429; gzip 200; service timer, Nginx reload and existing protected listeners all healthy.

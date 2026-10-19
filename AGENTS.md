@@ -1,5 +1,7 @@
 # Agent Context & Handoff (A-Znk的blog)
 
+VPS traffic guard (2026-10-19): The static mirror now accepts CN-allocated IPs on 8443 and redirects other visitors to Vercel; HTTP 80 is restricted to the vps redirect and ACME HTTP-01. Future VPS changes must preserve the versioned `deploy/vps/traffic-guard/` config/updater, certbot webroot and Xray 443/24443 + SSH 13424. Do not replace the deployed guard with the historical `nginx-http.conf` template. Production rollback: `/root/blog-traffic-guard-20261019/rollback.sh`.
+
 Style unification in progress (2026-10-18): preserve all accepted reading layouts, artwork, capsule geometry, routes, anchors and interactions. Unify shared orange/paper tokens, page chrome, editorial indexes and controls. Do not replace the site with a template or flatten reading/graph semantics.
 
 Header blank-strip repair (2026-10-18): do not start shrinking the sticky capsule before the header's reserved document-flow height has scrolled away. `UiControllers.astro` exports measured `header.offsetHeight` as `--header-collapse-start`; keep both surface and content scroll timelines synchronized, including mobile two-row header geometry. At <=900px keep a stable `--header-band: 96px` minimum across scroll states, or search dialog body-scroll-lock will lose ~5px of reading position. Evidence and regression: `docs/visual-history/2026-10-18-header-empty-strip/` and `tests/e2e/capsule-header.spec.ts`.
