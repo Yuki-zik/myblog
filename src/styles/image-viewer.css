@@ -12,39 +12,6 @@
   outline-offset: 6px;
 }
 
-.post-cover-trigger .post-cover-zoom-hint {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  z-index: 11;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 9px;
-  border: 1px solid var(--border-strong);
-  border-radius: 2px;
-  background: var(--surface-primary);
-  color: var(--drawing-accent-ink);
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.25;
-  opacity: 0.88;
-  pointer-events: none;
-}
-
-.post-cover-trigger .post-cover-zoom-hint svg {
-  width: 14px;
-  height: 14px;
-  flex: none;
-}
-
-.post-cover-trigger:is(:hover, :focus-visible) .post-cover-zoom-hint {
-  border-color: var(--drawing-accent-ink);
-  background: var(--drawing-accent-wash);
-  opacity: 1;
-}
-
 .image-viewer:not([open]) {
   display: none;
 }
@@ -254,9 +221,5 @@
     flex-direction: column;
     gap: 4px;
     padding: 10px 12px;
-  }
-
-  .post-cover-trigger .post-cover-zoom-hint {
-    opacity: 1;
   }
 }

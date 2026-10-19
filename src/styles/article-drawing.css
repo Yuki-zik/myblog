@@ -85,6 +85,16 @@
   box-shadow: none;
 }
 
+/* A post opening with a chapter needs no reserved introductory-paragraph space.
+   Paragraph-first posts keep the normal 3.5rem gap above their prose. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-reading-article:has(> .post-body--scholarly > h2:first-child) .post-title-card {
+  margin-bottom: 1.5rem;
+}
+
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-body--scholarly > h2:first-child {
+  margin-top: 0;
+}
+
 [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-title-card .post-header--scholarly {
   display: flex;
   flex-direction: column;
