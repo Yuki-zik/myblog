@@ -31,7 +31,7 @@ describe("deployment security headers", () => {
     ]);
     expect(directives.get("script-src")).toEqual(["'self'", "'unsafe-inline'"]);
     expect(directives.get("connect-src")).toEqual([
-      "'self'", "https://api.swo.moe", "https://waline.example",
+      "'self'", "https://api.swo.moe", "https://a-znk.com", "https://waline.example",
       "https://comments.example.com", "https://*.vercel.app"
     ]);
   });
