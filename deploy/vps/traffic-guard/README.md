@@ -1,6 +1,6 @@
 # VPS blog mirror traffic guard (deployed 2026-10-19)
 
-This is the **versioned source** of the separately managed Nginx guard on the mirror VPS. The main site `https://a-znk.com/` stays on Vercel. The static mirror `https://vps.a-znk.com:8443/` runs on the VPS; existing Xray 443/24443, SSH 13424, Waline, DNS and certbot ownership must not be changed. `deploy/vps/deploy.sh` still publishes only static `dist/` releases and must not overwrite this Nginx config.
+This is the **versioned source** of the separately managed Nginx guard on the mirror VPS. The main site `https://a-znk.com/` stays on Vercel. The static mirror `https://vps.a-znk.com:8443/` runs on the VPS; existing Xray 443/24443, SSH 13424, Waline, DNS and certbot ownership must not be changed. `deploy/vps/deploy.sh` publishes only static `dist/` releases and must not overwrite this Nginx config. Its post-publish smoke test must target local HTTPS 8443 using an explicit `vps.a-znk.com` SNI; the old `Host: a-znk.com` test on port 80 is intentionally rejected by the guard.
 
 ## Inbound policy
 
