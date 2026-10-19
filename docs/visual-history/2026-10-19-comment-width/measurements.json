@@ -1,0 +1,110 @@
+[
+  {
+    "viewport": {
+      "width": 1493,
+      "height": 1100
+    },
+    "response": 200,
+    "walineReady": true,
+    "before": {
+      "comments": {
+        "x": 253,
+        "width": 446.4
+      },
+      "pager": {
+        "x": 84.3,
+        "width": 784
+      },
+      "related": {
+        "x": 77,
+        "width": 798.5
+      },
+      "editor": {
+        "x": 260.6,
+        "width": 431.2
+      },
+      "mount": {
+        "x": 253,
+        "width": 446.4
+      },
+      "overflow": 0
+    },
+    "after": {
+      "comments": {
+        "x": 84.3,
+        "width": 784
+      },
+      "pager": {
+        "x": 84.3,
+        "width": 784
+      },
+      "related": {
+        "x": 77,
+        "width": 798.5
+      },
+      "editor": {
+        "x": 91.8,
+        "width": 768.8
+      },
+      "mount": {
+        "x": 84.3,
+        "width": 784
+      },
+      "overflow": 0
+    }
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 900
+    },
+    "response": 200,
+    "walineReady": true,
+    "before": {
+      "comments": {
+        "x": 16,
+        "width": 358
+      },
+      "pager": {
+        "x": 16,
+        "width": 358
+      },
+      "related": {
+        "x": 16,
+        "width": 358
+      },
+      "editor": {
+        "x": 23.6,
+        "width": 342.8
+      },
+      "mount": {
+        "x": 16,
+        "width": 358
+      },
+      "overflow": 0
+    },
+    "after": {
+      "comments": {
+        "x": 16,
+        "width": 358
+      },
+      "pager": {
+        "x": 16,
+        "width": 358
+      },
+      "related": {
+        "x": 16,
+        "width": 358
+      },
+      "editor": {
+        "x": 23.6,
+        "width": 342.8
+      },
+      "mount": {
+        "x": 16,
+        "width": 358
+      },
+      "overflow": 0
+    }
+  }
+]
