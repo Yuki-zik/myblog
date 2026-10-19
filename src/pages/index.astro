@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import researchArchitecture from "../assets/home/research-architecture.webp";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ExploreGateway from "../components/discover/ExploreGateway.astro";
+import {buildKnowledgeGraph} from "../lib/knowledge/graph";
 import {
   pickFeaturedHomePost,
   pickRecentHomePosts
@@ -352,6 +354,8 @@ const homeDescription = SITE_DESCRIPTION;
           )}
         </div>
       </section>
+
+      <ExploreGateway graph={buildKnowledgeGraph(posts, topics, concepts)} />
 
       <HomeReferenceFooter variant="full-bleed" />
     </div>

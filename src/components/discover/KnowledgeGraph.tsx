@@ -1,392 +1,121 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import {
-  forceCenter,
-  forceCollide,
-  forceLink,
-  forceManyBody,
-  forceSimulation,
-  forceX,
-  forceY,
-  type SimulationNodeDatum
-} from "d3-force";
+import {useEffect, useId, useMemo, useState} from "react";
+import type {KnowledgeGraph as GraphData, GraphNode} from "../../lib/knowledge/graph";
+import {filterExploreNodes, getRelatedNodes, layoutExploreNodes, NODE_LABELS, wrapNodeTitle, type NodeFilter} from "../../lib/knowledge/explore";
 
-type GraphNodeType = "post" | "topic" | "concept";
+interface Props {graph: GraphData;}
 
-interface RawNode {
-  id: string;
-  type: GraphNodeType;
-  title: string;
-  url: string;
-}
-interface RawEdge {
-  source: string;
-  target: string;
-}
-interface SimNode extends RawNode, SimulationNodeDatum {
-  degree: number;
-  radius: number;
-  glow: number;
-  core: number;
-}
-interface SimLink {
-  source: SimNode;
-  target: SimNode;
-}
-interface BgStar {
-  x: number;
-  y: number;
-  r: number;
-  o: number;
-  d: number;
-}
+/** Server-rendered data, deterministic positions, native links for the actual reading step. */
+export default function KnowledgeGraph({graph}:Props) {
+  const searchId=useId();
+  const initial=graph.nodes.find(n=>n.type==="post")?.id??graph.nodes[0]?.id??"";
+  const [selectedId,setSelectedId]=useState(initial);
+  const [hoverId,setHoverId]=useState<string|null>(null);
+  const [query,setQuery]=useState("");
+  const [filter,setFilter]=useState<NodeFilter>("all");
+  const [view,setView]=useState<"map"|"list"|"auto">("auto");
+  const [ready,setReady]=useState(false);
+  const layout=useMemo(()=>layoutExploreNodes(graph.nodes),[graph.nodes]);
+  const positions=useMemo(()=>new Map(layout.nodes.map(n=>[n.id,n])),[layout]);
+  const visible=useMemo(()=>filterExploreNodes(graph.nodes,query,filter),[graph.nodes,query,filter]);
+  const visibleIds=new Set(visible.map(n=>n.id));
+  const selected=visible.find(n=>n.id===selectedId)??visible[0]??null;
+  const related=selected?getRelatedNodes(graph,selected.id):[];
+  const activeId=hoverId??selected?.id;
+  const activeSet=new Set(activeId?[activeId,...getRelatedNodes(graph,activeId).map(n=>n.id)]:[]);
 
-const WIDTH = 920;
-const HEIGHT = 580;
-const PADDING = 40;
-const MAX_LABEL = 13;
-const BG_STARS = 90;
+  useEffect(()=>{
+    const requested=new URL(window.location.href).searchParams.get("focus");
+    if(requested&&graph.nodes.some(n=>n.id===requested))setSelectedId(requested);
+    setView(window.matchMedia("(max-width: 759px)").matches?"list":"map");
+    setReady(true);
+  },[graph.nodes]);
 
-const TYPE_LABEL: Record<GraphNodeType, string> = {
-  post: "文章",
-  topic: "主题",
-  concept: "概念"
-};
-
-function clip(title: string): string {
-  return title.length > MAX_LABEL ? `${title.slice(0, MAX_LABEL)}…` : title;
-}
-
-/** Deterministic PRNG so the background starfield is stable across re-renders. */
-function mulberry32(seed: number): () => number {
-  return () => {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  const choose=(node:GraphNode,clearFilters=false)=>{
+    setSelectedId(node.id);setHoverId(null);
+    if(clearFilters){setQuery("");setFilter("all");}
+    const url=new URL(window.location.href);url.searchParams.set("focus",node.id);
+    window.history.replaceState(window.history.state,"",url.pathname+url.search+url.hash);
   };
-}
-
-/** Gentle quadratic arc — constellation lines with a hair of curve. */
-function arc(a: SimNode, b: SimNode): string {
-  const x1 = a.x ?? 0;
-  const y1 = a.y ?? 0;
-  const x2 = b.x ?? 0;
-  const y2 = b.y ?? 0;
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const len = Math.hypot(dx, dy) || 1;
-  const bow = len * 0.08;
-  const cx = (x1 + x2) / 2 + (-dy / len) * bow;
-  const cy = (y1 + y2) / 2 + (dx / len) * bow;
-  return `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`;
-}
-
-/** 4-point diffraction sparkle centred at (cx,cy) with arm length `len`. */
-function sparkle(cx: number, cy: number, len: number): string {
-  const t = Math.max(0.7, len * 0.09);
-  return (
-    `M${cx},${cy - len} L${cx + t},${cy - t} L${cx + len},${cy} L${cx + t},${cy + t} ` +
-    `L${cx},${cy + len} L${cx - t},${cy + t} L${cx - len},${cy} L${cx - t},${cy - t} Z`
-  );
-}
-
-/**
- * Knowledge graph as a star chart (discover runtime, /map).
- *
- * The network is drawn as a constellation over a deep-space "sea of stars":
- * a scattered background starfield, faint constellation lines, and luminous
- * star nodes (bright core + radial glow + a diffraction sparkle on hubs /
- * focus). Sizing ∝ √degree acts like stellar magnitude. Layout is computed
- * once (no RAF); hover lights up a star's constellation and dims the rest.
- * Motion (twinkle, entrance) is gentle and reduced-motion gated.
- */
-export default function KnowledgeGraph() {
-  const [graph, setGraph] = useState<{ nodes: SimNode[]; links: SimLink[] } | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [restLabels, setRestLabels] = useState<Set<string>>(new Set());
-  const [focusId, setFocusId] = useState<string | null>(null);
-  const labelRefs = useRef(new Map<string, SVGTextElement>());
-
-  const bgStars = useMemo<BgStar[]>(() => {
-    const rand = mulberry32(20260701);
-    return Array.from({ length: BG_STARS }, () => ({
-      x: rand() * WIDTH,
-      y: rand() * HEIGHT,
-      r: 0.4 + rand() * 1.2,
-      o: 0.12 + rand() * 0.55,
-      d: rand() * 6
-    }));
-  }, []);
-
-  useEffect(() => {
-    let alive = true;
-    fetch("/knowledge-graph.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`graph fetch failed: ${response.status}`);
-        }
-        return response.json() as Promise<{ nodes: RawNode[]; edges: RawEdge[] }>;
-      })
-      .then((data) => {
-        if (!alive) {
-          return;
-        }
-        const degree = new Map<string, number>();
-        for (const edge of data.edges) {
-          degree.set(edge.source, (degree.get(edge.source) ?? 0) + 1);
-          degree.set(edge.target, (degree.get(edge.target) ?? 0) + 1);
-        }
-        const nodes: SimNode[] = data.nodes.map((node) => {
-          const deg = degree.get(node.id) ?? 0;
-          const mag = Math.sqrt(deg);
-          return {
-            ...node,
-            degree: deg,
-            radius: 13 + mag * 4,
-            glow: 12 + mag * 6.5,
-            core: 1.7 + mag * 1.1
-          };
-        });
-        const byId = new Map(nodes.map((node) => [node.id, node]));
-        const links: SimLink[] = data.edges
-          .map((edge) => ({ source: byId.get(edge.source), target: byId.get(edge.target) }))
-          .filter((link): link is SimLink => Boolean(link.source && link.target));
-
-        const simulation = forceSimulation(nodes)
-          .force("charge", forceManyBody().strength(-360))
-          .force(
-            "link",
-            forceLink<SimNode, SimLink>(links)
-              .id((node) => node.id)
-              .distance(112)
-              .strength(0.16)
-          )
-          .force("center", forceCenter(WIDTH / 2, HEIGHT / 2))
-          .force("x", forceX(WIDTH / 2).strength(0.055))
-          .force("y", forceY(HEIGHT / 2).strength(0.09))
-          .force("collide", forceCollide<SimNode>((node) => node.radius + 18).strength(0.9))
-          .stop();
-        simulation.tick(360);
-
-        for (const node of nodes) {
-          node.x = Math.max(PADDING, Math.min(WIDTH - PADDING, node.x ?? WIDTH / 2));
-          node.y = Math.max(PADDING, Math.min(HEIGHT - PADDING, node.y ?? HEIGHT / 2));
-        }
-        setGraph({ nodes, links });
-      })
-      .catch(() => {
-        if (alive) {
-          setFailed(true);
-        }
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const adjacency = useMemo(() => {
-    const map = new Map<string, Set<string>>();
-    if (graph) {
-      for (const link of graph.links) {
-        if (!map.has(link.source.id)) map.set(link.source.id, new Set());
-        if (!map.has(link.target.id)) map.set(link.target.id, new Set());
-        map.get(link.source.id)!.add(link.target.id);
-        map.get(link.target.id)!.add(link.source.id);
-      }
-    }
-    return map;
-  }, [graph]);
-
-  useLayoutEffect(() => {
-    if (!graph) {
-      return;
-    }
-    const declutter = () => {
-      const ordered = [...graph.nodes].sort((a, b) => b.degree - a.degree);
-      const placed: Array<{ x: number; y: number; w: number; h: number }> = [];
-      const keep = new Set<string>();
-      for (const node of ordered) {
-        const el = labelRefs.current.get(node.id);
-        if (!el) {
-          continue;
-        }
-        const box = el.getBBox();
-        const padded = { x: box.x - 5, y: box.y - 2, w: box.width + 10, h: box.height + 4 };
-        const overlaps = placed.some(
-          (b) =>
-            padded.x < b.x + b.w &&
-            padded.x + padded.w > b.x &&
-            padded.y < b.y + b.h &&
-            padded.y + padded.h > b.y
-        );
-        if (!overlaps) {
-          keep.add(node.id);
-          placed.push(padded);
-        }
-      }
-      setRestLabels(keep);
-    };
-    declutter();
-    let alive = true;
-    if (typeof document !== "undefined" && document.fonts?.ready) {
-      document.fonts.ready.then(() => {
-        if (alive) declutter();
-      });
-    }
-    return () => {
-      alive = false;
-    };
-  }, [graph]);
-
-  if (failed) {
-    return <p className="knowledge-graph-status">星图暂时无法载入。</p>;
-  }
-  if (!graph) {
-    return <p className="knowledge-graph-status">正在绘制星图…</p>;
-  }
-
-  const focusSet =
-    focusId === null ? null : new Set<string>([focusId, ...(adjacency.get(focusId) ?? [])]);
-  const nodeState = (id: string): "" | "focus" | "near" | "mute" => {
-    if (!focusSet) return "";
-    if (id === focusId) return "focus";
-    return focusSet.has(id) ? "near" : "mute";
+  const reset=()=>{setQuery("");setFilter("all");setHoverId(null);};
+  const next=()=>{
+    const index=visible.findIndex(n=>n.id===selected?.id);
+    const node=visible[(index+1)%visible.length];if(node)choose(node);
   };
 
-  return (
-    <figure className="knowledge-graph-figure">
-      <div className="kg-sky">
-        <svg
-          className="knowledge-graph"
-          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          role="group"
-          aria-label="主题、概念与文章连成星座的知识网络星图"
-        >
-          <defs>
-            <radialGradient id="kgStar-post" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-              <stop offset="20%" stopColor="#ffe4d8" stopOpacity="0.72" />
-              <stop offset="48%" stopColor="#ff8f73" stopOpacity="0.26" />
-              <stop offset="100%" stopColor="#ff7a5b" stopOpacity="0" />
-            </radialGradient>
-            <radialGradient id="kgStar-topic" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-              <stop offset="20%" stopColor="#e6eefe" stopOpacity="0.72" />
-              <stop offset="48%" stopColor="#9db6ea" stopOpacity="0.26" />
-              <stop offset="100%" stopColor="#7c9ad6" stopOpacity="0" />
-            </radialGradient>
-            <radialGradient id="kgStar-concept" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-              <stop offset="20%" stopColor="#fff1d9" stopOpacity="0.72" />
-              <stop offset="48%" stopColor="#f0cf9c" stopOpacity="0.26" />
-              <stop offset="100%" stopColor="#eac48f" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-
-          <g className="kg-starfield" aria-hidden="true">
-            {bgStars.map((star, index) => (
-              <circle
-                key={index}
-                cx={star.x}
-                cy={star.y}
-                r={star.r}
-                className="kg-bgstar"
-                style={{ ["--o" as string]: star.o, ["--d" as string]: `${star.d}s` }}
-              />
-            ))}
-          </g>
-
-          <g className="kg-constellation" fill="none">
-            {graph.links.map((link, index) => {
-              const active = focusSet
-                ? link.source.id === focusId || link.target.id === focusId
-                : false;
-              const muted = Boolean(focusSet && !active);
-              return (
-                <path
-                  key={index}
-                  d={arc(link.source, link.target)}
-                  className={`kg-line${active ? " is-active" : ""}${muted ? " is-muted" : ""}`}
-                />
-              );
-            })}
-          </g>
-
-          <g className="kg-stars">
-            {graph.nodes.map((node, index) => {
-              const state = nodeState(node.id);
-              const isHub = node.degree >= 3;
-              const showSpike = state === "focus" || state === "near" || (!focusSet && isHub);
-              const spikeLen = state === "focus" ? node.glow * 1.5 : node.glow * 0.95;
-              return (
-                <a
-                  key={node.id}
-                  href={node.url}
-                  className={`kg-star kg-star--${node.type}${state ? ` is-${state}` : ""}`}
-                  aria-label={`${TYPE_LABEL[node.type]}:${node.title}`}
-                  style={{ ["--kg-i" as string]: index }}
-                  onMouseEnter={() => setFocusId(node.id)}
-                  onMouseLeave={() => setFocusId(null)}
-                  onFocus={() => setFocusId(node.id)}
-                  onBlur={() => setFocusId(null)}
-                >
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={node.glow}
-                    className="kg-star-glow"
-                    fill={`url(#kgStar-${node.type})`}
-                  />
-                  {showSpike ? (
-                    <path
-                      d={sparkle(node.x ?? 0, node.y ?? 0, spikeLen)}
-                      className="kg-star-spike"
-                    />
-                  ) : null}
-                  <circle cx={node.x} cy={node.y} r={node.core} className="kg-star-core" />
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={Math.max(node.glow * 0.7, 16)}
-                    className="kg-star-hit"
-                  />
-                </a>
-              );
-            })}
-          </g>
-
-          <g className="kg-labels" aria-hidden="true">
-            {graph.nodes.map((node) => {
-              const state = nodeState(node.id);
-              const show = focusSet
-                ? state === "focus" || state === "near"
-                : restLabels.has(node.id);
-              return (
-                <text
-                  key={node.id}
-                  ref={(el) => {
-                    if (el) labelRefs.current.set(node.id, el);
-                    else labelRefs.current.delete(node.id);
-                  }}
-                  x={node.x}
-                  y={(node.y ?? 0) + node.glow * 0.62 + 14}
-                  textAnchor="middle"
-                  className={`kg-label${show ? "" : " is-hidden"}${state === "focus" ? " is-focus" : ""}`}
-                >
-                  {clip(node.title)}
-                </text>
-              );
-            })}
-          </g>
-        </svg>
+  return <div className="explore-workspace" data-explore-ready={String(ready)} data-view={view}>
+    <div className="explore-toolbar">
+      <div className="explore-filter" role="group" aria-label="内容类型">
+        {(["all","topic","post","concept"] as const).map(type=><button key={type} type="button" aria-pressed={filter===type} aria-label={type==="all"?"全部内容":`仅看${NODE_LABELS[type]}`} onClick={()=>setFilter(type)}>
+          {type==="all"?"全部":NODE_LABELS[type]}<span>{type==="all"?graph.nodes.length:graph.nodes.filter(n=>n.type===type).length}</span>
+        </button>)}
       </div>
-      <figcaption className="knowledge-graph-legend">
-        <span className="kg-legend kg-legend--post">文章</span>
-        <span className="kg-legend kg-legend--topic">主题</span>
-        <span className="kg-legend kg-legend--concept">概念</span>
-        <span className="kg-legend-hint">悬停任意星点,点亮它的星座</span>
-      </figcaption>
-    </figure>
-  );
+      <div className="explore-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5"/></svg>
+        <label className="sr-only" htmlFor={searchId}>搜索漫游内容</label>
+        <input id={searchId} type="search" value={query} placeholder="搜一个想法…" onChange={e=>setQuery(e.target.value)} />
+      </div>
+      <div className="explore-view-toggle" role="group" aria-label="浏览方式">
+        <button type="button" aria-label="关联图视图" aria-pressed={view!=="list"} onClick={()=>setView("map")}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="5" cy="12" r="3"/><circle cx="18" cy="5" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8 11 7-5M8 13l7 5"/></svg><span>关联图</span></button>
+        <button type="button" aria-label="列表视图" aria-pressed={view==="list"} onClick={()=>setView("list")}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M2 6h2M2 12h2M2 18h2"/></svg><span>列表</span></button>
+      </div>
+    </div>
+
+    <div className="explore-workspace__body">
+      <div className="explore-canvas" aria-label="内容关联浏览">
+        <div className="explore-canvas__bar"><span>FIELD OF IDEAS</span><output aria-live="polite">{visible.length} 个条目{query||filter!=="all"?" · 已筛选":` · ${graph.edges.length} 条联系`}</output></div>
+        {visible.length===0?<div className="explore-empty" role="status"><span aria-hidden="true">∅</span><h3>这条线索还没有记录</h3><p>换个关键词，或回到全部内容继续逛逛。</p><button type="button" onClick={reset}>重置筛选</button></div>:<>
+          <div className="explore-map" tabIndex={0} aria-label="关联图画布，可横向滚动">
+            <svg className="knowledge-graph" viewBox={`0 0 ${layout.width} ${layout.height}`} role="group" aria-label="主题、笔记与概念的关联图">
+              <g className="explore-map__guides" aria-hidden="true">
+                {[144,454,764].map((x,i)=><g key={x}><path d={`M${x} 58V${layout.height-22}`}/><text x={x} y="31" textAnchor="middle">{["01 / 主题","02 / 笔记","03 / 概念"][i]}</text></g>)}
+              </g>
+              <g fill="none" aria-hidden="true">
+                {graph.edges.map((edge,i)=>{
+                  const a=positions.get(edge.source),b=positions.get(edge.target);
+                  if(!a||!b||!visibleIds.has(a.id)||!visibleIds.has(b.id))return null;
+                  const active=a.id===activeId||b.id===activeId;
+                  const direction=a.x<b.x?1:-1;
+                  const x1=a.x+direction*a.width/2,x2=b.x-direction*b.width/2;
+                  const same=a.x===b.x;
+                  const path=same?`M${a.x-a.width/2} ${a.y} C${a.x-a.width/2-38} ${a.y},${b.x-b.width/2-38} ${b.y},${b.x-b.width/2} ${b.y}`:`M${x1} ${a.y} C${(x1+x2)/2} ${a.y},${(x1+x2)/2} ${b.y},${x2} ${b.y}`;
+                  return <path key={i} d={path} className={`explore-map__edge${active?" is-active":""}`}/>;
+                })}
+              </g>
+              {layout.nodes.filter(n=>visibleIds.has(n.id)).map(node=>{
+                const lines=wrapNodeTitle(node.title).slice(0,3);
+                const active=node.id===selected?.id;
+                return <g key={node.id} role="button" tabIndex={0} aria-label={`预览${NODE_LABELS[node.type]}：${node.title}`} aria-pressed={active}
+                  className={`explore-map__node explore-map__node--${node.type}${active?" is-selected":""}${activeId&&!activeSet.has(node.id)?" is-distant":""}`}
+                  transform={`translate(${node.x},${node.y})`} onClick={()=>choose(node)}
+                  onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose(node);}}}
+                  onMouseEnter={()=>setHoverId(node.id)} onMouseLeave={()=>setHoverId(null)} onFocus={()=>setHoverId(node.id)} onBlur={()=>setHoverId(null)}>
+                    <rect className="explore-map__node-paper" x={-node.width/2} y="-35" width={node.width} height="70" rx={node.type==="topic"?35:3}/>
+                    {node.type==="concept"?<path className="explore-map__glyph" d={`M${-node.width/2+17} -7l7 7-7 7-7-7Z`}/>:<circle className="explore-map__glyph" cx={-node.width/2+18} cy="0" r={node.type==="post"?3.5:5}/>}
+                    <text className="explore-map__node-title" x="10" y={-((lines.length-1)*18)/2+5} textAnchor="middle">{lines.map((line,i)=><tspan x="10" dy={i?18:0} key={i}>{line}{i===2&&wrapNodeTitle(node.title).length>3?"…":""}</tspan>)}</text>
+                </g>;
+              })}
+            </svg>
+          </div>
+          <div className="explore-node-list" aria-label="内容列表">
+            {visible.map(node=><button key={node.id} type="button" className={`explore-list-item explore-list-item--${node.type}`} aria-pressed={selected?.id===node.id} onClick={()=>choose(node)}>
+              <span className="explore-type">{NODE_LABELS[node.type]}</span><strong>{node.title}</strong><span className="explore-list-item__summary">{node.summary}</span><span className="explore-list-item__arrow" aria-hidden="true">↗</span>
+            </button>)}
+          </div>
+        </>}
+        <div className="explore-canvas__foot"><p>连线来自文章与主题的实际引用。选择条目，展开下一步。</p><button type="button" onClick={next} disabled={!visible.length}>换个起点 <span aria-hidden="true">↻</span></button></div>
+      </div>
+
+      <aside className="explore-inspector" aria-label="当前条目与相关阅读" aria-live="polite">
+        {selected?<>
+          <div className="explore-inspector__top"><span className={`explore-type explore-type--${selected.type}`}>{NODE_LABELS[selected.type]}</span><span>READING NOTE</span></div>
+          <h3>{selected.title}</h3>
+          <p className="explore-inspector__summary">{selected.summary||"打开这个条目，继续阅读其中的内容与链接。"}</p>
+          <a href={selected.url} className="explore-inspector__read">{selected.type==="post"?"阅读这篇笔记":selected.type==="topic"?"进入这个主题":"理解这个概念"}<span aria-hidden="true">↗</span></a>
+          <div className="explore-inspector__related-heading"><h4>接着可以看</h4><span>{String(related.length).padStart(2,"0")}</span></div>
+          {related.length?<div className="explore-inspector__neighbors">{related.map(node=><button type="button" key={node.id} onClick={()=>choose(node,true)}><span>{NODE_LABELS[node.type]}</span><strong>{node.title}</strong><span aria-hidden="true">→</span></button>)}</div>:<p className="explore-inspector__summary">这个条目暂时独立，更多联系会随内容积累出现。</p>}
+          <span className="explore-inspector__folio" aria-hidden="true">A—Z / NOTES IN CONNECTION</span>
+        </>:<><span className="explore-type">没有匹配内容</span><h3>换一条线索</h3><p>清空筛选，重新选择一个感兴趣的主题。</p></>}
+      </aside>
+    </div>
+  </div>;
 }

@@ -49,8 +49,8 @@ for (const path of ["/topics", "/archives", "/papers", "/topics/ai-coding"]) {
 test("knowledge map shares the ruled atlas entry with working graph exploration", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
   await page.goto("/map");
-  await expect(page.locator(".drawing-index-header h1")).toHaveText("知识图谱");
-  await expect(page.locator(".knowledge-graph .kg-star").first()).toBeVisible({ timeout: 20000 });
+  await expect(page.locator(".wander-hero h1")).toHaveText("漫游↗");
+  await expect(page.locator(".knowledge-graph .explore-map__node").first()).toBeVisible({ timeout: 20000 });
   await expect(page.getByRole("link", { name: /主题目录/ })).toHaveAttribute("href", "/topics");
 });
 

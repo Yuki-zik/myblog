@@ -1057,3 +1057,8 @@ body[data-header-variant="drawing"] .header-search-result-type--paper {
     inset-block-start: 0;
   }
 }
+
+/* Six primary destinations must stay in the existing second mobile row. */
+@media (max-width: 380px) {
+  .site-header[data-header-state] .site-nav a { padding-inline: 0.25rem; }
+}

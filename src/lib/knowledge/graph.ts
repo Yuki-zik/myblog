@@ -17,6 +17,7 @@ export interface GraphNode {
   type: GraphNodeType;
   title: string;
   url: string;
+  summary?: string;
 }
 
 export interface GraphEdge {
@@ -41,19 +42,22 @@ export function buildKnowledgeGraph(
       id: `post:${post.id}`,
       type: "post" as const,
       title: post.data.title,
-      url: `/posts/${post.id}`
+      url: `/posts/${post.id}`,
+      summary: post.data.summary ?? ""
     })),
     ...topics.map((topic) => ({
       id: `topic:${topic.id}`,
       type: "topic" as const,
       title: topic.data.title,
-      url: `/topics/${topic.id}`
+      url: `/topics/${topic.id}`,
+      summary: topic.data.summary
     })),
     ...concepts.map((concept) => ({
       id: `concept:${concept.id}`,
       type: "concept" as const,
       title: concept.data.title,
-      url: `/concepts/${concept.id}`
+      url: `/concepts/${concept.id}`,
+      summary: concept.data.summary
     }))
   ];
 
