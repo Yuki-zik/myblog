@@ -7,6 +7,7 @@ import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
 import { collectReferencedTopicsForConcept } from "../../lib/content/concepts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/discovery-polish.css";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
@@ -61,10 +62,11 @@ const structuredData = site
   title={concept.data.title}
   description={conceptDescription}
   runtime="discover"
+  headerVariant="drawing"
   openGraphImage={`/og/concepts/${concept.id}.png`}
   structuredData={structuredData}
 >
-  <DiscoverShell bodyClass="discover-editorial">
+  <DiscoverShell bodyClass="discover-editorial concept-atlas">
     <PageHero
       variant="split"
       kicker="Discover / Concept"

@@ -3,15 +3,19 @@ import { waitForFontsSettled } from "./helpers/page-state";
 
 for (const scheme of ["light", "dark"] as const) {
   test(`drawing pages retain the shared floating capsule in ${scheme}`, async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 960 });
+    // Compact indexes may have less than 164px of scroll travel in a 960px-tall
+    // viewport. Inspect the full collapse in a shorter viewport instead of
+    // adding blank space to real pages or weakening the geometry assertions.
+    await page.setViewportSize({ width: 1440, height: 800 });
     await page.emulateMedia({ colorScheme: scheme, reducedMotion: "no-preference" });
     for (const route of ["/", "/topics", "/posts/myblog-design-manual", "/papers/duap-multilingual-speech-privacy"]) {
       await page.goto(route);
       await waitForFontsSettled(page);
-      await page.mouse.move(1430, 940);
+      await page.mouse.move(1430, 780);
       // The page must first travel behind the sticky 68px header before
       // the 96px capsule-collapse range starts.
       await page.evaluate(() => window.scrollTo({ top: 164, behavior: "instant" }));
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(164);
       const surface = page.locator(".site-header-inner");
       await expect.poll(() => surface.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThanOrEqual(20);
       await expect.poll(() => surface.evaluate(el => el.getBoundingClientRect().width)).toBeLessThanOrEqual(1180);

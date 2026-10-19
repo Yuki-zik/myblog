@@ -1,9 +1,9 @@
 ---
 import { getCollection } from "astro:content";
-import DiscoverShell from "../components/discover/DiscoverShell.astro";
-import PageHero from "../components/discover/PageHero.astro";
-import SectionHead from "../components/discover/SectionHead.astro";
 import KnowledgeGraph from "../components/discover/KnowledgeGraph.tsx";
+import DrawingIndexShell from "../components/discover/DrawingIndexShell.astro";
+import DrawingPageHeader from "../components/discover/DrawingPageHeader.astro";
+import "../styles/discovery-polish.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { buildCollectionPageGraph } from "../lib/seo/jsonLd";
 
@@ -35,28 +35,48 @@ const structuredData = site
   title="知识图谱"
   description={mapDescription}
   runtime="discover"
+  headerVariant="drawing"
   structuredData={structuredData}
 >
-  <DiscoverShell>
-    <PageHero
-      kicker="Discover / Map"
+  <DrawingIndexShell kind="map" bodyClass="map-atlas-page">
+    <DrawingPageHeader
+      kicker="Atlas / Relations"
       title="知识图谱"
-      description="沿着主题、概念与文章之间的引用关系，找到相关问题和下一篇值得读的笔记。"
-      stats={[
-        { value: String(posts.length).padStart(2, "0"), label: "篇文章" },
-        { value: String(topics.length).padStart(2, "0"), label: "个主题" },
-        { value: String(concepts.length).padStart(2, "0"), label: "个概念" }
-      ]}
-    />
+      description="在主题、概念与文章之间移动，沿着真实的引用关系发现下一条阅读路径。"
+      count={posts.length + topics.length + concepts.length}
+      countLabel="个关联节点"
+    >
+      <a slot="actions" href="/topics">主题目录 <span aria-hidden="true">↗</span></a>
+    </DrawingPageHeader>
 
-    <section class="discover-section" data-ux-stagger>
-      <SectionHead
-        kicker="Map"
-        title="沿引用关系漫游"
-        description="节点按类型着色,连线来自 posts↔topics / posts↔concepts / 主题与概念之间的关联。点击任意节点进入对应页面。"
-        countLabel={`${posts.length + topics.length + concepts.length} nodes`}
-      />
-      <KnowledgeGraph client:visible />
+    <section class="map-atlas" aria-label="知识关系图">
+      <div class="map-atlas__context">
+        <div>
+          <p class="map-atlas__serial">FIG. 01 / RELATIONSHIP MAP</p>
+          <h2>从一个问题，找到另一条线索。</h2>
+          <p>连线表示实际存在的文章—主题、文章—概念关联。选择节点，即可继续探索。</p>
+        </div>
+        <dl class="map-atlas__stats" aria-label="图谱数据统计">
+          <div><dt>文章</dt><dd>{String(posts.length).padStart(2, "0")}</dd></div>
+          <div><dt>主题</dt><dd>{String(topics.length).padStart(2, "0")}</dd></div>
+          <div><dt>概念</dt><dd>{String(concepts.length).padStart(2, "0")}</dd></div>
+        </dl>
+      </div>
+      <div class="map-atlas__diagram">
+        <KnowledgeGraph client:visible />
+      </div>
     </section>
-  </DiscoverShell>
+
+    <section class="map-atlas__routes" aria-labelledby="map-atlas-entry-title">
+      <div class="map-atlas__routes-title">
+        <p class="map-atlas__serial">CONTINUE / INDEX</p>
+        <h2 id="map-atlas-entry-title">从目录继续探索</h2>
+      </div>
+      <nav class="map-atlas__route-list" aria-label="图谱之外的阅读入口">
+        <a href="/topics"><span>01 / Topics</span><strong>按研究主题阅读</strong><span aria-hidden="true">↗</span></a>
+        <a href="/papers"><span>02 / Papers</span><strong>查看研究成果</strong><span aria-hidden="true">↗</span></a>
+        <a href="/archives"><span>03 / Archive</span><strong>按时间浏览文章</strong><span aria-hidden="true">↗</span></a>
+      </nav>
+    </section>
+  </DrawingIndexShell>
 </BaseLayout>

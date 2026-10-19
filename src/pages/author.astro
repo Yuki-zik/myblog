@@ -2,12 +2,12 @@
 import { getCollection } from "astro:content";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
-import PageHero from "../components/discover/PageHero.astro";
 import SectionHead from "../components/discover/SectionHead.astro";
 import PostCard from "../components/post/PostCard.astro";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
 import { resolvePostAuthor } from "../lib/posts/author";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/author-atlas.css";
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 
@@ -15,31 +15,15 @@ const authorPosts = [...posts]
   .filter((post) => resolvePostAuthor(post).name === SITE_AUTHOR_PROFILE.name)
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-const latestAuthorPost = authorPosts[0] ?? null;
 const topicCount = new Set(authorPosts.flatMap((post) => post.data.topics)).size;
 const socialNetworks = SITE_AUTHOR_PROFILE.socialNetworks ?? [];
-
-const heroSecondaryAction = SITE_AUTHOR_PROFILE.socials?.github
-  ? {
-      href: `https://github.com/${SITE_AUTHOR_PROFILE.socials.github}`,
-      label: "查看 GitHub",
-      variant: "secondary" as const,
-      external: true,
-      icon: "network" as const
-    }
-  : SITE_AUTHOR_PROFILE.email
-    ? {
-        href: `mailto:${SITE_AUTHOR_PROFILE.email}`,
-        label: "Email",
-        variant: "secondary" as const,
-        icon: "mail" as const
-      }
-    : {
-        href: "/archives",
-        label: "浏览归档",
-        variant: "secondary" as const,
-        icon: "archive" as const
-      };
+const authorPublications = (await getCollection("papers", ({ data }) => !data.draft))
+  .filter((paper) =>
+    (paper.data.status === "published" || paper.data.status === "accepted") &&
+    paper.data.authors.some((author) => author.self)
+  )
+  .sort((a, b) => b.data.year - a.data.year);
+const selectedPapers = authorPublications.slice(0, 3);
 
 const authorContactEntries = [
   SITE_AUTHOR_PROFILE.email
@@ -81,66 +65,85 @@ const authorContactEntries = [
   authorMeta={SITE_AUTHOR_PROFILE.name}
   runtime="discover"
 >
-  <DiscoverShell bodyClass="discover-editorial">
-    <PageHero
-      variant="split"
-      kicker="About / Author"
-      title={SITE_AUTHOR_PROFILE.name}
-      description={SITE_AUTHOR_PROFILE.intro ?? SITE_AUTHOR_PROFILE.bioShort}
-      actions={[
-        latestAuthorPost
-          ? {
-              href: `/posts/${latestAuthorPost.id}`,
-              label: `阅读《${latestAuthorPost.data.title}》`,
-              variant: "primary",
-              icon: "arrow"
-            }
-          : {
-              href: "/archives",
-              label: "翻阅归档",
-              variant: "primary",
-              icon: "archive"
-            },
-        heroSecondaryAction
-      ]}
-    >
-      <div slot="aside">
-        <div class="discover-hero__panel-copy author-profile-summary">
-          <p class="discover-hero__panel-label">Mission</p>
+  <DiscoverShell bodyClass="discover-editorial author-atlas">
+    <section class="author-atlas-hero" data-discover-hero aria-labelledby="author-atlas-name">
+      <div class="author-atlas-hero__main">
+        <div class="author-atlas-hero__locator" aria-hidden="true">
+          <span>RESEARCH FOLIO / 001</span>
+          <span>ABOUT · A-ZNK</span>
+        </div>
+
+        <p class="author-atlas-hero__eyebrow">一个持续构建中的研究者档案</p>
+        <h1 id="author-atlas-name" class="author-atlas-hero__name">
+          {SITE_AUTHOR_PROFILE.name}
+          <span>{SITE_AUTHOR_PROFILE.publicationName}</span>
+        </h1>
+
+        <h2 class="author-atlas-hero__statement">
+          在模型行为与真实系统之间，
+          <em>寻找可验证的答案。</em>
+        </h2>
+        <p class="author-atlas-hero__intro">{SITE_AUTHOR_PROFILE.intro}</p>
+
+        <nav class="author-atlas-hero__actions" aria-label="探索作者研究和内容">
+          <a href="/papers">研究成果 <span aria-hidden="true">↗</span></a>
+          <a href="/topics">探索主题 <span aria-hidden="true">↗</span></a>
+          <a
+            href={"https://github.com/" + (SITE_AUTHOR_PROFILE.socials?.github ?? "yuki-zik")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >GitHub <span aria-hidden="true">↗</span></a>
+        </nav>
+
+        <div class="author-atlas-hero__reading-line">
+          <span aria-hidden="true">///</span>
+          <p>研究问题、工程实验、公开记录。这里持续收集那些值得反复验证的想法。</p>
+        </div>
+      </div>
+
+      <aside class="author-atlas-hero__aside" aria-label="作者档案">
+        <div class="author-portrait">
+          <div class="author-portrait__grid" aria-hidden="true"></div>
           {SITE_AUTHOR_PROFILE.avatar ? (
             <img
-              class="author-avatar aspect-square w-[clamp(5.5rem,9vw,7rem)] rounded-[2px] object-cover"
+              class="author-avatar"
               src={SITE_AUTHOR_PROFILE.avatar}
-              alt={`${SITE_AUTHOR_PROFILE.name} 的头像`}
+              alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
               loading="eager"
               decoding="async"
             />
           ) : null}
-          {SITE_AUTHOR_PROFILE.tagline ? <p>{SITE_AUTHOR_PROFILE.tagline}</p> : null}
-          {SITE_AUTHOR_PROFILE.mission ? <p>{SITE_AUTHOR_PROFILE.mission}</p> : null}
+          <span class="author-portrait__index" aria-hidden="true">FIG. 01 / PORTRAIT</span>
+          <span class="author-portrait__corner author-portrait__corner--top" aria-hidden="true"></span>
+          <span class="author-portrait__corner author-portrait__corner--bottom" aria-hidden="true"></span>
         </div>
-        <div class="discover-hero__panel-stats">
-          <div class="discover-hero__panel-stat">
-            <strong>{String(authorPosts.length).padStart(2, "0")}</strong>
-            <span>篇文章</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(topicCount).padStart(2, "0")}</strong>
-            <span>个主题</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong>
-            <span>研究轨道</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(socialNetworks.length).padStart(2, "0")}</strong>
-            <span>社交入口</span>
-          </div>
-        </div>
-      </div>
-    </PageHero>
 
-    <section class="discover-section">
+        <div class="discover-hero__panel-copy author-atlas-idcard">
+          <p class="discover-hero__panel-label">MISSION / 研究的出发点</p>
+          {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
+          {SITE_AUTHOR_PROFILE.mission ? <p class="author-atlas-idcard__mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
+        </div>
+
+        <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label="公开内容概览">
+          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>已发表 / 已接收</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>公开文章</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>内容主题</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>研究轨道</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="author-atlas-section-nav" aria-label="档案目录">
+      <span>INDEX / 阅读档案</span>
+      <nav>
+        <a href="#research">研究方向</a>
+        <a href="#publications">论文</a>
+        <a href="#practice">项目</a>
+        <a href="#writing">写作</a>
+      </nav>
+    </div>
+
+    <section class="discover-section author-atlas-research" id="research">
       <SectionHead
         kicker="Research"
         title="研究 / 技术方向"
@@ -162,7 +165,37 @@ const authorContactEntries = [
       </div>
     </section>
 
-    <section class="discover-section">
+    <section class="discover-section author-atlas-publications" id="publications">
+      <SectionHead
+        kicker="Selected Publications / Verified"
+        title="研究成果 / 论文"
+        description="从公开的发表记录进入具体问题、方法和实验。论文状态与作者署名来自站内结构化元数据。"
+        countLabel={String(selectedPapers.length).padStart(2, "0") + " papers"}
+      />
+      <div class="author-atlas-publications__list" data-ux-stagger>
+        {selectedPapers.map((paper, index) => (
+          <article class="author-atlas-publication" data-ux-reveal="fade-up">
+            <div class="author-atlas-publication__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+              <span>{paper.data.year}</span>
+            </div>
+            <div class="author-atlas-publication__content">
+              <p class="author-atlas-publication__venue">
+                {paper.data.venue?.short ?? paper.data.venue?.name ?? "Research"}
+                <span aria-hidden="true"> / </span>
+                {paper.data.status === "published" ? "已发表" : "已接收"}
+              </p>
+              <h3><a href={"/papers/" + paper.id}>{paper.data.title}</a></h3>
+              <p>{paper.data.summary ?? paper.data.abstract}</p>
+            </div>
+            <a class="author-atlas-publication__link" href={"/papers/" + paper.id} aria-label={"阅读论文 " + paper.data.title}>↗</a>
+          </article>
+        ))}
+      </div>
+      <a class="author-atlas-text-link" href="/papers">查看全部论文与研究记录 <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="discover-section author-atlas-practice" id="practice">
       <SectionHead
         kicker="Practice"
         title="项目 / 实践"
@@ -181,7 +214,7 @@ const authorContactEntries = [
       </div>
     </section>
 
-    <section class="discover-section">
+    <section class="discover-section author-atlas-focus">
       <SectionHead
         kicker="Lens"
         title="当前关注与博客定位"
@@ -206,7 +239,7 @@ const authorContactEntries = [
 
     {
       socialNetworks.length ? (
-        <section class="discover-section" data-controller="social-stats">
+        <section class="discover-section author-atlas-socials" data-controller="social-stats">
           <SectionHead
             kicker="Social"
             title="社交媒体"
@@ -267,7 +300,7 @@ const authorContactEntries = [
       ) : null
     }
 
-    <section class="discover-section">
+    <section class="discover-section author-atlas-contacts">
       <SectionHead
         kicker="Contact"
         title="联系方式 / 外链"
@@ -290,7 +323,7 @@ const authorContactEntries = [
       </div>
     </section>
 
-    <section class="discover-section author-posts">
+    <section class="discover-section author-posts author-atlas-writing" id="writing">
       <SectionHead
         kicker="Writing"
         title="作者文章"

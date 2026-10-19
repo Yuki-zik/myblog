@@ -13,18 +13,24 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
 .drawing-index__body {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: clamp(1.5rem, 2vw, 2rem);
   width: calc(100% - 80px);
   max-width: var(--site-content-max);
   margin: 0 auto;
-  padding: 1.5rem 0 4rem;
+  padding: clamp(1.35rem, 1.7vw, 1.7rem) 0 4.5rem;
 }
 
 .drawing-index-header {
   position: relative;
-  padding: 1.25rem 0 1.5rem;
+  /* Keep the enlarged masthead without delaying the first actual record. */
+  padding: clamp(1.35rem, 1.7vw, 1.75rem) 0 clamp(1.1rem, 1.5vw, 1.5rem);
   border-top: 1px solid var(--border-default);
   border-bottom: 1px solid var(--border-strong);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--border-default) 32%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--border-default) 32%, transparent) 1px, transparent 1px);
+  background-size: 38px 38px;
+  background-position: right top;
 }
 
 .drawing-index-header::before {
@@ -32,7 +38,7 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   position: absolute;
   top: -1px;
   left: 0;
-  width: 3rem;
+  width: 4rem;
   height: 3px;
   background: var(--drawing-accent);
 }
@@ -41,8 +47,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   margin: 0 0 0.75rem;
   color: var(--drawing-accent-ink);
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  letter-spacing: 0.06em;
+  font-size: 0.84rem;
+  letter-spacing: 0.09em;
   line-height: 1.6;
   text-transform: uppercase;
 }
@@ -58,8 +64,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   min-width: 0;
   margin: 0;
   font-family: var(--font-ui);
-  font-size: var(--type-index-title);
-  font-weight: 600;
+  font-size: clamp(3.35rem, 5vw, 5.25rem);
+  font-weight: 640;
   line-height: 1.15;
   letter-spacing: -0.045em;
   overflow-wrap: anywhere;
@@ -79,8 +85,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
 .drawing-index-total strong {
   color: var(--drawing-accent-ink);
   font-family: var(--font-mono);
-  font-size: 2rem;
-  font-weight: 400;
+  font-size: 2.85rem;
+  font-weight: 420;
   font-variant-numeric: tabular-nums;
 }
 
@@ -90,15 +96,15 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem 2rem;
-  margin-top: 1rem;
+  margin-top: clamp(1.1rem, 1.8vw, 1.65rem);
 }
 
 .drawing-index-description {
-  max-width: 48rem;
+  max-width: 49rem;
   margin: 0;
   color: var(--text-secondary);
-  font-size: 1.125rem;
-  line-height: 1.7;
+  font-size: clamp(1.125rem, 1.32vw, 1.28rem);
+  line-height: 1.75;
 }
 
 .drawing-index-links {
@@ -129,8 +135,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   grid-template-columns: 3rem minmax(0, 1fr);
   align-items: start;
   gap: 1.25rem;
-  min-height: 0;
-  padding: 1.25rem 0;
+  min-height: 9rem;
+  padding: 0.9rem 0;
   border: 0;
   border-bottom: 1px solid var(--border-default);
   border-radius: 0;
@@ -150,13 +156,13 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   padding-top: 0.3rem;
   color: var(--drawing-accent-ink);
   font-family: var(--font-mono);
-  font-size: 1.25rem;
+  font-size: 1.65rem;
   font-variant-numeric: tabular-nums;
 }
 
 .drawing-topic-row__copy {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.375rem;
   min-width: 0;
 }
 
@@ -170,9 +176,9 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
 .drawing-index.discover-page .drawing-topic-row__title {
   margin: 0;
   font-family: var(--font-ui);
-  font-size: 1.875rem;
-  font-weight: 550;
-  line-height: 1.3;
+  font-size: clamp(1.9rem, 2.22vw, 2.35rem);
+  font-weight: 570;
+  line-height: 1.28;
   letter-spacing: -0.025em;
 }
 
@@ -180,8 +186,27 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   max-width: 52rem;
   margin: 0;
   color: var(--text-secondary);
-  font-size: 1.125rem;
-  line-height: 1.7;
+  font-size: 1.135rem;
+  line-height: 1.72;
+}
+
+.drawing-index.discover-page .drawing-topic-row__rationale {
+  max-width: 52rem;
+  margin: 0.15rem 0 0;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.drawing-topic-row__rationale span {
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--drawing-accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 550;
+  letter-spacing: 0.055em;
 }
 
 .drawing-topic-row__count {
@@ -347,8 +372,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
 .drawing-index.discover-page .paper-year-heading h2 {
   color: var(--drawing-accent-ink);
   font-family: var(--font-mono);
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-size: 2.2rem;
+  font-weight: 450;
 }
 
 .drawing-index.discover-page .paper-year-heading span {
@@ -404,6 +429,26 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   font-size: 0.8125rem;
 }
 
+.drawing-index.discover-page .paper-index-row__keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+  margin: 1.05rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drawing-index.discover-page .paper-index-row__keywords li {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--border-default);
+  border-radius: 0;
+  color: var(--text-secondary);
+  background: var(--surface-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.77rem;
+  line-height: 1.4;
+}
+
 .drawing-index.discover-page .paper-index-row__resources {
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -434,8 +479,8 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   background: none;
   color: var(--drawing-accent-ink);
   font-family: var(--font-mono);
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-size: 2rem;
+  font-weight: 450;
   box-shadow: none;
 }
 
@@ -553,16 +598,16 @@ body[data-runtime="discover"][data-header-variant="drawing"] .home-reference-foo
 
 @media (max-width: 600px) {
   .drawing-index__body { width: calc(100% - 32px); padding-top: 1.25rem; gap: 1.5rem; }
-  .drawing-index-header { padding-top: 1rem; }
+  .drawing-index-header { padding-top: 1.4rem; background-size: 30px 30px; }
   .drawing-index-header__title-row { flex-wrap: wrap; gap: 0.75rem 1rem; }
-  .drawing-index-header h1 { font-size: 2rem; }
+  .drawing-index-header h1 { font-size: clamp(2.4rem, 9vw, 3.1rem); }
   .drawing-index-total { gap: 0.5rem; }
-  .drawing-index-total strong { font-size: 1.25rem; }
+  .drawing-index-total strong { font-size: 1.7rem; }
   .drawing-index-header__context { margin-top: 0.75rem; gap: 0.25rem; }
   .drawing-index-description { font-size: 1rem; }
-  .drawing-index.discover-page .drawing-topic-row { grid-template-columns: 2rem minmax(0, 1fr); gap: 0.5rem 0.75rem; min-height: 0; }
+  .drawing-index.discover-page .drawing-topic-row { grid-template-columns: 2rem minmax(0, 1fr); gap: 0.5rem 0.75rem; min-height: 0; padding: 1.5rem 0; }
   .drawing-topic-row__heading { gap: 0.375rem 1rem; }
-  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.375rem; }
+  .drawing-index.discover-page .drawing-topic-row__title { font-size: 1.62rem; }
   .drawing-index.discover-page .drawing-topic-row__summary { font-size: 1rem; }
   .drawing-topic-row__number { padding-top: 0.1rem; font-size: 1rem; }
   .drawing-index.discover-page .drawing-related-grid { grid-template-columns: 1fr; gap: 0.5rem; }
@@ -584,4 +629,26 @@ body[data-runtime="discover"][data-header-variant="drawing"] .home-reference-foo
 
 @media (prefers-reduced-motion: reduce) {
   .drawing-index.discover-page .drawing-topic-row { transition: none; }
+}
+
+/* A narrow annotation rail gives index pages the same technical drawing rhythm as home. */
+.drawing-index-header__title-row::after {
+  content: "";
+  position: absolute;
+  top: 1.25rem;
+  right: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-top: 2px solid var(--drawing-accent);
+  border-right: 2px solid var(--drawing-accent);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .drawing-index-header__title-row::after {
+    width: 1.4rem;
+    height: 1.4rem;
+    top: 0.6rem;
+  }
 }

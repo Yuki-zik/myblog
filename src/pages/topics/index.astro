@@ -62,6 +62,7 @@ const topicsPageDescription =
                   <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
                 </div>
                 <p class="drawing-topic-row__summary">{topic.data.summary}</p>
+                <p class="drawing-topic-row__rationale"><span aria-hidden="true">WHY / </span>{topic.data.why}</p>
               </div>
             </a>
           ))

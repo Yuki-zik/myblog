@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
-import PageHero from "../components/discover/PageHero.astro";
+import "../styles/discovery-polish.css";
 ---
 
 <BaseLayout
@@ -10,15 +10,38 @@ import PageHero from "../components/discover/PageHero.astro";
   runtime="discover"
   noindex
 >
-  <DiscoverShell>
-    <PageHero
-      kicker="404 / Not found"
-      title="页面未找到"
-      description="地址可能有误，或内容已移动。你可以返回首页、按主题浏览，也可以使用顶部搜索寻找内容。"
-      actions={[
-        { href: "/", label: "返回首页", variant: "primary", icon: "arrow" },
-        { href: "/topics", label: "浏览主题", variant: "secondary", icon: "topic" }
-      ]}
-    />
+  <DiscoverShell bodyClass="notfound-atlas">
+    <section class="notfound-atlas__hero" data-discover-hero aria-labelledby="notfound-atlas-title">
+      <div class="notfound-atlas__copy">
+        <p class="notfound-atlas__eyebrow">SYSTEM / UNRESOLVED PATH</p>
+        <p class="notfound-atlas__code" aria-hidden="true">404<span>_</span></p>
+        <h1 id="notfound-atlas-title">页面未找到</h1>
+        <p class="notfound-atlas__description">这条线索没有对应的页面。地址可能已改变，也可以从已有的研究目录重新出发。</p>
+        <nav class="notfound-atlas__actions" aria-label="返回站点">
+          <a href="/">返回首页 <span aria-hidden="true">↗</span></a>
+          <a href="/topics">浏览主题 <span aria-hidden="true">↗</span></a>
+          <a href="/archives">文章归档 <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <div class="notfound-atlas__figure" aria-hidden="true">
+        <span class="notfound-atlas__figure-label">FIG. 00 / MISSING CONNECTION</span>
+        <svg viewBox="0 0 440 370" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="notfound-atlas__grid-line" d="M0 74H440M0 148H440M0 222H440M0 296H440M88 0V370M176 0V370M264 0V370M352 0V370"/>
+          <circle class="notfound-atlas__target" cx="220" cy="184" r="115"/>
+          <circle class="notfound-atlas__target" cx="220" cy="184" r="65"/>
+          <circle class="notfound-atlas__target" cx="220" cy="184" r="16"/>
+          <path class="notfound-atlas__path" d="M24 296H125L188 226L220 184L252 142L326 74H413"/>
+          <path class="notfound-atlas__break" d="M179 244L260 124M179 124L260 244"/>
+          <circle class="notfound-atlas__node" cx="24" cy="296" r="7"/>
+          <circle class="notfound-atlas__node" cx="413" cy="74" r="7"/>
+          <path class="notfound-atlas__axis" d="M220 30V338M60 184H380"/>
+        </svg>
+        <span class="notfound-atlas__figure-footer">REF: NULL / REQUEST / 404</span>
+      </div>
+    </section>
+    <div class="notfound-atlas__footnote">
+      <span>INDEX RECOVERY</span>
+      <p>站内搜索仍可从顶部导航随时打开；你也可以通过主题、文章归档或研究成果回到内容网络。</p>
+    </div>
   </DiscoverShell>
 </BaseLayout>
