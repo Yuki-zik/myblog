@@ -1,0 +1,31 @@
+{
+  "origin": "https://a-znk.com",
+  "width": 1440,
+  "checkedAt": "2026-10-19T10:21:15.112Z",
+  "labels": [
+    {
+      "label": "首页",
+      "textLineCount": 2
+    },
+    {
+      "label": "主题",
+      "textLineCount": 2
+    },
+    {
+      "label": "论文",
+      "textLineCount": 2
+    },
+    {
+      "label": "漫游",
+      "textLineCount": 2
+    },
+    {
+      "label": "归档",
+      "textLineCount": 2
+    },
+    {
+      "label": "作者",
+      "textLineCount": 2
+    }
+  ]
+}
