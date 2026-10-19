@@ -129,6 +129,11 @@ const resourceLabels = {
                         ))}
                       </p>
                       <p class="paper-index-row__summary">{paper.data.summary ?? paper.data.abstract}</p>
+                      {paper.data.keywords?.length ? (
+                        <ul class="paper-keywords paper-index-row__keywords" aria-label="论文研究关键词">
+                          {paper.data.keywords.slice(0, 4).map((keyword) => <li>{keyword}</li>)}
+                        </ul>
+                      ) : null}
                     </div>
                   </div>
 
