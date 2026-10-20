@@ -10,9 +10,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 const archiveGroups = buildArchiveGroups(posts);
 const archivesDescription = "按年月倒序排列全部文章，较新的记录在前。";
+const archivesSeoDescription = "按年月浏览 A-Znk 的原创技术文章，涵盖 AI Coding 实战复盘、主题化知识组织、段落锚点设计和博客工程实践，快速找到历史研究笔记。";
 ---
 
-<BaseLayout title="文章归档" description={archivesDescription} runtime="discover" headerVariant="drawing">
+<BaseLayout title="文章归档" description={archivesSeoDescription} runtime="discover" headerVariant="drawing">
   <DrawingIndexShell kind="archives">
     <DrawingPageHeader
       kicker="Archive / Ledger"

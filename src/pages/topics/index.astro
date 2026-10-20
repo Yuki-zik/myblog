@@ -31,9 +31,11 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 
 const topicsPageDescription =
   "按主题查找研究笔记与工程实践，这里汇总每个主题的摘要与相关文章。";
+const topicsSeoDescription =
+  "浏览 A-Znk 的技术博客主题：AI Coding、Agent 工程、知识网络、段落锚点与技术笔试复盘。每个主题汇总相关文章、入门路径和相关概念。";
 ---
 
-<BaseLayout title="主题列表" description={topicsPageDescription} runtime="discover" headerVariant="drawing">
+<BaseLayout title="主题列表" description={topicsSeoDescription} runtime="discover" headerVariant="drawing">
   <DrawingIndexShell kind="topics">
     <DrawingPageHeader
       kicker="Topics"

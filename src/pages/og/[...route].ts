@@ -9,10 +9,11 @@ import { ensureOgFonts, OG_CJK_FAMILY } from "../../lib/og/font";
  * sitemap in astro.config.
  */
 
-const [posts, topics, concepts] = await Promise.all([
+const [posts, topics, concepts, papers] = await Promise.all([
   getCollection("posts", ({ data }) => !data.draft),
   getCollection("topics"),
-  getCollection("concepts")
+  getCollection("concepts"),
+  getCollection("papers", ({ data }) => !data.draft)
 ]);
 
 interface OgPage {
@@ -34,6 +35,12 @@ const pages: Record<string, OgPage> = {
     concepts.map((concept) => [
       `concepts/${concept.id}`,
       { title: concept.data.title, description: concept.data.summary }
+    ])
+  ),
+  ...Object.fromEntries(
+    papers.map((paper) => [
+      `papers/${paper.id}`,
+      { title: paper.data.subtitle ?? paper.data.title, description: paper.data.summary ?? paper.data.abstract }
     ])
   )
 };

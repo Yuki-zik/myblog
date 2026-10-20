@@ -1,0 +1,22 @@
+name: Production SEO audit
+
+on:
+  schedule:
+    # Every Tuesday 09:17 Asia/Shanghai (cron uses UTC).
+    - cron: "17 1 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit all public SEO URLs
+        run: node scripts/seo/audit-live.mjs

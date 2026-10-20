@@ -21,7 +21,9 @@
     "test:all": "pnpm test && pnpm papers:check && pnpm build && pnpm test:waline-server && pnpm audit:all && pnpm test:e2e",
     "seo:check-build": "node scripts/seo/check-build.mjs",
     "seo:audit": "node scripts/seo/audit-live.mjs",
-    "seo:indexnow:dry-run": "node scripts/seo/submit-indexnow.mjs --all --dry-run"
+    "seo:indexnow:dry-run": "node scripts/seo/submit-indexnow.mjs --all --dry-run",
+    "seo:test": "node --test scripts/seo/indexnow-utils.test.mjs",
+    "seo:baidu:prepare": "node scripts/seo/prepare-baidu.mjs --all"
   },
   "engines": {
     "node": ">=22.12.0"

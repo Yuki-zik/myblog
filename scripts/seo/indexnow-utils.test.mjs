@@ -23,6 +23,11 @@ test("content edits submit only affected canonical URLs", () => {
   assert.deepEqual(selectChangedUrls(urls, ["docs/README.md"]), []);
 });
 
+test("post cover edits submit the corresponding published article", () => {
+  assert.deepEqual(selectChangedUrls(urls, ["src/content/posts/covers/hello.svg"]), [urls[1]]);
+  assert.deepEqual(selectChangedUrls(urls, ["src/content/posts/covers/hello.png"]), [urls[1]]);
+});
+
 test("shared templates and SEO code trigger a complete refresh", () => {
   assert.deepEqual(selectChangedUrls(urls, ["src/pages/author.astro"]), urls);
   assert.deepEqual(selectChangedUrls(urls, [], true), urls);

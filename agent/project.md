@@ -318,3 +318,10 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 - 正式 canonical：`https://a-znk.com`。`robots.txt`、`sitemap.xml`、既有 Astro sitemap-index、RSS、JSON-LD 与站点重定向构成检索入口。
 - 新增 `src/lib/seo/sitemap.ts`/`src/pages/sitemap.xml.ts` 维护标准 URL-set，并以 `scripts/seo/check-build.mjs` 验证与 Astro 列表一致。
 - 生产部署成功后通过 `.github/workflows/indexnow.yml` 和 `scripts/seo/submit-indexnow.mjs` 提交变更 URL。国内搜索站长平台所有权验证需经域名所有者登录；详见 `docs/china-search-seo.md`。
+
+## 中文搜索可发现性第二轮（2026-10-20）
+
+- 新增 scripts/seo/prepare-baidu.mjs，从正式 sitemap 生成 Baidu 后台手动提交的 URL 清单并作为 Actions 工件；官方 HTTP API 传令牌存在风险，HTTPS 主机证书验证失败，流程不读取或传输 token。
+- 每周生产审计 .github/workflows/seo-audit.yml：覆盖公开 sitemap、canonical、可索引性、OG 和 IndexNow 密钥。
+- 论文详情新增 OG 预览图；中文目录页增加准确的搜索元描述，不改现有可见排版。
+- 状态按 PR CI 和生产回读更新，HTTP 202 不应记为已索引。
