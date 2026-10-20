@@ -67,12 +67,12 @@ test("sitemap page URLs match their rendered canonical URLs without trailing sla
   // Astro's original sitemap index remains usable by existing subscribers.
   const directSitemap = await request.get("/sitemap.xml");
   expect(directSitemap.ok()).toBe(true);
-  expect(directSitemap.headers()["content-type"]).toMatch(/(?:application|text)\\/xml/);
+  expect(directSitemap.headers()["content-type"]).toMatch(/(?:application|text)\/xml/);
   const directXml = await directSitemap.text();
   expect(directXml).toContain("<urlset ");
   expect(directXml).toContain("<lastmod>");
   const directUrls = await sitemapLocations(page, directXml);
-  const normalized = (urls: string[]) => urls.map((url) => url.replace(/\\/$/, "")).sort();
+  const normalized = (urls: string[]) => urls.map((url) => url.replace(/\/$/, "")).sort();
   expect(normalized(directUrls)).toEqual(normalized(pageUrls));
 
   expect(pageUrls).toContain("https://myblog.example/posts/myblog-design-manual");
