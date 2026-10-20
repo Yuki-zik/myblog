@@ -74,6 +74,10 @@
   ],
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap-0.xml"
+    },
+    {
       "source": "/_waline/api/:path*",
       "destination": "https://waline-smoky-five-24.vercel.app/api/:path*"
     }

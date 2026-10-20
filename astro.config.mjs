@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import { unified } from "@astrojs/markdown-remark";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import { enrichSitemapEntry } from "./scripts/seo/sitemap-meta.mjs";
 import tailwindcss from "@tailwindcss/vite";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
@@ -37,7 +38,8 @@ export default defineConfig({
         !page.endsWith(".json") &&
         !page.endsWith(".md") &&
         !page.endsWith("/llms.txt") &&
-        !page.includes("/og/")
+        !page.includes("/og/"),
+      serialize: enrichSitemapEntry
     })
   ],
   vite: {

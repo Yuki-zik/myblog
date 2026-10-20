@@ -1,0 +1,41 @@
+name: IndexNow change notifications
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/content/**"
+      - "src/pages/**"
+      - "src/layouts/**"
+      - "src/lib/seo/**"
+      - "src/lib/site.ts"
+      - "astro.config.mjs"
+      - "vercel.json"
+      - "public/indexnow-key.txt"
+      - "scripts/seo/**"
+      - ".github/workflows/seo-indexnow.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify selection logic
+        run: node --test scripts/seo/*.check.mjs
+      - name: Let Vercel production deploy first
+        run: sleep 90
+      - name: Notify IndexNow from live sitemap
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: node scripts/seo/indexnow.mjs

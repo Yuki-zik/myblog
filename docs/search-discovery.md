@@ -1,5 +1,11 @@
 # Search discovery
 
+## Chinese search and custom domain (2026-10-20)
+
+Canonical domain: **https://a-znk.com/**. Public bot-agent probes (ordinary UA + Baiduspider, Bingbot, Googlebot strings) returned HTTP 200 on home, post and sitemap; this confirms surface availability, not genuine spider access or search indexing. The existing 19-URL Astro sitemap is preserved; /sitemap.xml is exposed as a direct URL via Vercel rewrite, robots.txt advertises it, and source-frontmatter dates populate post/paper lastmod. The public IndexNow ownership key allows direct submission, with incremental main-branch updates and weekly technical audit in GitHub Actions. See [Chinese SEO implementation, external account steps and content plan](seo-growth-plan.md).
+
+Public search check at 2026-10-20: Sogou reports zero results, 360 reports no matching results, Baidu requires security verification and Bing's open site: query is unreliable. Account-specific true index coverage requires the respective webmaster dashboard. These values are a baseline and must not be described as confirmed index statistics.
+
 Public name: **A-Znk的blog**. The shared name, alternate names and description live in `src/lib/site.ts`. Page titles, visible brand, `og:site_name`, the existing `WebSite` node, RSS and the reading index use the same identity. Existing content URLs remain valid.
 
 ## Public project entrypoints (2026-10-18)

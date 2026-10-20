@@ -1,0 +1,22 @@
+name: Weekly SEO technical health
+
+on:
+  schedule:
+    # Monday 11:00 Asia/Shanghai, 03:00 UTC
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check canonical public SEO endpoints
+        run: node scripts/seo/audit.mjs
