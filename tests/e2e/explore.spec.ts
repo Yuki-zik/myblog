@@ -65,16 +65,3 @@ test("map nodes can be selected from the keyboard",async({page})=>{
   await expect(page.locator(".explore-inspector h3")).toHaveText("Agent Engineering");
   await expect(node).toHaveAttribute("aria-pressed","true");
 });
-
-for(const scheme of ["light","dark"] as const){
-  test(`reversed reading-path headings remain legible in ${scheme}`,async({page})=>{
-    await page.emulateMedia({colorScheme:scheme,reducedMotion:"reduce"});await page.goto("/map");
-    await expect(page.locator("html")).toHaveAttribute("data-color-scheme",scheme);
-    const contrast=await page.locator('.explore-trail[data-tone="1"]').evaluate(el=>{
-      const c=document.createElement("canvas");c.width=c.height=1;const ctx=c.getContext("2d")!;
-      const luminance=(s:string)=>{ctx.fillStyle=s;ctx.fillRect(0,0,1,1);return Array.from(ctx.getImageData(0,0,1,1).data).slice(0,3).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);};
-      const fg=luminance(getComputedStyle(el.querySelector("h3 a")!).color),bg=luminance(getComputedStyle(el).backgroundColor);return (Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05);
-    });
-    expect(contrast).toBeGreaterThanOrEqual(4.5);
-  });
-}

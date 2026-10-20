@@ -35,11 +35,13 @@ const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),cano
     {trails.length>0&&<section class="explore-trails" aria-labelledby="explore-trails-title">
       <div class="wander-section-head"><h2 id="explore-trails-title">先挑一条有意思的路线</h2><span>READING PATHS / {String(trails.length).padStart(2,"0")}</span></div>
       <div class="explore-trails__grid">
-        {trails.map((trail,i)=><article class="explore-trail" data-reading-trail data-tone={i}>
-          <div class="explore-trail__top"><span>{String(i+1).padStart(2,"0")}</span><span>{trail.nodes.length} 个停靠点</span></div>
-          <h3><a href={`/map?focus=${encodeURIComponent(trail.nodes[0].id)}#connections`}>{trail.title}<span aria-hidden="true">↗</span></a></h3>
-          <p>{trail.description}</p>
-          <ol aria-label={`${trail.title}的阅读顺序`}>{trail.nodes.map((node,j)=><li><span aria-hidden="true">{j+1}</span><a href={node.url}>{node.title}</a></li>)}</ol>
+        {trails.map((trail,i)=><article class="explore-trail" data-reading-trail>
+          <div class="explore-trail__top"><span aria-hidden="true">{String(i+1).padStart(2,"0")}</span><span>{trail.nodes.length} 个停靠点</span></div>
+          <div class="explore-trail__copy">
+            <h3><a href={`/map?focus=${encodeURIComponent(trail.nodes[0].id)}#connections`}>{trail.title}<span aria-hidden="true">↗</span></a></h3>
+            <p>{trail.description}</p>
+          </div>
+          <ol aria-label={`${trail.title}的阅读顺序`}>{trail.nodes.map((node,j)=><li data-kind={node.type}><span aria-hidden="true">{j+1}</span><a href={node.url}>{node.title}</a></li>)}</ol>
         </article>)}
       </div>
     </section>}

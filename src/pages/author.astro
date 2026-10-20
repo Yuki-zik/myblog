@@ -102,25 +102,28 @@ const authorContactEntries = [
       </div>
 
       <aside class="author-atlas-hero__aside" aria-label="作者档案">
-        <div class="author-portrait">
-          <div class="author-portrait__grid" aria-hidden="true"></div>
-          {SITE_AUTHOR_PROFILE.avatar ? (
-            <img
-              class="author-avatar"
-              src={SITE_AUTHOR_PROFILE.avatar}
-              alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
-              loading="eager"
-              decoding="async"
-            />
-          ) : null}
-          <span class="author-portrait__index" aria-hidden="true">FIG. 01 / PORTRAIT</span>
-          <span class="author-portrait__corner author-portrait__corner--top" aria-hidden="true"></span>
-          <span class="author-portrait__corner author-portrait__corner--bottom" aria-hidden="true"></span>
+        <p class="author-atlas-dossier__label">PROFILE / 作者档案</p>
+        <div class="author-atlas-dossier__identity">
+          <div class="author-portrait">
+            {SITE_AUTHOR_PROFILE.avatar ? (
+              <img
+                class="author-avatar"
+                src={SITE_AUTHOR_PROFILE.avatar}
+                alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null}
+            <span class="author-portrait__index" aria-hidden="true">FIG. 01</span>
+          </div>
+          <div class="author-atlas-idcard">
+            <p class="author-atlas-idcard__name">{SITE_AUTHOR_PROFILE.publicationName}</p>
+            {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
+          </div>
         </div>
 
-        <div class="discover-hero__panel-copy author-atlas-idcard">
-          <p class="discover-hero__panel-label">MISSION / 研究的出发点</p>
-          {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
+        <div class="author-atlas-dossier__mission">
+          <p class="author-atlas-dossier__label">研究的出发点</p>
           {SITE_AUTHOR_PROFILE.mission ? <p class="author-atlas-idcard__mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
         </div>
 
@@ -146,17 +149,20 @@ const authorContactEntries = [
     <section class="discover-section author-atlas-research" id="research">
       <SectionHead
         kicker="Research"
-        title="研究 / 技术方向"
+        title="研究方向"
         countLabel={`${SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0} tracks`}
       />
       <div class="discover-entity-grid" data-ux-stagger>
-        {SITE_AUTHOR_PROFILE.researchTracks?.map((track) => (
+        {SITE_AUTHOR_PROFILE.researchTracks?.map((track, index) => (
           <article class="discover-surface discover-entity-card" data-ux-reveal="fade-up">
-            <div class="discover-entity-card__top">
-              <span class="discover-entity-card__meta">Research Track</span>
+            <div class="discover-entity-card__top" aria-hidden="true">
+              <span class="author-atlas-track__index">{String(index + 1).padStart(2, "0")}</span>
+              <span class="discover-entity-card__meta">TRACK</span>
             </div>
-            <h3>{track.title}</h3>
-            <p>{track.summary}</p>
+            <div class="author-atlas-track__copy">
+              <h3>{track.title}</h3>
+              <p>{track.summary}</p>
+            </div>
             <ul class="pill-list">
               {track.bullets.map((bullet) => <li>{bullet}</li>)}
             </ul>
@@ -167,9 +173,9 @@ const authorContactEntries = [
 
     <section class="discover-section author-atlas-publications" id="publications">
       <SectionHead
-        kicker="Selected Publications / Verified"
-        title="研究成果 / 论文"
-        description="从公开的发表记录进入具体问题、方法和实验。论文状态与作者署名来自站内结构化元数据。"
+        kicker="Selected Publications"
+        title="论文与研究成果"
+        description="已发表与已接收的论文，及其问题、方法与实验记录。"
         countLabel={String(selectedPapers.length).padStart(2, "0") + " papers"}
       />
       <div class="author-atlas-publications__list" data-ux-stagger>
@@ -304,7 +310,7 @@ const authorContactEntries = [
       <SectionHead
         kicker="Contact"
         title="联系方式 / 外链"
-        description="保持最少但明确的公共入口；后续若补充学术或社交渠道，也会沿用同一结构。"
+        description="学术资料、开源代码与联系邮箱。"
       />
       <div class="discover-mini-grid" data-ux-stagger>
         {authorContactEntries.map((entry) => (
@@ -317,7 +323,6 @@ const authorContactEntries = [
           >
             <span class="discover-mini-card__meta">{entry.label}</span>
             <h3>{entry.value}</h3>
-            <p>保持一个干净、稳定的公共联系入口。</p>
           </a>
         ))}
       </div>
