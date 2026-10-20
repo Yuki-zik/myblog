@@ -42,12 +42,12 @@
 
 **线上已验证：** PR #34 合并为 dcc5b661，Vercel 正式部署 READY。19 个 URL 的 HTTP/canonical/H1/中文标记模拟爬虫检查通过。2026-10-20 14:30 UTC 的 [IndexNow Action](https://github.com/Yuki-zik/myblog/actions/runs/39439737841) 向协议入口提交 19 个 URL，返回 HTTP 202。按 IndexNow 官方定义，202 代表已收到请求、验证密钥仍待完成；不能据此声称已索引。正式密钥文件 HTTP 200。
 
-**百度普通收录接入（需要站点所有者操作）：**
+**百度普通收录（安全优先，使用官方后台）：**
 
-1. 在 https://ziyuan.baidu.com/ 验证域名 a-znk.com，从普通收录 → API 提交获取对应站点 token。验证值以平台实际提供的 DNS TXT/CNAME 或文件为准。
-2. 仓库 Settings → Secrets and variables → Actions：添加 Repository secret BAIDU_PUSH_TOKEN（仅 token）；添加 Repository variable BAIDU_SITE（填写平台实际显示的站点属性，如 https://a-znk.com 或 a-znk.com）。不要将 token 写入 Git、对话或公开日志。
-3. 正式部署成功时，IndexNow submission 工作流读取公开 Sitemap 和本次变动的索引 URL，调用百度普通收录 API；缺少 token 则安全跳过。手动运行默认 dry-run，只输出提交清单。
-4. API 返回成功数仅表示百度接受提交。真实收录、抓取、曝光和点击数据须以站长平台后续数据为准。
+1. 在 https://ziyuan.baidu.com/ 验证 a-znk.com。进入普通收录的 Sitemap 或手动 URL 提交入口，优先提交 https://a-znk.com/sitemap.xml。
+2. GitHub Actions 的 Search engine discovery 工作流会为生产发布生成 baidu-urls 工件，其中是此次修改的 canonical URL 清单。下载文本后可以直接在百度后台提交；也可在仓库本地运行 pnpm seo:baidu:prepare 查看完整 URL 清单。
+3. 百度官方历史公告给出的普通收录 API 为 HTTP。2026-10-20 从 Mac mini 对其 HTTPS 主机进行证书校验时发现域名不匹配。因此当前自动流程**不传输百度 token、不向 HTTP 接口提交请求、也不忽略证书错误**。如百度提供经验证的安全接口后再评估启用自动提交。
+4. 真实收录、抓取、曝光和点击仍须以百度搜索资源平台后续数据为准。IndexNow 仅通知其参与搜索引擎。
 
 **持续监控：** 每周二北京时间 09:17，Production SEO audit 从 GitHub runner 检查 robots、两种 Sitemap 一致性、IndexNow 密钥、所有公开页面的 200/中文标记/标题/description/canonical/H1/noindex，以及论文 OG 图片元数据。可在 Actions 手动运行。此测试不能取代中国大陆真实网络测试。
 

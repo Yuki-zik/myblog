@@ -22,8 +22,8 @@
     "seo:check-build": "node scripts/seo/check-build.mjs",
     "seo:audit": "node scripts/seo/audit-live.mjs",
     "seo:indexnow:dry-run": "node scripts/seo/submit-indexnow.mjs --all --dry-run",
-    "seo:baidu:dry-run": "node scripts/seo/submit-baidu.mjs --all --dry-run",
-    "seo:test": "node --test scripts/seo/indexnow-utils.test.mjs scripts/seo/baidu-utils.test.mjs"
+    "seo:test": "node --test scripts/seo/indexnow-utils.test.mjs",
+    "seo:baidu:prepare": "node scripts/seo/prepare-baidu.mjs --all"
   },
   "engines": {
     "node": ">=22.12.0"

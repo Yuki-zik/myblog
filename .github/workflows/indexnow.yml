@@ -1,11 +1,11 @@
-name: IndexNow submission
+name: Search engine discovery
 
 on:
   deployment_status:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Preview URLs without submitting"
+        description: "Preview URLs without notifying IndexNow"
         type: boolean
         required: true
         default: true
@@ -15,7 +15,6 @@ permissions:
 
 jobs:
   notify:
-    # Only production deployment success can trigger automatic notification.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.deployment_status.state == 'success' &&
@@ -44,9 +43,25 @@ jobs:
           node-version: 22
 
       - name: Validate URL change selection
-        run: node --test scripts/seo/indexnow-utils.test.mjs scripts/seo/baidu-utils.test.mjs
+        run: node --test scripts/seo/indexnow-utils.test.mjs
 
-      - name: Notify participating search engines
+      - name: Prepare manual Baidu URL submission list
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            node scripts/seo/prepare-baidu.mjs --all --output "$RUNNER_TEMP/baidu-urls.txt"
+          else
+            node scripts/seo/prepare-baidu.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt" --output "$RUNNER_TEMP/baidu-urls.txt"
+          fi
+
+      - name: Upload Baidu URL list
+        uses: actions/upload-artifact@v4
+        with:
+          name: baidu-urls
+          path: ${{ runner.temp }}/baidu-urls.txt
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Notify IndexNow participating search engines
         env:
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
@@ -58,20 +73,4 @@ jobs:
             fi
           else
             node scripts/seo/submit-indexnow.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt"
-          fi
-
-      - name: Submit to Baidu normal indexing API when configured
-        env:
-          BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
-          BAIDU_SITE: ${{ vars.BAIDU_SITE }}
-          DRY_RUN: ${{ inputs.dry_run }}
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
-            if [[ "$DRY_RUN" == "true" ]]; then
-              node scripts/seo/submit-baidu.mjs --all --dry-run
-            else
-              node scripts/seo/submit-baidu.mjs --all
-            fi
-          else
-            node scripts/seo/submit-baidu.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt"
           fi
