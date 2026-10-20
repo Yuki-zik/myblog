@@ -4,7 +4,7 @@ export const prerender = true;
 
 export const GET: APIRoute = (context) => {
   const site = context.site ?? new URL("http://localhost:4321/");
-  const sitemapUrl = new URL("sitemap-index.xml", site).toString();
+  const sitemapUrl = new URL("sitemap.xml", site).toString();
 
   const body = [
     "User-agent: *",
