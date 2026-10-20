@@ -40,6 +40,9 @@ jobs:
       - name: Build (astro check + astro build)
         run: pnpm build
 
+      - name: Validate canonical sitemap parity
+        run: pnpm seo:check-build
+
       - name: Audit frontend production dependencies
         run: pnpm audit:prod
 
