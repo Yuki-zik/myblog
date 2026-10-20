@@ -37,3 +37,11 @@
 ## 跨地域与镜像
 
 主站由 Vercel 提供服务。模拟 Baiduspider UA 访问成功只能证明 User-Agent 没被屏蔽；实际中国大陆节点要分别测 TCP/TLS/DNS、HTML 200 与页面完整性。VPS 镜像保持对主域名的 canonical 或 noindex，避免两份内容争夺收录。不得通过 robots.txt Disallow 来实现 canonical。
+
+## 第二阶段：论文发现与百度提交安全边界（2026-10-20）
+
+PR #34 已合并并发布：正式 `/sitemap.xml`、`/sitemap-index.xml`、`/robots.txt` 以及 IndexNow 密钥文件均返回 200；GitHub Actions [39439737841](https://github.com/Yuki-zik/myblog/actions/runs/39439737841) 实际通知 19 URL，IndexNow 返回 HTTP 202。此状态是通知已被接收，不代表已经索引。
+
+针对真实已发表论文，站点新生成精确的 Highwire `citation_title`、逐个作者、发表日期（只有年份时仅填年份）、期刊/会议、DOI 以及用户提供的明确 PDF URL。中文检索标题来自真实副标题及缩写；论文原始英文题名继续用于 H1、JSON-LD 和正式引用。原型和草稿不发布书目假信息。Google Scholar 官方规范： https://scholar.google.com/intl/en/scholar/inclusion.html 。
+
+**百度普通收录接口**：官方文档 https://ziyuan.baidu.com/college/courseinfo?id=267&page=2 给出的 API 为 `http://data.zz.baidu.com/urls`，其 Token 必须从已验证的百度资源平台领取。2026-10-20 实测 `https://data.zz.baidu.com` 的 TLS 证书主机名不匹配，使用 HTTP 会明文传输 Token，因此当前阶段不配置不安全的自动提交。优先在百度站长平台手动提交 `https://a-znk.com/sitemap.xml`；搜狗、360 分别走其站长提交渠道。Token 和平台收录数据均尚未获取。

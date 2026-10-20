@@ -54,3 +54,7 @@ New canonical: `https://a-znk.com/`. The existing branded `.vercel.app` and old 
 ## 中文搜索与自动化升级（2026-10-20）
 
 新域名 `a-znk.com` 公开检测：普通和模拟 Baiduspider 请求可读；搜狗 `site:` 返回 0 条、360 无相关结果，百度查询要求安全验证，Bing 公开结果不足以判定。具体策略及待验证项目见 [中文搜索 SEO 手册](china-search-seo.md)。PR #34 新增直接 `/sitemap.xml`、内容更新时间、CI parity check、IndexNow 部署触发器和 `pnpm seo:audit`。实际搜索收录仍需站长平台数据确认；新域名的百度/搜狗/360 验证不应冒称已完成。
+
+## 第二阶段（2026-10-20）：学术和中文搜索
+
+公开页审计确认 19 个 URL 均返回 200 且 canonical 与 sitemap 一致。已发表论文目录和两篇论文详情仍是公开真实内容；HTML 搜索标题使用中文副标题和真实缩写/刊物名称，学术引文字段（Highwire `citation_*`）保留原文题名、作者顺序、日期、刊物及 DOI，增强中文及 Google Scholar 检索可理解性。链接分享新增两张论文 OG 卡片。站长平台的实际搜索收录尚未确认。参见 [中文搜索 SEO 手册](china-search-seo.md)。

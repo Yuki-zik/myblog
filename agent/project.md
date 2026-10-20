@@ -318,3 +318,9 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 - 正式 canonical：`https://a-znk.com`。`robots.txt`、`sitemap.xml`、既有 Astro sitemap-index、RSS、JSON-LD 与站点重定向构成检索入口。
 - 新增 `src/lib/seo/sitemap.ts`/`src/pages/sitemap.xml.ts` 维护标准 URL-set，并以 `scripts/seo/check-build.mjs` 验证与 Astro 列表一致。
 - 生产部署成功后通过 `.github/workflows/indexnow.yml` 和 `scripts/seo/submit-indexnow.mjs` 提交变更 URL。国内搜索站长平台所有权验证需经域名所有者登录；详见 `docs/china-search-seo.md`。
+
+## 学术论文可检索性（2026-10-20）
+
+- `src/lib/seo/highwire.ts` 生成准确的 Highwire `citation_*` 标签及中文搜索标题，引用作者顺序、DOI、发表时间与期刊类型直接来自已核实内容集合。
+- `src/pages/papers/[slug].astro`、`BaseLayout` 只在论文详情页注入书目元数据，保留 H1/JSON-LD 原始英文题名。动态 `/og/papers/<slug>.png` 可用于分享预览，草稿与原型不产生学术伪标记。
+- 按 `src/lib/seo/highwire.test.ts`、`tests/e2e/papers.spec.ts` 回归；参照 `docs/china-search-seo.md` 检查实站与搜索平台。
