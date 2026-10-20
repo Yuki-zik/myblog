@@ -11,6 +11,26 @@
   },
   "captures": [
     {
+      "file": "production-author-1440.png",
+      "sha256": "51c5b9c57aebfabd203bb87bc1a97f8649cf02aa7f22a41518e3baf6be952ba5",
+      "valid": true
+    },
+    {
+      "file": "production-author-390.png",
+      "sha256": "a43fc2050c93935fc872b1159bb01f5aadd6c7136bec858240b2c86eeb3e1a6b",
+      "valid": true
+    },
+    {
+      "file": "production-map-1440.png",
+      "sha256": "4df993beff424dd8d4a52b1856213f15e703d492cff56484344025eb283c4aed",
+      "valid": true
+    },
+    {
+      "file": "production-map-390.png",
+      "sha256": "9fe996666c86d40bbe5dd69bc9d21b933466587a9c5391f93faea5be86572ac5",
+      "valid": true
+    },
+    {
       "file": "v0-author-first-screen.png",
       "sha256": "fb825f480cca6ea34d6b28de5d7c1bed62335f478f0910a58927ed62267826ab",
       "valid": true
@@ -85,5 +105,14 @@
       "sha256": "9fe996666c86d40bbe5dd69bc9d21b933466587a9c5391f93faea5be86572ac5",
       "valid": true
     }
-  ]
+  ],
+  "productionRevision": "2606048abfc9854074f6b8483fd0f4bd0b9c2926",
+  "productionSources": {
+    "src/pages/map.astro": "fef974dbe9e502ae8b16f951c69a5134ef752438dac92fdaa23dc9c12e800aec",
+    "src/pages/author.astro": "0da1b4a9dee63a9f3d2dc11a53979941fc20f2a4a67987c695b836a69fe1bc8e",
+    "src/styles/explore.css": "658992666f23a783d390df37dd429025fb12a97eaa703927462fd1bacead4610",
+    "src/styles/author-atlas.css": "29150db244f9205e14e91050f2f930140c3c20d8f53f2a41a1fa131a0347e4be",
+    "src/components/discover/KnowledgeGraph.tsx": "58280b37785f2308ab9bb273d9ac832acc462554347d07a3cc5c8161fb7335e7",
+    "src/lib/knowledge/explore.ts": "0050c36b8938503b2f653c57fd78be9970172424200018a4e563f393c8f84726"
+  }
 }

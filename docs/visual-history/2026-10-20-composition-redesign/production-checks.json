@@ -1,0 +1,42 @@
+{
+  "revision": "2606048abfc9854074f6b8483fd0f4bd0b9c2926",
+  "frontendDeployment": 7203475153,
+  "origin": "https://a-znk.com",
+  "out": [
+    {
+      "route": "map",
+      "width": 1440,
+      "status": 200,
+      "overflow": 0,
+      "workspaceTop": 205.71875,
+      "firstNodeTop": 374.7802734375
+    },
+    {
+      "route": "map",
+      "width": 390,
+      "status": 200,
+      "overflow": 0,
+      "workspaceTop": 267.265625,
+      "firstNodeTop": 0
+    },
+    {
+      "route": "author",
+      "width": 1440,
+      "status": 200,
+      "overflow": 0,
+      "featuredTop": 568.75,
+      "portraitLoaded": true
+    },
+    {
+      "route": "author",
+      "width": 390,
+      "status": 200,
+      "overflow": 0,
+      "featuredTop": 757.375,
+      "portraitLoaded": true
+    }
+  ],
+  "search": true,
+  "preview": true,
+  "topicShortcut": true
+}
