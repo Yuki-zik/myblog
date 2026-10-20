@@ -1,5 +1,7 @@
 # Agent Context & Handoff (A-Znk的blog)
 
+Search discovery (2026-10-20, PR #34): keep canonical origin a-znk.com and the existing .vercel.app redirects/Google verification file. /sitemap.xml is a directly submit-able urlset, while Astro's sitemap index stays available; keep their HTML URL sets identical (pnpm seo:check-build). Only trusted frontmatter dates become lastmod. IndexNow is notified from successful production deployment status or manual Actions dispatch; publish/verify ownership key before calling IndexNow. IndexNow is not a Baidu/Sogou/360 submission service. Operational playbook: docs/china-search-seo.md; run pnpm seo:audit after production deploy.
+
 Paper refinement (2026-10-20, in progress): user approves the homepage ExploreGateway hanging-note material. Refine recent-post metadata alignment, reduce nested boxes on /map, and balance /author dossier/research/publication proportions. Preserve the gateway, capsule, original artwork, real graph relationships and reading runtime. Capture scoped before/after/production evidence under docs/visual-history/2026-10-20-paper-refinement/.
 
 Header label contract (2026-10-19): the desktop grid gives the navigation `max-content` width; labels use `white-space: nowrap` and do not flex-shrink. Preserve six horizontal links in the mobile second row. Page overflow checks do not detect CJK glyphs wrapping inside a link; keep the rendered-text-line regression in `tests/e2e/header-nav-nowrap.spec.ts`. Do not restore symmetric `1fr / search / 1fr` sizing or compensate by hiding navigation.

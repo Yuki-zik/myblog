@@ -50,3 +50,7 @@ Sources: [Google site names](https://developers.google.com/search/docs/appearanc
 ## Primary-domain migration (2026-10-18)
 
 New canonical: `https://a-znk.com/`. The existing branded `.vercel.app` and old project alias must permanently redirect non-verification content to the new domain with each path preserved. The original `googleb326e1b2b17b02a1.html` stays reachable on each legacy hostname so existing GSC ownership can be verified after migration. `www.a-znk.com` has a Vercel project-domain 301 redirect to the apex host. `SITE_URL` is updated for Production and Preview. New Google Search Console property/sitemap submission still requires a verified Google account action; check these after deployment.
+
+## 中文搜索与自动化升级（2026-10-20）
+
+新域名 `a-znk.com` 公开检测：普通和模拟 Baiduspider 请求可读；搜狗 `site:` 返回 0 条、360 无相关结果，百度查询要求安全验证，Bing 公开结果不足以判定。具体策略及待验证项目见 [中文搜索 SEO 手册](china-search-seo.md)。PR #34 新增直接 `/sitemap.xml`、内容更新时间、CI parity check、IndexNow 部署触发器和 `pnpm seo:audit`。实际搜索收录仍需站长平台数据确认；新域名的百度/搜狗/360 验证不应冒称已完成。
