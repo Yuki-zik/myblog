@@ -54,3 +54,7 @@ New canonical: `https://a-znk.com/`. The existing branded `.vercel.app` and old 
 ## 中文搜索与自动化升级（2026-10-20）
 
 新域名 `a-znk.com` 公开检测：普通和模拟 Baiduspider 请求可读；搜狗 `site:` 返回 0 条、360 无相关结果，百度查询要求安全验证，Bing 公开结果不足以判定。具体策略及待验证项目见 [中文搜索 SEO 手册](china-search-seo.md)。PR #34 新增直接 `/sitemap.xml`、内容更新时间、CI parity check、IndexNow 部署触发器和 `pnpm seo:audit`。实际搜索收录仍需站长平台数据确认；新域名的百度/搜狗/360 验证不应冒称已完成。
+
+## 生产收录追踪（2026-10-20）
+
+PR #34 已合并（dcc5b661）。正式域名 robots、直接和索引 Sitemap、RSS、IndexNow 验证文件均返回 200；19 个 URL 的可抓取性已模拟检查。[IndexNow Action #39439737841](https://github.com/Yuki-zik/myblog/actions/runs/39439737841) 返回 HTTP 202，仍待密钥验证。真实索引数量未知。第二轮拟加入有站点凭据才启用的百度收录 API、每周生产 SEO 监测、目录页中文检索摘要和论文 OG 分享图。详见 [中文搜索操作手册](china-search-seo.md)。

@@ -43,6 +43,9 @@ jobs:
       - name: Validate canonical sitemap parity
         run: pnpm seo:check-build
 
+      - name: Test search engine submission helpers
+        run: pnpm seo:test
+
       - name: Audit frontend production dependencies
         run: pnpm audit:prod
 

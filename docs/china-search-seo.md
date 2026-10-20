@@ -37,3 +37,20 @@
 ## 跨地域与镜像
 
 主站由 Vercel 提供服务。模拟 Baiduspider UA 访问成功只能证明 User-Agent 没被屏蔽；实际中国大陆节点要分别测 TCP/TLS/DNS、HTML 200 与页面完整性。VPS 镜像保持对主域名的 canonical 或 noindex，避免两份内容争夺收录。不得通过 robots.txt Disallow 来实现 canonical。
+
+## 第二轮可发现性升级（2026-10-20）
+
+**线上已验证：** PR #34 合并为 dcc5b661，Vercel 正式部署 READY。19 个 URL 的 HTTP/canonical/H1/中文标记模拟爬虫检查通过。2026-10-20 14:30 UTC 的 [IndexNow Action](https://github.com/Yuki-zik/myblog/actions/runs/39439737841) 向协议入口提交 19 个 URL，返回 HTTP 202。按 IndexNow 官方定义，202 代表已收到请求、验证密钥仍待完成；不能据此声称已索引。正式密钥文件 HTTP 200。
+
+**百度普通收录（安全优先，使用官方后台）：**
+
+1. 在 https://ziyuan.baidu.com/ 验证 a-znk.com。进入普通收录的 Sitemap 或手动 URL 提交入口，优先提交 https://a-znk.com/sitemap.xml。
+2. GitHub Actions 的 Search engine discovery 工作流会为生产发布生成 baidu-urls 工件，其中是此次修改的 canonical URL 清单。下载文本后可以直接在百度后台提交；也可在仓库本地运行 pnpm seo:baidu:prepare 查看完整 URL 清单。
+3. 百度官方历史公告给出的普通收录 API 为 HTTP。2026-10-20 从 Mac mini 对其 HTTPS 主机进行证书校验时发现域名不匹配。因此当前自动流程**不传输百度 token、不向 HTTP 接口提交请求、也不忽略证书错误**。如百度提供经验证的安全接口后再评估启用自动提交。
+4. 真实收录、抓取、曝光和点击仍须以百度搜索资源平台后续数据为准。IndexNow 仅通知其参与搜索引擎。
+
+**持续监控：** 每周二北京时间 09:17，Production SEO audit 从 GitHub runner 检查 robots、两种 Sitemap 一致性、IndexNow 密钥、所有公开页面的 200/中文标记/标题/description/canonical/H1/noindex，以及论文 OG 图片元数据。可在 Actions 手动运行。此测试不能取代中国大陆真实网络测试。
+
+**内容展示：** 已公开论文将获得独立 OG 分享图；文章归档、主题列表、论文索引与漫游页增加有依据的中文搜索摘要。页面可见结构保持不变。引擎自行决定实际搜索摘要与排名。
+
+待由站点所有者核查：百度、搜狗、360 和 Bing 的索引后台；真实大陆节点 DNS/TLS/HTTP；Bing Webmaster Tools 的 IndexNow 验证记录。

@@ -11,10 +11,11 @@ const [posts,topics,concepts]=await Promise.all([getCollection("posts",({data})=
 const graph=buildKnowledgeGraph(posts,topics,concepts);
 const trails=buildReadingTrails(graph);
 const description="从一个问题出发，沿着笔记、主题与概念之间的真实联系，找到下一篇值得读的内容。";
+const seoDescription="探索 A-Znk 的技术知识网络，沿真实主题、文章和概念关联查找 AI Coding、Agent 工程、段落锚点与知识组织笔记，支持交互浏览与阅读路线。";
 const site=Astro.site;
-const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),canonicalUrl:new URL("/map",site).toString(),title:EXPLORE_LABEL,description,breadcrumbs:[{name:"首页",url:new URL("/",site).toString()},{name:EXPLORE_LABEL}]}):undefined;
+const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),canonicalUrl:new URL("/map",site).toString(),title:EXPLORE_LABEL,description:seoDescription,breadcrumbs:[{name:"首页",url:new URL("/",site).toString()},{name:EXPLORE_LABEL}]}):undefined;
 ---
-<BaseLayout title="漫游 · 想法之间的路径" description={description} canonical="/map" runtime="discover" structuredData={structuredData}>
+<BaseLayout title="漫游 · 想法之间的路径" description={seoDescription} canonical="/map" runtime="discover" structuredData={structuredData}>
   <DiscoverShell bodyClass="wander-page">
     <header class="wander-hero" data-discover-hero>
       <div class="wander-hero__title">
