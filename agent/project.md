@@ -312,3 +312,9 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 - GitHub 仓库：`https://github.com/Yuki-zik/myblog`（分支 `main`）
 - 托管平台：Vercel（已连接 GitHub，自动部署）
 - 评论后端：仓库内已补充 `waline-server/` 独立部署单元；仍需创建单独 Vercel 项目并连接 Supabase PostgreSQL
+
+## 搜索可发现性（2026-10-20）
+
+- 正式 canonical：`https://a-znk.com`。`robots.txt`、`sitemap.xml`、既有 Astro sitemap-index、RSS、JSON-LD 与站点重定向构成检索入口。
+- 新增 `src/lib/seo/sitemap.ts`/`src/pages/sitemap.xml.ts` 维护标准 URL-set，并以 `scripts/seo/check-build.mjs` 验证与 Astro 列表一致。
+- 生产部署成功后通过 `.github/workflows/indexnow.yml` 和 `scripts/seo/submit-indexnow.mjs` 提交变更 URL。国内搜索站长平台所有权验证需经域名所有者登录；详见 `docs/china-search-seo.md`。

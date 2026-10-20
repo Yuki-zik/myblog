@@ -38,7 +38,7 @@ test("site endpoints expose canonical SEO and security headers", async ({ reques
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
   expect(robots.headers()["content-type"]).toContain("text/plain");
-  expect(await robots.text()).toContain("Sitemap: https://myblog.example/sitemap-index.xml");
+  expect(await robots.text()).toContain("Sitemap: https://myblog.example/sitemap.xml");
 
   const rss = await request.get("/rss.xml");
   expect(rss.ok()).toBe(true);
@@ -62,6 +62,18 @@ test("sitemap page URLs match their rendered canonical URLs without trailing sla
     expect(sitemap.ok()).toBe(true);
     pageUrls.push(...await sitemapLocations(page, await sitemap.text()));
   }
+
+  // The direct XML sitemap is intended for search engine submission while
+  // Astro's original sitemap index remains usable by existing subscribers.
+  const directSitemap = await request.get("/sitemap.xml");
+  expect(directSitemap.ok()).toBe(true);
+  expect(directSitemap.headers()["content-type"]).toMatch(/(?:application|text)\/xml/);
+  const directXml = await directSitemap.text();
+  expect(directXml).toContain("<urlset ");
+  expect(directXml).toContain("<lastmod>");
+  const directUrls = await sitemapLocations(page, directXml);
+  const normalized = (urls: string[]) => urls.map((url) => url.replace(/\/$/, "")).sort();
+  expect(normalized(directUrls)).toEqual(normalized(pageUrls));
 
   expect(pageUrls).toContain("https://myblog.example/posts/myblog-design-manual");
   expect(pageUrls).toContain("https://myblog.example/topics/knowledge-network");

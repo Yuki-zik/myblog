@@ -1,0 +1,61 @@
+name: IndexNow submission
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview URLs without submitting"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    # Only production deployment success can trigger automatic notification.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       startsWith(github.event.deployment.environment, 'Production') &&
+       contains(github.event.deployment.environment, 'myblog'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Verify production revision belongs to main
+        if: github.event_name == 'deployment_status'
+        env:
+          DEPLOYED_SHA: ${{ github.event.deployment.sha }}
+        run: |
+          git fetch origin main --depth=100
+          git fetch origin "$DEPLOYED_SHA" --depth=2
+          git merge-base --is-ancestor "$DEPLOYED_SHA" origin/main
+          git checkout --detach "$DEPLOYED_SHA"
+          git diff --name-only HEAD^ HEAD > "$RUNNER_TEMP/seo-changed-files.txt"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate URL change selection
+        run: node --test scripts/seo/indexnow-utils.test.mjs
+
+      - name: Notify participating search engines
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$DRY_RUN" == "true" ]]; then
+              node scripts/seo/submit-indexnow.mjs --all --dry-run
+            else
+              node scripts/seo/submit-indexnow.mjs --all
+            fi
+          else
+            node scripts/seo/submit-indexnow.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt"
+          fi
