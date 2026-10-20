@@ -67,24 +67,59 @@ const authorContactEntries = [
 >
   <DiscoverShell bodyClass="discover-editorial author-atlas">
     <section class="author-atlas-hero" data-discover-hero aria-labelledby="author-atlas-name">
-      <div class="author-atlas-hero__main">
+      <header class="author-atlas-hero__masthead">
         <div class="author-atlas-hero__locator" aria-hidden="true">
-          <span>RESEARCH FOLIO / 001</span>
-          <span>ABOUT · A-ZNK</span>
+          <span>PERSONAL RESEARCH / FIELDNOTES</span>
+          <span>01 — 作者</span>
         </div>
-
-        <p class="author-atlas-hero__eyebrow">一个持续构建中的研究者档案</p>
         <h1 id="author-atlas-name" class="author-atlas-hero__name">
           {SITE_AUTHOR_PROFILE.name}
           <span>{SITE_AUTHOR_PROFILE.publicationName}</span>
         </h1>
+      </header>
 
+      <aside class="author-atlas-hero__aside" aria-label="作者档案">
+        <figure class="author-portrait">
+          {SITE_AUTHOR_PROFILE.avatar ? (
+            <img
+              class="author-avatar"
+              src={SITE_AUTHOR_PROFILE.avatar}
+              alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          ) : null}
+          <figcaption>
+            <span>{SITE_AUTHOR_PROFILE.name}</span>
+            <span class="author-portrait__index" aria-hidden="true">FIG. 01</span>
+          </figcaption>
+        </figure>
+        <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label="公开内容概览">
+          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>已发表 / 已接收</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>公开文章</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>内容主题</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>研究轨道</span></div>
+        </div>
+      </aside>
+
+      <div class="author-atlas-hero__main">
+        {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
         <h2 class="author-atlas-hero__statement">
           在模型行为与真实系统之间，
           <em>寻找可验证的答案。</em>
         </h2>
+        {selectedPapers[0] ? (
+          <div class="author-atlas-featured">
+            <p class="author-atlas-featured__label">
+              <span>SELECTED WORK / 代表作</span>
+              <span>{selectedPapers[0].data.venue?.short ?? selectedPapers[0].data.venue?.name} · {selectedPapers[0].data.year}</span>
+            </p>
+            <h3><a href={"/papers/" + selectedPapers[0].id}>{selectedPapers[0].data.title}<span aria-hidden="true">↗</span></a></h3>
+          </div>
+        ) : null}
+        {SITE_AUTHOR_PROFILE.mission ? <p class="author-atlas-idcard__mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
         <p class="author-atlas-hero__intro">{SITE_AUTHOR_PROFILE.intro}</p>
-
         <nav class="author-atlas-hero__actions" aria-label="探索作者研究和内容">
           <a href="/papers">研究成果 <span aria-hidden="true">↗</span></a>
           <a href="/topics">探索主题 <span aria-hidden="true">↗</span></a>
@@ -94,46 +129,7 @@ const authorContactEntries = [
             rel="noopener noreferrer"
           >GitHub <span aria-hidden="true">↗</span></a>
         </nav>
-
-        <div class="author-atlas-hero__reading-line">
-          <span aria-hidden="true">///</span>
-          <p>研究问题、工程实验、公开记录。这里持续收集那些值得反复验证的想法。</p>
-        </div>
       </div>
-
-      <aside class="author-atlas-hero__aside" aria-label="作者档案">
-        <p class="author-atlas-dossier__label">PROFILE / 作者档案</p>
-        <div class="author-atlas-dossier__identity">
-          <div class="author-portrait">
-            {SITE_AUTHOR_PROFILE.avatar ? (
-              <img
-                class="author-avatar"
-                src={SITE_AUTHOR_PROFILE.avatar}
-                alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
-                loading="eager"
-                decoding="async"
-              />
-            ) : null}
-            <span class="author-portrait__index" aria-hidden="true">FIG. 01</span>
-          </div>
-          <div class="author-atlas-idcard">
-            <p class="author-atlas-idcard__name">{SITE_AUTHOR_PROFILE.publicationName}</p>
-            {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
-          </div>
-        </div>
-
-        <div class="author-atlas-dossier__mission">
-          <p class="author-atlas-dossier__label">研究的出发点</p>
-          {SITE_AUTHOR_PROFILE.mission ? <p class="author-atlas-idcard__mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
-        </div>
-
-        <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label="公开内容概览">
-          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>已发表 / 已接收</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>公开文章</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>内容主题</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>研究轨道</span></div>
-        </div>
-      </aside>
     </section>
 
     <div class="author-atlas-section-nav" aria-label="档案目录">

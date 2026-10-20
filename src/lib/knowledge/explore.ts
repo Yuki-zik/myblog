@@ -44,7 +44,39 @@ export function layoutExploreNodes(nodes:GraphNode[]) {
 }
 
 export function wrapNodeTitle(text:string, units=23):string[] {
-  const lines:string[]=[];let current="",used=0;
-  for(const char of text){const width=/[\u0000-\u007f]/.test(char)?1:1.75;if(used+width>units&&current){lines.push(current);current="";used=0;}current+=char;used+=width;}
-  if(current)lines.push(current);return lines;
+  if(!text)return [];
+  const width=(value:string)=>Array.from(value).reduce((sum,char)=>sum+(/[\u0000-\u007f]/.test(char)?1:1.75),0);
+  const limit=Math.max(1.75,units);
+  const parts:string[]=[];
+  // Latin words stay intact; source spaces belong to the preceding part so a
+  // visual line break never loses text or leaves the next line starting blank.
+  for(const part of text.match(/[A-Za-z0-9]+(?:[-_./][A-Za-z0-9]+)*|\s+|./gu)??[]){
+    if(/^\s+$/u.test(part)&&parts.length){parts[parts.length-1]+=part;continue;}
+    parts.push(...(width(part)>limit?Array.from(part):[part]));
+  }
+  type Breaks={lines:string[];cost:number};
+  const best:Breaks[]=Array(parts.length+1);
+  best[parts.length]={lines:[],cost:0};
+  // Among layouts using the fewest lines, balance their measures and prefer
+  // phrase boundaries. This avoids the one-character tails seen in real nodes.
+  for(let start=parts.length-1;start>=0;start--){
+    let line="";
+    for(let end=start;end<parts.length;end++){
+      line+=parts[end];
+      const measure=width(line.trimEnd());
+      if(measure>limit)break;
+      const rest=best[end+1];
+      const next=parts[end+1]??"";
+      const phraseBreak=/[A-Za-z0-9]\s+$/u.test(line)&&/^[A-Za-z0-9]/.test(next);
+      const orphan=Array.from(line.trim()).length===1;
+      const startsWithPunctuation=/^[，。！？：；、…,.!?;:)\]）》】”’]/u.test(line.trimStart());
+      const candidate={
+        lines:[line,...rest.lines],
+        cost:rest.cost+(limit-measure)**2+(phraseBreak?limit**2/8:0)+((orphan||startsWithPunctuation)?limit**2:0)
+      };
+      if(!best[start]||candidate.lines.length<best[start].lines.length||
+        (candidate.lines.length===best[start].lines.length&&candidate.cost<best[start].cost))best[start]=candidate;
+    }
+  }
+  return best[0].lines;
 }

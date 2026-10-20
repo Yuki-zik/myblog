@@ -1,65 +1,60 @@
 import { expect, test } from "@playwright/test";
 import { waitForFontsSettled } from "./helpers/page-state";
 
-test("reading routes scan as aligned rows with their complete ordered stops", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
+test("the relationship map is the desktop first-screen subject, with reading trails after it", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/map");
+  await page.locator('[data-explore-ready="true"]').waitFor();
   await waitForFontsSettled(page);
-  const rows = await page.locator("[data-reading-trail]").evaluateAll((elements) =>
-    elements.map((element) => {
-      const rect = element.getBoundingClientRect();
-      const heading = element.querySelector("h3")!.getBoundingClientRect();
-      const stops = element.querySelector("ol")!.getBoundingClientRect();
-      return {
-        x: rect.x, top: rect.top, bottom: rect.bottom, width: rect.width,
-        headingRight: heading.right, stopsLeft: stops.left,
-        stops: element.querySelectorAll("ol a").length,
-        minimumStopFont: Math.min(...Array.from(element.querySelectorAll("ol a"), (link) => parseFloat(getComputedStyle(link).fontSize))),
-        overflow: element.scrollWidth - element.clientWidth
-      };
-    })
-  );
-  expect(rows).toHaveLength(3);
-  for (const [index, row] of rows.entries()) {
-    expect(row.stops).toBe(3);
-    expect(row.minimumStopFont).toBeGreaterThanOrEqual(14);
-    expect(row.overflow).toBeLessThanOrEqual(1);
-    expect(row.stopsLeft).toBeGreaterThan(row.headingRight + 20);
-    if (index) {
-      expect(row.top).toBeGreaterThanOrEqual(rows[index - 1].bottom);
-      expect(Math.abs(row.x - rows[0].x)).toBeLessThanOrEqual(1);
-      expect(Math.abs(row.width - rows[0].width)).toBeLessThanOrEqual(1);
-    }
+  const composition = await page.evaluate(() => {
+    const workspace = document.querySelector(".explore-workspace")!.getBoundingClientRect();
+    const map = document.querySelector(".explore-map")!.getBoundingClientRect();
+    const trails = document.querySelector(".explore-trails")!.getBoundingClientRect();
+    const visibleNodes = Array.from(document.querySelectorAll(".explore-map__node")).filter((node) => {
+      const box = node.getBoundingClientRect();
+      return box.top >= 0 && box.bottom <= innerHeight && box.left >= 0 && box.right <= innerWidth;
+    }).length;
+    return { mapTop: map.top, mapWidth: map.width, workspaceWidth: workspace.width,
+      workspaceBottom: workspace.bottom, trailsTop: trails.top, visibleNodes };
+  });
+  expect(composition.mapTop).toBeLessThan(400);
+  expect(composition.mapWidth / composition.workspaceWidth).toBeGreaterThan(.65);
+  expect(composition.visibleNodes).toBeGreaterThanOrEqual(3);
+  expect(composition.trailsTop).toBeGreaterThanOrEqual(composition.workspaceBottom);
+  await expect(page.locator(".explore-inspector h3")).toBeInViewport();
+  await expect(page.locator("[data-reading-trail] ol a")).toHaveCount(9);
+  const labelClearances = await page.locator(".explore-map__node").evaluateAll((nodes) => nodes.map((node) => {
+    const paper = node.querySelector<SVGRectElement>(".explore-map__node-paper")!.getBBox();
+    const label = node.querySelector<SVGTextElement>(".explore-map__node-title")!.getBBox();
+    return { left: label.x - paper.x, right: paper.x + paper.width - label.x - label.width };
+  }));
+  for (const clearance of labelClearances) {
+    expect(clearance.left).toBeGreaterThanOrEqual(26);
+    expect(clearance.right).toBeGreaterThanOrEqual(8);
   }
 });
 
-test("mobile route numbers and stop counts form a readable horizontal caption above each title", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 850 });
+test("reading paths remain a compact secondary directory with accessible descriptions", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/map");
   await waitForFontsSettled(page);
-  const captions = await page.locator("[data-reading-trail]").evaluateAll((rows) => rows.map((row) => {
-    const caption = row.querySelector(".explore-trail__top")!;
-    const number = caption.firstElementChild!.getBoundingClientRect();
-    const countElement = caption.lastElementChild!;
-    const count = countElement.getBoundingClientRect();
-    const countStyle = getComputedStyle(countElement);
-    const heading = row.querySelector("h3")!.getBoundingClientRect();
-    return {
-      writingMode: countStyle.writingMode,
-      countFontSize: parseFloat(countStyle.fontSize),
-      onSameLine: number.top < count.bottom && count.top < number.bottom,
-      captionBottom: caption.getBoundingClientRect().bottom,
-      headingTop: heading.top
-    };
-  }));
-  for (const caption of captions) {
-    expect(caption.writingMode).toBe("horizontal-tb");
-    expect(caption.countFontSize).toBeGreaterThanOrEqual(13);
-    expect(caption.onSameLine).toBe(true);
-    expect(caption.captionBottom).toBeLessThanOrEqual(caption.headingTop);
+  const rows = await page.locator("[data-reading-trail]").evaluateAll((elements) => elements.map((element) => ({
+    height: element.getBoundingClientRect().height,
+    overflow: element.scrollWidth - element.clientWidth,
+    minimumStopFont: Math.min(...Array.from(element.querySelectorAll("ol a"), (link) => parseFloat(getComputedStyle(link).fontSize)))
+  })));
+  expect(rows).toHaveLength(3);
+  for (const row of rows) {
+    expect(row.height).toBeLessThanOrEqual(160);
+    expect(row.minimumStopFont).toBeGreaterThanOrEqual(14);
+    expect(row.overflow).toBeLessThanOrEqual(1);
   }
+  const description = page.locator("[data-reading-trail] details").first();
+  await description.locator("summary").click();
+  await expect(description.locator("p")).toBeVisible();
+  await expect(description.locator("p")).toContainText("一次限时开发复盘");
 });
 
 for (const scheme of ["light", "dark"] as const) {
@@ -101,13 +96,16 @@ for (const scheme of ["light", "dark"] as const) {
   });
 }
 
-test("mobile open rows keep full labels and the selected reading note usable", async ({ page }) => {
+test("mobile starts with readable content immediately after the compact heading", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 850 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/map");
   await page.locator('[data-explore-ready="true"]').waitFor();
   await waitForFontsSettled(page);
   await expect(page.locator(".explore-node-list")).toBeVisible();
+  const firstItem = await page.locator(".explore-node-list > button").first().boundingBox();
+  expect(firstItem!.y).toBeLessThan(600);
+  await expect(page.locator(".explore-node-list > button").first()).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
   const stops = page.locator("[data-reading-trail] ol a");
   for (const stop of await stops.all()) {

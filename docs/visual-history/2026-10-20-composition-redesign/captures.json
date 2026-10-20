@@ -1,0 +1,89 @@
+{
+  "baseRevision": "069107ca666391db84691710fb056a0acbba73b5",
+  "viewport": "1440x900 desktop, 390x900 mobile",
+  "sources": {
+    "src/pages/map.astro": "ef7e9d68715042efd7d931ed06d5ae095c50fedca989bfa11a14adfae8c18179",
+    "src/pages/author.astro": "0da1b4a9dee63a9f3d2dc11a53979941fc20f2a4a67987c695b836a69fe1bc8e",
+    "src/styles/explore.css": "658992666f23a783d390df37dd429025fb12a97eaa703927462fd1bacead4610",
+    "src/styles/author-atlas.css": "29150db244f9205e14e91050f2f930140c3c20d8f53f2a41a1fa131a0347e4be",
+    "src/components/discover/KnowledgeGraph.tsx": "58280b37785f2308ab9bb273d9ac832acc462554347d07a3cc5c8161fb7335e7",
+    "src/lib/knowledge/explore.ts": "0050c36b8938503b2f653c57fd78be9970172424200018a4e563f393c8f84726"
+  },
+  "captures": [
+    {
+      "file": "v0-author-first-screen.png",
+      "sha256": "fb825f480cca6ea34d6b28de5d7c1bed62335f478f0910a58927ed62267826ab",
+      "valid": true
+    },
+    {
+      "file": "v0-map-first-screen.png",
+      "sha256": "8a271a2ae1334c7d8fbadc98a186719e1a85843c0259a24fb0abe3da3bb65e00",
+      "valid": true
+    },
+    {
+      "file": "v1-author-first-screen-decoded.png",
+      "sha256": "c18665f8533f1f6e9b8bc9037282a75c80d67b52b976f4553dc191e4b19878d3",
+      "valid": true
+    },
+    {
+      "file": "v1-author-first-screen.png",
+      "sha256": "5792a261a1d26714e7edaba3f08d079c7092985c5ee83fc848b72b569152a417",
+      "valid": false
+    },
+    {
+      "file": "v1-author-mobile.png",
+      "sha256": "a43fc2050c93935fc872b1159bb01f5aadd6c7136bec858240b2c86eeb3e1a6b",
+      "valid": true
+    },
+    {
+      "file": "v1-author-publications.png",
+      "sha256": "20f2b74a69cc30ef484366d1a3a6afc34001dbc0b106519aff5152723c363b41",
+      "valid": true
+    },
+    {
+      "file": "v1-author-research.png",
+      "sha256": "1561e6f10b16e11bf2a4a5f31ecfdd2231c39483650b498ef865010213ab6497",
+      "valid": true
+    },
+    {
+      "file": "v1-map-first-screen.png",
+      "sha256": "181da1639be1133aa9cb02bdf1659e2f79eb54658c4d9bc683b540d83a3a92c0",
+      "valid": true
+    },
+    {
+      "file": "v1-map-mobile.png",
+      "sha256": "64b0753383e4e7fddf18f324fa55d59bff5c09fbccecdeed4620f611237f3096",
+      "valid": true
+    },
+    {
+      "file": "v2-author-1440-dark.png",
+      "sha256": "f62aae58aeed335efc31b089a06aa65ef02ce371a56fdc34c9aaca33bc087d2b",
+      "valid": true
+    },
+    {
+      "file": "v2-author-1440-light.png",
+      "sha256": "1fb157b544fb9f93668d88dcf8cf43e12b78b426d44419397df20fff4da35841",
+      "valid": true
+    },
+    {
+      "file": "v2-author-390-light.png",
+      "sha256": "a43fc2050c93935fc872b1159bb01f5aadd6c7136bec858240b2c86eeb3e1a6b",
+      "valid": true
+    },
+    {
+      "file": "v2-map-1440-dark.png",
+      "sha256": "782d86eb13584435613b0f462621731353e93b45987940e330e840e917290914",
+      "valid": true
+    },
+    {
+      "file": "v2-map-1440-light.png",
+      "sha256": "4c455276b98edadd227e95006b8f741f7851487c627a93e47cd2fcd128f4831c",
+      "valid": true
+    },
+    {
+      "file": "v2-map-390-light.png",
+      "sha256": "9fe996666c86d40bbe5dd69bc9d21b933466587a9c5391f93faea5be86572ac5",
+      "valid": true
+    }
+  ]
+}

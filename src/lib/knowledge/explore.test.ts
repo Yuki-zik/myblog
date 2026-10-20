@@ -32,4 +32,25 @@ describe("explore helpers",()=>{
     expect(wrapNodeTitle(title).join("")).toBe(title);
     expect(wrapNodeTitle("AI Coding")).toEqual(["AI Coding"]);
   });
+  it("balances the real paper labels instead of leaving one CJK character on the last line",()=>{
+    for(const title of ["蚂蚁 AI Coding 笔试复盘","A-Znk的blog：设计说明书","为什么主题页应成为博客第一入口"]){
+      const lines=wrapNodeTitle(title,21);
+      expect(lines.join("")).toBe(title);
+      expect(lines).toHaveLength(2);
+      expect(lines.at(-1)!.trim().length).toBeGreaterThan(1);
+      expect(lines.every(line=>!/^[:：，。！？、；]/u.test(line.trim()))).toBe(true);
+    }
+    expect(wrapNodeTitle("蚂蚁 AI Coding 笔试复盘",21).some(line=>line.includes("AI Coding"))).toBe(true);
+  });
+  it("keeps Latin words whole when they fit and only splits an overlong word",()=>{
+    const title="Build resilient Agent Engineering systems";
+    const lines=wrapNodeTitle(title,23);
+    expect(lines.join("")).toBe(title);
+    for(const word of title.split(" "))expect(lines.some(line=>line.includes(word))).toBe(true);
+    const longWord="Supercalifragilisticexpialidocious";
+    const fallback=wrapNodeTitle(longWord,12);
+    expect(fallback.join("")).toBe(longWord);
+    expect(fallback.every(line=>line.length<=12)).toBe(true);
+    expect(wrapNodeTitle("")).toEqual([]);
+  });
 });

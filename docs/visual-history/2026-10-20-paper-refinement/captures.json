@@ -11,67 +11,125 @@
   "captures": [
     {
       "file": "before-author-desktop.png",
-      "sha256": "a19deee2371adbd410a9195022a0096ebe1acfc0ee0cabee7a7d849d9550ad15"
+      "sha256": "a19deee2371adbd410a9195022a0096ebe1acfc0ee0cabee7a7d849d9550ad15",
+      "valid": true
     },
     {
       "file": "before-home-recent.png",
-      "sha256": "a0cd809a8c706df1052742b95bb8185f60ea89fa062c21609d2bea4f32d6eb61"
+      "sha256": "a0cd809a8c706df1052742b95bb8185f60ea89fa062c21609d2bea4f32d6eb61",
+      "valid": true
     },
     {
       "file": "before-map-desktop.png",
-      "sha256": "5ed589ad65c1a65a9f4060062faa047944438b897a1eac207ba23978b53cc732"
+      "sha256": "5ed589ad65c1a65a9f4060062faa047944438b897a1eac207ba23978b53cc732",
+      "valid": true
+    },
+    {
+      "file": "production-author-desktop.png",
+      "sha256": "8c3faceefc1d19c868913c2a141d48691248d0ee5c9d0a8490618be9e27f2340",
+      "valid": true
+    },
+    {
+      "file": "production-author-mobile-viewport.png",
+      "sha256": "a31d5223704583e9382aca7b65f196b5e70aa426c7d56ff7e43c91e31929680e",
+      "valid": true
+    },
+    {
+      "file": "production-author-mobile.png",
+      "sha256": "587edeeaf048c31a041a77bd5d4f05d31e8b209a8ad7970a71942874b892c45a",
+      "valid": false
+    },
+    {
+      "file": "production-author-research.png",
+      "sha256": "003b6a25261e007d2a5a3e15a8eb6dd2dd73fa871db71f1476c55c1ffab6b1e4",
+      "valid": true
+    },
+    {
+      "file": "production-home-recent.png",
+      "sha256": "19e9ddcb3943fd662ded315b5ae5cf14c2e540e7f8417e9ff832ff1f2b52480a",
+      "valid": true
+    },
+    {
+      "file": "production-map-mobile.png",
+      "sha256": "3480e1927880729b9e7ca59adee30901dd963e28b796e119a96abf7a84393df6",
+      "valid": true
+    },
+    {
+      "file": "production-map-routes.png",
+      "sha256": "ffbcc4553b283770a7e55e55514d9615fa814674cc5eab10b6c29d55c8e5387f",
+      "valid": true
+    },
+    {
+      "file": "production-map-workspace.png",
+      "sha256": "aa5d8e082bab27b1690d47e830c4b505334b2c14e06edeb797b1a60ee599b46e",
+      "valid": true
     },
     {
       "file": "reference-gateway.png",
-      "sha256": "2616e239cc73b62b51d679c39405b2c3b2bb911c9829448841b15e50d37dc630"
+      "sha256": "2616e239cc73b62b51d679c39405b2c3b2bb911c9829448841b15e50d37dc630",
+      "valid": true
     },
     {
       "file": "v1-author-0-desktop.png",
-      "sha256": "8c3faceefc1d19c868913c2a141d48691248d0ee5c9d0a8490618be9e27f2340"
+      "sha256": "8c3faceefc1d19c868913c2a141d48691248d0ee5c9d0a8490618be9e27f2340",
+      "valid": true
     },
     {
       "file": "v1-author-1-desktop.png",
-      "sha256": "003b6a25261e007d2a5a3e15a8eb6dd2dd73fa871db71f1476c55c1ffab6b1e4"
+      "sha256": "003b6a25261e007d2a5a3e15a8eb6dd2dd73fa871db71f1476c55c1ffab6b1e4",
+      "valid": true
     },
     {
       "file": "v1-author-1440-dark.png",
-      "sha256": "14bfd20ec4741d2138bcebd462d5edf1cb8d1ef57bd6b9ecfd9b3d5db8afbdd0"
+      "sha256": "14bfd20ec4741d2138bcebd462d5edf1cb8d1ef57bd6b9ecfd9b3d5db8afbdd0",
+      "valid": true
     },
     {
       "file": "v1-author-2-desktop.png",
-      "sha256": "fedc0ce957a4abe1edfc66e80fec672d5a3b4563e349e0e49534f8754c5fc1ed"
+      "sha256": "fedc0ce957a4abe1edfc66e80fec672d5a3b4563e349e0e49534f8754c5fc1ed",
+      "valid": true
     },
     {
       "file": "v1-author-390-light.png",
-      "sha256": "5fd74f8f2f4002f93a368a90bdd263c86adea1d55e687657a90035c19fafb425"
+      "sha256": "5fd74f8f2f4002f93a368a90bdd263c86adea1d55e687657a90035c19fafb425",
+      "valid": true
     },
     {
       "file": "v1-home-0-desktop.png",
-      "sha256": "19e9ddcb3943fd662ded315b5ae5cf14c2e540e7f8417e9ff832ff1f2b52480a"
+      "sha256": "19e9ddcb3943fd662ded315b5ae5cf14c2e540e7f8417e9ff832ff1f2b52480a",
+      "valid": true
     },
     {
       "file": "v1-map-0-desktop.png",
-      "sha256": "e194d40d3570868df4d7ad85546b453b3af6f71f7a77094a17fc139606f9d475"
+      "sha256": "e194d40d3570868df4d7ad85546b453b3af6f71f7a77094a17fc139606f9d475",
+      "valid": true
     },
     {
       "file": "v1-map-1-desktop.png",
-      "sha256": "aa5d8e082bab27b1690d47e830c4b505334b2c14e06edeb797b1a60ee599b46e"
+      "sha256": "aa5d8e082bab27b1690d47e830c4b505334b2c14e06edeb797b1a60ee599b46e",
+      "valid": true
     },
     {
       "file": "v1-map-1440-dark.png",
-      "sha256": "55b41f48c60b14a6ff9a19b1557a8b450819a56fee7bde43cd291e45c22bddb8"
+      "sha256": "55b41f48c60b14a6ff9a19b1557a8b450819a56fee7bde43cd291e45c22bddb8",
+      "valid": true
     },
     {
       "file": "v1-map-390-light.png",
-      "sha256": "85df9f2711a174f9c50d74cb84a555c679206c04ec34fba0d7595732b0b75564"
+      "sha256": "85df9f2711a174f9c50d74cb84a555c679206c04ec34fba0d7595732b0b75564",
+      "valid": true
     },
     {
       "file": "v2-map-desktop.png",
-      "sha256": "ffbcc4553b283770a7e55e55514d9615fa814674cc5eab10b6c29d55c8e5387f"
+      "sha256": "ffbcc4553b283770a7e55e55514d9615fa814674cc5eab10b6c29d55c8e5387f",
+      "valid": true
     },
     {
       "file": "v2-map-mobile.png",
-      "sha256": "3480e1927880729b9e7ca59adee30901dd963e28b796e119a96abf7a84393df6"
+      "sha256": "3480e1927880729b9e7ca59adee30901dd963e28b796e119a96abf7a84393df6",
+      "valid": true
     }
-  ]
+  ],
+  "productionRevision": "069107ca666391db84691710fb056a0acbba73b5",
+  "userAcceptance": "rejected-as-too-small"
 }
