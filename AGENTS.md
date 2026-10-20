@@ -1,5 +1,8 @@
 # Agent Context & Handoff (A-Znk的blog)
 
+Scholarly discovery (2026-10-20): Paper pages use concise bilingual HTML search titles from verified subtitle plus existing acronym/venue, while retaining original English publication title in visible H1 and JSON-LD. For genuine non-draft/non-prototype paper pages, emit exact Highwire citation_title, ordered citation_author, real date/year, verified venue type, DOI and only explicit PDF resources. Dedicated tests: src/lib/seo/highwire.test.ts and tests/e2e/papers.spec.ts. Chinese search status and Baidu API security caveats: docs/china-search-seo.md. Preserve Waline, article pages, redirects, Google verification file and existing visual design.
+
+
 Search discovery (2026-10-20, PR #34): keep canonical origin a-znk.com and the existing .vercel.app redirects/Google verification file. /sitemap.xml is a directly submit-able urlset, while Astro's sitemap index stays available; keep their HTML URL sets identical (pnpm seo:check-build). Only trusted frontmatter dates become lastmod. IndexNow is notified from successful production deployment status or manual Actions dispatch; publish/verify ownership key before calling IndexNow. IndexNow is not a Baidu/Sogou/360 submission service. Operational playbook: docs/china-search-seo.md; run pnpm seo:audit after production deploy.
 
 Paper refinement (2026-10-20, in progress): user approves the homepage ExploreGateway hanging-note material. Refine recent-post metadata alignment, reduce nested boxes on /map, and balance /author dossier/research/publication proportions. Preserve the gateway, capsule, original artwork, real graph relationships and reading runtime. Capture scoped before/after/production evidence under docs/visual-history/2026-10-20-paper-refinement/.

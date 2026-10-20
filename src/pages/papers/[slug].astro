@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildScholarlyArticleGraph } from "../../lib/seo/jsonLd";
+import { buildHighwireMetadata, paperSearchDescription, paperSearchTitle } from "../../lib/seo/highwire";
 
 interface Props {
   paper: CollectionEntry<"papers">;
@@ -20,6 +21,9 @@ const { paper } = Astro.props;
 const { Content } = await render(paper);
 const canonicalPath = `/papers/${paper.id}`;
 const site = Astro.site;
+const scholarlyMeta = site
+  ? buildHighwireMetadata(paper.data, new URL(canonicalPath, site).toString())
+  : undefined;
 const structuredData = site
   ? buildScholarlyArticleGraph({
       siteUrl: site.toString(),
@@ -64,8 +68,10 @@ const resourceLabels = {
 ---
 
 <BaseLayout
-  title={paper.data.title}
-  description={paper.data.abstract}
+  title={paperSearchTitle(paper.data)}
+  description={paperSearchDescription(paper.data)}
+  scholarlyMeta={scholarlyMeta}
+  openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : undefined}
   authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
   canonical={canonicalPath}
   metaType="article"
