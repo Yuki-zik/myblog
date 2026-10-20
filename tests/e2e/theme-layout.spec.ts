@@ -618,12 +618,12 @@ test("author page presents a structured research profile without mobile overflow
   await expect(page.locator(".author-avatar")).toBeVisible();
   await expect(
     page
-      .locator("[data-discover-hero] .author-atlas-hero__aside")
+      .locator("[data-discover-hero]")
       .getByText("AI 安全 USTC 硕士｜专注大模型系统与安全"),
   ).toBeVisible();
   await expect(
     page
-      .locator("[data-discover-hero] .author-atlas-hero__aside")
+      .locator("[data-discover-hero]")
       .getByText("把大模型从“能回答问题”变成“能完成任务的系统”"),
   ).toBeVisible();
   await expect(

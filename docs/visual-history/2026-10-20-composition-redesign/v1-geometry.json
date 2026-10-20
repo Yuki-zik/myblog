@@ -1,0 +1,36 @@
+[
+  {
+    "route": "map",
+    "positions": [
+      {
+        "selector": ".explore-workspace",
+        "top": 205.71875,
+        "width": 1280,
+        "height": 745.203125
+      },
+      {
+        "selector": ".explore-map__node",
+        "top": 374.7802734375,
+        "width": 238.09915161132812,
+        "height": 72.4649658203125
+      }
+    ]
+  },
+  {
+    "route": "author",
+    "positions": [
+      {
+        "selector": ".author-portrait",
+        "top": 394.44390869140625,
+        "width": 296.73095703125,
+        "height": 341.2215576171875
+      },
+      {
+        "selector": ".author-atlas-featured",
+        "top": 568.75,
+        "width": 834.6875,
+        "height": 133.140625
+      }
+    ]
+  }
+]

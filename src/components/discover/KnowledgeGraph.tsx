@@ -62,7 +62,7 @@ export default function KnowledgeGraph({graph}:Props) {
 
     <div className="explore-workspace__body">
       <div className="explore-canvas" aria-label="内容关联浏览">
-        <div className="explore-canvas__bar"><span>FIELD OF IDEAS</span><output aria-live="polite">{visible.length} 个条目{query||filter!=="all"?" · 已筛选":` · ${graph.edges.length} 条联系`}</output></div>
+        <div className="explore-canvas__bar"><span>FIELD NOTES / 关系地图</span><output aria-live="polite">{visible.length} 个条目{query||filter!=="all"?" · 已筛选":` · ${graph.edges.length} 条联系`}</output></div>
         {visible.length===0?<div className="explore-empty" role="status"><span aria-hidden="true">∅</span><h3>这条线索还没有记录</h3><p>换个关键词，或回到全部内容继续逛逛。</p><button type="button" onClick={reset}>重置筛选</button></div>:<>
           <div className="explore-map" tabIndex={0} aria-label="关联图画布，可横向滚动">
             <svg className="knowledge-graph" viewBox={`0 0 ${layout.width} ${layout.height}`} role="group" aria-label="主题、笔记与概念的关联图">
@@ -82,16 +82,20 @@ export default function KnowledgeGraph({graph}:Props) {
                 })}
               </g>
               {layout.nodes.filter(n=>visibleIds.has(n.id)).map(node=>{
-                const lines=wrapNodeTitle(node.title).slice(0,3);
+                const wrappedTitle=wrapNodeTitle(node.title,node.type==="post"?21:23);
+                const lines=wrappedTitle.slice(0,3);
                 const active=node.id===selected?.id;
+                const paperAngle=node.type==="post"?(node.id.length%2?-1.2:1):0;
                 return <g key={node.id} role="button" tabIndex={0} aria-label={`预览${NODE_LABELS[node.type]}：${node.title}`} aria-pressed={active}
                   className={`explore-map__node explore-map__node--${node.type}${active?" is-selected":""}${activeId&&!activeSet.has(node.id)?" is-distant":""}`}
-                  transform={`translate(${node.x},${node.y})`} onClick={()=>choose(node)}
+                  transform={`translate(${node.x},${node.y}) rotate(${paperAngle})`} onClick={()=>choose(node)}
                   onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose(node);}}}
                   onMouseEnter={()=>setHoverId(node.id)} onMouseLeave={()=>setHoverId(null)} onFocus={()=>setHoverId(node.id)} onBlur={()=>setHoverId(null)}>
+                    {node.type==="post"&&<rect className="explore-map__node-backing" x={-node.width/2+3} y="-31" width={node.width} height="70" rx="1" aria-hidden="true"/>}
                     <rect className="explore-map__node-paper" x={-node.width/2} y="-35" width={node.width} height="70" rx={node.type==="topic"?35:3}/>
+                    {node.type==="post"&&<path className="explore-map__node-rule" d={`M${-node.width/2+1} -34v68`} aria-hidden="true"/>}
                     {node.type==="concept"?<path className="explore-map__glyph" d={`M${-node.width/2+17} -7l7 7-7 7-7-7Z`}/>:<circle className="explore-map__glyph" cx={-node.width/2+18} cy="0" r={node.type==="post"?3.5:5}/>}
-                    <text className="explore-map__node-title" x="10" y={-((lines.length-1)*18)/2+5} textAnchor="middle">{lines.map((line,i)=><tspan x="10" dy={i?18:0} key={i}>{line}{i===2&&wrapNodeTitle(node.title).length>3?"…":""}</tspan>)}</text>
+                    <text className="explore-map__node-title" x="10" y={-((lines.length-1)*21)/2+6} textAnchor="middle">{lines.map((line,i)=><tspan x="10" dy={i?21:0} key={i}>{line}{i===2&&wrappedTitle.length>3?"…":""}</tspan>)}</text>
                 </g>;
               })}
             </svg>

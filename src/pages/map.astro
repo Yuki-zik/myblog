@@ -23,35 +23,31 @@ const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),cano
         <h1>漫游<span aria-hidden="true">↗</span></h1>
       </div>
       <div class="wander-hero__copy">
-        <p class="wander-hero__statement">不必按时间阅读，<br/><em>循着好奇，换一条路。</em></p>
-        <p>{description}</p>
-        <a class="wander-hero__jump" href="#connections">直接自由探索 <span aria-hidden="true">↓</span></a>
+        <p class="wander-hero__statement">循着好奇，<em>换一条路。</em></p>
+        <p>选一个想法，沿着真实联系继续阅读。</p>
       </div>
-      <div class="wander-hero__annotation" aria-label="内容规模">
-        <strong>{String(graph.nodes.length).padStart(2,"0")}</strong><span>个想法入口</span>
-        <a href="/topics">主题目录 <span aria-hidden="true">↗</span></a>
-      </div>
+      <a class="wander-hero__jump" href="#reading-paths">沿路线阅读 <span aria-hidden="true">↓</span></a>
     </header>
 
-    {trails.length>0&&<section class="explore-trails" aria-labelledby="explore-trails-title">
-      <div class="wander-section-head"><h2 id="explore-trails-title">先挑一条有意思的路线</h2><span>READING PATHS / {String(trails.length).padStart(2,"0")}</span></div>
+    <section class="explore-connections" id="connections" aria-labelledby="explore-connections-title">
+      <h2 id="explore-connections-title" class="sr-only">看看想法如何相连</h2>
+      <KnowledgeGraph graph={graph} client:load />
+      <noscript><div class="explore-noscript"><p>交互浏览需要 JavaScript。以下条目均可直接阅读。</p>{graph.nodes.map(node=><a href={node.url}><span>{NODE_LABELS[node.type]}</span><strong>{node.title}</strong><p>{node.summary}</p></a>)}</div></noscript>
+    </section>
+    {trails.length>0&&<section class="explore-trails" id="reading-paths" aria-labelledby="explore-trails-title">
+      <div class="wander-section-head"><h2 id="explore-trails-title">也可以，沿一条路线</h2><span>READING PATHS / {String(trails.length).padStart(2,"0")}</span></div>
       <div class="explore-trails__grid">
         {trails.map((trail,i)=><article class="explore-trail" data-reading-trail>
           <div class="explore-trail__top"><span aria-hidden="true">{String(i+1).padStart(2,"0")}</span><span>{trail.nodes.length} 个停靠点</span></div>
           <div class="explore-trail__copy">
             <h3><a href={`/map?focus=${encodeURIComponent(trail.nodes[0].id)}#connections`}>{trail.title}<span aria-hidden="true">↗</span></a></h3>
-            <p>{trail.description}</p>
+            <details class="explore-trail__description"><summary>路线说明</summary><p>{trail.description}</p></details>
           </div>
           <ol aria-label={`${trail.title}的阅读顺序`}>{trail.nodes.map((node,j)=><li data-kind={node.type}><span aria-hidden="true">{j+1}</span><a href={node.url}>{node.title}</a></li>)}</ol>
         </article>)}
       </div>
     </section>}
 
-    <section class="explore-connections" id="connections" aria-labelledby="explore-connections-title">
-      <div class="wander-section-head"><h2 id="explore-connections-title">看看想法如何相连</h2><p>选一个条目，展开它的上下文。</p></div>
-      <KnowledgeGraph graph={graph} client:load />
-      <noscript><div class="explore-noscript"><p>交互浏览需要 JavaScript。以下条目均可直接阅读。</p>{graph.nodes.map(node=><a href={node.url}><span>{NODE_LABELS[node.type]}</span><strong>{node.title}</strong><p>{node.summary}</p></a>)}</div></noscript>
-    </section>
-    <footer class="wander-endnote"><span>KEEP FOLLOWING THE THREAD.</span><p>这些联系会随笔记一同生长。也可以回到<a href="/archives">文章归档</a>，从时间的另一端开始。</p></footer>
+    <footer class="wander-endnote"><span>KEEP FOLLOWING THE THREAD.</span><p>这些联系会随笔记一同生长。也可以查看<a href="/topics">主题目录</a>，或从<a href="/archives">文章归档</a>继续阅读。</p></footer>
   </DiscoverShell>
 </BaseLayout>
