@@ -71,7 +71,7 @@ const resourceLabels = {
   title={paperSearchTitle(paper.data)}
   description={paperSearchDescription(paper.data)}
   scholarlyMeta={scholarlyMeta}
-  openGraphImage={`/og/papers/${paper.id}.png`}
+  openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : undefined}
   authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
   canonical={canonicalPath}
   metaType="article"
