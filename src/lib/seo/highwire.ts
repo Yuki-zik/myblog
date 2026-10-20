@@ -74,11 +74,19 @@ export function buildHighwireMetadata(
   if (paper.identifiers?.doi) {
     result.push({ name: "citation_doi", content: paper.identifiers.doi });
   }
-  // Only use an explicitly supplied PDF resource; don't treat a publisher
-  // landing page or DOI redirect as a downloadable full-text PDF.
-  const pdf = paper.resources?.find((resource) =>
-    resource.type === "pdf" && /^https?:\/\//i.test(resource.url)
-  );
+  // Scholar asks citation_pdf_url to point to a PDF in the abstract page's
+  // own directory. Never mislabel an external publisher/DOI page as a local
+  // full-text PDF; external resources remain ordinary links in the page.
+  const folder = new URL("./", canonicalUrl);
+  const pdf = paper.resources?.find((resource) => {
+    if (resource.type !== "pdf" || !/^https?:\/\//i.test(resource.url)) return false;
+    const target = new URL(resource.url);
+    return (
+      target.origin === folder.origin &&
+      target.pathname.startsWith(folder.pathname) &&
+      /\.pdf$/i.test(target.pathname)
+    );
+  });
   if (pdf) result.push({ name: "citation_pdf_url", content: pdf.url });
   return result;
 }

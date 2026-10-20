@@ -44,12 +44,19 @@ describe("scholarly discovery metadata", () => {
     const meta = buildHighwireMetadata({
       ...paper, publicationDate: "2025-09-25T00:00:00Z",
       venue: { name: "Verified Conference", type: "conference" },
-      resources: [{ type: "publisher", url: "https://publisher.example/landing" }, { type: "pdf", url: "https://example.org/fulltext.pdf" }]
+      resources: [{ type: "publisher", url: "https://publisher.example/landing" }, { type: "pdf", url: "https://a-znk.com/papers/x.pdf" }]
     }, "https://a-znk.com/papers/x");
     expect(meta).toContainEqual({ name: "citation_publication_date", content: "2025/09/25" });
     expect(meta).toContainEqual({ name: "citation_conference_title", content: "Verified Conference" });
-    expect(meta).toContainEqual({ name: "citation_pdf_url", content: "https://example.org/fulltext.pdf" });
+    expect(meta).toContainEqual({ name: "citation_pdf_url", content: "https://a-znk.com/papers/x.pdf" });
     expect(meta).not.toContainEqual(expect.objectContaining({ name: "citation_journal_title" }));
+  });
+
+  it("never advertises externally hosted PDFs as same-directory full text", () => {
+    const meta = buildHighwireMetadata({
+      ...paper, resources: [{ type: "pdf", url: "https://publisher.example/fulltext.pdf" }]
+    }, "https://a-znk.com/papers/x");
+    expect(meta).not.toContainEqual(expect.objectContaining({ name: "citation_pdf_url" }));
   });
 
   it("does not mark drafts or prototypes as scholarly publications", () => {
