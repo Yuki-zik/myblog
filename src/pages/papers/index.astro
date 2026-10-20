@@ -17,6 +17,7 @@ const paperGroups = [...new Set(papers.map((paper) => paper.data.year))].map((ye
   papers: papers.filter((paper) => paper.data.year === year)
 }));
 const description = "按年份浏览论文，查找研究摘要、发表信息与原文。";
+const seoDescription = "汇总已公开研究论文，包括多语种语音隐私保护、通用对抗扰动、双激发碳点与机器学习检测；按年份查看摘要、期刊信息、DOI 和原文链接。";
 const site = Astro.site;
 const canonicalUrl = site ? new URL("/papers", site).toString() : "";
 const structuredData = site
@@ -24,7 +25,7 @@ const structuredData = site
       siteUrl: site.toString(),
       canonicalUrl,
       title: "论文与研究成果",
-      description,
+      description: seoDescription,
       breadcrumbs: [
         { name: "首页", url: new URL("/", site).toString() },
         { name: "论文与研究成果" }
@@ -54,7 +55,7 @@ const resourceLabels = {
 
 <BaseLayout
   title="论文与研究成果"
-  description={description}
+  description={seoDescription}
   canonical="/papers"
   runtime="discover"
   headerVariant="drawing"

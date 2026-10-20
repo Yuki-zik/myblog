@@ -44,7 +44,7 @@ jobs:
           node-version: 22
 
       - name: Validate URL change selection
-        run: node --test scripts/seo/indexnow-utils.test.mjs
+        run: node --test scripts/seo/indexnow-utils.test.mjs scripts/seo/baidu-utils.test.mjs
 
       - name: Notify participating search engines
         env:
@@ -58,4 +58,20 @@ jobs:
             fi
           else
             node scripts/seo/submit-indexnow.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt"
+          fi
+
+      - name: Submit to Baidu normal indexing API when configured
+        env:
+          BAIDU_PUSH_TOKEN: ${{ secrets.BAIDU_PUSH_TOKEN }}
+          BAIDU_SITE: ${{ vars.BAIDU_SITE }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$DRY_RUN" == "true" ]]; then
+              node scripts/seo/submit-baidu.mjs --all --dry-run
+            else
+              node scripts/seo/submit-baidu.mjs --all
+            fi
+          else
+            node scripts/seo/submit-baidu.mjs --changed-files "$RUNNER_TEMP/seo-changed-files.txt"
           fi

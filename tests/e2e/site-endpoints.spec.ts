@@ -138,3 +138,18 @@ test("rendered pages advertise the canonical RSS feed for auto-discovery", async
     expect(feeds, path).toEqual(["https://myblog.example/rss.xml"]);
   }
 });
+
+test("research paper pages expose branded Open Graph images", async ({ request, page }) => {
+  for (const slug of ["duap-multilingual-speech-privacy", "oxicams-carbon-dots-machine-learning"]) {
+    const response = await request.get(`/papers/${slug}`);
+    expect(response.ok()).toBe(true);
+    const ogImage = await page.evaluate((html) => {
+      const document = new DOMParser().parseFromString(html, "text/html");
+      return document.querySelector('meta[property="og:image"]')?.getAttribute("content");
+    }, await response.text());
+    expect(ogImage).toBe(`https://myblog.example/og/papers/${slug}.png`);
+    const imageResponse = await request.get(`/og/papers/${slug}.png`);
+    expect(imageResponse.ok()).toBe(true);
+    expect(imageResponse.headers()["content-type"]).toMatch(/^image\/png/);
+  }
+});

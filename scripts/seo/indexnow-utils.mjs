@@ -1,4 +1,5 @@
 const CONTENT_COLLECTION = /^src\/content\/(posts|papers|topics|concepts)\/(.+)\.md$/;
+const POST_COVER = /^src\/content\/posts\/covers\/(.+)\.(?:png|jpe?g|webp|svg)$/i;
 
 export function extractSitemapUrls(xml, host) {
   if (!xml.includes("<urlset")) {
@@ -21,6 +22,11 @@ export function changedPaths(files) {
   let all = false;
   for (const filename of files) {
     const file = filename.trim();
+    const cover = file.match(POST_COVER);
+    if (cover) {
+      paths.add("/posts/" + cover[1]);
+      continue;
+    }
     const match = file.match(CONTENT_COLLECTION);
     if (match) {
       paths.add("/" + match[1] + "/" + match[2]);
