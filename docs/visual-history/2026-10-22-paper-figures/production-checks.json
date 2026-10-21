@@ -1,0 +1,266 @@
+{
+  "shots": [
+    {
+      "route": "/author",
+      "selector": "#publications",
+      "name": "author-publications",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-author-publications-desktop-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 616.1875,
+        "height": 281.125,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers",
+      "selector": "main",
+      "name": "paper-index",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-index-desktop-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 609.734375,
+        "height": 278.1875,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers/duap-multilingual-speech-privacy",
+      "selector": "[data-paper-detail]",
+      "name": "paper-detail",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-detail-desktop-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 680,
+        "height": 310.25,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/author",
+      "selector": "#publications",
+      "name": "author-publications",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-author-publications-mobile-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 316,
+        "height": 144.171875,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers",
+      "selector": "main",
+      "name": "paper-index",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-index-mobile-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 316,
+        "height": 144.171875,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers/duap-multilingual-speech-privacy",
+      "selector": "[data-paper-detail]",
+      "name": "paper-detail",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-detail-mobile-light.png",
+      "overflow": 0,
+      "figure": {
+        "width": 350,
+        "height": 159.6875,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/author",
+      "selector": "#publications",
+      "name": "author-publications",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-author-publications-desktop-dark.png",
+      "overflow": 0,
+      "figure": {
+        "width": 616.1875,
+        "height": 281.125,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers",
+      "selector": "main",
+      "name": "paper-index",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-index-desktop-dark.png",
+      "overflow": 0,
+      "figure": {
+        "width": 609.734375,
+        "height": 278.1875,
+        "filter": "none"
+      }
+    },
+    {
+      "route": "/papers/duap-multilingual-speech-privacy",
+      "selector": "[data-paper-detail]",
+      "name": "paper-detail",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-22-paper-figures/production-paper-detail-desktop-dark.png",
+      "overflow": 0,
+      "figure": {
+        "width": 680,
+        "height": 310.25,
+        "filter": "none"
+      }
+    }
+  ],
+  "renderedOriginalWidth": 2832,
+  "original": {
+    "src": "https://a-znk.com/_astro/duap-lfd-overview.CFspXCk_.png",
+    "width": 2832,
+    "height": 1292
+  },
+  "functional": {
+    "results": [
+      {
+        "route": "/author",
+        "width": 616.1875,
+        "height": 281.125,
+        "originalWidth": 2832,
+        "scrollRestored": true,
+        "focusRestored": true
+      },
+      {
+        "route": "/papers",
+        "width": 609.734375,
+        "height": 278.1875,
+        "originalWidth": 2832,
+        "scrollRestored": true,
+        "focusRestored": true
+      },
+      {
+        "route": "/papers/duap-multilingual-speech-privacy",
+        "width": 680,
+        "height": 310.25,
+        "originalWidth": 2832,
+        "scrollRestored": true,
+        "focusRestored": true
+      }
+    ],
+    "mobile": [
+      {
+        "route": "/author",
+        "width": 316,
+        "overflow": 0
+      },
+      {
+        "route": "/papers",
+        "width": 316,
+        "overflow": 0
+      },
+      {
+        "route": "/papers/duap-multilingual-speech-privacy",
+        "width": 350,
+        "overflow": 0
+      }
+    ],
+    "original": "https://a-znk.com/_astro/duap-lfd-overview.CFspXCk_.png",
+    "pageErrors": []
+  },
+  "sourceRevision": "1c41bdb373fcd38b722aedfc25944449f690471d",
+  "pullRequest": 44,
+  "CI": 39645766584,
+  "unitChecks": 149,
+  "e2eChecks": 295,
+  "originalSha256": "44eb69140f27e3927d3b92c6e5acf57003df42bea26c254647166f2986a258d6",
+  "originalByteIdentical": true,
+  "deployment": "https://vercel.com/qianlimaxai-5994s-projects/myblog/64qbYm7D1GwMt9nzujbH7oaQjznK",
+  "screenshotComparison": [
+    {
+      "view": "production-author-publications-desktop-dark.png",
+      "localVersion": "v3",
+      "identical": true
+    },
+    {
+      "view": "production-author-publications-desktop-light.png",
+      "localVersion": "v3",
+      "identical": true
+    },
+    {
+      "view": "production-author-publications-mobile-light.png",
+      "localVersion": "v3",
+      "identical": false
+    },
+    {
+      "view": "production-figure-viewer.png",
+      "localVersion": "v3",
+      "identical": false
+    },
+    {
+      "view": "production-paper-detail-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "view": "production-paper-detail-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "view": "production-paper-detail-mobile-light.png",
+      "localVersion": "v2",
+      "identical": false
+    },
+    {
+      "view": "production-paper-index-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "view": "production-paper-index-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "view": "production-paper-index-mobile-light.png",
+      "localVersion": "v2",
+      "identical": false
+    }
+  ],
+  "seoAudit": {
+    "passed": true,
+    "canonicalPages": 19,
+    "paperOG": 2
+  }
+}

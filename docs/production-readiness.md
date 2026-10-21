@@ -1,5 +1,11 @@
 # Production readiness
 
+## 2026-10-22 paper method figure release
+
+[PR #44](https://github.com/Yuki-zik/myblog/pull/44), merge `1c41bdb`, places the author's unchanged DUAP Fig.3 on the author publication section, paper index and paper detail. Shared PaperFigure preserves intrinsic proportions, full artwork and the existing original-size viewer. The author section gives the figure more width and uses the existing Chinese subtitle as a lead. PDF crop output v2 removes the fixed 16:9 canvas while protecting manually selected images; this release's published image is the author's supplied PNG, not an automatic PDF extraction.
+
+[Exact-source CI 39645766584](https://github.com/Yuki-zik/myblog/actions/runs/39645766584) passed **149 unit / 295 E2E checks**. The merge's frontend status reports success ([deployment](https://vercel.com/qianlimaxai-5994s-projects/myblog/64qbYm7D1GwMt9nzujbH7oaQjznK)). On a-znk.com, the figure measures 616.19px / 609.73px / 680px across the three desktop surfaces. Original-size viewing renders at 2832px; keyboard opening, Escape, focus and exact scroll restoration pass. All three mobile surfaces have zero horizontal overflow, with no page runtime errors. The downloaded production original has SHA-256 `44eb69140f27e3927d3b92c6e5acf57003df42bea26c254647166f2986a258d6`, identical to the uploaded 2832×1292 PNG. Live SEO audit passed for 19 canonical pages and both paper OG images. Ten production screenshots, prior versions and structured verification: [visual archive](visual-history/2026-10-22-paper-figures/README.md). Primary-source research: [paper preview research](paper-preview-research.md).
+
 ## 2026-10-22 ordered asymmetry release
 
 [PR #43](https://github.com/Yuki-zik/myblog/pull/43), merge `161cb95`, restores intrinsic frameless archive posters, replaces empty vertical year/practice columns with horizontal chapter heads, and introduces a bounded 12-column width/offset rhythm on author practice/focus. The data, source/keyboard order, original imagery, home hero and reader are preserved.
