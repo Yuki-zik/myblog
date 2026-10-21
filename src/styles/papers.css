@@ -385,40 +385,6 @@ main.shell--paper-reading {
   overflow-wrap: anywhere;
 }
 
-.paper-pipeline-cover {
-  margin: clamp(2.25rem, 5vw, 4.25rem) 0 0;
-  padding-bottom: clamp(2.25rem, 5vw, 4.25rem);
-  border-bottom: 1px solid var(--divider-strong);
-}
-
-.paper-pipeline-cover img {
-  display: block;
-  width: 100%;
-  max-height: 42rem;
-  object-fit: contain;
-  border: 1px solid var(--border-default);
-  border-radius: 0.85rem;
-  background: var(--surface-elevated);
-}
-
-.paper-pipeline-cover figcaption {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.8rem;
-  color: var(--text-meta);
-  font-size: 0.76rem;
-  line-height: 1.65;
-}
-
-.paper-pipeline-cover figcaption span {
-  flex: 0 0 auto;
-  color: var(--link);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .paper-abstract {
   display: grid;
   grid-template-columns: 4rem minmax(0, 1fr);
@@ -624,11 +590,6 @@ main.shell--paper-reading {
 
   .paper-index-row__cover img {
     max-height: 14rem;
-  }
-
-  .paper-pipeline-cover figcaption {
-    display: grid;
-    gap: 0.3rem;
   }
 
   .paper-abstract {

@@ -7,6 +7,7 @@ import ContentDossier from "../components/discover/ContentDossier.astro";
 import PostCard from "../components/post/PostCard.astro";
 import EditorialFigure from "../components/media/EditorialFigure.astro";
 import ImageViewer from "../components/media/ImageViewer.astro";
+import PaperFigure from "../components/papers/PaperFigure.astro";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
 import { researchFigures } from "../lib/media/editorialFigures";
 import { resolvePostAuthor } from "../lib/posts/author";
@@ -181,7 +182,7 @@ const authorContactEntries = [
       </div>
     </section>
 
-    <section class="discover-section author-atlas-publications" id="publications">
+    <section class:list={["discover-section", "author-atlas-publications", { "author-atlas-publications--illustrated": selectedPapers.some(paper => paper.data.cover) }]} id="publications">
       <SectionHead
         kicker="Selected Publications"
         title="论文与研究成果"
@@ -202,7 +203,15 @@ const authorContactEntries = [
                 {paper.data.status === "published" ? "已发表" : "已接收"}
               </p>
               <h3><a href={"/papers/" + paper.id}>{paper.data.title}</a></h3>
-              <p>{paper.data.summary ?? paper.data.abstract}</p>
+              {paper.data.cover ? (
+                <div class="publication-illustrated-overview">
+                  <div class="publication-illustrated-overview__copy">
+                    {paper.data.subtitle && <p class="publication-illustrated-overview__lede">{paper.data.subtitle}</p>}
+                    <p>{paper.data.summary ?? paper.data.abstract}</p>
+                  </div>
+                  <PaperFigure cover={paper.data.cover} sizes="(max-width: 1050px) calc(100vw - 100px), 640px" />
+                </div>
+              ) : <p>{paper.data.summary ?? paper.data.abstract}</p>}
             </div>
             <a class="author-atlas-publication__link" href={"/papers/" + paper.id} aria-label={"阅读论文 " + paper.data.title}>↗</a>
           </article>

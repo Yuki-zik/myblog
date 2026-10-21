@@ -201,22 +201,6 @@
   line-height: 1.7;
 }
 
-[data-reading-design="metadata"] .paper-pipeline-cover {
-  margin: 28px 0;
-  padding: 0 0 18px;
-  border-color: var(--border-default);
-}
-
-[data-reading-design="metadata"] .paper-pipeline-cover img {
-  height: auto;
-  border-radius: 0;
-  border-color: var(--border-default);
-}
-
-[data-reading-design="metadata"] .paper-pipeline-cover figcaption span {
-  color: var(--drawing-accent-ink);
-}
-
 [data-reading-design="metadata"] .paper-dossier__keywords {
   margin-top: 28px;
   padding-top: 18px;

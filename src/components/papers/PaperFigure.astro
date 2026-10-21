@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import "../../styles/paper-figures.css";
+
+interface Props {
+  cover: NonNullable<CollectionEntry<"papers">["data"]["cover"]>;
+  class?: string;
+  sizes?: string;
+  eager?: boolean;
+}
+const { cover, class: className, sizes = "(max-width: 760px) calc(100vw - 80px), 560px", eager = false } = Astro.props;
+const label = cover.figureLabel ?? (cover.sourcePage ? `Figure · p. ${cover.sourcePage}` : "研究图示");
+---
+
+<figure class:list={["paper-figure", className]} data-paper-figure data-paper-cover>
+  <a
+    class="paper-figure__original"
+    href={cover.src.src}
+    data-image-viewer-trigger
+    data-image-alt={cover.alt}
+    data-image-width={cover.src.width}
+    data-image-height={cover.src.height}
+    aria-label={`放大论文方法图：${label}`}
+    aria-haspopup="dialog"
+    aria-controls="post-image-viewer"
+  >
+    <Image
+      src={cover.src}
+      alt={cover.alt}
+      width={cover.src.width}
+      height={cover.src.height}
+      widths={[480, 960, 1440]}
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+    />
+  </a>
+  <figcaption class="paper-figure__caption">
+    <span class="paper-figure__label">{label}</span>
+    <p>{cover.caption}</p>
+  </figcaption>
+</figure>

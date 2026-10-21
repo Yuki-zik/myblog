@@ -17,7 +17,8 @@ for (const path of ["/topics/knowledge-network", "/concepts/anchor-id", "/concep
     await expect(figure.locator("[data-image-viewer-trigger]")).toBeFocused();
     if (path === "/papers") {
       await expect(page.locator("[data-paper-card]")).toHaveCount(2);
-      await expect(page.locator(".paper-index-row__cover")).toHaveCount(0);
+      await expect(page.locator("[data-paper-card] [data-paper-figure]")).toHaveCount(1);
+      await expect(page.locator("[data-paper-card] [data-paper-figure] figcaption")).toContainText("Fig. 3");
       await expect(page.getByRole("complementary", { name: "把计算过程留在纸上" })).toContainText("历史参考图版");
     }
   });

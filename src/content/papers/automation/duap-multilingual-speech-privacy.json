@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "slug": "duap-multilingual-speech-privacy",
+  "source": {
+    "kind": "author-provided-image",
+    "reference": "codex-clipboard-a7fc00db-6a43-4ec4-a9e6-0c46eaf99f27.png",
+    "sha256": "44eb69140f27e3927d3b92c6e5acf57003df42bea26c254647166f2986a258d6",
+    "providedOn": "2026-10-22"
+  },
+  "figure": {
+    "label": "Fig. 3",
+    "caption": "Language Feature Disentanglement (LFD)",
+    "page": null,
+    "width": 2832,
+    "height": 1292,
+    "processing": "Unchanged original supplied by the author"
+  },
+  "cover": {
+    "path": "src/content/papers/covers/duap-lfd-overview.png",
+    "sha256": "44eb69140f27e3927d3b92c6e5acf57003df42bea26c254647166f2986a258d6"
+  }
+}

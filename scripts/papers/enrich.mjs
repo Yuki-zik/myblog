@@ -6,7 +6,6 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promis
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
-import sharp from "sharp";
 import {
   AUTO_APPLY_SCORE,
   PIPELINE_VERSION,
@@ -18,6 +17,7 @@ import {
   parsePaperTitle,
   parsePdfResource,
   rankFigureCandidates,
+  renderFigureCrop,
   relativeToRoot,
   sha256File,
   upsertGeneratedCoverBlock,
@@ -182,24 +182,7 @@ async function renderCover(pdfPath, candidate, crop, outputPath, tempDir) {
   ]);
 
   const pageImage = `${pageBase}.png`;
-  const image = sharp(pageImage);
-  const metadata = await image.metadata();
-  if (!metadata.width || !metadata.height) throw new Error("Rendered PDF page has no dimensions");
-
-  const left = Math.max(0, Math.round(crop.x * metadata.width));
-  const top = Math.max(0, Math.round(crop.y * metadata.height));
-  const width = Math.min(metadata.width - left, Math.round(crop.width * metadata.width));
-  const height = Math.min(metadata.height - top, Math.round(crop.height * metadata.height));
-  if (width < 64 || height < 64) throw new Error("Detected figure crop is too small");
-
-  await sharp(pageImage)
-    .extract({ left, top, width, height })
-    .resize(1600, 900, {
-      fit: "contain",
-      background: { r: 247, g: 247, b: 245, alpha: 1 },
-    })
-    .png({ compressionLevel: 9 })
-    .toFile(outputPath);
+  await writeFile(outputPath, await renderFigureCrop(pageImage, crop));
 }
 
 async function analyzePaper(paper, args) {
@@ -366,7 +349,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.check) {
     const count = await checkGeneratedOutputs();
-    console.log(`Paper automation check passed (${count} generated manifest${count === 1 ? "" : "s"}).`);
+    console.log(`Paper image provenance check passed (${count} manifest${count === 1 ? "" : "s"}).`);
     return;
   }
 

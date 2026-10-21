@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import sharp from "sharp";
 import {
   AUTO_APPLY_SCORE,
   computeFigureCrop,
@@ -7,6 +8,7 @@ import {
   parseBboxLayout,
   parsePdfResource,
   rankFigureCandidates,
+  renderFigureCrop,
   upsertGeneratedCoverBlock,
 } from "../../../scripts/papers/lib.mjs";
 
@@ -33,6 +35,44 @@ const bboxFixture = `<?xml version="1.0"?>
 </doc>`;
 
 describe("paper PDF enrichment helpers", () => {
+  it("keeps a small figure's crop pixels, original proportions and transparency without a canvas", async () => {
+    const width = 400;
+    const height = 320;
+    const pixels = Buffer.alloc(width * height * 4);
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const offset = (y * width + x) * 4;
+        pixels.set([x % 256, y % 256, 128, 137], offset);
+      }
+    }
+    const input = await sharp(pixels, { raw: { width, height, channels: 4 } }).png().toBuffer();
+
+    const result = await renderFigureCrop(input, { x: .1, y: .25, width: .6, height: .5 });
+    const metadata = await sharp(result).metadata();
+    expect(metadata).toMatchObject({ format: "png", width: 240, height: 160, hasAlpha: true });
+    const output = await sharp(result).raw().toBuffer();
+    expect([...output.subarray(0, 4)]).toEqual([40, 80, 128, 137]);
+    expect([...output.subarray(-4)]).toEqual([23, 239, 128, 137]);
+  });
+
+  it("limits a large extracted figure to 1600px wide while preserving its crop ratio", async () => {
+    const input = await sharp({
+      create: { width: 3200, height: 1200, channels: 3, background: { r: 31, g: 93, b: 151 } },
+    }).png().toBuffer();
+
+    const result = await renderFigureCrop(input, { x: .125, y: .25, width: .75, height: .5 });
+    expect(await sharp(result).metadata()).toMatchObject({ format: "png", width: 1600, height: 400 });
+  });
+
+  it("preserves a portrait figure's natural height without enlarging its narrow width", async () => {
+    const input = await sharp({
+      create: { width: 600, height: 1200, channels: 3, background: { r: 88, g: 123, b: 160 } },
+    }).png().toBuffer();
+
+    const result = await renderFigureCrop(input, { x: .25, y: .1, width: .5, height: .8 });
+    expect(await sharp(result).metadata()).toMatchObject({ format: "png", width: 300, height: 960 });
+  });
+
   it("extracts abstract and introduction overview without later sections", () => {
     const sections = extractPaperSections(`
       ABSTRACT
@@ -114,5 +154,12 @@ Body`;
     expect(second).toContain("./covers/example-pipeline-v2.png");
     expect(second).toContain("sourcePage: 4");
     expect(second.match(/paper-automation:start/g)).toHaveLength(1);
+  });
+
+  it("preserves an author-selected figure instead of replacing it with an automatic crop", () => {
+    const selected = "---\ntitle: Example\ncover:\n  src: ./covers/author-figure.png\n  figureLabel: Fig. 3\n---\nBody";
+    expect(() => upsertGeneratedCoverBlock(selected, {
+      filename: "auto-pipeline.png", alt: "Automatic candidate", caption: "Figure 1", page: 2,
+    })).toThrow(/manual cover/);
   });
 });

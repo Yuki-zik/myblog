@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
-import { Image } from "astro:assets";
+import PaperFigure from "../../components/papers/PaperFigure.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildScholarlyArticleGraph } from "../../lib/seo/jsonLd";
 
@@ -122,20 +123,7 @@ const resourceLabels = {
           </section>
 
           {paper.data.cover ? (
-            <figure class="paper-pipeline-cover" data-paper-cover>
-              <Image
-                src={paper.data.cover.src}
-                alt={paper.data.cover.alt}
-                widths={[720, 1080, 1440]}
-                sizes="(max-width: 720px) calc(100vw - 40px), 680px"
-                loading="eager"
-                decoding="async"
-              />
-              <figcaption>
-                <span>Figure · page {paper.data.cover.sourcePage}</span>
-                {paper.data.cover.caption}
-              </figcaption>
-            </figure>
+            <PaperFigure cover={paper.data.cover} sizes="(max-width: 720px) calc(100vw - 40px), 680px" eager />
           ) : null}
 
           <div class="paper-body">
@@ -192,4 +180,5 @@ const resourceLabels = {
       </div>
     </article>
   </div>
+  {paper.data.cover && <ImageViewer />}
 </BaseLayout>

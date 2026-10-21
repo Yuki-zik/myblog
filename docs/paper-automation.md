@@ -4,11 +4,15 @@ The paper pipeline turns an author-provided or openly accessible PDF into:
 
 1. a local extraction report containing Abstract and Introduction/Overview candidates;
 2. ranked method-figure candidates based on captions such as `pipeline`, `workflow`, `architecture`, and `framework`;
-3. a 1600×900 PNG cover cropped from the selected PDF page;
+3. a PNG figure cropped from the selected PDF page, retaining its aspect ratio with a maximum width of 1600px and no upscaling or added canvas;
 4. an auditable manifest containing the source hash, page, caption, score, crop box, and cover hash;
 5. a generated `cover` block in the paper Markdown frontmatter.
 
 It never bypasses publisher access controls. A DOI or publisher landing page is not treated as a PDF.
+
+Author-selected figures take priority. The DUAP Fig.3 is an unchanged 2832×1292 image supplied by the author, with its hash recorded in `src/content/papers/automation/duap-multilingual-speech-privacy.json`. It is shared by the author publication section, paper index and paper detail through `PaperFigure.astro`, with the existing image viewer for original-size inspection.
+
+The `cover` metadata accepts a `figureLabel` (for example `Fig. 3`). `sourcePage` is optional for an author-provided image whose PDF page is unknown; do not infer the PDF page from its figure number. PDF-generated candidates continue to record their known source page.
 
 ## Requirements
 
@@ -155,3 +159,7 @@ cover:
 - `--figure-page` and `--crop` are explicit, auditable overrides.
 
 After generating a real cover, review `/papers` and the paper detail page in both desktop and mobile layouts before publishing.
+
+The extraction output preserves the selected crop geometry. Automatic caption ranking does not establish that every diagram boundary was found correctly: inspect the candidate's page and crop, then apply the chosen image. A manually authored `cover` block is protected from automatic replacement. See [the academic homepage comparison](paper-preview-research.md) for the distinction between preview images, poster files and metadata automation.
+
+Version 2 records the intrinsic-ratio output introduced on 2026-10-22. Existing version 1 manifests remain readable by `papers:check`.

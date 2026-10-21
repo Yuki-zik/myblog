@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
 import { access, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import sharp from "sharp";
 
-export const PIPELINE_VERSION = 1;
+export const PIPELINE_VERSION = 2;
 export const AUTO_APPLY_SCORE = 7;
 
 const FIGURE_PREFIX = /^(?:fig(?:ure)?\.?|图)\s*\d+\s*[:.]?/i;
@@ -151,6 +152,24 @@ export function computeFigureCrop(candidate) {
     width: (pageWidth - horizontalInset * 2) / pageWidth,
     height: (bottom - top) / pageHeight,
   };
+}
+
+/** Render only the selected figure region, retaining its aspect and alpha. */
+export async function renderFigureCrop(input, crop) {
+  const metadata = await sharp(input).metadata();
+  if (!metadata.width || !metadata.height) throw new Error("Rendered PDF page has no dimensions");
+
+  const left = Math.max(0, Math.round(crop.x * metadata.width));
+  const top = Math.max(0, Math.round(crop.y * metadata.height));
+  const width = Math.min(metadata.width - left, Math.round(crop.width * metadata.width));
+  const height = Math.min(metadata.height - top, Math.round(crop.height * metadata.height));
+  if (width < 64 || height < 64) throw new Error("Detected figure crop is too small");
+
+  return sharp(input)
+    .extract({ left, top, width, height })
+    .resize({ width: 1600, withoutEnlargement: true })
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 }
 
 function extractSection(text, startPattern, endPattern, maxLength, maxParagraphs) {
