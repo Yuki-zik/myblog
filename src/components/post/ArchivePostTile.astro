@@ -1,6 +1,8 @@
 ﻿---
 import type { CollectionEntry } from "astro:content";
+import ContentDossier from "../discover/ContentDossier.astro";
 import PostCover from "./PostCover.astro";
+import "../../styles/archive-dossiers.css";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -12,22 +14,28 @@ const { post, author, dateLabel } = Astro.props;
 ---
 
 <article class="archive-post-tile overflow-visible" data-archive-card data-ux-reveal="fade-up">
-  <a
+  <ContentDossier
+    class="archive-post-dossier"
+    label="READING NOTE / 文章"
+    title={post.data.title}
+    description={post.data.summary}
     href={`/posts/${post.id}`}
-    class="archive-post-link relative grid items-stretch gap-[0.9rem] rounded-[inherit] p-[0.78rem]"
-    aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
+    variant="compact"
+    copyClass="archive-post-content"
+    descriptionClass="archive-post-summary"
   >
-    <div class="archive-post-media relative overflow-visible">
+    <p slot="meta" class="archive-post-meta">
+      <time datetime={post.data.date} data-archive-date>{dateLabel}</time>
+      <span data-archive-author>By {author}</span>
+    </p>
+    <a
+      slot="media"
+      href={`/posts/${post.id}`}
+      class="archive-post-link archive-post-media"
+      aria-label={`Read post: ${post.data.title}, ${dateLabel} By ${author}`}
+    >
       <PostCover post={post} variant="archive-square" />
-    </div>
-    <div class="archive-post-content grid min-w-0 content-center gap-[0.42rem]">
-      <p class="archive-post-meta flex flex-wrap gap-x-[0.56rem] gap-y-[0.3rem]">
-        <span data-archive-date>{dateLabel}</span>
-        <span data-archive-author>By {author}</span>
-      </p>
-      <h3>{post.data.title}</h3>
-      {post.data.summary ? <p class="archive-post-summary">{post.data.summary}</p> : null}
-      <p class="archive-post-kicker inline-flex items-center gap-[0.3rem] text-[0.76rem] font-semibold normal-case tracking-[0.02em]">阅读文章</p>
-    </div>
-  </a>
+    </a>
+    <a slot="footer" href={`/posts/${post.id}`} class="archive-post-kicker">阅读文章</a>
+  </ContentDossier>
 </article>

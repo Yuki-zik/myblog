@@ -25,7 +25,7 @@ const {
     {description ? <p class="max-w-[40rem] leading-[1.72]">{description}</p> : null}
   </div>
 
-  <div class="discover-section-head__meta inline-flex flex-wrap items-center gap-[0.9rem]">
+  {(countLabel || (linkHref && linkLabel)) && <div class="discover-section-head__meta inline-flex flex-wrap items-center gap-[0.9rem]">
     {countLabel ? <span class="discover-section-head__count text-[0.75rem]">{countLabel}</span> : null}
     {
       linkHref && linkLabel ? (
@@ -38,5 +38,5 @@ const {
         </a>
       ) : null
     }
-  </div>
+  </div>}
 </header>

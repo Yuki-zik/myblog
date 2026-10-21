@@ -1,0 +1,161 @@
+/* Publication-specific layout. The shared ContentDossier owns the paper surface. */
+.drawing-index.discover-page .papers-index-dossiers .paper-year-list {
+  gap: clamp(2.5rem, 5vw, 4.25rem);
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-year-group {
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.papers-index-dossiers .publication-dossier-list {
+  display: grid;
+  min-width: 0;
+  gap: 1.75rem;
+}
+
+.papers-index-dossiers .publication-dossier {
+  --dossier-media-width: 13.75rem;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .publication-dossier__title {
+  max-width: 61rem;
+  margin: 0 0 0.8rem;
+  font-family: var(--font-ui);
+  font-size: clamp(1.625rem, 2.2vw, 2rem);
+  font-weight: 550;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+  overflow-wrap: break-word;
+}
+
+.papers-index-dossiers .publication-dossier__subtitle {
+  margin: 0 0 1.15rem;
+  color: var(--text-primary);
+  font: 1.1rem/1.65 var(--reading-serif);
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__meta {
+  justify-content: flex-end;
+  gap: 0.5rem 0.9rem;
+  letter-spacing: 0;
+  font-family: var(--font-ui);
+  text-transform: none;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__authors {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__summary {
+  max-width: 61rem;
+  margin: 1.05rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.9;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__resources {
+  gap: 0.45rem 1.5rem;
+  max-width: none;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-resource-link {
+  gap: 1.1rem;
+  font: 1rem/1.5 var(--font-ui);
+}
+
+.papers-index-dossiers .publication-dossier__reference {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(12rem, 1fr);
+  gap: 1.5rem 2.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.papers-index-dossiers .publication-dossier__reference > div {
+  min-width: 0;
+}
+
+.papers-index-dossiers .publication-dossier__label {
+  margin: 0 0 0.7rem;
+  color: var(--text-meta);
+  font: 0.75rem/1.5 var(--font-mono);
+}
+
+.papers-index-dossiers [data-publication-citation] {
+  margin: 0;
+  color: var(--text-secondary);
+  font: 1rem/1.85 var(--font-ui);
+  overflow-wrap: anywhere;
+}
+
+.papers-index-dossiers .publication-dossier__doi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  margin: 1rem 0 0;
+  font: 0.875rem/1.6 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.papers-index-dossiers .publication-dossier__doi span {
+  color: var(--text-meta);
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__keywords {
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.drawing-index.discover-page .papers-index-dossiers .paper-index-row__keywords li {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: 0.9375rem/1.6 var(--font-ui);
+}
+
+@media (max-width: 900px) {
+  .drawing-index.discover-page .papers-index-dossiers .paper-year-group {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1.1rem;
+  }
+
+  .papers-index-dossiers .publication-dossier__reference {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .drawing-index.discover-page .papers-index-dossiers .paper-year-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .drawing-index.discover-page .papers-index-dossiers .paper-year-heading {
+    position: static;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-top: 0;
+  }
+
+  .drawing-index.discover-page .papers-index-dossiers .publication-dossier__title {
+    font-size: 1.4rem;
+  }
+
+  .drawing-index.discover-page .papers-index-dossiers .paper-index-row__meta {
+    justify-content: flex-start;
+  }
+
+  .drawing-index.discover-page .papers-index-dossiers .paper-index-row__summary {
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .papers-index-dossiers .publication-dossier__subtitle {
+    font-size: 1.05rem;
+  }
+}

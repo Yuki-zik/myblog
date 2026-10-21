@@ -5,6 +5,9 @@ import researchArchitecture from "../assets/home/research-architecture.webp";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ExploreGateway from "../components/discover/ExploreGateway.astro";
+import ContentDossier from "../components/discover/ContentDossier.astro";
+import PostCover from "../components/post/PostCover.astro";
+import "../styles/home-content-dossiers.css";
 import {buildKnowledgeGraph} from "../lib/knowledge/graph";
 import {
   pickFeaturedHomePost,
@@ -329,26 +332,30 @@ const homeDescription = SITE_DESCRIPTION;
           {recentPosts.length === 0 ? (
             <p class="home-reference-empty rounded-[1rem] px-5 py-6 text-[0.95rem]">暂时还没有更多文章。</p>
           ) : (
-            <div class="home-reference-recent-list flex flex-col">
-              {recentPosts.map((post) => (
-                <a href={`/posts/${post.id}`} class="home-reference-recent-item group relative flex items-center gap-6 overflow-hidden" data-home-recent-item>
-                  <div class="home-reference-recent-item__meta">
-                    <span class="home-reference-recent-item__date font-(family-name:--font-ui) text-[0.75rem]">{getPostDateISO(post.data.date)}</span>
-                    <span class="home-reference-recent-item__tag inline-flex min-h-6 items-center justify-center text-[0.6875rem] leading-none">
+            <div class="home-reference-recent-list home-content-notes flex flex-col">
+              {recentPosts.map((post, index) => (
+                <ContentDossier
+                  asLink
+                  href={`/posts/${post.id}`}
+                  index={String(index + 1).padStart(2, "0")}
+                  label="READING NOTE"
+                  title={post.data.title}
+                  description={post.data.summary}
+                  variant="compact"
+                  class="home-reference-recent-item home-content-note group"
+                  titleClass="home-reference-recent-item__title"
+                  descriptionClass="home-reference-recent-item__summary"
+                  data-home-recent-item
+                >
+                  <PostCover slot="media" post={post} />
+                  <div slot="leading" class="home-reference-recent-item__meta">
+                    <time class="home-reference-recent-item__date" datetime={getPostDateISO(post.data.date)}>{getPostDateISO(post.data.date)}</time>
+                    <span class="home-reference-recent-item__tag">
                       {topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}
                     </span>
                   </div>
-                  <h3 class="home-reference-recent-item__title flex-auto pr-8">{post.data.title}</h3>
-                  <span
-                    class="home-reference-recent-item__arrow absolute top-1/2 right-5 opacity-0 group-hover:opacity-100"
-                    aria-hidden="true"
-                  >
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                  </span>
-                </a>
+                  <span class="home-reference-recent-item__arrow" aria-hidden="true">↗</span>
+                </ContentDossier>
               ))}
             </div>
           )}

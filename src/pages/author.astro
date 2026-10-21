@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
 import SectionHead from "../components/discover/SectionHead.astro";
+import ContentDossier from "../components/discover/ContentDossier.astro";
 import PostCard from "../components/post/PostCard.astro";
 import EditorialFigure from "../components/media/EditorialFigure.astro";
 import ImageViewer from "../components/media/ImageViewer.astro";
@@ -11,6 +12,7 @@ import { researchFigures } from "../lib/media/editorialFigures";
 import { resolvePostAuthor } from "../lib/posts/author";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/author-atlas.css";
+import "../styles/author-dossiers.css";
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 
@@ -213,17 +215,26 @@ const authorContactEntries = [
       <SectionHead
         kicker="Practice"
         title="项目 / 实践"
+        description="从实验框架、行为控制，到内容系统与工作流。"
         countLabel={`${SITE_AUTHOR_PROFILE.practiceHighlights?.length ?? 0} items`}
       />
       <div class="discover-stream-list" data-ux-stagger>
         {SITE_AUTHOR_PROFILE.practiceHighlights?.map((item, index) => (
-          <article class="discover-surface discover-stream-item" data-ux-reveal="fade-up">
-            <span class="discover-stream-item__eyebrow">Practice {String(index + 1).padStart(2, "0")}</span>
-            <div class="discover-stream-item__row">
-              <h3 class="discover-stream-item__title">{item.title}</h3>
-            </div>
-            <p class="discover-stream-item__summary">{item.description}</p>
-          </article>
+          <ContentDossier
+            class="discover-stream-item author-practice-dossier"
+            index={String(index + 1).padStart(2, "0")}
+            label={item.label ?? "PRACTICE / 项目实践"}
+            title={item.title}
+            description={item.description}
+            descriptionClass="discover-stream-item__summary"
+            variant="feature"
+            detailsLabel="相关内容"
+            data-practice-dossier
+          >
+            {item.related?.length ? <Fragment slot="details">
+              {item.related.map(link => <a href={link.href}>{link.title}<span aria-hidden="true"> ↗</span></a>)}
+            </Fragment> : null}
+          </ContentDossier>
         ))}
       </div>
     </section>
@@ -234,20 +245,26 @@ const authorContactEntries = [
         title="当前关注与博客定位"
       />
       <div class="discover-mini-grid" data-ux-stagger>
-        <article class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
-          <span class="discover-mini-card__meta">Current Focus</span>
-          <h3>当前关注</h3>
-          <ul class="pill-list">
-            {SITE_AUTHOR_PROFILE.currentFocus?.map((item) => <li>{item}</li>)}
-          </ul>
-        </article>
-        <article class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
-          <span class="discover-mini-card__meta">Blog Scope</span>
-          <h3>本博客记录什么</h3>
-          <ul class="pill-list">
-            {SITE_AUTHOR_PROFILE.blogScope?.map((item) => <li>{item}</li>)}
-          </ul>
-        </article>
+        <ContentDossier
+          class="discover-mini-card author-focus-dossier"
+          index="A"
+          label="OPEN QUESTIONS / 研究问题"
+          title="当前关注"
+          items={SITE_AUTHOR_PROFILE.currentFocus}
+          variant="note"
+        >
+          <a slot="footer" href="/papers">沿研究成果继续阅读 <span aria-hidden="true">↗</span></a>
+        </ContentDossier>
+        <ContentDossier
+          class="discover-mini-card author-focus-dossier"
+          index="B"
+          label="FIELDNOTES / 写作范围"
+          title="本博客记录什么"
+          items={SITE_AUTHOR_PROFILE.blogScope}
+          variant="note"
+        >
+          <a slot="footer" href="/topics">沿主题寻找笔记 <span aria-hidden="true">↗</span></a>
+        </ContentDossier>
       </div>
     </section>
 

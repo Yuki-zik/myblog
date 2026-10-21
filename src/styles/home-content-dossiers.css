@@ -1,0 +1,168 @@
+/* Page composition only; ContentDossier owns the reusable paper treatment. */
+.home-reference .home-content-notes {
+  gap: 1.1rem;
+}
+
+.home-reference .home-content-note {
+  --dossier-media-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+}
+
+.home-content-note .content-dossier__header {
+  padding-right: 2rem;
+}
+
+.home-content-note .content-dossier__main--with-leading {
+  align-items: start;
+  gap: clamp(1rem, 2.3vw, 2.25rem);
+}
+
+.home-content-note .content-dossier__media {
+  padding-block: .2rem .4rem;
+}
+
+.home-content-note .post-cover {
+  --post-cover-radius: 2px;
+  --post-cover-main-border: var(--border-default);
+  --post-cover-main-shadow: 0 1px 3px color-mix(in srgb, var(--shadow-tint) 10%, transparent), 0 12px 20px -13px color-mix(in srgb, var(--shadow-tint) 32%, transparent);
+  --post-cover-ghost-opacity: .22;
+  --post-cover-ghost-offset-y: .5rem;
+  --post-cover-ghost-scale: .96;
+  --post-cover-ghost-blur: 12px;
+  margin: 0;
+  aspect-ratio: 8 / 5;
+  overflow: visible;
+  background: transparent;
+}
+
+.home-content-note .post-cover-img {
+  object-fit: contain;
+}
+
+.home-content-note .home-reference-recent-item__meta {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  align-items: center;
+  gap: .75rem;
+}
+
+.home-reference-recent-item__date {
+  color: var(--home-muted);
+  font: .875rem/1.5 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.home-reference-recent-item__tag {
+  justify-self: start;
+  max-width: 100%;
+  padding: .25rem .5rem;
+  border-left: 2px solid var(--drawing-accent);
+  background: var(--drawing-accent-wash);
+  color: var(--home-code-accent);
+  font: .8125rem/1.4 var(--font-mono);
+}
+
+.home-reference .home-content-note .home-reference-recent-item__title {
+  width: auto;
+  padding: 0;
+  font-size: clamp(1.3125rem, 1.75vw, 1.65rem);
+  line-height: 1.45;
+  text-wrap: balance;
+  transition: color 180ms ease;
+}
+
+.home-content-note:is(:hover, :focus-visible) .home-reference-recent-item__title {
+  color: var(--drawing-accent-ink);
+}
+
+.home-content-note .home-reference-recent-item__summary {
+  max-width: 60ch;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+.home-content-note .home-reference-recent-item__arrow {
+  position: absolute;
+  top: 1.4rem;
+  right: var(--dossier-padding);
+  opacity: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--drawing-accent-ink);
+  transform: translateX(-.5rem);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.home-content-note:is(:hover, :focus-visible) .home-reference-recent-item__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.home-content-note:is(:hover, :focus-visible) .post-cover-img--main {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .home-reference .home-content-note { --dossier-media-width: 6.5rem; }
+  .home-content-note .content-dossier__main--with-leading { grid-template-columns: var(--dossier-media-width) 15.5rem minmax(0, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .home-reference .home-content-note {
+    --dossier-padding: 1rem;
+    --dossier-media-width: clamp(5.5rem, 25vw, 7rem);
+  }
+
+  .home-content-note .content-dossier__header { margin-bottom: 1rem; }
+
+  .home-content-note .content-dossier__main--with-leading {
+    grid-template-columns: var(--dossier-media-width) minmax(0, 1fr);
+    gap: .85rem 1rem;
+  }
+
+  .home-content-note .content-dossier__leading {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .home-content-note .content-dossier__media {
+    grid-column: 1;
+    grid-row: 2;
+    padding: .1rem 0;
+  }
+
+  .home-content-note .content-dossier__copy { display: contents; }
+
+  .home-reference .home-content-note .home-reference-recent-item__title {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .home-content-note .home-reference-recent-item__summary {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    font-size: 1rem;
+  }
+
+  .home-content-note .home-reference-recent-item__arrow { top: 1.15rem; }
+}
+
+@media (hover: none) {
+  .home-content-note .home-reference-recent-item__arrow { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-content-note .home-reference-recent-item__arrow,
+  .home-content-note .post-cover-img { transition: none; }
+  .home-content-note:is(:hover, :focus-visible) .post-cover-img--main { transform: none; }
+}

@@ -1,0 +1,124 @@
+/* Publication plates inside the existing chronological ledger.
+ * ContentDossier owns the paper, title block, palette and elevation.
+ */
+.drawing-index.discover-page .archive-grid {
+  gap: 1.35rem;
+}
+
+.archive-post-dossier {
+  --dossier-media-width: clamp(11.5rem, 16.5vw, 15rem);
+}
+
+.archive-post-dossier .content-dossier__header {
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.drawing-index.discover-page .archive-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem 1.25rem;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.drawing-index.discover-page .archive-post-link.archive-post-media {
+  display: block;
+  align-self: start;
+  padding: 0;
+  background: none;
+}
+
+.archive-post-dossier .content-dossier__media {
+  align-self: center;
+}
+
+.archive-post-dossier .post-cover-img { object-fit: contain; }
+
+.drawing-index.discover-page .archive-post-dossier .archive-post-content {
+  display: block;
+  align-self: start;
+}
+
+.drawing-index.discover-page .archive-post-dossier .archive-post-content h3 {
+  margin: 0 0 .8rem;
+  font-size: clamp(1.5rem, 2.15vw, 1.95rem);
+  line-height: 1.4;
+}
+
+.drawing-index.discover-page .archive-post-summary {
+  margin: 0;
+}
+
+.drawing-index.discover-page .archive-post-kicker {
+  display: inline-flex;
+  gap: .6rem;
+  align-items: center;
+  min-height: 44px;
+  font-size: .9375rem;
+  font-weight: 550;
+  text-decoration: none;
+}
+
+.drawing-index.discover-page .archive-post-tile:is(:hover, :focus-within) .archive-post-content h3 {
+  color: var(--drawing-accent-ink);
+}
+
+.drawing-index.discover-page .archive-post-tile:focus-within .archive-post-kicker::after {
+  transform: translateX(3px);
+}
+
+@media (max-width: 900px) {
+  .archive-post-dossier {
+    --dossier-media-width: 10.5rem;
+    --dossier-padding: 1.25rem;
+  }
+
+  .archive-post-dossier .content-dossier__header {
+    align-items: start;
+    flex-direction: column;
+    gap: .65rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .drawing-index.discover-page .archive-grid {
+    gap: 1.25rem;
+  }
+
+  .archive-post-dossier .content-dossier__main--illustrated {
+    gap: 1.35rem;
+  }
+
+  .archive-post-dossier .content-dossier__copy {
+    order: 1;
+  }
+
+  .archive-post-dossier .content-dossier__media {
+    order: 2;
+    width: min(100%, 15rem);
+    justify-self: center;
+  }
+
+  .drawing-index.discover-page .archive-post-dossier .archive-post-content h3 {
+    font-size: 1.4rem;
+    line-height: 1.45;
+  }
+
+  .archive-post-dossier .content-dossier__footer {
+    margin-top: .75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawing-index.discover-page .archive-post-tile,
+  .drawing-index.discover-page .archive-post-kicker::after {
+    transition: none;
+  }
+
+  .drawing-index.discover-page .archive-post-tile:hover,
+  .drawing-index.discover-page .archive-post-tile:focus-within .archive-post-kicker::after {
+    transform: none;
+  }
+}

@@ -1,0 +1,80 @@
+/* A workbench of reusable paper records, rather than another ruled text index. */
+.author-atlas .author-atlas-practice .discover-stream-list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.author-atlas .author-practice-dossier,
+.author-atlas .author-focus-dossier {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--dossier-padding);
+  min-height: 0;
+}
+
+.author-atlas .author-practice-dossier {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+.author-practice-dossier .content-dossier__header {
+  grid-row: 1 / 3;
+  align-self: stretch;
+  margin: 0;
+  padding: 0 1.5rem 0 0;
+  border: 0;
+  border-right: 1px solid var(--border-default);
+}
+.author-practice-dossier .content-dossier__locator { flex-direction: column; align-items: flex-start; gap: .8rem; }
+.author-practice-dossier .content-dossier__index { font-size: 2.6rem; }
+.author-practice-dossier .content-dossier__label { max-width: 12em; line-height: 1.8; }
+.author-practice-dossier .content-dossier__main { grid-column: 2; }
+.author-atlas .author-practice-dossier .content-dossier__title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 2.15vw, 1.9rem);
+  line-height: 1.4;
+}
+.author-atlas .author-practice-dossier .content-dossier__description {
+  margin: 0;
+  font-size: 1.075rem;
+  line-height: 1.85;
+}
+.author-practice-dossier .content-dossier__details { grid-column: 2; margin-top: 1.35rem; }
+.author-practice-dossier .content-dossier__expanded { flex-direction: column; align-items: flex-start; }
+.author-practice-dossier .content-dossier__expanded a { font: .95rem/1.8 var(--font-ui); }
+
+.author-atlas .author-atlas-focus .discover-mini-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+}
+.author-focus-dossier .content-dossier__main { flex: 1; }
+.author-atlas-focus .discover-section-head h2 { text-wrap: balance; }
+.author-focus-dossier .content-dossier__copy { display: flex; flex-direction: column; align-items: flex-start; }
+.author-atlas .author-focus-dossier .content-dossier__title {
+  margin: 0 0 .35rem;
+  font: 550 clamp(1.65rem, 2.5vw, 2.1rem)/1.4 var(--reading-serif);
+}
+.author-focus-dossier .content-dossier__items { margin-bottom: 1.5rem; }
+.author-focus-dossier .content-dossier__footer { margin-top: auto; padding-top: 1rem; }
+.author-focus-dossier .content-dossier__footer a { font: .95rem/1.6 var(--font-ui); }
+
+@media (max-width: 1100px) and (min-width: 851px) {
+  .author-atlas .author-atlas-focus .discover-mini-grid { grid-template-columns: minmax(0, 1fr); }
+  .author-atlas .author-practice-dossier { grid-template-columns: 7rem minmax(0, 1fr); column-gap: 1.5rem; }
+}
+
+@media (max-width: 600px) {
+  .author-atlas .discover-section-head__meta { width: auto; flex-shrink: 0; }
+  .author-atlas .author-atlas-practice .discover-stream-list,
+  .author-atlas .author-atlas-focus .discover-mini-grid { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .author-atlas .author-practice-dossier { grid-template-columns: minmax(0, 1fr); }
+  .author-practice-dossier .content-dossier__header { grid-column: 1; grid-row: auto; padding: 0 0 1rem; margin-bottom: 1.25rem; border-right: 0; border-bottom: 1px solid var(--border-default); }
+  .author-practice-dossier .content-dossier__locator { flex-direction: row; align-items: baseline; }
+  .author-practice-dossier .content-dossier__main,
+  .author-practice-dossier .content-dossier__details { grid-column: 1; }
+  .author-atlas .author-practice-dossier,
+  .author-atlas .author-focus-dossier { --dossier-padding: 1.3rem; }
+}

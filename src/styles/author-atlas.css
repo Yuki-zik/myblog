@@ -413,21 +413,6 @@
 .author-atlas .author-atlas-publication__link:hover { color: var(--atlas-ink); }
 .author-atlas .author-atlas-text-link { grid-column: 1; justify-self: start; margin-top: 0.5rem; }
 
-.author-atlas .author-atlas-practice .discover-stream-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 2.5rem; }
-.author-atlas .author-atlas-practice .discover-stream-item { min-width: 0; padding: 0 0 1.5rem; border: 0; border-bottom: 1px solid var(--atlas-rule); border-radius: 0; background: transparent; box-shadow: none; transform: none; }
-.author-atlas .author-atlas-practice .discover-stream-item:hover { transform: none; box-shadow: none; border-bottom-color: var(--drawing-accent); }
-.author-atlas .author-atlas-practice .discover-stream-item__eyebrow { color: var(--atlas-accent); font: 0.74rem/1.5 var(--font-mono); }
-.author-atlas .author-atlas-practice .discover-stream-item__title { margin: 0.7rem 0; font: 560 1.5rem/1.45 var(--reading-serif); letter-spacing: -0.02em; }
-.author-atlas .author-atlas-practice .discover-stream-item__summary { color: var(--text-secondary); font-size: 1.07rem; line-height: 1.85; }
-
-.author-atlas .author-atlas-focus .discover-mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem; }
-.author-atlas .author-atlas-focus .discover-mini-card { display: block; min-width: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: none; }
-.author-atlas .author-atlas-focus .discover-mini-card__meta { color: var(--atlas-accent); font: 0.74rem/1.5 var(--font-mono); }
-.author-atlas .author-atlas-focus .discover-mini-card h3 { margin: 0.7rem 0 1rem; font: 560 1.55rem/1.4 var(--reading-serif); }
-.author-atlas .author-atlas-focus .pill-list { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 0.65rem; margin: 0; padding: 0; list-style: none; }
-.author-atlas .author-atlas-focus .pill-list li { display: block; padding: 0 0 0.8rem; border: 0; border-radius: 0; border-bottom: 1px solid var(--atlas-rule); color: var(--text-secondary); background: none; font-size: 1rem; line-height: 1.8; }
-.author-atlas .author-atlas-focus .pill-list li:last-child { border-bottom: 0; padding-bottom: 0; }
-
 .author-atlas .author-atlas-socials .author-social-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.5rem; }
 .author-atlas .author-atlas-socials .author-social-card { min-width: 0; display: grid; align-items: center; padding: 1.1rem 0; border: 0; border-bottom: 1px solid var(--atlas-rule); border-radius: 0; background: none; box-shadow: none; transition: border-color 150ms ease; }
 .author-atlas .author-atlas-socials .author-social-card:hover { border-bottom-color: var(--drawing-accent); background: none; box-shadow: none; transform: none; }

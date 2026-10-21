@@ -26,6 +26,8 @@ export interface SiteAuthorProfile {
   practiceHighlights?: {
     title: string;
     description: string;
+    label?: string;
+    related?: { title: string; href: string }[];
   }[];
   socialNetworks?: {
     id: string;
@@ -92,19 +94,36 @@ export const SITE_AUTHOR_PROFILE: SiteAuthorProfile = {
   practiceHighlights: [
     {
       title: "多模态大模型实验框架",
-      description: "基于 Qwen2.5-VL 构建实验 Harness，支持批量评测、安全实验与可复现实验流程。"
+      description: "基于 Qwen2.5-VL 构建实验 Harness，支持批量评测、安全实验与可复现实验流程。",
+      label: "EXPERIMENT / 实验框架",
+      related: [
+        { title: "研究方向", href: "/author#research" },
+        { title: "论文与研究记录", href: "/papers" }
+      ]
     },
     {
       title: "Steering Vector 行为控制",
-      description: "设计 Steering Vector 控制方法，用于调节模型行为与输出风格，验证可控生成与拒答边界。"
+      description: "设计 Steering Vector 控制方法，用于调节模型行为与输出风格，验证可控生成与拒答边界。",
+      label: "CONTROL / 行为控制",
+      related: [{ title: "模型安全研究方向", href: "/author#research" }]
     },
     {
       title: "博客评论系统集成",
-      description: "实现基于 Waline + Supabase 的博客评论系统，并完成前后端接入与内容页集成。"
+      description: "实现基于 Waline + Supabase 的博客评论系统，并完成前后端接入与内容页集成。",
+      label: "SYSTEM / 交互系统",
+      related: [
+        { title: "博客设计说明", href: "/posts/myblog-design-manual" },
+        { title: "段落锚点实现", href: "/posts/paragraph-anchor-design" }
+      ]
     },
     {
       title: "Agent 驱动的 MVP 工作流",
-      description: "持续探索 Agent 驱动的 MVP 开发流程与 prompt 体系，把需求快速转成可运行原型。"
+      description: "持续探索 Agent 驱动的 MVP 开发流程与 prompt 体系，把需求快速转成可运行原型。",
+      label: "WORKFLOW / 工程实践",
+      related: [
+        { title: "Agent 工程主题", href: "/topics/agent-engineering" },
+        { title: "一次限时开发复盘", href: "/posts/ant-ai-coding-review" }
+      ]
     }
   ],
   socialNetworks: [

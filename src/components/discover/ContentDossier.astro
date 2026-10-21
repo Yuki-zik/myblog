@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import "../../styles/content-dossier.css";
+
+interface Props extends HTMLAttributes<"article"> {
+  index?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  href?: string;
+  variant?: "feature" | "compact" | "note";
+  items?: string[];
+  detailsLabel?: string;
+  titleClass?: string;
+  descriptionClass?: string;
+  copyClass?: string;
+  asLink?: boolean;
+  hasMedia?: boolean;
+}
+
+const { index, label, title, description, href, variant = "note", items = [],
+  detailsLabel = "相关内容", titleClass, descriptionClass, copyClass, asLink = false, hasMedia,
+  class: className, ...attributes } = Astro.props;
+const Root = asLink ? "a" : "article";
+// A named Astro slot can exist even when its conditional content is empty.
+const showMedia = hasMedia ?? Astro.slots.has("media");
+---
+
+<Root {...attributes} href={asLink ? href : undefined} class:list={["content-dossier", `content-dossier--${variant}`, className]}>
+  <header class="content-dossier__header">
+    <div class="content-dossier__locator">
+      {index && <span class="content-dossier__index" aria-hidden="true">{index}</span>}
+      {label && <span class="content-dossier__label">{label}</span>}
+    </div>
+    {Astro.slots.has("meta") && <div class="content-dossier__meta"><slot name="meta" /></div>}
+  </header>
+  <div class:list={["content-dossier__main", showMedia && "content-dossier__main--illustrated", Astro.slots.has("leading") && "content-dossier__main--with-leading"]}>
+    {showMedia && <div class="content-dossier__media"><slot name="media" /></div>}
+    {Astro.slots.has("leading") && <div class="content-dossier__leading"><slot name="leading" /></div>}
+    <div class:list={["content-dossier__copy", copyClass]}>
+      {title && <h3 class:list={["content-dossier__title", titleClass]}>{href && !asLink ? <a href={href}>{title}</a> : title}</h3>}
+      {description && <p class:list={["content-dossier__description", descriptionClass]}>{description}</p>}
+      <slot />
+      {items.length > 0 && <ul class="content-dossier__items">{items.map(item => <li>{item}</li>)}</ul>}
+      {Astro.slots.has("footer") && <footer class="content-dossier__footer"><slot name="footer" /></footer>}
+    </div>
+  </div>
+  {Astro.slots.has("details") && !asLink && <details class="content-dossier__details">
+    <summary>{detailsLabel}<span aria-hidden="true">＋</span></summary>
+    <div class="content-dossier__expanded"><slot name="details" /></div>
+  </details>}
+</Root>

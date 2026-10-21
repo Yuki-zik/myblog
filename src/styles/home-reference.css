@@ -635,78 +635,6 @@ html[data-color-scheme="dark"] .home-reference-hero__art {
   line-height: 1.8;
 }
 
-.home-reference-recent-list {
-  gap: 0;
-}
-
-.home-reference-recent-item {
-  min-height: 5rem;
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--home-soft-line);
-  border-radius: 0;
-  background: transparent;
-}
-
-.home-reference-recent-item__meta {
-  display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr);
-  align-items: center;
-  gap: 0.75rem;
-  width: 15.5rem;
-  flex-shrink: 0;
-}
-
-.home-reference-recent-item__date {
-  color: var(--home-muted);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.home-reference-recent-item__tag {
-  justify-self: start;
-  max-width: 100%;
-  padding: 0.25rem 0.5rem;
-  border-left: 2px solid var(--drawing-accent);
-  border-radius: 0;
-  background: var(--drawing-accent-wash);
-  color: var(--home-code-accent);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  transition: color 180ms ease;
-}
-
-.home-reference-recent-item:hover .home-reference-recent-item__tag {
-  color: var(--home-code-accent);
-}
-
-.home-reference-recent-item__title {
-  margin: 0;
-  color: var(--home-ink);
-  font-family: var(--font-ui);
-  font-size: 1.3125rem;
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: -0.02em;
-  transition: color 180ms ease;
-}
-
-.home-reference-recent-item:hover .home-reference-recent-item__title {
-  color: var(--home-code-accent);
-}
-
-.home-reference-recent-item__arrow {
-  color: var(--home-code-accent);
-  transform: translate(-1rem, -50%);
-  transition: opacity 180ms ease, transform 180ms ease;
-}
-
-.home-reference-recent-item:hover .home-reference-recent-item__arrow {
-  transform: translate(0, -50%);
-}
-
 .home-reference-empty {
   border: 1px solid var(--home-soft-line);
   background: var(--home-paper);
@@ -971,22 +899,6 @@ body[data-header-variant="drawing"] #back-to-top {
 
   .home-featured-cover-stack {
     max-width: none;
-  }
-
-  .home-reference-recent-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .home-reference-recent-item__meta {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .home-reference-recent-item__title {
-    width: 100%;
-    padding-right: 2.25rem;
   }
 
   .home-reference-footer__grid {
