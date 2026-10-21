@@ -5,7 +5,7 @@
     "src/styles/editorial-figures.css": "b64dcd108aa615efa7a3a7945638188dccb72db57eebaddd8fb25e8b50ca0633",
     "src/lib/media/editorialFigures.ts": "0f0ef1a1f5f41845eb78a6a2307d319008bb71bed66bffe05ea07ae575f69d62",
     "src/styles/author-atlas.css": "b71baab17b74323b552bd1393138c743922ba13a6a8964abd042b11910c57918",
-    "src/styles/topic-imagery.css": "e08b8483c1b13f7c5e44015ac71f17a877d6a09806b182e1ff2dd5ea3a28a4e4",
+    "src/styles/topic-imagery.css": "662df20b4ea52fab502ae8f9c8b11fda634b60209f15363a8c720c9a0ada99f5",
     "src/styles/reference-collections.css": "3f6f8f21d7f93c16758a3a07b12bcee6b158cae43e9e1bdebb13338540f49bd6",
     "src/pages/author.astro": "bd5f24abc675b63191fc0661151558614058ce5e31796a9c51734651b11b7ce7",
     "src/pages/topics/index.astro": "59e656dda30c8faf90f0acbfc1fea759b4b4a70590c1f84ec23124ea35f0f4be",
@@ -89,6 +89,14 @@
     {
       "file": "v2-topics-mobile-viewport.png",
       "sha256": "a2eb6161c2ff16203e5f9fc9ea40491babbcb0db58560a27a627c5bc2187cc73"
+    },
+    {
+      "file": "v3-topics-1100.png",
+      "sha256": "34d5c85007a6d9a41a1f59117f3b9a234a038da981da99e7ca6b03f754f8abbc"
+    },
+    {
+      "file": "v3-topics-1440.png",
+      "sha256": "783164497a8ec7ebfd804be2192275d0d6a848945df35a751c85173df1a56112"
     }
   ]
 }

@@ -35,3 +35,20 @@ test("topic art and topic navigation are independent accessible links", async ({
   await rows.first().locator("[data-drawing-topic]").click();
   await expect(page).toHaveURL(/\/topics\/knowledge-network$/);
 });
+
+test("long topic titles keep their count beside them and the summary close on narrow columns", async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 1000 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/topics");
+  const entry = page.locator('[data-drawing-topic][href="/topics/agent-engineering"]');
+  const geometry = await entry.evaluate(el => {
+    const title = el.querySelector("h2")!.getBoundingClientRect();
+    const count = el.querySelector(".drawing-topic-row__count")!.getBoundingClientRect();
+    const summary = el.querySelector(".drawing-topic-row__summary")!.getBoundingClientRect();
+    return { title: { right: title.right, top: title.top, bottom: title.bottom },
+      count: { left: count.left, top: count.top, bottom: count.bottom }, summaryTop: summary.top };
+  });
+  expect(geometry.count.left).toBeGreaterThanOrEqual(geometry.title.right + 8);
+  expect(geometry.count.top).toBeLessThan(geometry.title.bottom);
+  expect(geometry.summaryTop - geometry.title.bottom).toBeLessThanOrEqual(16);
+});

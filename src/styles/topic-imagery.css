@@ -16,7 +16,13 @@
 }
 .drawing-topic-row__entry .drawing-topic-row__number { padding: 0; font-size: 1.15rem; }
 .drawing-topic-row__entry:only-child { grid-column: 1 / -1; }
-.drawing-topic-row__entry .drawing-topic-row__heading { gap: .45rem .8rem; }
+.drawing-topic-row__entry .drawing-topic-row__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  align-items: baseline;
+  gap: .45rem .8rem;
+}
+.drawing-topic-row__entry .drawing-topic-row__title { min-width: 0; text-wrap: balance; }
 .drawing-topic-row__entry .drawing-topic-row__copy { gap: .65rem; }
 .drawing-topic-row__entry:focus-visible { outline: 2px solid var(--drawing-focus); outline-offset: 6px; }
 .drawing-topic-row__entry:hover { text-decoration: none; }
