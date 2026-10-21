@@ -132,7 +132,8 @@ const papers = defineCollection({
         src: image(),
         alt: z.string().min(1),
         caption: z.string().min(1),
-        sourcePage: z.number().int().positive()
+        sourcePage: z.number().int().positive().optional(),
+        figureLabel: z.string().min(1).optional()
       })
       .optional(),
     bibtex: z.string().min(1).optional(),

@@ -47,6 +47,11 @@ bibtex: |-
     year = {2026},
     doi = {10.1109/TIFS.2026.3671687}
   }
+cover:
+  src: ./covers/duap-lfd-overview.png
+  alt: DUAP论文图3，展示语言和内容编码器、特征交换重建、Whisper与三类损失的关联。
+  figureLabel: "Fig. 3"
+  caption: 语言特征解耦（LFD）：分离语言与内容特征，通过交换重建生成含目标语言特征的Mel频谱。
 featured: true
 ---
 
