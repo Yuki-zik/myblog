@@ -311,11 +311,12 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 2.6rem 3rem;
+  gap: 3.25rem 3rem;
 }
 
 .author-atlas .author-atlas-research .discover-entity-card {
-  display: block;
+  display: grid;
+  gap: 1.75rem;
   min-width: 0;
   min-height: 0;
   padding: 0;
@@ -327,22 +328,41 @@
 }
 
 .author-atlas .author-atlas-research .discover-entity-card:first-child {
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center;
   grid-column: 1 / -1;
-  gap: 1rem 2rem;
-  padding-bottom: 2.6rem;
+  gap: 2.5rem;
+  padding-bottom: 3.25rem;
   border-bottom: 1px solid var(--atlas-rule);
 }
 
 .author-atlas .author-atlas-research .discover-entity-card:nth-child(3) { margin-top: 3rem; }
 .author-atlas .author-atlas-research .discover-entity-card__top { display: flex; align-items: baseline; justify-content: flex-start; gap: 0.8rem; margin-bottom: 1rem; }
-.author-atlas .author-atlas-research .discover-entity-card:first-child .discover-entity-card__top { grid-column: 1 / -1; margin: 0; }
 .author-atlas-track__index { color: var(--atlas-accent); font: 450 1.9rem/1.1 var(--font-mono); letter-spacing: -0.05em; }
 .author-atlas .author-atlas-research .discover-entity-card__meta { color: var(--text-meta); font: 0.65rem/1.5 var(--font-mono); letter-spacing: 0.05em; }
+.author-atlas-track__body { min-width: 0; }
 .author-atlas-track__copy { min-width: 0; }
 .author-atlas .author-atlas-research .discover-entity-card h3 { margin: 0 0 0.9rem; color: var(--atlas-ink); font: 570 clamp(1.6rem, 2.2vw, 2rem)/1.35 var(--reading-serif); letter-spacing: -0.025em; }
-.author-atlas .author-atlas-research .discover-entity-card p { max-width: 32rem; margin: 0; color: var(--text-secondary); font-size: 1.065rem; line-height: 1.85; }
+.author-atlas .author-atlas-research .author-atlas-track__copy > p { max-width: 32rem; margin: 0; color: var(--text-secondary); font-size: 1.065rem; line-height: 1.85; }
+
+/* Historical plates provide a second reading layer, not a replacement for the research text. */
+.author-atlas-track__figure {
+  --editorial-image-height: 280px;
+  width: 100%;
+  min-width: 0;
+  align-self: start;
+}
+.author-atlas .author-atlas-research .discover-entity-card:first-child .author-atlas-track__figure { --editorial-image-height: 340px; }
+.author-atlas-track__figure[data-editorial-figure="ambiguous-cubes"] { --editorial-image-height: 180px; }
+
+@media (min-width: 851px) {
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__body { display: contents; }
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .discover-entity-card__top { grid-row: 1; margin-bottom: 0; }
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__copy { grid-row: 2; }
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__figure { grid-row: 3; }
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .pill-list { grid-row: 4; margin-top: 0; }
+}
+.author-atlas .author-atlas-track__figure .editorial-figure__provenance p { font: inherit; color: inherit; }
 
 .author-atlas .author-atlas-research .pill-list {
   display: flex;
@@ -355,7 +375,6 @@
   list-style: none;
 }
 
-.author-atlas .author-atlas-research .discover-entity-card:first-child .pill-list { margin: 0; align-self: center; }
 .author-atlas .author-atlas-research .pill-list li { padding: 0; border: 0; border-radius: 0; background: none; color: var(--text-secondary); font-size: 0.96rem; line-height: 1.7; }
 
 .author-atlas .author-atlas-publications {
@@ -435,8 +454,8 @@
   .author-portrait { width: 260px; max-width: 100%; margin-left: 0; }
   .author-atlas .author-atlas-hero__stats { margin-left: 0; }
   .author-atlas .author-atlas-research .discover-entity-grid { column-gap: 2rem; }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 1fr); }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child .pill-list { margin-top: 0.5rem; }
+  .author-atlas .author-atlas-research .discover-entity-card:first-child { gap: 1.5rem; }
+  .author-atlas-track__figure { --editorial-image-height: 260px; }
 }
 
 @media (max-width: 850px) {
@@ -453,10 +472,10 @@
   .author-atlas-publications > .discover-section-head { grid-column: 1; grid-row: auto; }
   .author-atlas-publications__list { grid-column: 1; grid-row: auto; }
   .author-atlas .author-atlas-research .discover-entity-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .author-atlas .author-atlas-research .discover-entity-card { padding-bottom: 2rem; border-bottom: 1px solid var(--atlas-rule); }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child { display: block; padding-bottom: 2rem; }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child .discover-entity-card__top { margin-bottom: 1rem; }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child .pill-list { margin-top: 1.5rem; }
+  .author-atlas .author-atlas-research .discover-entity-card,
+  .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--atlas-rule); }
+  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__figure { grid-row: auto; }
+  .author-atlas .author-atlas-research .discover-entity-card:first-child .author-atlas-track__figure { --editorial-image-height: 300px; }
   .author-atlas .author-atlas-research .discover-entity-card:nth-child(3) { margin-top: 0; }
   .author-atlas .author-atlas-contacts .discover-mini-grid { grid-template-columns: 1fr; gap: 0.5rem; }
 }
@@ -491,6 +510,10 @@
   .author-atlas-section-nav nav { gap: 0.5rem 1.1rem; }
   .author-atlas .discover-section-head h2 { font-size: 1.8rem; }
   .author-atlas .author-atlas-research .discover-entity-card h3 { font-size: 1.65rem; }
+  .author-atlas .author-atlas-research .discover-entity-card,
+  .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .author-atlas-track__figure { max-width: 28rem; justify-self: center; }
+  .author-atlas-track__figure[data-editorial-figure="ambiguous-cubes"] { --editorial-image-height: 145px; }
   .author-atlas-publication { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; padding: 1.25rem; }
   .author-atlas-publication:nth-child(2) { margin-left: 0; }
   .author-atlas-publication__index { flex-direction: row; align-items: baseline; gap: 0.8rem; }

@@ -1,0 +1,102 @@
+{
+  "baseRevision": "d8a2bbb",
+  "sources": {
+    "src/components/media/EditorialFigure.astro": "0521369b7768eb00135236f3d75014ac7808fd5b5db4bbcf02cc27ef0e85f8c3",
+    "src/styles/editorial-figures.css": "b64dcd108aa615efa7a3a7945638188dccb72db57eebaddd8fb25e8b50ca0633",
+    "src/lib/media/editorialFigures.ts": "0f0ef1a1f5f41845eb78a6a2307d319008bb71bed66bffe05ea07ae575f69d62",
+    "src/styles/author-atlas.css": "b71baab17b74323b552bd1393138c743922ba13a6a8964abd042b11910c57918",
+    "src/styles/topic-imagery.css": "662df20b4ea52fab502ae8f9c8b11fda634b60209f15363a8c720c9a0ada99f5",
+    "src/styles/reference-collections.css": "3f6f8f21d7f93c16758a3a07b12bcee6b158cae43e9e1bdebb13338540f49bd6",
+    "src/pages/author.astro": "bd5f24abc675b63191fc0661151558614058ce5e31796a9c51734651b11b7ce7",
+    "src/pages/topics/index.astro": "59e656dda30c8faf90f0acbfc1fea759b4b4a70590c1f84ec23124ea35f0f4be",
+    "src/pages/topics/[slug].astro": "cd617357167606798abe96d177ca3781ce52ce7b5c284e97001a89216de93f18",
+    "src/pages/concepts/[slug].astro": "b2cc46148ed5ebfcf75a28bed7a8373a1981a9c8d3bdcc93e0b53e8afee400f4",
+    "src/pages/papers/index.astro": "4952e4b68b0151f9cd97440ae5ff286b2013c2a43368112d2dec2ed2ddab838d"
+  },
+  "captures": [
+    {
+      "file": "v0-concept.png",
+      "sha256": "ffed40e719fde131dfba3a9fe00b5fd200855c58df16891bd90fca575c09ee8f"
+    },
+    {
+      "file": "v0-papers.png",
+      "sha256": "fc7a7134dc496f5b3272c37c12c2380a2a88ef9254879e1a156dfe03e02c347f"
+    },
+    {
+      "file": "v0-research.png",
+      "sha256": "1561e6f10b16e11bf2a4a5f31ecfdd2231c39483650b498ef865010213ab6497"
+    },
+    {
+      "file": "v0-topic-about.png",
+      "sha256": "98ed70925c0aaf02c3bbf779c1cbd9b9f64ba7d5758c15ef6a96c3929f071a08"
+    },
+    {
+      "file": "v0-topics.png",
+      "sha256": "23a2a1689f8bd8a3a5c8764c8175fa323a14f59e0d45379fde6efba8d48ea21f"
+    },
+    {
+      "file": "v1-concept-desktop.png",
+      "sha256": "d1aa79c5555c6635d474a6095606002f486c7f7a19e55e1ceedca2a5b5493907"
+    },
+    {
+      "file": "v1-papers-reference-desktop.png",
+      "sha256": "16306cc8119ebe6ed53f6dc9b633a2d2a215c4d19db8a120f663b2a3b80d6432"
+    },
+    {
+      "file": "v1-research-dark.png",
+      "sha256": "afc659287c2ab0e662847f85277d0f6853661af60ea4cc0e7d9a05a01f58c86b"
+    },
+    {
+      "file": "v1-research-desktop.png",
+      "sha256": "fbf78645a7d702cf3bdd98deacd76c0aa9b906888741e0ae754dce1721bd3ac7"
+    },
+    {
+      "file": "v1-research-mobile.png",
+      "sha256": "ab23ded2397a79272f7924b564beb3fd34feb4ab42dd8103b2daab0d0adbdd0a"
+    },
+    {
+      "file": "v1-topic-about-desktop.png",
+      "sha256": "ea4733f819e8e48a66acee6197b32eca06fcdcc6cfe177432f2fd0050e1fd4c7"
+    },
+    {
+      "file": "v1-topics-dark.png",
+      "sha256": "06496d9fc64aa2f42bb72ffb629243c775be2d935716b3a2324177460bdbd190"
+    },
+    {
+      "file": "v1-topics-desktop.png",
+      "sha256": "389fe7cd60f04790640d2dcf3ae6eea5ac22bb80f5364f2d2f489e2ffd9a49af"
+    },
+    {
+      "file": "v1-topics-mobile.png",
+      "sha256": "9af932a78b072d7387105ddce0659e244de374a5959531ffd7118efbc50e21b8"
+    },
+    {
+      "file": "v2-concept-desktop.png",
+      "sha256": "aadda762e528acff8e3a8d76f17cf8d18dd142fdeb8d69a5483b326d31c1fa34"
+    },
+    {
+      "file": "v2-research-desktop.png",
+      "sha256": "25f3250941d7b0e5d819da027cd9b785615c738128395ae4ad44f705e31b55eb"
+    },
+    {
+      "file": "v2-research-mobile-viewport.png",
+      "sha256": "a299001f2bfc24d087574b2b54c555ea8286f31e6c694d14046c2940ad8e5134"
+    },
+    {
+      "file": "v2-topics-desktop.png",
+      "sha256": "e3026a827eec6f85d51594b83fda80c78420c58c513838257026f494d2bfb9f8"
+    },
+    {
+      "file": "v2-topics-mobile-viewport.png",
+      "sha256": "a2eb6161c2ff16203e5f9fc9ea40491babbcb0db58560a27a627c5bc2187cc73"
+    },
+    {
+      "file": "v3-topics-1100.png",
+      "sha256": "34d5c85007a6d9a41a1f59117f3b9a234a038da981da99e7ca6b03f754f8abbc"
+    },
+    {
+      "file": "v3-topics-1440.png",
+      "sha256": "783164497a8ec7ebfd804be2192275d0d6a848945df35a751c85173df1a56112"
+    }
+  ]
+}

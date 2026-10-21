@@ -5,6 +5,10 @@ import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro
 import EmptyState from "../../components/discover/EmptyState.astro";
 import PostCard from "../../components/post/PostCard.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import EditorialFigure from "../../components/media/EditorialFigure.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
+import { topicFigures } from "../../lib/media/editorialFigures";
+import "../../styles/topic-imagery.css";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
@@ -105,12 +109,13 @@ const structuredData = site
       }
     </section>
 
-    <section class="discover-section drawing-index-section drawing-topic-about">
+    <section class:list={["discover-section drawing-index-section drawing-topic-about", topicFigures[topic.id] && "drawing-topic-about--illustrated"]}>
       <h2 class="drawing-section-title">关于这个主题</h2>
       <div class="discover-rich drawing-topic-about__body">
         <p>{topic.data.why}</p>
         <Content />
       </div>
+      {topicFigures[topic.id] && <EditorialFigure figure={topicFigures[topic.id]} class="drawing-topic-about__figure" sizes="(max-width: 760px) calc(100vw - 3rem), 360px" />}
     </section>
 
     {
@@ -145,4 +150,5 @@ const structuredData = site
       ) : null
     }
   </DrawingIndexShell>
+  {topicFigures[topic.id] && <ImageViewer />}
 </BaseLayout>

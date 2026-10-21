@@ -3,8 +3,12 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
 import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
+import EditorialFigure from "../../components/media/EditorialFigure.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { paperReferenceFigure } from "../../lib/media/editorialFigures";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
+import "../../styles/reference-collections.css";
 
 const papers = (await getCollection("papers", ({ data }) => !data.draft)).sort((a, b) => {
   if (a.data.year !== b.data.year) {
@@ -155,5 +159,21 @@ const resourceLabels = {
         ))}
       </div>
     </section>
+
+    <aside class="paper-historical-reference" aria-labelledby="paper-reference-title">
+      <div class="paper-historical-reference__copy">
+        <p class="paper-historical-reference__eyebrow">历史参考图版 / 1843</p>
+        <h2 id="paper-reference-title">把计算过程留在纸上</h2>
+        <p>Ada Lovelace 在 Note G 中，把伯努利数计算展开为操作步骤、变量与中间结果。循着这张表，可以看到一个计算过程如何被逐步记录。</p>
+        <p class="paper-historical-reference__invitation">点开图版，细看其中的操作序列。</p>
+      </div>
+      <EditorialFigure
+        figure={paperReferenceFigure}
+        compact
+        class="paper-historical-reference__figure"
+        sizes="(max-width: 600px) 220px, 280px"
+      />
+    </aside>
   </DrawingIndexShell>
+  <ImageViewer />
 </BaseLayout>

@@ -46,11 +46,14 @@ for (const width of [320, 390, 1024, 1440]) {
       return { x: rect.x, y: rect.y, bottom: rect.bottom, width: rect.width };
     }));
     if (width >= 1024) {
+      const secondHeading = await tracks.nth(1).locator("h3").boundingBox();
+      const thirdHeading = await tracks.nth(2).locator("h3").boundingBox();
+      expect(secondHeading!.y).toBeLessThan(thirdHeading!.y);
       // A wide opening track and a pair of offset notes replace the repeated full-width table.
       expect(rows[0].width).toBeGreaterThan(rows[1].width * 1.6);
       expect(rows[2].x).toBeGreaterThan(rows[1].x + rows[1].width);
       expect(rows[2].y).toBeGreaterThan(rows[1].y + 20);
-      const summaryWidth = await tracks.first().locator("p").evaluate(el => el.getBoundingClientRect().width);
+      const summaryWidth = await tracks.first().locator(".author-atlas-track__copy > p").evaluate(el => el.getBoundingClientRect().width);
       expect(summaryWidth).toBeGreaterThan(300);
       const sectionHead = await page.locator(".author-atlas-research > .discover-section-head").boundingBox();
       expect(sectionHead!.x + sectionHead!.width).toBeLessThan(rows[0].x);

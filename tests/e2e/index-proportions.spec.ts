@@ -36,7 +36,8 @@ test("topic names, descriptions and counts form readable content groups", async 
     expect(summaryBox.y - titleBox.y - titleBox.height, "description follows its name as one group").toBeGreaterThanOrEqual(0);
     expect(summaryBox.y - titleBox.y - titleBox.height).toBeLessThanOrEqual(16);
     expect(countBox.x - titleBox.x - titleBox.width, "article count stays beside its topic name").toBeLessThanOrEqual(36);
-    expect((await row.boundingBox())!.height, "content defines the row instead of a large empty band").toBeLessThanOrEqual(180);
+    const rationale = (await row.locator(".drawing-topic-row__rationale").boundingBox())!;
+    expect((await row.boundingBox())!.height, "the text entry follows its content, alongside the image plate").toBeLessThanOrEqual(titleBox.height + summaryBox.height + countBox.height + rationale.height + (await row.locator(".drawing-topic-row__number").boundingBox())!.height + (await row.locator(".drawing-topic-row__read").boundingBox())!.height + 64);
     await expectUnclipped(summary);
   }
 });

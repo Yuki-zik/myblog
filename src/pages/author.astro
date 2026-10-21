@@ -4,7 +4,10 @@ import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
 import SectionHead from "../components/discover/SectionHead.astro";
 import PostCard from "../components/post/PostCard.astro";
+import EditorialFigure from "../components/media/EditorialFigure.astro";
+import ImageViewer from "../components/media/ImageViewer.astro";
 import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { researchFigures } from "../lib/media/editorialFigures";
 import { resolvePostAuthor } from "../lib/posts/author";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/author-atlas.css";
@@ -151,17 +154,26 @@ const authorContactEntries = [
       <div class="discover-entity-grid" data-ux-stagger>
         {SITE_AUTHOR_PROFILE.researchTracks?.map((track, index) => (
           <article class="discover-surface discover-entity-card" data-ux-reveal="fade-up">
-            <div class="discover-entity-card__top" aria-hidden="true">
-              <span class="author-atlas-track__index">{String(index + 1).padStart(2, "0")}</span>
-              <span class="discover-entity-card__meta">TRACK</span>
+            <div class="author-atlas-track__body">
+              <div class="discover-entity-card__top" aria-hidden="true">
+                <span class="author-atlas-track__index">{String(index + 1).padStart(2, "0")}</span>
+                <span class="discover-entity-card__meta">TRACK</span>
+              </div>
+              <div class="author-atlas-track__copy">
+                <h3>{track.title}</h3>
+                <p>{track.summary}</p>
+              </div>
+              <ul class="pill-list">
+                {track.bullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
             </div>
-            <div class="author-atlas-track__copy">
-              <h3>{track.title}</h3>
-              <p>{track.summary}</p>
-            </div>
-            <ul class="pill-list">
-              {track.bullets.map((bullet) => <li>{bullet}</li>)}
-            </ul>
+            {researchFigures[index] && (
+              <EditorialFigure
+                figure={researchFigures[index]}
+                class="author-atlas-track__figure"
+                sizes="(max-width: 600px) calc(100vw - 48px), (max-width: 850px) 44vw, 380px"
+              />
+            )}
           </article>
         ))}
       </div>
@@ -342,4 +354,5 @@ const authorContactEntries = [
       }
     </section>
   </DiscoverShell>
+  <ImageViewer />
 </BaseLayout>

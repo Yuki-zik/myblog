@@ -1,0 +1,133 @@
+/* A sourced plate shares the concept's existing index space; it is not a
+   second hero or a replacement for the definition and linked reading. */
+.concept-atlas--illustrated .discover-hero--split .discover-hero__panel {
+  align-self: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.concept-reference {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.55fr);
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.concept-reference__figure {
+  width: 100%;
+  max-width: 18rem;
+}
+
+.concept-reference__index {
+  min-width: 0;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-copy {
+  margin: 0 0 0.5rem;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-label {
+  margin: 0;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.75rem;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-stat {
+  gap: 0.4rem;
+  padding: 0.8rem 0;
+  border: 0;
+  background: transparent;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-stat strong {
+  font-size: 1.55rem;
+}
+
+.concept-atlas .concept-reference .discover-hero__panel-stat span {
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+/* The historical table is a separate, clearly labelled reading coda. It must
+   never inherit the visual or semantic role of a current publication cover. */
+.paper-historical-reference {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17.5rem;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2.5rem 0 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.paper-historical-reference__copy {
+  min-width: 0;
+}
+
+.paper-historical-reference__eyebrow {
+  margin: 0 0 0.9rem;
+  color: var(--drawing-accent-ink);
+  font: 0.8rem/1.5 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.paper-historical-reference h2 {
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+  font: 500 clamp(1.5rem, 2.2vw, 2rem)/1.35 var(--reading-serif);
+}
+
+.paper-historical-reference__copy > p:not(.paper-historical-reference__eyebrow) {
+  margin: 0;
+  color: var(--text-secondary);
+  font: 1rem/1.85 var(--font-ui);
+}
+
+.paper-historical-reference__copy > p.paper-historical-reference__invitation {
+  margin-top: 1rem;
+  color: var(--drawing-accent-ink);
+  font-size: 0.9rem;
+}
+
+.paper-historical-reference__figure {
+  width: 100%;
+  max-width: 17.5rem;
+}
+
+@media (max-width: 1024px) {
+  .concept-reference {
+    grid-template-columns: minmax(0, 17.5rem) minmax(8rem, 1fr);
+    max-width: 38rem;
+    gap: clamp(1rem, 5vw, 3rem);
+  }
+
+  .concept-atlas .concept-reference .discover-hero__panel-stats {
+    gap: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .concept-reference {
+    grid-template-columns: minmax(0, 1fr) 8rem;
+    gap: 1rem;
+  }
+
+  .concept-atlas .concept-reference .discover-hero__panel-stats {
+    gap: 0.5rem;
+  }
+
+  .paper-historical-reference {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-top: 1.75rem;
+  }
+
+  .paper-historical-reference__figure {
+    max-width: 13.75rem;
+  }
+}
