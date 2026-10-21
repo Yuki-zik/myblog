@@ -1,5 +1,9 @@
 # Production readiness
 
+## 2026-10-21 editorial imagery release
+
+PR #40 (`7d4f396`) adds five sourced historical science/engineering plates across topic, author, concept and paper-reference surfaces, using the existing accessible image viewer. The original home, article/archive covers, graph and reading layout remain. Final CI passed 145 unit / 262 E2E checks. Frontend deployment `7217331052` succeeded. Live image decode, multi-image keyboard preview, focus/scroll restoration, mobile layout and the 19-page SEO audit passed on a-znk.com. Rules and attribution: `docs/editorial-imagery.md`; versioned screenshots and readback: `docs/visual-history/2026-10-21-editorial-imagery/`.
+
 ## 2026-10-20 discovery composition release
 
 PR #37 (`2606048`) moves the real Wander graph into the first screen and recomposes the author frontispiece around the original photographic portrait, spanning name, and an early publication link. The approved home gateway, recent-label alignment, capsule and reading runtimes remain. Final CI passed 145 unit / 247 E2E checks. Frontend production deployment `7203475153` succeeded; live map/author desktop/mobile screenshots, geometry, image decode and search/preview checks passed on `https://a-znk.com`. Production SEO audit passed for 19 canonical Chinese pages and both paper OG images. Versioned evidence: `docs/visual-history/2026-10-20-composition-redesign/`.

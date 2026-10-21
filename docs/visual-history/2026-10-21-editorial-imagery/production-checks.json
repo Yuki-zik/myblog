@@ -1,0 +1,93 @@
+{
+  "release": "7d4f396fee26ae3aa8c671ebedfdc414f34913b0",
+  "frontendDeployment": 7217331052,
+  "origin": "https://a-znk.com",
+  "checks": [
+    {
+      "route": "/topics",
+      "figures": 5,
+      "status": 200,
+      "overflow": 0,
+      "interactions": [
+        {
+          "source": "https://a-znk.com/_astro/cajal-cortex.4RczWOqh.png",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "source": "https://a-znk.com/_astro/leonardo-gears.smnsltSS.jpg",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    {
+      "route": "/author",
+      "figures": 3,
+      "status": 200,
+      "overflow": 0,
+      "interactions": [
+        {
+          "source": "https://a-znk.com/_astro/cajal-cortex.4RczWOqh.png",
+          "before": 839,
+          "after": 839
+        },
+        {
+          "source": "https://a-znk.com/_astro/ambiguous-cubes.25DLnCVR.png",
+          "before": 1516,
+          "after": 1516
+        }
+      ]
+    },
+    {
+      "route": "/concepts/anchor-id",
+      "figures": 1,
+      "status": 200,
+      "overflow": 0,
+      "interactions": [
+        {
+          "source": "https://a-znk.com/_astro/leonardo-gears.smnsltSS.jpg",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    {
+      "route": "/papers",
+      "figures": 1,
+      "status": 200,
+      "overflow": 0,
+      "interactions": [
+        {
+          "source": "https://a-znk.com/_astro/lovelace-note-g.DongD398.jpg",
+          "before": 693,
+          "after": 693
+        }
+      ]
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "figures": 1,
+      "status": 200,
+      "overflow": 0,
+      "interactions": [
+        {
+          "source": "https://a-znk.com/_astro/cajal-cortex.4RczWOqh.png",
+          "before": 732,
+          "after": 732
+        }
+      ]
+    },
+    {
+      "route": "/topics",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "width": 390,
+      "overflow": 0
+    }
+  ],
+  "seo": "19 canonical Chinese pages and 2 paper OG images passed; 8 short descriptions remain editorial follow-up"
+}

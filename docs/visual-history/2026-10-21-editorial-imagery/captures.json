@@ -15,6 +15,54 @@
   },
   "captures": [
     {
+      "file": "production-concept-viewport.png",
+      "sha256": "45391b5ff7cd253b3fcfea9c90faf9f18241f5fa865c87c74b5f429a744ad8a5"
+    },
+    {
+      "file": "production-concept.png",
+      "sha256": "aadda762e528acff8e3a8d76f17cf8d18dd142fdeb8d69a5483b326d31c1fa34"
+    },
+    {
+      "file": "production-papers-reference-viewport.png",
+      "sha256": "5f069539f28787fa7b00d705376e1481a79bff1dff8fdf0aa3399e10b82d8553"
+    },
+    {
+      "file": "production-papers-reference.png",
+      "sha256": "0508c67dbd128e7e25d9a101319d87059a3d370410f54406c14bfe9a3aee06f3"
+    },
+    {
+      "file": "production-research-mobile.png",
+      "sha256": "a299001f2bfc24d087574b2b54c555ea8286f31e6c694d14046c2940ad8e5134"
+    },
+    {
+      "file": "production-research-viewport.png",
+      "sha256": "490bf48c7a8018854cbfdc953f181d1787b9b669f48ec6110de97c8b4d341edc"
+    },
+    {
+      "file": "production-research.png",
+      "sha256": "1feb7c31f0589d16ce2a2bcf15cbe94adaf5636786a414ff818ee9954b4e6228"
+    },
+    {
+      "file": "production-topic-about-viewport.png",
+      "sha256": "f0d0f2c60193529937d09b9d3c0991cc4f1f36d4c082101b6f76cca307e0ecc1"
+    },
+    {
+      "file": "production-topic-about.png",
+      "sha256": "630a939c251e8bf9d8627bf35f8b988fade371b0b2d9d49c582c9f7ab3d75877"
+    },
+    {
+      "file": "production-topics-mobile.png",
+      "sha256": "3d69d49f3467ef24b96c798d691bfb4cc53b97c5da2a912e0d71b560659d3c36"
+    },
+    {
+      "file": "production-topics-viewport.png",
+      "sha256": "15b856bf74783b2dcc8e1b05f2b53152640c900567412b787d7b40a83fd1f844"
+    },
+    {
+      "file": "production-topics.png",
+      "sha256": "95099ca07ca3a1d15dc272d356d9e0e93ef195d746c9b2df64f95c442920a97e"
+    },
+    {
       "file": "v0-concept.png",
       "sha256": "ffed40e719fde131dfba3a9fe00b5fd200855c58df16891bd90fca575c09ee8f"
     },
@@ -98,5 +146,19 @@
       "file": "v3-topics-1440.png",
       "sha256": "783164497a8ec7ebfd804be2192275d0d6a848945df35a751c85173df1a56112"
     }
-  ]
+  ],
+  "productionRevision": "7d4f396fee26ae3aa8c671ebedfdc414f34913b0",
+  "productionSources": {
+    "src/components/media/EditorialFigure.astro": "0521369b7768eb00135236f3d75014ac7808fd5b5db4bbcf02cc27ef0e85f8c3",
+    "src/styles/editorial-figures.css": "b64dcd108aa615efa7a3a7945638188dccb72db57eebaddd8fb25e8b50ca0633",
+    "src/lib/media/editorialFigures.ts": "0f0ef1a1f5f41845eb78a6a2307d319008bb71bed66bffe05ea07ae575f69d62",
+    "src/styles/author-atlas.css": "b71baab17b74323b552bd1393138c743922ba13a6a8964abd042b11910c57918",
+    "src/styles/topic-imagery.css": "662df20b4ea52fab502ae8f9c8b11fda634b60209f15363a8c720c9a0ada99f5",
+    "src/styles/reference-collections.css": "3f6f8f21d7f93c16758a3a07b12bcee6b158cae43e9e1bdebb13338540f49bd6",
+    "src/pages/author.astro": "bd5f24abc675b63191fc0661151558614058ce5e31796a9c51734651b11b7ce7",
+    "src/pages/topics/index.astro": "59e656dda30c8faf90f0acbfc1fea759b4b4a70590c1f84ec23124ea35f0f4be",
+    "src/pages/topics/[slug].astro": "cd617357167606798abe96d177ca3781ce52ce7b5c284e97001a89216de93f18",
+    "src/pages/concepts/[slug].astro": "b2cc46148ed5ebfcf75a28bed7a8373a1981a9c8d3bdcc93e0b53e8afee400f4",
+    "src/pages/papers/index.astro": "4952e4b68b0151f9cd97440ae5ff286b2013c2a43368112d2dec2ed2ddab838d"
+  }
 }

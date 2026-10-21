@@ -26,3 +26,11 @@
 ## 云端字体差异修正
 
 首次完整CI为260/261通过：云端字体下主题计数换行，使标题与摘要的间距达41px，违反原16px上限。将标题/数量改为稳定的并列grid，长标题在自身列内平衡换行；未降低原检查阈值。新增1100px长标题实测，13项相关检查通过；1440/1100px真实截图测得间距约10.4–11px，见v3-topics-*。
+
+## 正式发布
+
+[PR #40](https://github.com/Yuki-zik/myblog/pull/40) 合并为 `7d4f396fee26ae3aa8c671ebedfdc414f34913b0`。[最终CI](https://github.com/Yuki-zik/myblog/actions/runs/39541056413) 145单测/262项E2E全部通过。前端Production部署7217331052成功，a-znk.com实际显示全部图版。读取时工作区包含并行的c53444c百度验证meta更新，图版源码与本次发布相同。
+
+五类正式页面（topics、author、concept、papers、topic detail）均HTTP200、图像解码成功、每页只有一个viewer；连续原图预览、Enter/Esc、焦点恢复及滚动恢复实测通过。非零滚动位置839/1516/693/732px均精确恢复。390px主题/作者无横向溢出。production截图与production-checks.json保留正式证据。验收脚本以绝对URL比较原图，并等待原生close事件和字体布局稳定后测量位置。
+
+`pnpm seo:audit`通过：19个规范中文页面及2篇论文分享图。8条较短搜索摘要为既有编辑跟进，不代表搜索引擎实际收录状态。
