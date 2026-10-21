@@ -286,14 +286,14 @@
 .author-atlas .discover-section-head__count { color: var(--text-meta); font: 0.78rem/1.5 var(--font-mono); white-space: nowrap; }
 
 /* Chapter labels occupy the margin; the content has a separate reading measure. */
-.author-atlas :is(.author-atlas-research, .author-atlas-practice, .author-atlas-focus, .author-atlas-writing) {
+.author-atlas :is(.author-atlas-research, .author-atlas-writing) {
   display: grid;
   grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr);
   align-items: start;
   gap: clamp(2rem, 4.8vw, 4.5rem);
 }
 
-.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-practice, .author-atlas-focus, .author-atlas-writing) > .discover-section-head {
+.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-writing) > .discover-section-head {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -302,7 +302,7 @@
   border: 0;
 }
 
-.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-practice, .author-atlas-focus, .author-atlas-writing) > .discover-section-head .discover-section-head__copy > p:last-child {
+.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-writing) > .discover-section-head .discover-section-head__copy > p:last-child {
   font-size: 0.9rem;
   line-height: 1.8;
 }

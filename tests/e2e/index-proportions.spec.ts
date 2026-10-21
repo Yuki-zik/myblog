@@ -121,9 +121,12 @@ test("archive ledger balances its image plates with readable article copy", asyn
     expect(await fontSize(card.locator(".archive-post-meta"))).toBeGreaterThanOrEqual(14);
     const cover = (await card.locator(".archive-post-media").boundingBox())!;
     const content = (await card.locator(".archive-post-content").boundingBox())!;
-    expect(cover.width).toBeGreaterThanOrEqual(144);
-    expect(cover.width).toBeLessThanOrEqual(240);
-    expect(content.width).toBeGreaterThan(cover.width * 2.8);
+    // Intrinsic posters replace the old square thumbnails; copy still gets
+    // the larger share of the composition and a substantial reading measure.
+    expect(cover.width).toBeGreaterThanOrEqual(248);
+    expect(cover.width).toBeLessThanOrEqual(360);
+    expect(content.width).toBeGreaterThan(cover.width * 1.7);
+    expect(content.width).toBeGreaterThanOrEqual(600);
   }
 });
 

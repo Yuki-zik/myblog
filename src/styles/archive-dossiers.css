@@ -1,17 +1,55 @@
-/* Publication plates inside the existing chronological ledger.
+/* Intrinsic publication posters inside a horizontal year ledger.
  * ContentDossier owns the paper, title block, palette and elevation.
  */
+.drawing-index[data-drawing-index="archives"] .drawing-index__body {
+  gap: 1.2rem;
+}
+
+.drawing-index[data-drawing-index="archives"] .drawing-index-header {
+  padding-bottom: 1rem;
+}
+
+.drawing-index.discover-page .archive-year-section {
+  grid-template-columns: minmax(0, 1fr);
+  gap: .65rem;
+}
+
+.drawing-index.discover-page .archive-year-tile {
+  position: static;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.archive-year-tile h2 {
+  margin: 0;
+  font-size: inherit;
+}
+
+.archive-year-tile p {
+  margin: 0;
+  color: var(--text-meta);
+  font: .8rem/1.5 var(--font-mono);
+}
+
+.drawing-index.discover-page .archive-year-content {
+  gap: 1.4rem;
+}
+
 .drawing-index.discover-page .archive-grid {
   gap: 1.35rem;
 }
 
-.archive-post-dossier {
-  --dossier-media-width: clamp(11.5rem, 16.5vw, 15rem);
+.content-dossier.archive-post-dossier {
+  --dossier-media-width: clamp(15.5rem, 28vw, 22.5rem);
+  --dossier-padding: clamp(1.1rem, 1.7vw, 1.45rem);
 }
 
 .archive-post-dossier .content-dossier__header {
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: .9rem;
 }
 
 .drawing-index.discover-page .archive-post-meta {
@@ -25,15 +63,18 @@
 .drawing-index.discover-page .archive-post-link.archive-post-media {
   display: block;
   align-self: start;
+  width: 100%;
   padding: 0;
   background: none;
 }
 
-.archive-post-dossier .content-dossier__media {
-  align-self: center;
+.drawing-index.discover-page .archive-post-link.archive-post-media:is(:hover, :focus-visible) {
+  background: none;
 }
 
-.archive-post-dossier .post-cover-img { object-fit: contain; }
+.archive-post-dossier .content-dossier__media {
+  align-self: start;
+}
 
 .drawing-index.discover-page .archive-post-dossier .archive-post-content {
   display: block;
@@ -68,9 +109,14 @@
   transform: translateX(3px);
 }
 
-@media (max-width: 900px) {
-  .archive-post-dossier {
-    --dossier-media-width: 10.5rem;
+@media (max-width: 1100px) {
+  .content-dossier.archive-post-dossier {
+    --dossier-media-width: clamp(14rem, 30vw, 20rem);
+  }
+}
+
+@media (max-width: 760px) {
+  .content-dossier.archive-post-dossier {
     --dossier-padding: 1.25rem;
   }
 
@@ -78,16 +124,15 @@
     align-items: start;
     flex-direction: column;
     gap: .65rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
   }
-}
 
-@media (max-width: 600px) {
   .drawing-index.discover-page .archive-grid {
     gap: 1.25rem;
   }
 
   .archive-post-dossier .content-dossier__main--illustrated {
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.35rem;
   }
 
@@ -97,8 +142,8 @@
 
   .archive-post-dossier .content-dossier__media {
     order: 2;
-    width: min(100%, 15rem);
-    justify-self: center;
+    width: min(100%, 30rem);
+    justify-self: start;
   }
 
   .drawing-index.discover-page .archive-post-dossier .archive-post-content h3 {

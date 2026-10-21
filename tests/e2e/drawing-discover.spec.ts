@@ -102,8 +102,14 @@ for (const scheme of ["light", "dark"] as const) {
         await expect(records.first().getByRole("group", { name: "文章元信息", exact: true })).toBeVisible();
       }
       if (item.kind === "archives") {
-        const cover = await records.first().locator('[data-post-cover="archive-square"]').boundingBox();
-        expect(Math.abs(cover!.width - cover!.height), "archive thumbnail keeps its square shape").toBeLessThan(2);
+        const cover = records.first().locator('[data-post-cover="poster"]');
+        const dimensions = await cover.evaluate(async el => {
+          const image = el.querySelector<HTMLImageElement>(".post-cover-img--main")!;
+          await image.decode();
+          const box = el.getBoundingClientRect();
+          return { ratio: box.width / box.height, original: image.naturalWidth / image.naturalHeight };
+        });
+        expect(Math.abs(dimensions.ratio - dimensions.original), "archive poster follows its original artwork").toBeLessThan(.01);
         await expect(records.locator("[data-archive-date]")).toHaveCount(item.count);
         await expect(records.locator("[data-archive-author]")).toHaveCount(item.count);
       }
@@ -131,8 +137,14 @@ for (const width of [390, 320]) {
       await expect(shell.locator(item.records)).toHaveCount(item.count);
       await expectReadableOrange(shell.locator(".drawing-index-kicker").first());
       if (item.kind === "archives") {
-        const cover = await shell.locator('[data-post-cover="archive-square"]').first().boundingBox();
-        expect(Math.abs(cover!.width - cover!.height)).toBeLessThan(2);
+        const image = shell.locator('[data-post-cover="poster"] .post-cover-img--main').first();
+        await image.scrollIntoViewIfNeeded();
+        const dimensions = await image.evaluate(async (el: HTMLImageElement) => {
+          await el.decode();
+          const box = el.getBoundingClientRect();
+          return { ratio: box.width / box.height, original: el.naturalWidth / el.naturalHeight };
+        });
+        expect(Math.abs(dimensions.ratio - dimensions.original)).toBeLessThan(.01);
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), item.path).toBeLessThanOrEqual(0);
     }
