@@ -1,0 +1,162 @@
+{
+  "results": [
+    {
+      "route": "/author",
+      "state": "author-practice",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-author-practice-desktop-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/author",
+      "state": "author-focus",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-author-focus-desktop-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/",
+      "state": "home-recent",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-home-recent-desktop-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/archives",
+      "state": "archives",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-archives-desktop-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/papers",
+      "state": "papers",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-papers-desktop-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/author",
+      "state": "author-practice",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-author-practice-mobile-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/author",
+      "state": "author-focus",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-author-focus-mobile-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/",
+      "state": "home-recent",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-home-recent-mobile-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/archives",
+      "state": "archives",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-archives-mobile-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/papers",
+      "state": "papers",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-papers-mobile-light.png",
+      "overflow": 0,
+      "resolvedTheme": "light"
+    },
+    {
+      "route": "/author",
+      "state": "author-practice",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-author-practice-desktop-dark.png",
+      "overflow": 0,
+      "resolvedTheme": "dark"
+    },
+    {
+      "route": "/",
+      "state": "home-recent",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-home-recent-desktop-dark.png",
+      "overflow": 0,
+      "resolvedTheme": "dark"
+    },
+    {
+      "route": "/archives",
+      "state": "archives",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-archives-desktop-dark.png",
+      "overflow": 0,
+      "resolvedTheme": "dark"
+    },
+    {
+      "route": "/papers",
+      "state": "papers",
+      "width": 1440,
+      "height": 1800,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-content-dossiers/v4-papers-desktop-dark.png",
+      "overflow": 0,
+      "resolvedTheme": "dark"
+    }
+  ],
+  "paperTitleY": 452.171875,
+  "citationOpen": true,
+  "sourceBaseline": "d5e89f0",
+  "stage": "local-v4"
+}
