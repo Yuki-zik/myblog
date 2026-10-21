@@ -37,7 +37,8 @@
       "ip-address@<10.7.1": "10.7.1",
       "@xmldom/xmldom@>=0.9.0 <0.9.12": "0.9.12",
       "think-mysql2>mysql": "npm:mysql2@3.23.1",
-      "markdown-it@<14.3.1": "14.3.1",
+      "markdown-it@<14.3.3": "14.3.3",
+      "follow-redirects@>=1.16.0 <1.16.1": "1.16.1",
       "moment@<2.31.0": "2.31.0",
       "http-cache-semantics@<=4.2.0": "4.3.0"
     },
