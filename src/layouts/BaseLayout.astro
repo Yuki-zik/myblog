@@ -156,6 +156,7 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex, follow" /> : null}
     <meta name="author" content={authorMeta} />
+    {pathname === "/" ? <meta name="baidu-site-verification" content="codeva-SErx1nafE7" /> : null}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
     <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={rssUrl ?? "/rss.xml"} />

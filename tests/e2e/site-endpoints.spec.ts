@@ -153,3 +153,13 @@ test("research paper pages expose branded Open Graph images", async ({ request, 
     expect(imageResponse.headers()["content-type"]).toMatch(/^image\/png/);
   }
 });
+
+test("homepage advertises Baidu site ownership verification", async ({ page, request }) => {
+  const response = await request.get("/");
+  expect(response.ok()).toBe(true);
+  const verificationCodes = await page.evaluate((html) => {
+    const document = new DOMParser().parseFromString(html, "text/html");
+    return Array.from(document.querySelectorAll('meta[name="baidu-site-verification"]'), (meta) => meta.getAttribute("content"));
+  }, await response.text());
+  expect(verificationCodes).toEqual(["codeva-SErx1nafE7"]);
+});
