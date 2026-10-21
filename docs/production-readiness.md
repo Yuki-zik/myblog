@@ -1,5 +1,11 @@
 # Production readiness
 
+## 2026-10-22 ordered asymmetry release
+
+[PR #43](https://github.com/Yuki-zik/myblog/pull/43), merge `161cb95`, restores intrinsic frameless archive posters, replaces empty vertical year/practice columns with horizontal chapter heads, and introduces a bounded 12-column width/offset rhythm on author practice/focus. The data, source/keyboard order, original imagery, home hero and reader are preserved.
+
+[CI 39632611891](https://github.com/Yuki-zik/myblog/actions/runs/39632611891) passed **145 unit / 287 E2E checks**. The exact-commit Vercel frontend status reports success ([deployment](https://vercel.com/qianlimaxai-5994s-projects/myblog/DNNjw7Ejywuu8otMPPtb44KNYKDs)). Live a-znk.com checks confirm 360×202.5px original-ratio posters with 0px borders, full-width 1280px year/content rows and first title top 487.56px. Practice width rhythm and native disclosures pass; mobile overflow is zero on both affected routes, the existing reader TOC pins at 85.59px, and no page runtime errors occurred. The live SEO audit passed for 19 canonical pages and both paper OG images. Six production screenshots, prior versions and structured readback: `docs/visual-history/2026-10-21-ordered-asymmetry/`. Rules: `docs/ordered-asymmetry.md`.
+
 ## 2026-10-21 content dossier release
 
 [PR #42](https://github.com/Yuki-zik/myblog/pull/42), merge `8ddcaae`, unifies author practice/focus, recent home notes, archives and paper records through ContentDossier. New records remain profile/collection driven; imagery is optional, core information stays visible, and secondary links/citations use native details. The approved hero, carousel, capsule and reader are preserved.
