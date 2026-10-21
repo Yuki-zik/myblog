@@ -1,0 +1,88 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import "../../styles/editorial-figures.css";
+
+export interface EditorialFigureData {
+  id: string;
+  src: ImageMetadata;
+  title: string;
+  creator: string;
+  date: string;
+  alt: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  rights: string;
+  note: string;
+}
+
+interface Props {
+  figure: EditorialFigureData;
+  class?: string;
+  compact?: boolean;
+  sizes?: string;
+}
+
+const {
+  figure,
+  class: className,
+  compact = false,
+  sizes = "(max-width: 720px) calc(100vw - 3rem), (max-width: 1100px) 44vw, 400px",
+} = Astro.props;
+---
+
+<figure
+  class:list={["editorial-figure", compact && "editorial-figure--compact", className]}
+  data-editorial-figure={figure.id}
+>
+  <a
+    class="editorial-figure__paper"
+    href={figure.src.src}
+    data-image-viewer-trigger
+    data-image-alt={figure.alt}
+    data-image-width={figure.src.width}
+    data-image-height={figure.src.height}
+    aria-label={`预览${figure.title}原图`}
+    aria-haspopup="dialog"
+    aria-controls="post-image-viewer"
+  >
+    <Image
+      src={figure.src}
+      alt={figure.alt}
+      class="editorial-figure__image"
+      width={figure.src.width}
+      height={figure.src.height}
+      widths={[320, 640, 960]}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+  <figcaption class="editorial-figure__caption">
+    <div class="editorial-figure__label">
+      <span class="editorial-figure__title">{figure.title}</span>
+      <span class="editorial-figure__date">{figure.date}</span>
+    </div>
+    <div class="editorial-figure__credit">
+      <a
+        class="editorial-figure__source"
+        href={figure.sourceUrl}
+        data-editorial-source
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {figure.sourceLabel}<span aria-hidden="true"> ↗</span>
+      </a>
+      <details class="editorial-figure__details">
+        <summary>图版说明</summary>
+        <div class="editorial-figure__provenance">
+          <p data-editorial-note>{figure.note}</p>
+          <p class="editorial-figure__attribution">
+            <span>{figure.creator}</span>
+            <span data-editorial-rights>{figure.rights}</span>
+          </p>
+        </div>
+      </details>
+    </div>
+  </figcaption>
+</figure>

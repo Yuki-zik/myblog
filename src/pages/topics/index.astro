@@ -5,6 +5,10 @@ import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro
 import EmptyState from "../../components/discover/EmptyState.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ExploreGateway from "../../components/discover/ExploreGateway.astro";
+import EditorialFigure from "../../components/media/EditorialFigure.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
+import { topicFigures } from "../../lib/media/editorialFigures";
+import "../../styles/topic-imagery.css";
 import {buildKnowledgeGraph} from "../../lib/knowledge/graph";
 
 const [topics, posts, concepts] = await Promise.all([
@@ -53,14 +57,13 @@ const topicsSeoDescription =
           <EmptyState title="暂时还没有主题。" body="主题整理完成后，你可以从这里找到相关笔记。" />
         ) : (
           sortedTopics.map((topic, index) => (
-            <a
-              href={`/topics/${topic.id}`}
-              class="drawing-topic-row discover-entity-card"
-              data-drawing-topic
+            <article
+              class="drawing-topic-row drawing-topic-row--illustrated discover-entity-card"
               data-ux-reveal="fade-up"
-              aria-label={`进入主题：${topic.data.title}`}
             >
-              <span class="drawing-topic-row__number">{String(index + 1).padStart(2, "0")}</span>
+              {topicFigures[topic.id] && <EditorialFigure figure={topicFigures[topic.id]} compact class="drawing-topic-row__figure" sizes="(max-width: 600px) 42vw, (max-width: 1099px) 220px, 200px" />}
+              <a href={`/topics/${topic.id}`} class="drawing-topic-row__entry" data-drawing-topic aria-label={`进入主题：${topic.data.title}`}>
+              <span class="drawing-topic-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               <div class="drawing-topic-row__copy">
                 <div class="drawing-topic-row__heading">
                   <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
@@ -69,11 +72,14 @@ const topicsSeoDescription =
                 <p class="drawing-topic-row__summary">{topic.data.summary}</p>
                 <p class="drawing-topic-row__rationale"><span aria-hidden="true">WHY / </span>{topic.data.why}</p>
               </div>
-            </a>
+              <span class="drawing-topic-row__read">阅读这个主题 <span aria-hidden="true">↗</span></span>
+              </a>
+            </article>
           ))
         )
       }
     </section>
     <ExploreGateway graph={buildKnowledgeGraph(posts, topics, concepts)} compact />
   </DrawingIndexShell>
+  <ImageViewer />
 </BaseLayout>

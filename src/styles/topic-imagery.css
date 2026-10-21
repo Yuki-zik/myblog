@@ -1,0 +1,59 @@
+/* Image plates and text entries are siblings: viewing art never replaces topic navigation. */
+.drawing-index.discover-page .drawing-topic-row--illustrated {
+  grid-template-columns: minmax(135px, .78fr) minmax(0, 1.22fr);
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  align-items: start;
+}
+
+.drawing-topic-row__figure { --editorial-image-height: 190px; }
+.drawing-topic-row__entry {
+  display: grid;
+  gap: .7rem;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.drawing-topic-row__entry .drawing-topic-row__number { padding: 0; font-size: 1.15rem; }
+.drawing-topic-row__entry:only-child { grid-column: 1 / -1; }
+.drawing-topic-row__entry .drawing-topic-row__heading { gap: .45rem .8rem; }
+.drawing-topic-row__entry .drawing-topic-row__copy { gap: .65rem; }
+.drawing-topic-row__entry:focus-visible { outline: 2px solid var(--drawing-focus); outline-offset: 6px; }
+.drawing-topic-row__entry:hover { text-decoration: none; }
+.drawing-topic-row__read {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .25rem;
+  color: var(--drawing-accent-ink);
+  font-size: .875rem;
+}
+.drawing-topic-row__read span { transition: transform 160ms ease; }
+.drawing-topic-row__entry:is(:hover, :focus-visible) .drawing-topic-row__read span { transform: translate(3px, -2px); }
+
+.drawing-index.discover-page .drawing-topic-about--illustrated {
+  grid-template-columns: minmax(0, 1.4fr) minmax(230px, .65fr);
+  column-gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+.drawing-topic-about--illustrated > h2 { grid-column: 1 / -1; }
+.drawing-topic-about__figure { --editorial-image-height: 250px; }
+
+@media (min-width: 600px) and (max-width: 1099px) {
+  .drawing-index.discover-page .drawing-topic-row--illustrated { grid-template-columns: 220px minmax(0, 1fr); gap: 2rem; }
+}
+@media (max-width: 760px) {
+  .drawing-index.discover-page .drawing-topic-about--illustrated { grid-template-columns: minmax(0, 1fr); }
+  .drawing-topic-about__figure { width: min(100%, 420px); --editorial-image-height: 250px; }
+}
+@media (max-width: 600px) {
+  .drawing-index.discover-page .drawing-topic-row--illustrated { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .drawing-topic-row__entry { grid-row: 1; }
+  .drawing-topic-row__figure { width: min(100%, 340px); --editorial-image-height: 200px; }
+  .drawing-topic-row__figure .editorial-figure__credit { font-size: .8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawing-topic-row__read span { transition: none; }
+  .drawing-topic-row__entry:is(:hover, :focus-visible) .drawing-topic-row__read span { transform: none; }
+}

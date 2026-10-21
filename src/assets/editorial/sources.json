@@ -1,0 +1,66 @@
+[
+  {
+    "file": "cajal-cortex.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Cajal_cortex_drawings.png",
+    "bytes": 184867,
+    "sha256": "60624ba66c979c083d57c604ef187b9d0b086ff66c69b3765fa750146c4bb355",
+    "title": "Cajal cortex drawings",
+    "workDate": "1899",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Cajal_cortex_drawings.png",
+    "rights": "Public domain; PD-US on source page",
+    "downloadedAt": "2026-10-21",
+    "transform": "Original bytes retained; Astro generates responsive display formats at build time."
+  },
+  {
+    "file": "ambiguous-cubes.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/PSM_V54_D324_Optical_illusion_with_cubes.png",
+    "bytes": 10997,
+    "sha256": "08b27e64fb15a93df8edf0c57d3e469f01e2c345530860a05e9bcc9f8c87d33a",
+    "title": "The Mind’s Eye, figures 13/13a/13b",
+    "workDate": "1899",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:PSM_V54_D324_Optical_illusion_with_cubes.png",
+    "primaryRecord": "https://en.wikisource.org/wiki/Popular_Science_Monthly/Volume_54/January_1899/The_Mind%27s_Eye",
+    "rights": "Public domain; PD-old and PD-US on source page",
+    "downloadedAt": "2026-10-21",
+    "transform": "Original bytes retained; Astro generates responsive display formats at build time."
+  },
+  {
+    "file": "centrifugal-governor.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Centrifugal_governor.png",
+    "bytes": 45234,
+    "sha256": "259b23db830dfee155a8c7bb8427624052ff74136d9e672874305fbd3e1f4114",
+    "title": "Governor and Throttle-Valve",
+    "workDate": "1900 edition",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Centrifugal_governor.png",
+    "rights": "Public Domain Mark on source page; illustrator uncredited",
+    "downloadedAt": "2026-10-21",
+    "transform": "Original bytes retained; Astro generates responsive display formats at build time."
+  },
+  {
+    "file": "leonardo-gears.jpg",
+    "url": "https://cdn.loc.gov/service/pnp/cph/3c10000/3c10000/3c10300/3c10332v.jpg",
+    "bytes": 82494,
+    "sha256": "0283538f3d6e51327dcc253c8adf97a46eb43a055b471cfb0d4c0587839e34ed",
+    "title": "Geared device assembled and disassembled",
+    "workDate": "Reproduction published 1894–1904; manuscript date unverified",
+    "sourcePage": "https://www.loc.gov/item/2006681098/",
+    "rightsPage": "https://commons.wikimedia.org/wiki/File:Reproduction_of_page_from_notebook_of_Leonardo_da_Vinci_showing_a_geared_device_assembled_and_disassembled_LCCN2006681098.jpg",
+    "rights": "Public domain historical reproduction; LOC no known publication restrictions",
+    "downloadedAt": "2026-10-21",
+    "transform": "Original bytes retained; Astro generates responsive display formats at build time."
+  },
+  {
+    "file": "lovelace-note-g.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Diagram_for_the_computation_of_Bernoulli_numbers.jpg",
+    "bytes": 743519,
+    "sha256": "1927b0c76f664108b19534d428ec716298166f190232046815ae19f731aeeafa",
+    "title": "Diagram for the computation of Bernoulli numbers, Note G",
+    "workDate": "1843",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Diagram_for_the_computation_of_Bernoulli_numbers.jpg",
+    "primaryRecord": "https://collection.sciencemuseumgroup.org.uk/objects/co8652385/book-sketch-of-the-analytical-engine-invented-by-charles-babbage-esq",
+    "rights": "Public Domain Mark on image source page",
+    "dateNote": "Use 1843 publication date from Science Museum, not the Commons 1842 field",
+    "downloadedAt": "2026-10-21",
+    "transform": "Original bytes retained; Astro generates responsive display formats at build time."
+  }
+]

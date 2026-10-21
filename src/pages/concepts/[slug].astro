@@ -5,9 +5,13 @@ import EmptyState from "../../components/discover/EmptyState.astro";
 import PageHero from "../../components/discover/PageHero.astro";
 import SectionHead from "../../components/discover/SectionHead.astro";
 import PostCard from "../../components/post/PostCard.astro";
+import EditorialFigure from "../../components/media/EditorialFigure.astro";
+import ImageViewer from "../../components/media/ImageViewer.astro";
 import { collectReferencedTopicsForConcept } from "../../lib/content/concepts";
+import { conceptFigures } from "../../lib/media/editorialFigures";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/discovery-polish.css";
+import "../../styles/reference-collections.css";
 import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
@@ -23,6 +27,7 @@ export async function getStaticPaths() {
 }
 
 const { concept } = Astro.props;
+const figure = conceptFigures[concept.id];
 const { Content } = await render(concept);
 
 const [allPosts, allTopics, allConcepts] = await Promise.all([
@@ -66,7 +71,7 @@ const structuredData = site
   openGraphImage={`/og/concepts/${concept.id}.png`}
   structuredData={structuredData}
 >
-  <DiscoverShell bodyClass="discover-editorial concept-atlas">
+  <DiscoverShell bodyClass={`discover-editorial concept-atlas${figure ? " concept-atlas--illustrated" : ""}`}>
     <PageHero
       variant="split"
       kicker="Discover / Concept"
@@ -94,26 +99,36 @@ const structuredData = site
         }
       ]}
     >
-      <div slot="aside">
-        <div class="discover-hero__panel-copy">
-          <p class="discover-hero__panel-label">关联索引</p>
-        </div>
-        <div class="discover-hero__panel-stats">
-          <div class="discover-hero__panel-stat">
-            <strong>{String(referencedPosts.length).padStart(2, "0")}</strong>
-            <span>引用文章</span>
+      <div slot="aside" class:list={[figure && "concept-reference"]}>
+        {figure && (
+          <EditorialFigure
+            figure={figure}
+            compact
+            class="concept-reference__figure"
+            sizes="(max-width: 600px) 46vw, (max-width: 1024px) 280px, 24vw"
+          />
+        )}
+        <div class="concept-reference__index">
+          <div class="discover-hero__panel-copy">
+            <p class="discover-hero__panel-label">关联索引</p>
           </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(referencedTopics.length).padStart(2, "0")}</strong>
-            <span>关联主题</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(concept.data.tags?.length ?? 0).padStart(2, "0")}</strong>
-            <span>标签</span>
-          </div>
-          <div class="discover-hero__panel-stat">
-            <strong>{String(relatedConcepts.length).padStart(2, "0")}</strong>
-            <span>相关概念</span>
+          <div class="discover-hero__panel-stats">
+            <div class="discover-hero__panel-stat">
+              <strong>{String(referencedPosts.length).padStart(2, "0")}</strong>
+              <span>引用文章</span>
+            </div>
+            <div class="discover-hero__panel-stat">
+              <strong>{String(referencedTopics.length).padStart(2, "0")}</strong>
+              <span>关联主题</span>
+            </div>
+            <div class="discover-hero__panel-stat">
+              <strong>{String(concept.data.tags?.length ?? 0).padStart(2, "0")}</strong>
+              <span>标签</span>
+            </div>
+            <div class="discover-hero__panel-stat">
+              <strong>{String(relatedConcepts.length).padStart(2, "0")}</strong>
+              <span>相关概念</span>
+            </div>
           </div>
         </div>
       </div>
@@ -176,4 +191,5 @@ const structuredData = site
       }
     </section>
   </DiscoverShell>
+  {figure && <ImageViewer />}
 </BaseLayout>
