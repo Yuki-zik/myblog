@@ -6,7 +6,7 @@
 
 `src/components/discover/ContentDossier.astro` 与 `src/styles/content-dossier.css` 管理纸面、橙色定位线、编号题签、标题与正文、资源入口和原生展开区。页面样式只负责不同内容的比例和排列。
 
-- `feature`：项目档案，侧边题签与正文分开，适合简短的实践说明。
+- `feature`：项目档案，编号题签与正文分开；当前实践区在12列内采用7/5、5/7的宽窄循环，手机恢复单列，见 [有序非对称规则](ordered-asymmetry.md)。
 - `compact`：文章、归档与论文记录，用界面字体承载长标题和摘要。
 - `note`：研究问题与写作范围，使用略暖的纸面和有序内容。
 

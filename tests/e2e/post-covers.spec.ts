@@ -177,7 +177,7 @@ test("concept page related posts renders card covers", async ({ page }) => {
 test("archive tiles reuse the shared manual cover stack", async ({ page }) => {
   await page.goto("/archives");
 
-  const archiveManualCover = page.locator('[data-post-cover="archive-square"][data-post-cover-manual="true"]').first();
+  const archiveManualCover = page.locator('[data-post-cover="poster"][data-post-cover-manual="true"]').first();
   await expect(archiveManualCover).toBeVisible();
   await expect(archiveManualCover.locator(".post-cover-img--main")).toBeVisible();
   await expect(archiveManualCover.locator(".post-cover-img--ghost")).toHaveCount(1);

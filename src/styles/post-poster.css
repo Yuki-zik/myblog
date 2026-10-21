@@ -1,0 +1,61 @@
+/* Opt-in intrinsic artwork. Existing card and reader cover variants keep
+ * their established geometry; only posters follow source image dimensions.
+ */
+.post-cover.post-cover--poster {
+  --post-cover-radius: 0;
+  --post-cover-main-border: transparent;
+  --post-cover-main-shadow: 0 6px 18px -9px color-mix(in srgb, var(--shadow-tint) 30%, transparent);
+  --post-cover-main-hover-shadow: 0 12px 26px -12px color-mix(in srgb, var(--shadow-tint) 36%, transparent);
+  --post-cover-main-lift: -4px;
+  --post-cover-ghost-opacity: .22;
+  --post-cover-ghost-offset-y: .6rem;
+  --post-cover-ghost-scale: .97;
+  --post-cover-ghost-blur: 16px;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.post-cover--poster .post-cover-stack {
+  height: auto;
+}
+
+.post-cover--poster .post-cover-img {
+  width: 100%;
+  height: auto;
+  padding: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  object-fit: contain;
+  background: transparent;
+}
+
+.post-cover--poster.post-cover--fallback .post-cover-fallback {
+  min-height: 12rem;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .archive-post-tile:is(:hover, :focus-within) .post-cover--poster .post-cover-img--main {
+    transform: translateY(var(--post-cover-main-lift));
+    box-shadow: var(--post-cover-main-hover-shadow);
+  }
+
+  .archive-post-tile:is(:hover, :focus-within) .post-cover--poster .post-cover-img--ghost {
+    opacity: .34;
+    transform: translateY(.85rem) scale(.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-cover--poster .post-cover-img {
+    transition: none;
+  }
+}

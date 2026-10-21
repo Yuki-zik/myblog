@@ -1,0 +1,80 @@
+{
+  "shots": [
+    {
+      "route": "/author",
+      "selector": "#practice",
+      "name": "author-practice",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-author-practice-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": "main",
+      "name": "archives",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-archives-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#practice",
+      "name": "author-practice",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-author-practice-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": "main",
+      "name": "archives",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-archives-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#practice",
+      "name": "author-practice",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-author-practice-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": "main",
+      "name": "archives",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "file": "docs/visual-history/2026-10-21-ordered-asymmetry/v2-archives-desktop-dark.png",
+      "overflow": 0
+    }
+  ],
+  "archive": {
+    "yearWidth": 1280,
+    "contentWidth": 1280,
+    "posterWidth": 360,
+    "posterHeight": 202.5,
+    "posterBorder": "0px",
+    "titleTop": 487.5625
+  },
+  "baseline": "d43df89",
+  "stage": "local-v2"
+}
