@@ -1,5 +1,11 @@
 # Production readiness
 
+## 2026-10-21 content dossier release
+
+[PR #42](https://github.com/Yuki-zik/myblog/pull/42), merge `8ddcaae`, unifies author practice/focus, recent home notes, archives and paper records through ContentDossier. New records remain profile/collection driven; imagery is optional, core information stays visible, and secondary links/citations use native details. The approved hero, carousel, capsule and reader are preserved.
+
+[Exact-source CI](https://github.com/Yuki-zik/myblog/actions/runs/39597722563) passed **145 unit / 279 E2E checks**. Frontend deployment `7225827546` succeeded. Live a-znk.com checks confirmed 4 projects, 2 focus notes, 3 recent covers/summaries, 4 archive records and 2 papers; keyboard disclosures, links, mobile width and no browser runtime errors passed. The first paper title is at 452.17px; the reading TOC pins at 85.59px and tracks the actual heading. Same-origin Waline readback returned errno 0 / count 1. The production SEO audit passed for 19 canonical pages and both paper OG images. Versioned before/intermediate/final/production screenshots and machine readback: `docs/visual-history/2026-10-21-content-dossiers/`. Maintenance: `docs/content-dossiers.md`.
+
 ## 2026-10-21 editorial imagery release
 
 PR #40 (`7d4f396`) adds five sourced historical science/engineering plates across topic, author, concept and paper-reference surfaces, using the existing accessible image viewer. The original home, article/archive covers, graph and reading layout remain. Final CI passed 145 unit / 262 E2E checks. Frontend deployment `7217331052` succeeded. Live image decode, multi-image keyboard preview, focus/scroll restoration, mobile layout and the 19-page SEO audit passed on a-znk.com. Rules and attribution: `docs/editorial-imagery.md`; versioned screenshots and readback: `docs/visual-history/2026-10-21-editorial-imagery/`.
