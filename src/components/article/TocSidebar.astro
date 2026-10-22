@@ -199,10 +199,13 @@ function sectionLabel(index: number): string {
   }
 
   .toc-sidebar__body {
+    --toc-follow-inset: clamp(4rem, 16vh, 7rem);
     position: relative;
     max-block-size: calc(100vh - 8rem);
     overflow: auto;
     padding-left: 1.2rem;
+    padding-bottom: var(--toc-follow-inset);
+    scroll-padding-block: 1.25rem var(--toc-follow-inset);
     scrollbar-width: none;
   }
 
