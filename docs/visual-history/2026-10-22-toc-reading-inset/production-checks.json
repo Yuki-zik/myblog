@@ -1,0 +1,105 @@
+{
+  "backward": {
+    "text": "2.2Typography（排版）",
+    "headingTop": 119.9140625
+  },
+  "shots": [
+    {
+      "height": 760,
+      "theme": "light",
+      "label": "Guidelines",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-guidelines-760-light.png",
+      "activeBottomGap": 112.1171875,
+      "markerViewportGap": 112.34375,
+      "scrollTop": 301,
+      "activeTop": 482.7265625
+    },
+    {
+      "height": 760,
+      "theme": "light",
+      "label": "References",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-references-760-light.png",
+      "activeBottomGap": 112.1171875,
+      "markerViewportGap": 301.2578125,
+      "scrollTop": 410.5,
+      "activeTop": 482.7265625
+    },
+    {
+      "height": 600,
+      "theme": "light",
+      "label": "Guidelines",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-guidelines-600-light.png",
+      "activeBottomGap": 96.1171875,
+      "markerViewportGap": 96.34375,
+      "scrollTop": 445,
+      "activeTop": 338.7265625
+    },
+    {
+      "height": 600,
+      "theme": "light",
+      "label": "References",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-references-600-light.png",
+      "activeBottomGap": 96.1171875,
+      "markerViewportGap": 224.53125,
+      "scrollTop": 554.5,
+      "activeTop": 338.7265625
+    },
+    {
+      "height": 1000,
+      "theme": "dark",
+      "label": "Guidelines",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-guidelines-1000-dark.png",
+      "activeBottomGap": 112.1171875,
+      "markerViewportGap": 112.34375,
+      "scrollTop": 61,
+      "activeTop": 722.7265625
+    },
+    {
+      "height": 1000,
+      "theme": "dark",
+      "label": "References",
+      "path": "docs/visual-history/2026-10-22-toc-reading-inset/production-references-1000-dark.png",
+      "activeBottomGap": 112.1171875,
+      "markerViewportGap": 301.2578125,
+      "scrollTop": 170.5,
+      "activeTop": 722.7265625
+    }
+  ],
+  "comparison": [
+    {
+      "file": "production-guidelines-760-light.png",
+      "identical": false
+    },
+    {
+      "file": "production-references-760-light.png",
+      "identical": false
+    },
+    {
+      "file": "production-guidelines-600-light.png",
+      "identical": false
+    },
+    {
+      "file": "production-references-600-light.png",
+      "identical": false
+    },
+    {
+      "file": "production-guidelines-1000-dark.png",
+      "identical": false
+    },
+    {
+      "file": "production-references-1000-dark.png",
+      "identical": false
+    }
+  ],
+  "sourceRevision": "8ba7ef1ef8d7b76a2cd12cc08123cf5896ee1fb0",
+  "PR": 46,
+  "CI": 39734138391,
+  "unitPassed": 149,
+  "e2ePassed": 315,
+  "deployment": "https://vercel.com/qianlimaxai-5994s-projects/myblog/4PkkUM3MB4bpq9AMop8fEM9zSGkA",
+  "seoAudit": {
+    "canonicalPages": 19,
+    "paperOGImages": 2,
+    "passed": true
+  }
+}

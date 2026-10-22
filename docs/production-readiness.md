@@ -1,5 +1,11 @@
 # Production readiness
 
+## 2026-10-22 reading TOC comfort inset
+
+[PR #46](https://github.com/Yuki-zik/myblog/pull/46), merge `8ba7ef1`, makes the reading sidebar follow its current link inside a padded comfort area rather than waiting for the whole list item to cross the edge. Matching trailing space lets the final entry stay away from the bottom. Only the TOC's internal scroll position changes; heading activation, source anchors, collapse and mobile behavior remain.
+
+[Exact-source CI39734138391](https://github.com/Yuki-zik/myblog/actions/runs/39734138391) passed149 unit and315 E2E cases directly. Frontend and Waline deployment statuses succeed ([frontend deployment](https://vercel.com/qianlimaxai-5994s-projects/myblog/4PkkUM3MB4bpq9AMop8fEM9zSGkA)). Live checks cover600/760/1000px high windows across Components, Guidelines and References: all9 states keep the active link and orange marker in the comfort area, with Guidelines/References96.12px or112.12px above the TOC bottom. Collapse/expand and internal updates preserve document scroll; a backward Typography click settles at119.91px. No page script errors occurred, and the19-page SEO/2paperOG audit passes. All6 production screenshots were visually reviewed; all24 versioned captures and machine readback are in the [visual archive](visual-history/2026-10-22-toc-reading-inset/README.md).
+
 ## 2026-10-22 editorial rhythm coverage release
 
 [PR #45](https://github.com/Yuki-zik/myblog/pull/45), merge `5dc474d`, expands the shared composition to9 discovery routes. Research/writing chapter heads span the content; lead/paired grids use bounded wide/narrow rhythms and full-width singleton/final records. Home dates/topics use a horizontal header, theme reading cards share the author-writing composition, and archive months preserve chronological order with paired records. Original artwork, reading pages and the approved home hero/capsule remain.

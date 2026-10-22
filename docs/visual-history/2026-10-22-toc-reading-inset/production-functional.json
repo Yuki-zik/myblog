@@ -1,0 +1,80 @@
+{
+  "states": [
+    {
+      "height": 600,
+      "label": "Components",
+      "gap": 95.828125,
+      "viewportGap": 96.0546875,
+      "activeTop": 339.015625,
+      "scrollTop": 104.5
+    },
+    {
+      "height": 600,
+      "label": "Guidelines",
+      "gap": 96.1171875,
+      "viewportGap": 96.34375,
+      "activeTop": 338.7265625,
+      "scrollTop": 445
+    },
+    {
+      "height": 600,
+      "label": "References",
+      "gap": 96.1171875,
+      "viewportGap": 285.2578125,
+      "activeTop": 338.7265625,
+      "scrollTop": 554.5
+    },
+    {
+      "height": 760,
+      "label": "Components",
+      "gap": 151.328125,
+      "viewportGap": 151.5546875,
+      "activeTop": 443.515625,
+      "scrollTop": 0
+    },
+    {
+      "height": 760,
+      "label": "Guidelines",
+      "gap": 112.1171875,
+      "viewportGap": 112.34375,
+      "activeTop": 482.7265625,
+      "scrollTop": 301
+    },
+    {
+      "height": 760,
+      "label": "References",
+      "gap": 112.1171875,
+      "viewportGap": 301.2578125,
+      "activeTop": 482.7265625,
+      "scrollTop": 410.5
+    },
+    {
+      "height": 1000,
+      "label": "Components",
+      "gap": 391.328125,
+      "viewportGap": 391.5546875,
+      "activeTop": 443.515625,
+      "scrollTop": 0
+    },
+    {
+      "height": 1000,
+      "label": "Guidelines",
+      "gap": 112.1171875,
+      "viewportGap": 112.34375,
+      "activeTop": 722.7265625,
+      "scrollTop": 61
+    },
+    {
+      "height": 1000,
+      "label": "References",
+      "gap": 112.1171875,
+      "viewportGap": 301.2578125,
+      "activeTop": 722.7265625,
+      "scrollTop": 170.5
+    }
+  ],
+  "resizeAndCollapse": true,
+  "backwardClickHeadingTop": 119.9140625,
+  "documentScrollPreserved": true,
+  "pageErrors": []
+}
