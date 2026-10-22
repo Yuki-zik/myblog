@@ -1,0 +1,62 @@
+[
+  {
+    "height": 760,
+    "theme": "light",
+    "label": "Guidelines",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-guidelines-760-light.png",
+    "activeBottomGap": 0.1171875,
+    "markerViewportGap": 9.0859375,
+    "scrollTop": 189,
+    "activeTop": 594.7265625
+  },
+  {
+    "height": 760,
+    "theme": "light",
+    "label": "References",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-references-760-light.png",
+    "activeBottomGap": 0.1171875,
+    "markerViewportGap": 240.2265625,
+    "scrollTop": 298.5,
+    "activeTop": 594.7265625
+  },
+  {
+    "height": 600,
+    "theme": "light",
+    "label": "Guidelines",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-guidelines-600-light.png",
+    "activeBottomGap": 0.1171875,
+    "markerViewportGap": 9.0859375,
+    "scrollTop": 349,
+    "activeTop": 434.7265625
+  },
+  {
+    "height": 600,
+    "theme": "light",
+    "label": "References",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-references-600-light.png",
+    "activeBottomGap": 0.1171875,
+    "markerViewportGap": 240.2265625,
+    "scrollTop": 458.5,
+    "activeTop": 434.7265625
+  },
+  {
+    "height": 1000,
+    "theme": "dark",
+    "label": "Guidelines",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-guidelines-1000-dark.png",
+    "activeBottomGap": 51.1171875,
+    "markerViewportGap": 51.34375,
+    "scrollTop": 0,
+    "activeTop": 783.7265625
+  },
+  {
+    "height": 1000,
+    "theme": "dark",
+    "label": "References",
+    "path": "docs/visual-history/2026-10-22-toc-reading-inset/v0-references-1000-dark.png",
+    "activeBottomGap": 0.1171875,
+    "markerViewportGap": 240.2265625,
+    "scrollTop": 58.5,
+    "activeTop": 834.7265625
+  }
+]

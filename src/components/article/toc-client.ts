@@ -274,8 +274,8 @@ function createSyncScheduler(sync: () => void): {
 const settleHandles = new WeakMap<HTMLElement, number>();
 
 /*
- * `scrollIntoView({ block: "nearest" })` equivalent that is scoped to a single
- * container: it never touches the page scroll or any other ancestor.
+ * Follow within the TOC's padded reading area, without moving the document.
+ * CSS defines both the edge insets and enough trailing space for the last link.
  */
 function scrollItemIntoViewWithin(
   container: HTMLElement,
@@ -283,14 +283,17 @@ function scrollItemIntoViewWithin(
 ): void {
   const containerRect = container.getBoundingClientRect();
   const itemRect = item.getBoundingClientRect();
+  const styles = window.getComputedStyle(container);
+  const top = containerRect.top + (Number.parseFloat(styles.scrollPaddingTop) || 0);
+  const bottom = containerRect.bottom - (Number.parseFloat(styles.scrollPaddingBottom) || 0);
 
-  if (itemRect.top < containerRect.top) {
-    container.scrollTop -= containerRect.top - itemRect.top;
+  if (itemRect.top < top || itemRect.height > bottom - top) {
+    container.scrollTop += itemRect.top - top;
     return;
   }
 
-  if (itemRect.bottom > containerRect.bottom) {
-    container.scrollTop += itemRect.bottom - containerRect.bottom;
+  if (itemRect.bottom > bottom) {
+    container.scrollTop += itemRect.bottom - bottom;
   }
 }
 
@@ -350,7 +353,9 @@ function updateProgress(
    * heading under the sticky header. Scrolling the container directly keeps the
    * catch-up local.
    */
-  scrollItemIntoViewWithin(scrollBody, activeEntry.item);
+  // A parent <li> includes all of its children; following that whole branch
+  // can push the actual current heading out of view. Follow the link itself.
+  scrollItemIntoViewWithin(scrollBody, activeEntry.link);
 
   /*
    * `scrollIntoView` on this container is synchronous (the TOC body resolves to
