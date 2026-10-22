@@ -1,0 +1,233 @@
+[
+  {
+    "route": "/author",
+    "selector": "#research",
+    "name": "author-research",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-research-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#writing",
+    "name": "author-writing",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-writing-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics",
+    "selector": "main",
+    "name": "topics",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topics-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/ai-coding",
+    "selector": "main",
+    "name": "topic-single",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-single-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/knowledge-network",
+    "selector": "[data-topic-posts]",
+    "name": "topic-reading",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-reading-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/",
+    "selector": "[data-home-recent-posts]",
+    "name": "home-notes",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-home-notes-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/archives",
+    "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+    "name": "archive-pair",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-archive-pair-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#research",
+    "name": "author-research",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-research-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#writing",
+    "name": "author-writing",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-writing-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics",
+    "selector": "main",
+    "name": "topics",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topics-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/ai-coding",
+    "selector": "main",
+    "name": "topic-single",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-single-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/knowledge-network",
+    "selector": "[data-topic-posts]",
+    "name": "topic-reading",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-reading-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/",
+    "selector": "[data-home-recent-posts]",
+    "name": "home-notes",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-home-notes-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/archives",
+    "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+    "name": "archive-pair",
+    "width": 390,
+    "height": 1000,
+    "label": "mobile",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-archive-pair-mobile-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#research",
+    "name": "author-research",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-research-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#writing",
+    "name": "author-writing",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-author-writing-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics",
+    "selector": "main",
+    "name": "topics",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topics-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/ai-coding",
+    "selector": "main",
+    "name": "topic-single",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-single-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/knowledge-network",
+    "selector": "[data-topic-posts]",
+    "name": "topic-reading",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-topic-reading-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/",
+    "selector": "[data-home-recent-posts]",
+    "name": "home-notes",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-home-notes-desktop-dark.png",
+    "overflow": 0
+  },
+  {
+    "route": "/archives",
+    "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+    "name": "archive-pair",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "dark",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v2-archive-pair-desktop-dark.png",
+    "overflow": 0
+  }
+]

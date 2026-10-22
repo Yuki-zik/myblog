@@ -46,7 +46,7 @@ const archivesSeoDescription = "按年月浏览 A-Znk 的原创技术文章，�
                         <span class="archive-month-line h-px w-full" aria-hidden="true"></span>
                       </div>
 
-                      <div class="archive-grid grid grid-cols-1 gap-[0.7rem]" data-ux-stagger>
+                      <div class="archive-grid" data-editorial-grid="paired" data-ux-stagger>
                         {month.posts.map((post) => (
                           <ArchivePostTile
                             post={post}

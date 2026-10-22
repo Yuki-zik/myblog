@@ -1,0 +1,79 @@
+[
+  {
+    "route": "/author",
+    "selector": "#research",
+    "name": "author-research",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-author-research-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/author",
+    "selector": "#writing",
+    "name": "author-writing",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-author-writing-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics",
+    "selector": "main",
+    "name": "topics",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-topics-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/ai-coding",
+    "selector": "main",
+    "name": "topic-single",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-topic-single-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/topics/knowledge-network",
+    "selector": "[data-topic-posts]",
+    "name": "topic-reading",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-topic-reading-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/",
+    "selector": "[data-home-recent-posts]",
+    "name": "home-notes",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-home-notes-desktop-light.png",
+    "overflow": 0
+  },
+  {
+    "route": "/archives",
+    "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+    "name": "archive-pair",
+    "width": 1440,
+    "height": 1600,
+    "label": "desktop",
+    "theme": "light",
+    "path": "docs/visual-history/2026-10-22-editorial-rhythm/v1-archive-pair-desktop-light.png",
+    "overflow": 0
+  }
+]

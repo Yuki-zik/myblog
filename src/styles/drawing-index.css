@@ -504,10 +504,6 @@ body[data-runtime="discover"][data-header-variant="drawing"] {
   padding: 1.25rem 0;
 }
 
-.drawing-index.discover-page .archive-grid {
-  grid-template-columns: 1fr;
-}
-
 .drawing-index.discover-page .archive-post-media {
   align-self: start;
 }
@@ -575,14 +571,6 @@ body[data-runtime="discover"][data-header-variant="drawing"] .home-reference-foo
   border-color: var(--drawing-accent);
   background: var(--drawing-accent-wash);
   color: var(--drawing-accent-ink);
-}
-
-@media (min-width: 1100px) {
-  .drawing-index[data-drawing-index="topics"] .drawing-topic-index {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 3rem;
-  }
 }
 
 @media (min-width: 601px) and (max-width: 1100px) {

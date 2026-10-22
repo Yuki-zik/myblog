@@ -332,7 +332,7 @@ const homeDescription = SITE_DESCRIPTION;
           {recentPosts.length === 0 ? (
             <p class="home-reference-empty rounded-[1rem] px-5 py-6 text-[0.95rem]">暂时还没有更多文章。</p>
           ) : (
-            <div class="home-reference-recent-list home-content-notes flex flex-col">
+            <div class="home-reference-recent-list home-content-notes" data-editorial-grid="lead">
               {recentPosts.map((post, index) => (
                 <ContentDossier
                   asLink
@@ -347,8 +347,8 @@ const homeDescription = SITE_DESCRIPTION;
                   descriptionClass="home-reference-recent-item__summary"
                   data-home-recent-item
                 >
-                  <PostCover slot="media" post={post} />
-                  <div slot="leading" class="home-reference-recent-item__meta">
+                  <PostCover slot="media" post={post} variant="poster" />
+                  <div slot="meta" class="home-reference-recent-item__meta">
                     <time class="home-reference-recent-item__date" datetime={getPostDateISO(post.data.date)}>{getPostDateISO(post.data.date)}</time>
                     <span class="home-reference-recent-item__tag">
                       {topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}

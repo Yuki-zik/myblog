@@ -38,8 +38,8 @@
   gap: 1.4rem;
 }
 
-.drawing-index.discover-page .archive-grid {
-  gap: 1.35rem;
+.drawing-index.discover-page .archive-post-tile {
+  container: archive-record / inline-size;
 }
 
 .content-dossier.archive-post-dossier {
@@ -74,6 +74,7 @@
 
 .archive-post-dossier .content-dossier__media {
   align-self: start;
+  max-width: none;
 }
 
 .drawing-index.discover-page .archive-post-dossier .archive-post-content {
@@ -127,10 +128,6 @@
     margin-bottom: 1rem;
   }
 
-  .drawing-index.discover-page .archive-grid {
-    gap: 1.25rem;
-  }
-
   .archive-post-dossier .content-dossier__main--illustrated {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.35rem;
@@ -149,10 +146,36 @@
   .drawing-index.discover-page .archive-post-dossier .archive-post-content h3 {
     font-size: 1.4rem;
     line-height: 1.45;
+    text-wrap: balance;
   }
 
   .archive-post-dossier .content-dossier__footer {
     margin-top: .75rem;
+  }
+}
+
+/* Narrow paired records devote the full measure to copy and then the real
+ * artwork. Full-width chronology entries retain horizontal composition.
+ */
+@container archive-record (max-width: 48rem) {
+  .archive-post-dossier .content-dossier__header {
+    flex-wrap: wrap;
+    align-items: start;
+    gap: .65rem 1.2rem;
+  }
+
+  .archive-post-dossier .content-dossier__main--illustrated {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.35rem;
+  }
+
+  .archive-post-dossier .content-dossier__copy {
+    order: 1;
+  }
+
+  .archive-post-dossier .content-dossier__media {
+    order: 2;
+    width: 100%;
   }
 }
 

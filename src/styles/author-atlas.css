@@ -277,42 +277,14 @@
 .author-atlas .author-atlas-section-nav nav a { color: var(--text-secondary); font-size: 0.88rem; font-weight: 520; text-decoration: none; }
 .author-atlas .author-atlas-section-nav nav a:hover { color: var(--atlas-accent); }
 
-.author-atlas .discover-section { min-width: 0; }
-.author-atlas .discover-section-head { width: 100%; align-items: baseline; gap: 1rem 2rem; padding: 0 0 1rem; border-bottom: 1px solid var(--atlas-rule); }
+.author-atlas .discover-section { min-width: 0; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.author-atlas .discover-section-head { display: flex; flex-direction: row; width: 100%; align-items: baseline; justify-content: space-between; gap: 1rem 2rem; padding: 0 0 1.25rem; border-bottom: 1px solid var(--atlas-rule); }
 .author-atlas .discover-section-head__copy { min-width: 0; gap: 0.7rem; }
 .author-atlas .discover-section-head__kicker { color: var(--atlas-accent); font: 0.75rem/1.5 var(--font-mono); letter-spacing: 0.06em; }
-.author-atlas .discover-section-head h2 { color: var(--atlas-ink); font: 570 clamp(1.7rem, 2.1vw, 2rem)/1.3 var(--reading-serif); letter-spacing: -0.035em; }
+.author-atlas .discover-section-head h2 { color: var(--atlas-ink); font: 570 clamp(1.9rem, 2.7vw, 2.45rem)/1.3 var(--reading-serif); letter-spacing: -0.035em; text-wrap: balance; }
 .author-atlas .discover-section-head__copy > p:last-child { max-width: 45rem; color: var(--text-secondary); font-size: 1rem; line-height: 1.8; }
 .author-atlas .discover-section-head__count { color: var(--text-meta); font: 0.78rem/1.5 var(--font-mono); white-space: nowrap; }
-
-/* Chapter labels occupy the margin; the content has a separate reading measure. */
-.author-atlas :is(.author-atlas-research, .author-atlas-writing) {
-  display: grid;
-  grid-template-columns: minmax(150px, 0.22fr) minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(2rem, 4.8vw, 4.5rem);
-}
-
-.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-writing):not(.author-atlas-publications--illustrated) > .discover-section-head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 0.4rem 0 0;
-  border: 0;
-}
-
-.author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-writing) > .discover-section-head .discover-section-head__copy > p:last-child {
-  font-size: 0.9rem;
-  line-height: 1.8;
-}
-
-.author-atlas .author-atlas-research .discover-entity-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 3.25rem 3rem;
-}
+.author-atlas .discover-section-head__meta { width: auto; flex-shrink: 0; }
 
 .author-atlas .author-atlas-research .discover-entity-card {
   display: grid;
@@ -328,21 +300,20 @@
 }
 
 .author-atlas .author-atlas-research .discover-entity-card:first-child {
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  align-items: center;
-  grid-column: 1 / -1;
-  gap: 2.5rem;
-  padding-bottom: 3.25rem;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: start;
+  gap: clamp(2rem, 4vw, 4rem);
+  padding-bottom: 2.5rem;
   border-bottom: 1px solid var(--atlas-rule);
 }
 
-.author-atlas .author-atlas-research .discover-entity-card:nth-child(3) { margin-top: 3rem; }
 .author-atlas .author-atlas-research .discover-entity-card__top { display: flex; align-items: baseline; justify-content: flex-start; gap: 0.8rem; margin-bottom: 1rem; }
 .author-atlas-track__index { color: var(--atlas-accent); font: 450 1.9rem/1.1 var(--font-mono); letter-spacing: -0.05em; }
 .author-atlas .author-atlas-research .discover-entity-card__meta { color: var(--text-meta); font: 0.65rem/1.5 var(--font-mono); letter-spacing: 0.05em; }
 .author-atlas-track__body { min-width: 0; }
 .author-atlas-track__copy { min-width: 0; }
 .author-atlas .author-atlas-research .discover-entity-card h3 { margin: 0 0 0.9rem; color: var(--atlas-ink); font: 570 clamp(1.6rem, 2.2vw, 2rem)/1.35 var(--reading-serif); letter-spacing: -0.025em; }
+.author-atlas .author-atlas-research .discover-entity-card:first-child h3 { font-size: clamp(2rem, 3.5vw, 3.2rem); }
 .author-atlas .author-atlas-research .author-atlas-track__copy > p { max-width: 32rem; margin: 0; color: var(--text-secondary); font-size: 1.065rem; line-height: 1.85; }
 
 /* Historical plates provide a second reading layer, not a replacement for the research text. */
@@ -355,13 +326,6 @@
 .author-atlas .author-atlas-research .discover-entity-card:first-child .author-atlas-track__figure { --editorial-image-height: 340px; }
 .author-atlas-track__figure[data-editorial-figure="ambiguous-cubes"] { --editorial-image-height: 180px; }
 
-@media (min-width: 851px) {
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__body { display: contents; }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .discover-entity-card__top { grid-row: 1; margin-bottom: 0; }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__copy { grid-row: 2; }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__figure { grid-row: 3; }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .pill-list { grid-row: 4; margin-top: 0; }
-}
 .author-atlas .author-atlas-track__figure .editorial-figure__provenance p { font: inherit; color: inherit; }
 
 .author-atlas .author-atlas-research .pill-list {
@@ -377,15 +341,7 @@
 
 .author-atlas .author-atlas-research .pill-list li { padding: 0; border: 0; border-radius: 0; background: none; color: var(--text-secondary); font-size: 0.96rem; line-height: 1.7; }
 
-.author-atlas .author-atlas-publications:not(.author-atlas-publications--illustrated) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.22fr);
-  align-items: start;
-  gap: 1.25rem clamp(2rem, 4.8vw, 4.5rem);
-}
-
-.author-atlas-publications:not(.author-atlas-publications--illustrated) > .discover-section-head { grid-column: 2; grid-row: 1 / 3; }
-.author-atlas-publications__list { display: grid; grid-column: 1; grid-row: 1; gap: 2rem; min-width: 0; }
+.author-atlas-publications__list { display: grid; gap: 2rem; min-width: 0; }
 
 .author-atlas-publication {
   position: relative;
@@ -427,19 +383,14 @@
 .author-atlas .author-atlas-contacts .discover-mini-card__meta { color: var(--atlas-accent); font: 0.75rem/1.5 var(--font-mono); }
 .author-atlas .author-atlas-contacts .discover-mini-card h3 { font: 550 clamp(1rem, 1.3vw, 1.2rem)/1.65 var(--font-ui); overflow-wrap: anywhere; }
 
-.author-atlas .author-atlas-writing .discover-post-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.3rem 2rem; }
-.author-atlas .author-atlas-writing .post-card { min-width: 0; border: 0; border-bottom: 1px solid var(--atlas-rule); border-radius: 0; box-shadow: none; background: transparent; transform: none; }
-.author-atlas .author-atlas-writing .post-card:hover { transform: none; box-shadow: none; border-bottom-color: var(--drawing-accent); }
-.author-atlas .author-atlas-writing .post-card-title { font-size: 1.4rem; line-height: 1.45; }
-.author-atlas .author-atlas-writing .post-card-summary { font-size: 1rem; line-height: 1.8; }
 .author-atlas a:focus-visible { outline: 2px solid var(--drawing-focus); outline-offset: 4px; }
 
 @media (max-width: 1100px) {
   .author-atlas-hero { grid-template-columns: 260px minmax(0, 1fr); column-gap: 2.5rem; }
   .author-portrait { width: 260px; max-width: 100%; margin-left: 0; }
   .author-atlas .author-atlas-hero__stats { margin-left: 0; }
-  .author-atlas .author-atlas-research .discover-entity-grid { column-gap: 2rem; }
-  .author-atlas .author-atlas-research .discover-entity-card:first-child { gap: 1.5rem; }
+  .author-atlas .author-atlas-research .discover-entity-card,
+  .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: start; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--atlas-rule); }
   .author-atlas-track__figure { --editorial-image-height: 260px; }
 }
 
@@ -452,16 +403,7 @@
   .author-atlas .author-atlas-hero__stats { max-width: 17rem; }
   .author-atlas-hero__main { max-width: 44rem; }
   .author-atlas-section-nav { margin-top: -1.6rem; }
-  .author-atlas :is(.author-atlas-research, .author-atlas-practice, .author-atlas-focus, .author-atlas-writing, .author-atlas-publications) { grid-template-columns: 1fr; gap: 2rem; }
-  .author-atlas :is(.author-atlas-research, .author-atlas-publications, .author-atlas-practice, .author-atlas-focus, .author-atlas-writing) > .discover-section-head { flex-direction: row; justify-content: space-between; align-items: baseline; padding-bottom: 1rem; border-bottom: 1px solid var(--atlas-rule); }
-  .author-atlas-publications > .discover-section-head { grid-column: 1; grid-row: auto; }
-  .author-atlas-publications__list { grid-column: 1; grid-row: auto; }
-  .author-atlas .author-atlas-research .discover-entity-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .author-atlas .author-atlas-research .discover-entity-card,
-  .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--atlas-rule); }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(2) .author-atlas-track__figure { grid-row: auto; }
   .author-atlas .author-atlas-research .discover-entity-card:first-child .author-atlas-track__figure { --editorial-image-height: 300px; }
-  .author-atlas .author-atlas-research .discover-entity-card:nth-child(3) { margin-top: 0; }
   .author-atlas .author-atlas-contacts .discover-mini-grid { grid-template-columns: 1fr; gap: 0.5rem; }
 }
 
@@ -494,7 +436,8 @@
   .author-atlas-section-nav { margin-top: -1.1rem; }
   .author-atlas-section-nav nav { gap: 0.5rem 1.1rem; }
   .author-atlas .discover-section-head h2 { font-size: 1.8rem; }
-  .author-atlas .author-atlas-research .discover-entity-card h3 { font-size: 1.65rem; }
+  .author-atlas .author-atlas-research .discover-entity-card h3,
+  .author-atlas .author-atlas-research .discover-entity-card:first-child h3 { font-size: 1.65rem; }
   .author-atlas .author-atlas-research .discover-entity-card,
   .author-atlas .author-atlas-research .discover-entity-card:first-child { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .author-atlas-track__figure { max-width: 28rem; justify-self: center; }
@@ -504,11 +447,7 @@
   .author-atlas-publication__index { flex-direction: row; align-items: baseline; gap: 0.8rem; }
   .author-atlas .author-atlas-publication__link { display: none; }
   .author-atlas-publication__content h3 { font-size: 1.25rem; }
-  .author-atlas .author-atlas-practice .discover-stream-list,
-  .author-atlas .author-atlas-focus .discover-mini-grid,
-  .author-atlas .author-atlas-socials .author-social-grid,
-  .author-atlas .author-atlas-writing .discover-post-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .author-atlas .author-atlas-writing .post-card { padding: 1rem 0; }
+  .author-atlas .author-atlas-socials .author-social-grid { grid-template-columns: 1fr; gap: 1.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

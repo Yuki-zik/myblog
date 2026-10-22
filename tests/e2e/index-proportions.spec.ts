@@ -42,7 +42,7 @@ test("topic names, descriptions and counts form readable content groups", async 
   }
 });
 
-test("topic directory keeps reading order across its wide two-column layout", async ({ page }) => {
+test("topic directory keeps reading order across its staggered pairs and full-width final entry", async ({ page }) => {
   const expectedLinks = [
     "/topics/knowledge-network",
     "/topics/paragraph-review",
@@ -51,26 +51,28 @@ test("topic directory keeps reading order across its wide two-column layout", as
     "/topics/ai-coding",
   ];
 
-  for (const width of [1099, 1100, 1728]) {
+  for (const width of [1099, 1100, 1101, 1728]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto("/topics");
     const rows = page.locator("[data-drawing-topic]");
     await expect(rows).toHaveCount(expectedLinks.length);
     expect(await rows.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")))).toEqual(expectedLinks);
-    const boxes = await rows.evaluateAll((nodes) => nodes.map((node) => {
+    const boxes = await page.locator(".drawing-topic-row").evaluateAll((nodes) => nodes.map((node) => {
       const { x, y, right, bottom } = node.getBoundingClientRect();
       return { x, y, right, bottom };
     }));
 
-    if (width < 1100) {
+    if (width <= 1100) {
       expect(Math.abs(boxes[1].x - boxes[0].x), "narrow directory remains one column").toBeLessThanOrEqual(1);
       expect(boxes[1].y).toBeGreaterThanOrEqual(boxes[0].bottom - 1);
     } else {
-      expect(Math.abs(boxes[1].y - boxes[0].y), `${width}px first two topics share a row`).toBeLessThanOrEqual(1);
+      expect(boxes[1].y - boxes[0].y, `${width}px paired topics have a bounded offset`).toBeGreaterThanOrEqual(16);
+      expect(boxes[1].y - boxes[0].y).toBeLessThanOrEqual(40);
       expect(boxes[1].x).toBeGreaterThan(boxes[0].right);
       expect(Math.abs(boxes[2].x - boxes[0].x), "third topic starts the next row in reading order").toBeLessThanOrEqual(1);
       expect(boxes[2].y).toBeGreaterThanOrEqual(Math.max(boxes[0].bottom, boxes[1].bottom) - 1);
-      expect(Math.abs(boxes[3].y - boxes[2].y), "fourth topic follows the third horizontally").toBeLessThanOrEqual(1);
+      expect(boxes[3].y - boxes[2].y, "fourth topic follows the third horizontally").toBeGreaterThanOrEqual(16);
+      expect(boxes[3].y - boxes[2].y).toBeLessThanOrEqual(40);
       expect(Math.abs(boxes[4].x - boxes[0].x), "last topic stays in the first column").toBeLessThanOrEqual(1);
       expect(boxes[4].y).toBeGreaterThanOrEqual(Math.max(boxes[2].bottom, boxes[3].bottom) - 1);
     }
@@ -121,12 +123,18 @@ test("archive ledger balances its image plates with readable article copy", asyn
     expect(await fontSize(card.locator(".archive-post-meta"))).toBeGreaterThanOrEqual(14);
     const cover = (await card.locator(".archive-post-media").boundingBox())!;
     const content = (await card.locator(".archive-post-content").boundingBox())!;
-    // Intrinsic posters replace the old square thumbnails; copy still gets
-    // the larger share of the composition and a substantial reading measure.
+    // The record's own measure determines whether copy and art share a row.
+    // Paired records give both elements the full width instead of squeezing text.
     expect(cover.width).toBeGreaterThanOrEqual(248);
-    expect(cover.width).toBeLessThanOrEqual(360);
-    expect(content.width).toBeGreaterThan(cover.width * 1.7);
-    expect(content.width).toBeGreaterThanOrEqual(600);
+    if ((await card.boundingBox())!.width > 768) {
+      expect(cover.width).toBeLessThanOrEqual(360);
+      expect(content.width).toBeGreaterThan(cover.width * 1.7);
+      expect(content.width).toBeGreaterThanOrEqual(600);
+    } else {
+      expect(content.y + content.height).toBeLessThan(cover.y);
+      expect(Math.abs(content.width - cover.width)).toBeLessThanOrEqual(2);
+      expect(content.width).toBeGreaterThan(400);
+    }
   }
 });
 

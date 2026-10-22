@@ -51,29 +51,31 @@ const topicsSeoDescription =
       <a slot="actions" href="/map">进入漫游 <span aria-hidden="true">↗</span></a>
     </DrawingPageHeader>
 
-    <section class="drawing-topic-index" aria-label="主题目录" data-ux-stagger>
+    <section class="drawing-topic-index" aria-label="主题目录" data-editorial-grid="paired" data-ux-stagger>
       {
         sortedTopics.length === 0 ? (
           <EmptyState title="暂时还没有主题。" body="主题整理完成后，你可以从这里找到相关笔记。" />
         ) : (
           sortedTopics.map((topic, index) => (
             <article
-              class="drawing-topic-row drawing-topic-row--illustrated discover-entity-card"
+              class:list={["drawing-topic-row", topicFigures[topic.id] && "drawing-topic-row--illustrated", "discover-entity-card"]}
               data-ux-reveal="fade-up"
             >
-              {topicFigures[topic.id] && <EditorialFigure figure={topicFigures[topic.id]} compact class="drawing-topic-row__figure" sizes="(max-width: 600px) 42vw, (max-width: 1099px) 220px, 200px" />}
-              <a href={`/topics/${topic.id}`} class="drawing-topic-row__entry" data-drawing-topic aria-label={`进入主题：${topic.data.title}`}>
-              <span class="drawing-topic-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <div class="drawing-topic-row__copy">
-                <div class="drawing-topic-row__heading">
-                  <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
-                  <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
-                </div>
-                <p class="drawing-topic-row__summary">{topic.data.summary}</p>
-                <p class="drawing-topic-row__rationale"><span aria-hidden="true">WHY / </span>{topic.data.why}</p>
+              <div class="drawing-topic-row__layout">
+                {topicFigures[topic.id] && <EditorialFigure figure={topicFigures[topic.id]} compact class="drawing-topic-row__figure" sizes="(max-width: 600px) calc(100vw - 2rem), (max-width: 1100px) 220px, 280px" />}
+                <a href={`/topics/${topic.id}`} class="drawing-topic-row__entry" data-drawing-topic aria-label={`进入主题：${topic.data.title}`}>
+                  <span class="drawing-topic-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <div class="drawing-topic-row__copy">
+                    <div class="drawing-topic-row__heading">
+                      <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
+                      <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+                    </div>
+                    <p class="drawing-topic-row__summary">{topic.data.summary}</p>
+                    <p class="drawing-topic-row__rationale"><span aria-hidden="true">WHY / </span>{topic.data.why}</p>
+                  </div>
+                  <span class="drawing-topic-row__read">阅读这个主题 <span aria-hidden="true">↗</span></span>
+                </a>
               </div>
-              <span class="drawing-topic-row__read">阅读这个主题 <span aria-hidden="true">↗</span></span>
-              </a>
             </article>
           ))
         )

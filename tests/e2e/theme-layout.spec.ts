@@ -235,10 +235,8 @@ test("home recent notes keep the reference list rhythm and hover arrow interacti
 
   expect(metrics.itemWidth).toBeGreaterThan(700);
   expect(metrics.metaWidth).toBeGreaterThan(180);
-  expect(metrics.titleLeft).toBeGreaterThan(
-    metrics.metaLeft + metrics.metaWidth - 12,
-  );
-  expect(Math.abs(metrics.metaTop - metrics.titleTop)).toBeLessThan(24);
+  expect(metrics.titleTop - metrics.metaTop).toBeGreaterThan(30);
+  expect(metrics.titleLeft).toBeGreaterThanOrEqual(metrics.metaLeft);
   expect(metrics.arrowOpacity).toBe(0);
   expect(metrics.arrowTransform).not.toBe("none");
   expect(metrics.tagBackground).not.toBe("rgba(0, 0, 0, 0)");
@@ -515,7 +513,7 @@ test("paragraph-anchor article keeps the rollback note between the warmup note a
   );
 });
 
-test("topic pages adopt the discover detail runtime with poster hero and two-column post grid", async ({
+test("topic pages adopt the discover detail runtime with a full-width lead reading entry", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
@@ -553,10 +551,9 @@ test("topic pages adopt the discover detail runtime with poster hero and two-col
     };
   });
 
-  expect(metrics.gridColumns.split(" ").length).toBe(2);
   expect(metrics.gridWidth).toBeGreaterThan(900);
   expect(metrics.cardWidth).toBeGreaterThan(360);
-  expect(metrics.cardWidth).toBeLessThan(metrics.gridWidth * 0.56);
+  expect(Math.abs(metrics.cardWidth - metrics.gridWidth)).toBeLessThanOrEqual(2);
   expect(metrics.leftGap).toBeGreaterThan(24);
   expect(metrics.rightGap).toBeGreaterThan(24);
 });
