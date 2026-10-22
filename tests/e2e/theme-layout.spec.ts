@@ -220,9 +220,12 @@ test("home recent notes keep the reference list rhythm and hover arrow interacti
 
     return {
       itemWidth: item?.getBoundingClientRect().width ?? 0,
+      itemLeft: item?.getBoundingClientRect().left ?? 0,
+      itemRight: item?.getBoundingClientRect().right ?? 0,
       metaWidth: meta?.getBoundingClientRect().width ?? 0,
       metaLeft: meta?.getBoundingClientRect().left ?? 0,
-      titleLeft: title?.getBoundingClientRect().left ?? 0,
+      metaRight: meta?.getBoundingClientRect().right ?? 0,
+      metaBottom: meta?.getBoundingClientRect().bottom ?? 0,
       titleTop: title?.getBoundingClientRect().top ?? 0,
       metaTop: meta?.getBoundingClientRect().top ?? 0,
       arrowOpacity: arrow
@@ -236,7 +239,9 @@ test("home recent notes keep the reference list rhythm and hover arrow interacti
   expect(metrics.itemWidth).toBeGreaterThan(700);
   expect(metrics.metaWidth).toBeGreaterThan(180);
   expect(metrics.titleTop - metrics.metaTop).toBeGreaterThan(30);
-  expect(metrics.titleLeft).toBeGreaterThanOrEqual(metrics.metaLeft);
+  expect(metrics.titleTop - metrics.metaBottom).toBeGreaterThanOrEqual(16);
+  expect(metrics.metaLeft).toBeGreaterThan(metrics.itemLeft);
+  expect(metrics.metaRight).toBeLessThan(metrics.itemRight);
   expect(metrics.arrowOpacity).toBe(0);
   expect(metrics.arrowTransform).not.toBe("none");
   expect(metrics.tagBackground).not.toBe("rgba(0, 0, 0, 0)");

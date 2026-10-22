@@ -45,7 +45,7 @@ for (const width of [320, 390, 1024, 1440]) {
       const rect = el.getBoundingClientRect();
       return { x: rect.x, y: rect.y, bottom: rect.bottom, width: rect.width };
     }));
-    if (width >= 1024) {
+    if (width > 1100) {
       const secondHeading = await tracks.nth(1).locator("h3").boundingBox();
       const thirdHeading = await tracks.nth(2).locator("h3").boundingBox();
       expect(secondHeading!.y).toBeLessThan(thirdHeading!.y);
@@ -55,12 +55,15 @@ for (const width of [320, 390, 1024, 1440]) {
       expect(rows[2].y).toBeGreaterThan(rows[1].y + 20);
       const summaryWidth = await tracks.first().locator(".author-atlas-track__copy > p").evaluate(el => el.getBoundingClientRect().width);
       expect(summaryWidth).toBeGreaterThan(300);
-      const sectionHead = await page.locator(".author-atlas-research > .discover-section-head").boundingBox();
-      expect(sectionHead!.x + sectionHead!.width).toBeLessThan(rows[0].x);
     } else {
       expect(rows[1].y).toBeGreaterThanOrEqual(rows[0].bottom - 1);
       expect(rows[2].y).toBeGreaterThanOrEqual(rows[1].bottom - 1);
+      for (const row of rows) expect(Math.abs(row.width - rows[0].width)).toBeLessThan(2);
     }
+    const sectionHead = (await page.locator(".author-atlas-research > .discover-section-head").boundingBox())!;
+    expect(Math.abs(sectionHead.x - rows[0].x)).toBeLessThan(2);
+    expect(Math.abs(sectionHead.width - rows[0].width)).toBeLessThan(2);
+    expect(sectionHead.y + sectionHead.height).toBeLessThan(rows[0].y);
 
     const firstPaper = page.locator(".author-atlas-publication__content h3 a").first();
     await expect(firstPaper).toHaveAttribute("href", /\/papers\/duap-/);
