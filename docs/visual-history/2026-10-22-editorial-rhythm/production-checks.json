@@ -1,0 +1,356 @@
+{
+  "sourceRevision": "5dc474df97025c66397eaee8afcc71c59e46ab6e",
+  "pullRequest": 45,
+  "ci": "https://github.com/Yuki-zik/myblog/actions/runs/39717718822",
+  "unitPassed": 149,
+  "e2ePassedFirstAttempt": 311,
+  "e2ePassedAfterRetry": 1,
+  "retriedCase": "design manual toc follows the spoiler section before the heading reaches the header line",
+  "deployment": "https://vercel.com/qianlimaxai-5994s-projects/myblog/9nRHsg2Cr4SiCrGfg3DeRcCPX3PW",
+  "shots": [
+    {
+      "route": "/author",
+      "selector": "#research",
+      "name": "author-research",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-research-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#writing",
+      "name": "author-writing",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-writing-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics",
+      "selector": "main",
+      "name": "topics",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topics-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/ai-coding",
+      "selector": "main",
+      "name": "topic-single",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-single-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "selector": "[data-topic-posts]",
+      "name": "topic-reading",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-reading-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/",
+      "selector": "[data-home-recent-posts]",
+      "name": "home-notes",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-home-notes-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+      "name": "archive-pair",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-archive-pair-desktop-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#research",
+      "name": "author-research",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-research-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#writing",
+      "name": "author-writing",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-writing-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics",
+      "selector": "main",
+      "name": "topics",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topics-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/ai-coding",
+      "selector": "main",
+      "name": "topic-single",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-single-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "selector": "[data-topic-posts]",
+      "name": "topic-reading",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-reading-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/",
+      "selector": "[data-home-recent-posts]",
+      "name": "home-notes",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-home-notes-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+      "name": "archive-pair",
+      "width": 390,
+      "height": 1000,
+      "label": "mobile",
+      "theme": "light",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-archive-pair-mobile-light.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#research",
+      "name": "author-research",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-research-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/author",
+      "selector": "#writing",
+      "name": "author-writing",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-author-writing-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics",
+      "selector": "main",
+      "name": "topics",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topics-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/ai-coding",
+      "selector": "main",
+      "name": "topic-single",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-single-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "selector": "[data-topic-posts]",
+      "name": "topic-reading",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-topic-reading-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/",
+      "selector": "[data-home-recent-posts]",
+      "name": "home-notes",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-home-notes-desktop-dark.png",
+      "overflow": 0
+    },
+    {
+      "route": "/archives",
+      "selector": ".archive-month-group:has([data-archive-month=\"2026-02\"])",
+      "name": "archive-pair",
+      "width": 1440,
+      "height": 1600,
+      "label": "desktop",
+      "theme": "dark",
+      "path": "docs/visual-history/2026-10-22-editorial-rhythm/production-archive-pair-desktop-dark.png",
+      "overflow": 0
+    }
+  ],
+  "comparison": [
+    {
+      "file": "production-author-research-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-author-writing-desktop-light.png",
+      "localVersion": "v2",
+      "identical": false
+    },
+    {
+      "file": "production-topics-desktop-light.png",
+      "localVersion": "v2",
+      "identical": false
+    },
+    {
+      "file": "production-topic-single-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-topic-reading-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-home-notes-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-archive-pair-desktop-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-author-research-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-author-writing-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-topics-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-topic-single-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-topic-reading-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-home-notes-mobile-light.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-archive-pair-mobile-light.png",
+      "localVersion": "v3",
+      "identical": true
+    },
+    {
+      "file": "production-author-research-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-author-writing-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": false
+    },
+    {
+      "file": "production-topics-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": false
+    },
+    {
+      "file": "production-topic-single-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-topic-reading-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-home-notes-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    },
+    {
+      "file": "production-archive-pair-desktop-dark.png",
+      "localVersion": "v2",
+      "identical": true
+    }
+  ],
+  "functionalEvidence": "production-functional.json",
+  "seo": {
+    "canonicalPages": 19,
+    "paperOGImages": 2,
+    "passed": true
+  }
+}

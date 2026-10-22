@@ -1,5 +1,13 @@
 # Production readiness
 
+## 2026-10-22 editorial rhythm coverage release
+
+[PR #45](https://github.com/Yuki-zik/myblog/pull/45), merge `5dc474d`, expands the shared composition to9 discovery routes. Research/writing chapter heads span the content; lead/paired grids use bounded wide/narrow rhythms and full-width singleton/final records. Home dates/topics use a horizontal header, theme reading cards share the author-writing composition, and archive months preserve chronological order with paired records. Original artwork, reading pages and the approved home hero/capsule remain.
+
+[Final exact-source CI39717718822](https://github.com/Yuki-zik/myblog/actions/runs/39717718822) passed149 unit checks;312 E2E cases completed (311 directly,1 existing design-manual scroll precondition after retry). The earlier run's309 passes and3 stale-layout assertion failures are documented in the visual archive; the corrected author/theme checks passed47 local cases without changing rendered source. The merge has successful frontend and Waline statuses ([frontend deployment](https://vercel.com/qianlimaxai-5994s-projects/myblog/9nRHsg2Cr4SiCrGfg3DeRcCPX3PW)).
+
+Live a-znk.com verification covers all9 routes at1440px and390px, with zero overflow or page script errors. Author research/writing headers and groups both measure1280px on desktop and358px on mobile, with zero left-column gap. Image keyboard opening, Escape, focus/scroll restoration and project disclosures work. Both paragraph-anchor and design-manual TOCs pin at85.59px; the design-manual Spoiler section activates correctly. Production SEO audit passes19 canonical pages and2 paper OG images. The21 production screenshots include17 byte-identical matches with the reviewed local versions; the remaining4 were visually rechecked. [Versioned screenshots and structured verification](visual-history/2026-10-22-editorial-rhythm/README.md) include all57 captures.
+
 ## 2026-10-22 paper method figure release
 
 [PR #44](https://github.com/Yuki-zik/myblog/pull/44), merge `1c41bdb`, places the author's unchanged DUAP Fig.3 on the author publication section, paper index and paper detail. Shared PaperFigure preserves intrinsic proportions, full artwork and the existing original-size viewer. The author section gives the figure more width and uses the existing Chinese subtitle as a lead. PDF crop output v2 removes the fixed 16:9 canvas while protecting manually selected images; this release's published image is the author's supplied PNG, not an automatic PDF extraction.

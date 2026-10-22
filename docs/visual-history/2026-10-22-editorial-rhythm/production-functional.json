@@ -1,0 +1,821 @@
+{
+  "views": [
+    {
+      "route": "/author",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 1282.5859375,
+          "bottom": 2543.390625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 1282.5859375,
+              "bottom": 1765.4765625,
+              "width": 1280
+            },
+            {
+              "x": 80,
+              "top": 1809.4765625,
+              "bottom": 2419.390625,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 1833.4765625,
+              "bottom": 2543.390625,
+              "width": 514.671875
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 3742.8984375,
+          "bottom": 4489.7421875,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 3742.8984375,
+              "bottom": 4050.5,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 3766.8984375,
+              "bottom": 4106.3203125,
+              "width": 514.671875
+            },
+            {
+              "x": 80,
+              "top": 4150.3203125,
+              "bottom": 4489.7421875,
+              "width": 514.6640625
+            },
+            {
+              "x": 626.6640625,
+              "top": 4174.3203125,
+              "bottom": 4481.921875,
+              "width": 733.3359375
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 4723.28125,
+          "bottom": 5160.7890625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 4723.28125,
+              "bottom": 5085.03125,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 4747.28125,
+              "bottom": 5160.7890625,
+              "width": 514.671875
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 6311.84375,
+          "bottom": 6913.71875,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 6311.84375,
+              "bottom": 6593.4375,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 6335.84375,
+              "bottom": 6586.84375,
+              "width": 514.671875
+            },
+            {
+              "x": 80,
+              "top": 6637.4375,
+              "bottom": 6913.71875,
+              "width": 514.6640625
+            },
+            {
+              "x": 626.6640625,
+              "top": 6661.4375,
+              "bottom": 6881.84375,
+              "width": 733.3359375
+            }
+          ]
+        }
+      ],
+      "chapters": [
+        {
+          "id": "research",
+          "headWidth": 1280,
+          "contentWidth": 1280,
+          "leftGap": 0,
+          "headBottom": 1250.5859375,
+          "contentTop": 1282.5859375
+        },
+        {
+          "id": "writing",
+          "headWidth": 1280,
+          "contentWidth": 1280,
+          "leftGap": 0,
+          "headBottom": 6276.6484375,
+          "contentTop": 6311.84375
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 40,
+          "top": 2016.5859375,
+          "bottom": 2597.8515625,
+          "width": 1360,
+          "records": [
+            {
+              "x": 40,
+              "top": 2016.5859375,
+              "bottom": 2271.6796875,
+              "width": 1360
+            },
+            {
+              "x": 40,
+              "top": 2315.6796875,
+              "bottom": 2549.046875,
+              "width": 780
+            },
+            {
+              "x": 852,
+              "top": 2339.6796875,
+              "bottom": 2597.8515625,
+              "width": 548
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/archives",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 428.0390625,
+          "bottom": 715.328125,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 428.0390625,
+              "bottom": 715.328125,
+              "width": 1280
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 772.7578125,
+          "bottom": 1060.328125,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 772.7578125,
+              "bottom": 1060.328125,
+              "width": 1280
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 1117.7578125,
+          "bottom": 1763.3046875,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 1117.7578125,
+              "bottom": 1763.3046875,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 1141.7578125,
+              "bottom": 1664.3125,
+              "width": 514.671875
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "paired",
+          "x": 80,
+          "top": 368.3671875,
+          "bottom": 1679.1796875,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 368.3671875,
+              "bottom": 775.3828125,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 392.3671875,
+              "bottom": 868.921875,
+              "width": 514.671875
+            },
+            {
+              "x": 80,
+              "top": 912.921875,
+              "bottom": 1282.65625,
+              "width": 514.6640625
+            },
+            {
+              "x": 626.6640625,
+              "top": 936.921875,
+              "bottom": 1274.8671875,
+              "width": 733.3359375
+            },
+            {
+              "x": 80,
+              "top": 1326.65625,
+              "bottom": 1679.1796875,
+              "width": 1280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/ai-coding",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 422.3671875,
+          "bottom": 682.5625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 422.3671875,
+              "bottom": 682.5625,
+              "width": 1280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/exam-review",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 422.3671875,
+          "bottom": 682.5625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 422.3671875,
+              "bottom": 682.5625,
+              "width": 1280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/agent-engineering",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 422.3671875,
+          "bottom": 682.5625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 422.3671875,
+              "bottom": 682.5625,
+              "width": 1280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 422.3671875,
+          "bottom": 1009.640625,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 422.3671875,
+              "bottom": 682.5625,
+              "width": 1280
+            },
+            {
+              "x": 80,
+              "top": 726.5625,
+              "bottom": 1009.640625,
+              "width": 733.328125
+            },
+            {
+              "x": 845.328125,
+              "top": 750.5625,
+              "bottom": 1003.046875,
+              "width": 514.671875
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/paragraph-review",
+      "width": 1440,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 80,
+          "top": 422.3671875,
+          "bottom": 986.7578125,
+          "width": 1280,
+          "records": [
+            {
+              "x": 80,
+              "top": 422.3671875,
+              "bottom": 682.5625,
+              "width": 1280
+            },
+            {
+              "x": 80,
+              "top": 726.5625,
+              "bottom": 986.7578125,
+              "width": 1280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/author",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 1502.8671875,
+          "bottom": 3651.2109375,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 1502.8671875,
+              "bottom": 2254.6484375,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 2298.6484375,
+              "bottom": 2895.4296875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 2939.4296875,
+              "bottom": 3651.2109375,
+              "width": 358
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 5113.59375,
+          "bottom": 6583.6796875,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 5113.59375,
+              "bottom": 5456.0703125,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 5500.0703125,
+              "bottom": 5842.546875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 5886.546875,
+              "bottom": 6197.203125,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 6241.203125,
+              "bottom": 6583.6796875,
+              "width": 358
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 6754.5,
+          "bottom": 7632.6328125,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 6754.5,
+              "bottom": 7176.6484375,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 7220.6484375,
+              "bottom": 7632.6328125,
+              "width": 358
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 9299.421875,
+          "bottom": 11255.40625,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 9299.421875,
+              "bottom": 9777.015625,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 9821.015625,
+              "bottom": 10269.8125,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 10313.8125,
+              "bottom": 10762.609375,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 10806.609375,
+              "bottom": 11255.40625,
+              "width": 358
+            }
+          ]
+        }
+      ],
+      "chapters": [
+        {
+          "id": "research",
+          "headWidth": 358,
+          "contentWidth": 358,
+          "leftGap": 0,
+          "headBottom": 1470.8671875,
+          "contentTop": 1502.8671875
+        },
+        {
+          "id": "writing",
+          "headWidth": 358,
+          "contentWidth": 358,
+          "leftGap": 0,
+          "headBottom": 9264.2265625,
+          "contentTop": 9299.421875
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 20,
+          "top": 2713.3515625,
+          "bottom": 4097.859375,
+          "width": 350,
+          "records": [
+            {
+              "x": 20,
+              "top": 2713.3515625,
+              "bottom": 3166.078125,
+              "width": 350
+            },
+            {
+              "x": 20,
+              "top": 3210.078125,
+              "bottom": 3631.96875,
+              "width": 350
+            },
+            {
+              "x": 20,
+              "top": 3675.96875,
+              "bottom": 4097.859375,
+              "width": 350
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/archives",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 425.15625,
+          "bottom": 918.8828125,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 425.15625,
+              "bottom": 918.8828125,
+              "width": 358
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 976.3125,
+          "bottom": 1442.28125,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 976.3125,
+              "bottom": 1442.28125,
+              "width": 358
+            }
+          ]
+        },
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 1499.7109375,
+          "bottom": 2507.640625,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 1499.7109375,
+              "bottom": 1965.4375,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 2009.4375,
+              "bottom": 2507.640625,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "paired",
+          "x": 16,
+          "top": 384.6875,
+          "bottom": 3938.859375,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 384.6875,
+              "bottom": 1166.6015625,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 1210.6015625,
+              "bottom": 1900.9375,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 1944.9375,
+              "bottom": 2486.0703125,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 2530.0703125,
+              "bottom": 3233.8046875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 3277.8046875,
+              "bottom": 3938.859375,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/ai-coding",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 438.6875,
+          "bottom": 888.96875,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 438.6875,
+              "bottom": 888.96875,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/exam-review",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 438.6875,
+          "bottom": 888.96875,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 438.6875,
+              "bottom": 888.96875,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/agent-engineering",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 487.34375,
+          "bottom": 937.625,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 487.34375,
+              "bottom": 937.625,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/knowledge-network",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 410.6875,
+          "bottom": 1878.328125,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 410.6875,
+              "bottom": 860.96875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 904.96875,
+              "bottom": 1384.046875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 1428.046875,
+              "bottom": 1878.328125,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "/topics/paragraph-review",
+      "width": 390,
+      "overflow": 0,
+      "grids": [
+        {
+          "mode": "lead",
+          "x": 16,
+          "top": 438.6875,
+          "bottom": 1412.046875,
+          "width": 358,
+          "records": [
+            {
+              "x": 16,
+              "top": 438.6875,
+              "bottom": 888.96875,
+              "width": 358
+            },
+            {
+              "x": 16,
+              "top": 932.96875,
+              "bottom": 1412.046875,
+              "width": 358
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "imageKeyboardPreview": true,
+  "focusAndScrollRestored": true,
+  "practiceDisclosure": true,
+  "tocTop": 85.59375,
+  "manualTocTop": 85.59375,
+  "manualSpoilerActive": true,
+  "pageErrors": []
+}
