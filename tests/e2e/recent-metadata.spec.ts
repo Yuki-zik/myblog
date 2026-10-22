@@ -16,18 +16,17 @@ for (const width of [320, 390, 768, 1024, 1440]) {
         return { x: r.x, y: r.y, width: r.width, height: r.height };
       };
       return {
+        x: el.getBoundingClientRect().x,
         date: rect(".home-reference-recent-item__date"),
         tag: rect(".home-reference-recent-item__tag"),
         title: rect("h3"),
       };
     }));
     for (const row of geometry) {
-      expect(Math.abs(row.tag.x - geometry[0].tag.x)).toBeLessThanOrEqual(1);
-      expect(Math.abs(row.title.x - geometry[0].title.x)).toBeLessThanOrEqual(1);
+      expect(Math.abs((row.tag.x - row.date.x) - (geometry[0].tag.x - geometry[0].date.x))).toBeLessThanOrEqual(1);
       expect(Math.abs((row.date.y + row.date.height / 2) - (row.tag.y + row.tag.height / 2))).toBeLessThanOrEqual(1);
       expect(row.tag.x).toBeGreaterThanOrEqual(row.date.x + row.date.width + 8);
-      if (width > 760) expect(row.title.x).toBeGreaterThanOrEqual(row.tag.x + row.tag.width + 16);
-      else expect(row.title.y).toBeGreaterThanOrEqual(row.tag.y + row.tag.height + 6);
+      expect(row.title.y).toBeGreaterThanOrEqual(row.tag.y + row.tag.height + 6);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     await rows.last().click();

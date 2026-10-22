@@ -1,10 +1,8 @@
-/* Page composition only; ContentDossier owns the reusable paper treatment. */
-.home-reference .home-content-notes {
-  gap: 1.1rem;
-}
-
+/* ContentDossier owns material and hierarchy; the stream shares the site's
+ * lead/paired grid and keeps metadata out of the main reading measure.
+ */
 .home-reference .home-content-note {
-  --dossier-media-width: 10rem;
+  --dossier-media-width: clamp(8.5rem, 28%, 15rem);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -13,39 +11,36 @@
 }
 
 .home-content-note .content-dossier__header {
-  padding-right: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .8rem 1.5rem;
+  margin-bottom: 1.3rem;
 }
 
-.home-content-note .content-dossier__main--with-leading {
+.home-content-note .content-dossier__locator {
+  padding-right: 1.5rem;
+}
+
+.home-content-note .content-dossier__meta {
+  max-width: 100%;
+}
+
+.home-content-note .content-dossier__main--illustrated {
   align-items: start;
-  gap: clamp(1rem, 2.3vw, 2.25rem);
+  gap: clamp(1rem, 2.3vw, 2rem);
 }
 
 .home-content-note .content-dossier__media {
   padding-block: .2rem .4rem;
+  max-width: none;
 }
 
 .home-content-note .post-cover {
-  --post-cover-radius: 2px;
-  --post-cover-main-border: var(--border-default);
-  --post-cover-main-shadow: 0 1px 3px color-mix(in srgb, var(--shadow-tint) 10%, transparent), 0 12px 20px -13px color-mix(in srgb, var(--shadow-tint) 32%, transparent);
-  --post-cover-ghost-opacity: .22;
-  --post-cover-ghost-offset-y: .5rem;
-  --post-cover-ghost-scale: .96;
-  --post-cover-ghost-blur: 12px;
   margin: 0;
-  aspect-ratio: 8 / 5;
-  overflow: visible;
-  background: transparent;
-}
-
-.home-content-note .post-cover-img {
-  object-fit: contain;
 }
 
 .home-content-note .home-reference-recent-item__meta {
   display: grid;
-  width: 100%;
   min-width: 0;
   grid-template-columns: 6rem minmax(0, 1fr);
   align-items: center;
@@ -72,7 +67,7 @@
 .home-reference .home-content-note .home-reference-recent-item__title {
   width: auto;
   padding: 0;
-  font-size: clamp(1.3125rem, 1.75vw, 1.65rem);
+  font-size: clamp(1.3125rem, 1.75vw, 1.75rem);
   line-height: 1.45;
   text-wrap: balance;
   transition: color 180ms ease;
@@ -109,51 +104,32 @@
   transform: translateY(-3px);
 }
 
-@media (max-width: 1000px) and (min-width: 761px) {
-  .home-reference .home-content-note { --dossier-media-width: 6.5rem; }
-  .home-content-note .content-dossier__main--with-leading { grid-template-columns: var(--dossier-media-width) 15.5rem minmax(0, 1fr); }
-}
-
+/* Paired records keep the same horizontal grammar on desktop. Switching
+ * only the narrower member to a giant image would create an empty half-row.
+ */
 @media (max-width: 760px) {
-  .home-reference .home-content-note {
-    --dossier-padding: 1rem;
-    --dossier-media-width: clamp(5.5rem, 25vw, 7rem);
+  .home-content-note .content-dossier__main--illustrated {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
   }
 
-  .home-content-note .content-dossier__header { margin-bottom: 1rem; }
-
-  .home-content-note .content-dossier__main--with-leading {
-    grid-template-columns: var(--dossier-media-width) minmax(0, 1fr);
-    gap: .85rem 1rem;
-  }
-
-  .home-content-note .content-dossier__leading {
-    grid-column: 1 / -1;
-    grid-row: 1;
+  .home-content-note .content-dossier__copy {
+    order: 1;
   }
 
   .home-content-note .content-dossier__media {
-    grid-column: 1;
-    grid-row: 2;
-    padding: .1rem 0;
+    order: 2;
+    padding: 0;
   }
-
-  .home-content-note .content-dossier__copy { display: contents; }
+  .home-reference .home-content-note { --dossier-padding: 1rem; }
+  .home-content-note .content-dossier__header { margin-bottom: 1rem; }
 
   .home-reference .home-content-note .home-reference-recent-item__title {
-    grid-column: 2;
-    grid-row: 2;
-    align-self: center;
-    margin: 0;
-    font-size: 1.25rem;
+    margin: 0 0 .85rem;
+    font-size: 1.3125rem;
   }
 
-  .home-content-note .home-reference-recent-item__summary {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    font-size: 1rem;
-  }
-
+  .home-content-note .home-reference-recent-item__summary { font-size: 1.0625rem; }
   .home-content-note .home-reference-recent-item__arrow { top: 1.15rem; }
 }
 

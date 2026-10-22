@@ -1,0 +1,47 @@
+/* One content-order grid for discovery pages. Roles control composition;
+   typography, paper treatments and imagery remain with their own components. */
+body[data-runtime="discover"] [data-editorial-grid] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--editorial-row-gap, 2.75rem) var(--editorial-column-gap, 2rem);
+  align-items: start;
+  min-width: 0;
+}
+
+[data-editorial-grid] > * { min-width: 0; }
+
+@media (min-width: 1101px) {
+  body[data-runtime="discover"] [data-editorial-grid] {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  [data-editorial-grid="paired"] > :nth-child(4n + 1),
+  [data-editorial-grid="paired"] > :nth-child(4n + 4),
+  [data-editorial-grid="lead"] > :nth-child(4n + 2),
+  [data-editorial-grid="lead"] > :nth-child(4n + 5) { grid-column: span 7; }
+
+  [data-editorial-grid="paired"] > :nth-child(4n + 2),
+  [data-editorial-grid="paired"] > :nth-child(4n + 3),
+  [data-editorial-grid="lead"] > :nth-child(4n + 3),
+  [data-editorial-grid="lead"] > :nth-child(4n + 4) { grid-column: span 5; }
+
+  [data-editorial-grid="paired"] > :nth-child(even),
+  [data-editorial-grid="lead"] > :nth-child(2n + 3) {
+    margin-block-start: var(--editorial-step, 1.5rem);
+  }
+
+  /* An unmatched record owns the whole measure instead of leaving a hole. */
+  [data-editorial-grid="paired"] > :last-child:nth-child(odd),
+  [data-editorial-grid="lead"] > :first-child,
+  [data-editorial-grid="lead"] > :last-child:nth-child(even) {
+    grid-column: 1 / -1;
+    margin-block-start: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  [data-editorial-grid] > :nth-child(n) {
+    grid-column: auto;
+    margin-block-start: 0;
+  }
+}

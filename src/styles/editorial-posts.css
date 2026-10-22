@@ -1,0 +1,112 @@
+/* Shared internal composition for real reading records in the editorial grid.
+ * The outer grid owns width and sequence; PostCover retains original artwork. */
+body[data-runtime="discover"] [data-editorial-grid] > .post-card {
+  container: editorial-post / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 31%) minmax(0, 1fr);
+  align-items: start;
+  align-self: start;
+  min-height: 0;
+  gap: clamp(1.25rem, 2vw, 2rem);
+  padding: .5rem 0 1.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--border-default);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card:is(:hover, :focus-within) {
+  transform: none;
+  border-bottom-color: var(--drawing-accent);
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-cover-link {
+  align-self: start;
+  width: 100%;
+  padding: 0;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-body {
+  min-width: 0;
+  align-content: start;
+  padding: 0;
+  gap: .75rem;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-cover--card {
+  --post-cover-radius: 2px;
+  --post-cover-main-shadow: 0 1px 2px color-mix(in srgb, var(--shadow-tint) 8%, transparent), 0 14px 24px -18px color-mix(in srgb, var(--shadow-tint) 32%, transparent);
+  border-radius: 2px;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-cover-img {
+  object-fit: contain;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-title {
+  max-width: none;
+  margin: 0;
+  font: 550 clamp(1.5rem, 1.9vw, 1.95rem)/1.4 var(--font-ui);
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card :is(.post-card-title a, .post-card-summary) {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-summary {
+  max-width: 52rem;
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+
+/* Desktop records keep one internal direction across the wide/narrow pair.
+ * Their height follows actual copy; only small screens stack the two roles. */
+@media (max-width: 760px) {
+  body[data-runtime="discover"] [data-editorial-grid] > .post-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body[data-runtime="discover"] [data-editorial-grid] > .post-card > .post-card-cover-link {
+    width: min(100%, 17rem);
+  }
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-topics {
+  margin: 0;
+  padding-top: .12rem;
+  gap: .35rem 1rem;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-topics :is(li, a) {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: .875rem;
+  transform: none;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-topics a {
+  color: var(--drawing-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: .3em;
+}
+
+body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-endmark {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  body[data-runtime="discover"] [data-editorial-grid] > .post-card .post-card-summary {
+    font-size: 1rem;
+  }
+}

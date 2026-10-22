@@ -19,6 +19,25 @@ for (const width of [1440, 390, 320]) {
       const copy = record.locator(".archive-post-content");
       const title = copy.locator("h3 a");
       const href = await title.getAttribute("href");
+      if (width <= 600) {
+        const lastLine = await title.evaluate(el => {
+          const lines = new Map<number, string>();
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          let node: Node | null;
+          while ((node = walker.nextNode())) {
+            for (let index = 0; index < (node.textContent?.length ?? 0); index++) {
+              const character = node.textContent![index];
+              if (!character.trim()) continue;
+              const range = document.createRange();
+              range.setStart(node, index); range.setEnd(node, index + 1);
+              const y = Math.round(range.getBoundingClientRect().top);
+              lines.set(y, (lines.get(y) ?? "") + character);
+            }
+          }
+          return [...lines.values()].at(-1) ?? "";
+        });
+        expect(lastLine.length, "a narrow archive title must not leave a single final glyph").toBeGreaterThan(1);
+      }
       await expect(cover).toHaveAttribute("href", href!);
       await expect(record.locator(".archive-post-kicker")).toHaveAttribute("href", href!);
       await expect(record.locator("[data-archive-author]")).toContainText("By");
@@ -35,10 +54,10 @@ for (const width of [1440, 390, 320]) {
         const main = box(".content-dossier__main");
         const media = box(".archive-post-media");
         const copy = box(".archive-post-content");
-        return { main, media, copy, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
+        return { main, media, copy, cardWidth: el.getBoundingClientRect().width, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
       });
       expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
-      if (width > 600) {
+      if (dimensions.cardWidth > 768) {
         expect(dimensions.media.width / dimensions.main.width).toBeGreaterThan(0.18);
         expect(dimensions.copy.x).toBeGreaterThan(dimensions.media.x + dimensions.media.width);
       } else {
