@@ -12,9 +12,9 @@ overrides:
   protobufjs: ^7.6.5
   axios: ^0.34.0
   brace-expansion@<1.1.21: 1.1.21
-  dompurify: 3.4.17
+  dompurify: ^3.4.17
   linkify-it: ^5.0.2
-  nodemailer: 10.1.4
+  nodemailer: ^10.1.4
   tar: ^7.5.21
   validator: ^13.15.23
   ws: ^8.20.1
@@ -890,7 +890,7 @@ packages:
     engines: {node: '>= 0.8'}
 
   http-cache-semantics@4.3.0:
-    resolution: {integrity: sha512-M5t5LlJpS1UHMjvwRQVdFHvPISGeLAxNcrWuJkeGh0KxsqCHZ1O3NXZU/8x7cD0BDcGW8kapxMKTvwlqrNkHkA==}
+    resolution: {integrity: sha512-M5t5LlJpS1UHMjvwRQVdFHvPISGeLAxNcrWuJkeGh0KxsqCHZ1O3NXZU/8x7cD0BDcGW8kapxMKTvwlqrNkHkA==, tarball: https://ms-feed-25.pkgs.visualstudio.com/1es-public/_packaging/npm-public/npm/registry/http-cache-semantics/-/http-cache-semantics-4.3.0.tgz}
 
   http-errors@1.6.3:
     resolution: {integrity: sha512-lks+lVC8dgGyh97jxvxeYTWQFvh4uw4yC12gVl63Cg30sjPX4wuGcdkICVXDAESr6OJGjqGA8Iz5mkeN6zlD7A==}
@@ -1389,8 +1389,8 @@ packages:
   node-schedule@1.3.3:
     resolution: {integrity: sha512-uF9Ubn6luOPrcAYKfsXWimcJ1tPFtQ8I85wb4T3NgJQrXazEzojcFZVk46ZlLHby3eEJChgkV/0T689IsXh2Gw==}
 
-  nodemailer@10.1.4:
-    resolution: {integrity: sha512-EsMnOR2oRv4LGnWvHgcVYkkQ4O2j8KO4WTw6l+PHR4sOXo8SAgIraxtEnGDmotjbhv0hDsu3IuDIFZm8iXwO4A==}
+  nodemailer@10.2.1:
+    resolution: {integrity: sha512-ZrDNsPFoDMwefNs7sJwrYiEJ/CG4ClJWDZv05iNJsEBWa8GRDry1QJHTJxsuTAY9eDDKjX4k+q3SxslXJOao7w==}
     engines: {node: '>=20.0.0'}
 
   nopt@5.0.0:
@@ -2436,7 +2436,7 @@ snapshots:
       markdown-it: 14.3.3
       markdown-it-emoji: 3.0.0
       mathjax-full: 3.2.2
-      nodemailer: 10.1.4
+      nodemailer: 10.2.1
       nunjucks: 3.2.4
       phpass: 0.1.1
       prismjs: 1.30.0
@@ -3711,7 +3711,7 @@ snapshots:
       long-timeout: 0.1.1
       sorted-array-functions: 1.3.0
 
-  nodemailer@10.1.4: {}
+  nodemailer@10.2.1: {}
 
   nopt@5.0.0:
     dependencies:

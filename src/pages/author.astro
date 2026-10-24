@@ -1,5 +1,13 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocale, createTranslator, localizePath, localizeData } from "../lib/i18n/index";
+import { collectionReader } from "../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
+
+import { getCollection as rawGetCollection } from "astro:content";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
 import SectionHead from "../components/discover/SectionHead.astro";
@@ -8,7 +16,7 @@ import PostCard from "../components/post/PostCard.astro";
 import EditorialFigure from "../components/media/EditorialFigure.astro";
 import ImageViewer from "../components/media/ImageViewer.astro";
 import PaperFigure from "../components/papers/PaperFigure.astro";
-import { SITE_AUTHOR_PROFILE } from "../lib/site";
+import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE } from "../lib/site";
 import { researchFigures } from "../lib/media/editorialFigures";
 import { resolvePostAuthor } from "../lib/posts/author";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -66,7 +74,7 @@ const authorContactEntries = [
 ---
 
 <BaseLayout
-  title={`${SITE_AUTHOR_PROFILE.name} | 作者`}
+  title={t("{0} | 作者", [SITE_AUTHOR_PROFILE.name])}
   description={SITE_AUTHOR_PROFILE.intro ?? SITE_AUTHOR_PROFILE.bioShort}
   authorMeta={SITE_AUTHOR_PROFILE.name}
   runtime="discover"
@@ -76,7 +84,7 @@ const authorContactEntries = [
       <header class="author-atlas-hero__masthead">
         <div class="author-atlas-hero__locator" aria-hidden="true">
           <span>PERSONAL RESEARCH / FIELDNOTES</span>
-          <span>01 — 作者</span>
+          <span>{t("01 — 作者")}</span>
         </div>
         <h1 id="author-atlas-name" class="author-atlas-hero__name">
           {SITE_AUTHOR_PROFILE.name}
@@ -84,13 +92,13 @@ const authorContactEntries = [
         </h1>
       </header>
 
-      <aside class="author-atlas-hero__aside" aria-label="作者档案">
+      <aside class="author-atlas-hero__aside" aria-label={t("作者档案")}>
         <figure class="author-portrait">
           {SITE_AUTHOR_PROFILE.avatar ? (
             <img
               class="author-avatar"
               src={SITE_AUTHOR_PROFILE.avatar}
-              alt={SITE_AUTHOR_PROFILE.name + " 的头像"}
+              alt={SITE_AUTHOR_PROFILE.name + t(" 的头像")}
               loading="eager"
               fetchpriority="high"
               decoding="async"
@@ -101,36 +109,36 @@ const authorContactEntries = [
             <span class="author-portrait__index" aria-hidden="true">FIG. 01</span>
           </figcaption>
         </figure>
-        <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label="公开内容概览">
-          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>已发表 / 已接收</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>公开文章</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>内容主题</span></div>
-          <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>研究轨道</span></div>
+        <div class="discover-hero__panel-stats author-atlas-hero__stats" aria-label={t("公开内容概览")}>
+          <div class="discover-hero__panel-stat"><strong>{String(authorPublications.length).padStart(2, "0")}</strong><span>{t("已发表 / 已接收")}</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(authorPosts.length).padStart(2, "0")}</strong><span>{t("公开文章")}</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(topicCount).padStart(2, "0")}</strong><span>{t("内容主题")}</span></div>
+          <div class="discover-hero__panel-stat"><strong>{String(SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0).padStart(2, "0")}</strong><span>{t("研究轨道")}</span></div>
         </div>
       </aside>
 
       <div class="author-atlas-hero__main">
         {SITE_AUTHOR_PROFILE.tagline ? <p class="author-atlas-idcard__title">{SITE_AUTHOR_PROFILE.tagline}</p> : null}
         <h2 class="author-atlas-hero__statement">
-          在模型行为与真实系统之间，
-          <em>寻找可验证的答案。</em>
+          {t("在模型行为与真实系统之间，")}
+          <em>{t("寻找可验证的答案。")}</em>
         </h2>
         {selectedPapers[0] ? (
           <div class="author-atlas-featured">
             <p class="author-atlas-featured__label">
-              <span>SELECTED WORK / 代表作</span>
+              <span>{t("SELECTED WORK / 代表作")}</span>
               <span>{selectedPapers[0].data.venue?.short ?? selectedPapers[0].data.venue?.name} · {selectedPapers[0].data.year}</span>
             </p>
-            <h3><a href={"/papers/" + selectedPapers[0].id}>{selectedPapers[0].data.title}<span aria-hidden="true">↗</span></a></h3>
+            <h3><a href={l("/papers/" + selectedPapers[0].id)}>{selectedPapers[0].data.title}<span aria-hidden="true">↗</span></a></h3>
           </div>
         ) : null}
         {SITE_AUTHOR_PROFILE.mission ? <p class="author-atlas-idcard__mission">{SITE_AUTHOR_PROFILE.mission}</p> : null}
         <p class="author-atlas-hero__intro">{SITE_AUTHOR_PROFILE.intro}</p>
-        <nav class="author-atlas-hero__actions" aria-label="探索作者研究和内容">
-          <a href="/papers">研究成果 <span aria-hidden="true">↗</span></a>
-          <a href="/topics">探索主题 <span aria-hidden="true">↗</span></a>
+        <nav class="author-atlas-hero__actions" aria-label={t("探索作者研究和内容")}>
+          <a href={l("/papers")}>{t("研究成果")} <span aria-hidden="true">↗</span></a>
+          <a href={l("/topics")}>{t("探索主题")} <span aria-hidden="true">↗</span></a>
           <a
-            href={"https://github.com/" + (SITE_AUTHOR_PROFILE.socials?.github ?? "yuki-zik")}
+            href={l("https://github.com/" + (SITE_AUTHOR_PROFILE.socials?.github ?? "yuki-zik"))}
             target="_blank"
             rel="noopener noreferrer"
           >GitHub <span aria-hidden="true">↗</span></a>
@@ -138,20 +146,20 @@ const authorContactEntries = [
       </div>
     </section>
 
-    <div class="author-atlas-section-nav" aria-label="档案目录">
-      <span>INDEX / 阅读档案</span>
+    <div class="author-atlas-section-nav" aria-label={t("档案目录")}>
+      <span>{t("INDEX / 阅读档案")}</span>
       <nav>
-        <a href="#research">研究方向</a>
-        <a href="#publications">论文</a>
-        <a href="#practice">项目</a>
-        <a href="#writing">写作</a>
+        <a href={l("#research")}>{t("研究方向")}</a>
+        <a href={l("#publications")}>{t("论文")}</a>
+        <a href={l("#practice")}>{t("项目")}</a>
+        <a href={l("#writing")}>{t("写作")}</a>
       </nav>
     </div>
 
     <section class="discover-section author-atlas-research" id="research">
       <SectionHead
         kicker="Research"
-        title="研究方向"
+        title={t("研究方向")}
         countLabel={`${SITE_AUTHOR_PROFILE.researchTracks?.length ?? 0} tracks`}
       />
       <div class="discover-entity-grid" data-editorial-grid="lead" data-ux-stagger>
@@ -185,8 +193,8 @@ const authorContactEntries = [
     <section class:list={["discover-section", "author-atlas-publications", { "author-atlas-publications--illustrated": selectedPapers.some(paper => paper.data.cover) }]} id="publications">
       <SectionHead
         kicker="Selected Publications"
-        title="论文与研究成果"
-        description="已发表与已接收的论文，及其问题、方法与实验记录。"
+        title={t("论文与研究成果")}
+        description={t("已发表与已接收的论文，及其问题、方法与实验记录。")}
         countLabel={String(selectedPapers.length).padStart(2, "0") + " papers"}
       />
       <div class="author-atlas-publications__list" data-ux-stagger>
@@ -200,9 +208,9 @@ const authorContactEntries = [
               <p class="author-atlas-publication__venue">
                 {paper.data.venue?.short ?? paper.data.venue?.name ?? "Research"}
                 <span aria-hidden="true"> / </span>
-                {paper.data.status === "published" ? "已发表" : "已接收"}
+                {paper.data.status === "published" ? t("已发表") : t("已接收")}
               </p>
-              <h3><a href={"/papers/" + paper.id}>{paper.data.title}</a></h3>
+              <h3><a href={l("/papers/" + paper.id)}>{paper.data.title}</a></h3>
               {paper.data.cover ? (
                 <div class="publication-illustrated-overview">
                   <div class="publication-illustrated-overview__copy">
@@ -213,18 +221,18 @@ const authorContactEntries = [
                 </div>
               ) : <p>{paper.data.summary ?? paper.data.abstract}</p>}
             </div>
-            <a class="author-atlas-publication__link" href={"/papers/" + paper.id} aria-label={"阅读论文 " + paper.data.title}>↗</a>
+            <a class="author-atlas-publication__link" href={l("/papers/" + paper.id)} aria-label={t("阅读论文 ") + paper.data.title}>↗</a>
           </article>
         ))}
       </div>
-      <a class="author-atlas-text-link" href="/papers">查看全部论文与研究记录 <span aria-hidden="true">→</span></a>
+      <a class="author-atlas-text-link" href={l("/papers")}>{t("查看全部论文与研究记录")} <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="discover-section author-atlas-practice" id="practice">
       <SectionHead
         kicker="Practice"
-        title="项目 / 实践"
-        description="从实验框架、行为控制，到内容系统与工作流。"
+        title={t("项目 / 实践")}
+        description={t("从实验框架、行为控制，到内容系统与工作流。")}
         countLabel={`${SITE_AUTHOR_PROFILE.practiceHighlights?.length ?? 0} items`}
       />
       <div class="discover-stream-list" data-editorial-grid="paired" data-ux-stagger>
@@ -232,16 +240,16 @@ const authorContactEntries = [
           <ContentDossier
             class="discover-stream-item author-practice-dossier"
             index={String(index + 1).padStart(2, "0")}
-            label={item.label ?? "PRACTICE / 项目实践"}
+            label={item.label ?? t("PRACTICE / 项目实践")}
             title={item.title}
             description={item.description}
             descriptionClass="discover-stream-item__summary"
             variant="feature"
-            detailsLabel="相关内容"
+            detailsLabel={t("相关内容")}
             data-practice-dossier
           >
             {item.related?.length ? <Fragment slot="details">
-              {item.related.map(link => <a href={link.href}>{link.title}<span aria-hidden="true"> ↗</span></a>)}
+              {item.related.map(link => <a href={l(link.href)}>{link.title}<span aria-hidden="true"> ↗</span></a>)}
             </Fragment> : null}
           </ContentDossier>
         ))}
@@ -251,28 +259,28 @@ const authorContactEntries = [
     <section class="discover-section author-atlas-focus">
       <SectionHead
         kicker="Lens"
-        title="当前关注与博客定位"
+        title={t("当前关注与博客定位")}
       />
       <div class="discover-mini-grid" data-editorial-grid="paired" data-ux-stagger>
         <ContentDossier
           class="discover-mini-card author-focus-dossier"
           index="A"
-          label="OPEN QUESTIONS / 研究问题"
-          title="当前关注"
+          label={t("OPEN QUESTIONS / 研究问题")}
+          title={t("当前关注")}
           items={SITE_AUTHOR_PROFILE.currentFocus}
           variant="note"
         >
-          <a slot="footer" href="/papers">沿研究成果继续阅读 <span aria-hidden="true">↗</span></a>
+          <a slot="footer" href={l("/papers")}>{t("沿研究成果继续阅读")} <span aria-hidden="true">↗</span></a>
         </ContentDossier>
         <ContentDossier
           class="discover-mini-card author-focus-dossier"
           index="B"
-          label="FIELDNOTES / 写作范围"
-          title="本博客记录什么"
+          label={t("FIELDNOTES / 写作范围")}
+          title={t("本博客记录什么")}
           items={SITE_AUTHOR_PROFILE.blogScope}
           variant="note"
         >
-          <a slot="footer" href="/topics">沿主题寻找笔记 <span aria-hidden="true">↗</span></a>
+          <a slot="footer" href={l("/topics")}>{t("沿主题寻找笔记")} <span aria-hidden="true">↗</span></a>
         </ContentDossier>
       </div>
     </section>
@@ -282,8 +290,8 @@ const authorContactEntries = [
         <section class="discover-section author-atlas-socials" data-controller="social-stats">
           <SectionHead
             kicker="Social"
-            title="社交媒体"
-            description="你也可以在这些平台继续找到我；支持的平台会实时刷新公开统计。"
+            title={t("社交媒体")}
+            description={t("你也可以在这些平台继续找到我；支持的平台会实时刷新公开统计。")}
             countLabel={`${socialNetworks.length} platforms`}
           />
 
@@ -296,7 +304,7 @@ const authorContactEntries = [
                   `author-social-card--${network.id}`,
                   "grid grid-cols-[auto_minmax(0,1fr)_auto] min-h-[5.6rem] items-center gap-[0.85rem] px-[1.05rem] py-4"
                 ]}
-                href={network.href}
+                href={l(network.href)}
                 target="_blank"
                 rel="noreferrer noopener"
                 data-ux-reveal="fade-up"
@@ -312,8 +320,8 @@ const authorContactEntries = [
                     : network.id === "github"
                       ? "GH"
                       : network.id === "zhihu"
-                        ? "知"
-                        : "红"}
+                        ? t("知")
+                        : t("红")}
                 </span>
 
                 <span class="author-social-copy grid min-w-0 gap-[0.18rem]">
@@ -343,14 +351,14 @@ const authorContactEntries = [
     <section class="discover-section author-atlas-contacts">
       <SectionHead
         kicker="Contact"
-        title="联系方式 / 外链"
-        description="学术资料、开源代码与联系邮箱。"
+        title={t("联系方式 / 外链")}
+        description={t("学术资料、开源代码与联系邮箱。")}
       />
       <div class="discover-mini-grid" data-ux-stagger>
         {authorContactEntries.map((entry) => (
           <a
             class="discover-surface discover-mini-card"
-            href={entry.href}
+            href={l(entry.href)}
             target={entry.external ? "_blank" : undefined}
             rel={entry.external ? "noreferrer noopener" : undefined}
             data-ux-reveal="fade-up"
@@ -365,13 +373,13 @@ const authorContactEntries = [
     <section class="discover-section author-posts author-atlas-writing" id="writing">
       <SectionHead
         kicker="Writing"
-        title="作者文章"
-        description={`以下是当前博客中已发布、由 ${SITE_AUTHOR_PROFILE.name} 署名的文章。`}
+        title={t("作者文章")}
+        description={t("以下是当前博客中已发布、由 {0} 署名的文章。", [SITE_AUTHOR_PROFILE.name])}
         countLabel={`${authorPosts.length} posts`}
       />
       {
         authorPosts.length === 0 ? (
-          <EmptyState title="暂时还没有可展示的文章。" body="等第一批内容发布后，这里会自动接入统一的文章卡片列表。" />
+          <EmptyState title={t("暂时还没有可展示的文章。")} body={t("等第一批内容发布后，这里会自动接入统一的文章卡片列表。")} />
         ) : (
           <div class="discover-post-grid author-post-grid mt-[0.2rem]" data-editorial-grid="paired" data-ux-stagger>
             {authorPosts.map((post) => <PostCard post={post} />)}

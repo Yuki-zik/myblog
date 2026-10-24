@@ -1,4 +1,14 @@
-<script is:inline>
+---
+import { getLocale, createTranslator } from "../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+
+const uiMessages = Object.fromEntries(["[data-reading-progress-region]", "en-US", "site-header-framechange", "亮色", "切换主题（当前：亮色）", "切换主题（当前：深色）", "切换主题（当前：跟随系统）", "原始尺寸", "图片加载失败，可尝试查看原图。", "放大到原始尺寸", "正在加载图片…", "深色", "系统", "缩小到适应窗口", "适应窗口"].map(key => [key, t(key)]));
+
+---
+<script is:inline define:vars={{ uiMessages }}>
+const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (match, index) => Number(index) < values.length ? String(values[Number(index)]) : match);
+
   (function () {
     document.documentElement.classList.remove("no-js");
 
@@ -48,14 +58,14 @@
         dark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 14.7A8.4 8.4 0 1 1 9.3 3.8a6.9 6.9 0 1 0 10.9 10.9Z"></path></svg>'
       };
       var labels = {
-        system: "系统",
-        light: "亮色",
-        dark: "深色"
+        system: t("系统"),
+        light: t("亮色"),
+        dark: t("深色")
       };
       var ariaLabels = {
-        system: "切换主题（当前：跟随系统）",
-        light: "切换主题（当前：亮色）",
-        dark: "切换主题（当前：深色）"
+        system: t("切换主题（当前：跟随系统）"),
+        light: t("切换主题（当前：亮色）"),
+        dark: t("切换主题（当前：深色）")
       };
       var iconEl = toggle.querySelector(".theme-toggle-icon");
       var labelEl = toggle.querySelector(".theme-toggle-label");
@@ -799,10 +809,10 @@
         image.style.width = Math.floor(image.naturalWidth * scale) + "px";
         image.style.height = Math.floor(image.naturalHeight * scale) + "px";
         dialog.dataset.zoomed = String(zoomed);
-        toggle.textContent = zoomed ? "适应窗口" : "原始尺寸";
+        toggle.textContent = zoomed ? t("适应窗口") : t("原始尺寸");
         toggle.disabled = !canZoom;
         imageToggle.disabled = !canZoom;
-        imageToggle.setAttribute("aria-label", zoomed ? "缩小到适应窗口" : "放大到原始尺寸");
+        imageToggle.setAttribute("aria-label", zoomed ? t("缩小到适应窗口") : t("放大到原始尺寸"));
         status.textContent = image.naturalWidth + " × " + image.naturalHeight + " · " + Math.round(scale * 100) + "%";
       }
 
@@ -833,7 +843,7 @@
         image.hidden = true;
         toggle.disabled = imageToggle.disabled = true;
         dialog.dataset.imageState = "error";
-        status.textContent = "图片加载失败，可尝试查看原图。";
+        status.textContent = t("图片加载失败，可尝试查看原图。");
       });
 
       document.querySelectorAll("[data-image-viewer-trigger]").forEach(function (link) {
@@ -847,13 +857,13 @@
           loaded = false;
           dialog.dataset.zoomed = "false";
           dialog.dataset.imageState = "loading";
-          toggle.textContent = "原始尺寸";
+          toggle.textContent = t("原始尺寸");
           toggle.disabled = imageToggle.disabled = true;
           image.hidden = true;
           image.alt = link.dataset.imageAlt || "";
           caption.textContent = image.alt;
           original.href = link.href;
-          status.textContent = "正在加载图片…";
+          status.textContent = t("正在加载图片…");
           viewport.scrollTo(0, 0);
           lockScroll();
           dialog.showModal();

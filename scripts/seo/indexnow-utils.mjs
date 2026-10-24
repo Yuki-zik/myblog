@@ -1,4 +1,5 @@
 const CONTENT_COLLECTION = /^src\/content\/(posts|papers|topics|concepts)\/(.+)\.md$/;
+const ENGLISH_COLLECTION = /^src\/content\/en\/(posts|papers|topics|concepts)\/(.+)\.md$/;
 const POST_COVER = /^src\/content\/posts\/covers\/(.+)\.(?:png|jpe?g|webp|svg)$/i;
 
 export function extractSitemapUrls(xml, host) {
@@ -22,9 +23,15 @@ export function changedPaths(files) {
   let all = false;
   for (const filename of files) {
     const file = filename.trim();
+    const english = file.match(ENGLISH_COLLECTION);
+    if (english) {
+      paths.add("/en/" + english[1] + "/" + english[2]);
+      continue;
+    }
     const cover = file.match(POST_COVER);
     if (cover) {
       paths.add("/posts/" + cover[1]);
+      paths.add("/en/posts/" + cover[1]);
       continue;
     }
     const match = file.match(CONTENT_COLLECTION);
@@ -40,6 +47,7 @@ export function changedPaths(files) {
       file.startsWith("src/pages/") ||
       file.startsWith("src/layouts/") ||
       file.startsWith("src/lib/seo/") ||
+      file.startsWith("src/lib/i18n/") ||
       file.startsWith("src/lib/markdown/")
     ) {
       all = true;

@@ -1,5 +1,13 @@
 ---
-import { getCollection, getEntry, render, type CollectionEntry } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader, entryReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+const getEntry = entryReader(locale);
+
+import { getCollection as rawGetCollection, getEntry as rawGetEntry, render, type CollectionEntry } from "astro:content";
 import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
 import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
@@ -16,7 +24,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const topics = await getCollection("topics");
+  const topics = await rawGetCollection("topics");
   return topics.map((topic) => ({
     params: { slug: topic.id },
     props: { topic }
@@ -69,8 +77,8 @@ const structuredData = site
       title: topic.data.title,
       description: topic.data.summary,
       breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
-        { name: "主题", url: new URL("/topics", site).toString() },
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("主题"), url: new URL("/topics", site).toString() },
         { name: topic.data.title }
       ]
     })
@@ -91,16 +99,16 @@ const structuredData = site
       title={topic.data.title}
       description={topicDescription}
       count={readingPosts.length}
-      countLabel="篇文章"
+      countLabel={t("篇文章")}
     >
-      <a slot="actions" href="/topics">全部主题 <span aria-hidden="true">↗</span></a>
+      <a slot="actions" href={l("/topics")}>{t("全部主题")} <span aria-hidden="true">↗</span></a>
     </DrawingPageHeader>
 
-    <section class="discover-section drawing-index-section" data-topic-posts aria-label="阅读列表">
-      <h2 class="drawing-section-title">阅读列表</h2>
+    <section class="discover-section drawing-index-section" data-topic-posts aria-label={t("阅读列表")}>
+      <h2 class="drawing-section-title">{t("阅读列表")}</h2>
       {
         readingPosts.length === 0 ? (
-          <EmptyState title="这个主题还没有笔记。" body="可以先浏览其他主题，找到感兴趣的文章。" />
+          <EmptyState title={t("这个主题还没有笔记。")} body={t("可以先浏览其他主题，找到感兴趣的文章。")} />
         ) : (
           <div class="discover-post-grid topic-reading-grid" data-editorial-grid="lead" data-ux-stagger>
             {readingPosts.map((post) => <PostCard post={post} compactMetadata={true} />)}
@@ -110,7 +118,7 @@ const structuredData = site
     </section>
 
     <section class:list={["discover-section drawing-index-section drawing-topic-about", topicFigures[topic.id] && "drawing-topic-about--illustrated"]}>
-      <h2 class="drawing-section-title">关于这个主题</h2>
+      <h2 class="drawing-section-title">{t("关于这个主题")}</h2>
       <div class="discover-rich drawing-topic-about__body">
         <p>{topic.data.why}</p>
         <Content />
@@ -121,10 +129,10 @@ const structuredData = site
     {
       relatedConcepts.length > 0 ? (
         <section class="discover-section drawing-index-section" data-topic-concepts>
-          <h2 class="drawing-section-title">相关概念</h2>
+          <h2 class="drawing-section-title">{t("相关概念")}</h2>
           <div class="discover-mini-grid drawing-related-grid" data-ux-stagger>
             {relatedConcepts.map((concept) => (
-              <a href={`/concepts/${concept.id}`} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
+              <a href={l(`/concepts/${concept.id}`)} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
                 <h3>{concept.data.title}</h3>
                 <p>{concept.data.summary}</p>
               </a>
@@ -137,10 +145,10 @@ const structuredData = site
     {
       relatedTopics.length > 0 ? (
         <section class="discover-section drawing-index-section" data-topic-related>
-          <h2 class="drawing-section-title">相关主题</h2>
+          <h2 class="drawing-section-title">{t("相关主题")}</h2>
           <div class="discover-mini-grid drawing-related-grid" data-ux-stagger>
             {relatedTopics.map((entry) => (
-              <a href={`/topics/${entry.id}`} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
+              <a href={l(`/topics/${entry.id}`)} class="discover-mini-card drawing-related-link" data-ux-reveal="fade-up">
                 <h3>{entry.data.title}</h3>
                 <p>{entry.data.summary}</p>
               </a>

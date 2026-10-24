@@ -1,12 +1,17 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import "../styles/discovery-polish.css";
 ---
 
 <BaseLayout
-  title="页面未找到"
-  description="这个地址没有对应的页面。返回首页、浏览主题，或搜索你想找的内容。"
+  title={t("页面未找到")}
+  description={t("这个地址没有对应的页面。返回首页、浏览主题，或搜索你想找的内容。")}
   runtime="discover"
   noindex
 >
@@ -15,12 +20,12 @@ import "../styles/discovery-polish.css";
       <div class="notfound-atlas__copy">
         <p class="notfound-atlas__eyebrow">SYSTEM / UNRESOLVED PATH</p>
         <p class="notfound-atlas__code" aria-hidden="true">404<span>_</span></p>
-        <h1 id="notfound-atlas-title">页面未找到</h1>
-        <p class="notfound-atlas__description">这条线索没有对应的页面。地址可能已改变，也可以从已有的研究目录重新出发。</p>
-        <nav class="notfound-atlas__actions" aria-label="返回站点">
-          <a href="/">返回首页 <span aria-hidden="true">↗</span></a>
-          <a href="/topics">浏览主题 <span aria-hidden="true">↗</span></a>
-          <a href="/archives">文章归档 <span aria-hidden="true">↗</span></a>
+        <h1 id="notfound-atlas-title">{t("页面未找到")}</h1>
+        <p class="notfound-atlas__description">{t("这条线索没有对应的页面。地址可能已改变，也可以从已有的研究目录重新出发。")}</p>
+        <nav class="notfound-atlas__actions" aria-label={t("返回站点")}>
+          <a href={l("/")}>{t("返回首页")} <span aria-hidden="true">↗</span></a>
+          <a href={l("/topics")}>{t("浏览主题")} <span aria-hidden="true">↗</span></a>
+          <a href={l("/archives")}>{t("文章归档")} <span aria-hidden="true">↗</span></a>
         </nav>
       </div>
       <div class="notfound-atlas__figure" aria-hidden="true">
@@ -41,7 +46,7 @@ import "../styles/discovery-polish.css";
     </section>
     <div class="notfound-atlas__footnote">
       <span>INDEX RECOVERY</span>
-      <p>站内搜索仍可从顶部导航随时打开；你也可以通过主题、文章归档或研究成果回到内容网络。</p>
+      <p>{t("站内搜索仍可从顶部导航随时打开；你也可以通过主题、文章归档或研究成果回到内容网络。")}</p>
     </div>
   </DiscoverShell>
 </BaseLayout>

@@ -1,3 +1,5 @@
+import { getTranslatedPaths } from "../lib/i18n/content";
+import { localizePath } from "../lib/i18n/index";
 import type { APIContext } from "astro";
 import { getCollection } from "astro:content";
 import { getPostPath } from "../lib/posts/urls";
@@ -35,10 +37,12 @@ export async function GET(context: APIContext): Promise<Response> {
     ...concepts.map((concept) => ({ path: "/concepts/" + concept.id }))
   ];
 
-  return new Response(buildSitemapXml(site, entries), {
+  const translated = await getTranslatedPaths();
+  const bilingualEntries = [...entries, ...entries.filter(entry => translated.has(entry.path)).map(entry => ({...entry, path: localizePath(entry.path, "en")}))];
+
+  return new Response(buildSitemapXml(site, bilingualEntries), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8"
     }
   });
 }
-

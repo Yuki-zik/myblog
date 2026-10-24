@@ -339,3 +339,8 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 - 每周生产审计 .github/workflows/seo-audit.yml：覆盖公开 sitemap、canonical、可索引性、OG 和 IndexNow 密钥。
 - 论文详情新增 OG 预览图；中文目录页增加准确的搜索元描述，不改现有可见排版。
 - 状态按 PR CI 和生产回读更新，HTTP 202 不应记为已索引。
+
+
+## 中英双语（2026-10-24）
+
+中文原路由 + `/en` 独立静态译文，共享页面模板与 schema。英文正文在 `src/content/en`，UI/作者/图版映射在 `src/lib/i18n/en.json`。已有译文配对生成双向 hreflang；每种语言自指 canonical，独立搜索与 RSS。语言切换定位对应页面，评论沿用原文 thread path。维护及验证见 `docs/bilingual-publishing.md`。

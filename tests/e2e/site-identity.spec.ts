@@ -40,8 +40,9 @@ test("indexed pages retain canonical URLs and use the new site identity", async 
         body: doc.body.textContent ?? ""
       };
     }, await response.text());
-    expect(metadata.title, url).toContain(siteName);
-    expect(metadata.siteName, url).toBe(siteName);
+    const expectedName = /^\/en(?:\/|$)/.test(new URL(url).pathname) ? "A-Znk Blog" : siteName;
+    expect(metadata.title, url).toContain(expectedName);
+    expect(metadata.siteName, url).toBe(expectedName);
     expect(metadata.canonical, url).toBe(new URL(url).href);
     expect(metadata.robots, url).not.toContain("noindex");
     expect(metadata.body, url).not.toContain("MyBlog");

@@ -1,4 +1,9 @@
 ---
+import { getLocale, createTranslator, localizePath, localizeData } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import "../../styles/editorial-figures.css";
@@ -24,11 +29,12 @@ interface Props {
 }
 
 const {
-  figure,
+  figure: sourceFigure,
   class: className,
   compact = false,
   sizes = "(max-width: 720px) calc(100vw - 3rem), (max-width: 1100px) 44vw, 400px",
 } = Astro.props;
+const figure = localizeData(sourceFigure, locale);
 ---
 
 <figure
@@ -37,12 +43,12 @@ const {
 >
   <a
     class="editorial-figure__paper"
-    href={figure.src.src}
+    href={l(figure.src.src)}
     data-image-viewer-trigger
     data-image-alt={figure.alt}
     data-image-width={figure.src.width}
     data-image-height={figure.src.height}
-    aria-label={`预览${figure.title}原图`}
+    aria-label={t("预览{0}原图", [figure.title])}
     aria-haspopup="dialog"
     aria-controls="post-image-viewer"
   >
@@ -66,7 +72,7 @@ const {
     <div class="editorial-figure__credit">
       <a
         class="editorial-figure__source"
-        href={figure.sourceUrl}
+        href={l(figure.sourceUrl)}
         data-editorial-source
         target="_blank"
         rel="noopener noreferrer"
@@ -74,7 +80,7 @@ const {
         {figure.sourceLabel}<span aria-hidden="true"> ↗</span>
       </a>
       <details class="editorial-figure__details">
-        <summary>图版说明</summary>
+        <summary>{t("图版说明")}</summary>
         <div class="editorial-figure__provenance">
           <p data-editorial-note>{figure.note}</p>
           <p class="editorial-figure__attribution">

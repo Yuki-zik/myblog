@@ -1,5 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection } from "astro:content";
 import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
 import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
@@ -34,27 +41,27 @@ const postCountByTopic = posts.reduce<Record<string, number>>((acc, post) => {
 }, {});
 
 const topicsPageDescription =
-  "按主题查找研究笔记与工程实践，这里汇总每个主题的摘要与相关文章。";
+  t("按主题查找研究笔记与工程实践，这里汇总每个主题的摘要与相关文章。");
 const topicsSeoDescription =
-  "浏览 A-Znk 的技术博客主题：AI Coding、Agent 工程、知识网络、段落锚点与技术笔试复盘。每个主题汇总相关文章、入门路径和相关概念。";
+  t("浏览 A-Znk 的技术博客主题：AI Coding、Agent 工程、知识网络、段落锚点与技术笔试复盘。每个主题汇总相关文章、入门路径和相关概念。");
 ---
 
-<BaseLayout title="主题列表" description={topicsSeoDescription} runtime="discover" headerVariant="drawing">
+<BaseLayout title={t("主题列表")} description={topicsSeoDescription} runtime="discover" headerVariant="drawing">
   <DrawingIndexShell kind="topics">
     <DrawingPageHeader
       kicker="Topics"
-      title="主题列表"
-      description="选择感兴趣的问题，继续阅读相关笔记与实践记录。"
+      title={t("主题列表")}
+      description={t("选择感兴趣的问题，继续阅读相关笔记与实践记录。")}
       count={sortedTopics.length}
-      countLabel="个主题"
+      countLabel={t("个主题")}
     >
-      <a slot="actions" href="/map">进入漫游 <span aria-hidden="true">↗</span></a>
+      <a slot="actions" href={l("/map")}>{t("进入漫游")} <span aria-hidden="true">↗</span></a>
     </DrawingPageHeader>
 
-    <section class="drawing-topic-index" aria-label="主题目录" data-editorial-grid="paired" data-ux-stagger>
+    <section class="drawing-topic-index" aria-label={t("主题目录")} data-editorial-grid="paired" data-ux-stagger>
       {
         sortedTopics.length === 0 ? (
-          <EmptyState title="暂时还没有主题。" body="主题整理完成后，你可以从这里找到相关笔记。" />
+          <EmptyState title={t("暂时还没有主题。")} body={t("主题整理完成后，你可以从这里找到相关笔记。")} />
         ) : (
           sortedTopics.map((topic, index) => (
             <article
@@ -63,17 +70,17 @@ const topicsSeoDescription =
             >
               <div class="drawing-topic-row__layout">
                 {topicFigures[topic.id] && <EditorialFigure figure={topicFigures[topic.id]} compact class="drawing-topic-row__figure" sizes="(max-width: 600px) calc(100vw - 2rem), (max-width: 1100px) 220px, 280px" />}
-                <a href={`/topics/${topic.id}`} class="drawing-topic-row__entry" data-drawing-topic aria-label={`进入主题：${topic.data.title}`}>
+                <a href={l(`/topics/${topic.id}`)} class="drawing-topic-row__entry" data-drawing-topic aria-label={t("进入主题：{0}", [topic.data.title])}>
                   <span class="drawing-topic-row__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                   <div class="drawing-topic-row__copy">
                     <div class="drawing-topic-row__heading">
                       <h2 class="drawing-topic-row__title">{topic.data.title}</h2>
-                      <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} 篇文章</span>
+                      <span class="drawing-topic-row__count">{postCountByTopic[topic.id] ?? 0} {t("篇文章")}</span>
                     </div>
                     <p class="drawing-topic-row__summary">{topic.data.summary}</p>
                     <p class="drawing-topic-row__rationale"><span aria-hidden="true">WHY / </span>{topic.data.why}</p>
                   </div>
-                  <span class="drawing-topic-row__read">阅读这个主题 <span aria-hidden="true">↗</span></span>
+                  <span class="drawing-topic-row__read">{t("阅读这个主题")} <span aria-hidden="true">↗</span></span>
                 </a>
               </div>
             </article>
