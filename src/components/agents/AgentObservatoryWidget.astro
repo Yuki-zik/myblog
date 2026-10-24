@@ -1,40 +1,15 @@
 ---
-import { summary, evidenceRecords } from "../../lib/agents/observatory";
 import "../../styles/agent-observatory.css";
-
-interface Props { detailed?: boolean }
-const { detailed = false } = Astro.props;
-const metrics = [
-  { label: "独立任务并行峰值", value: summary.peakParallel, unit: "条", coverage: summary.coverage.peak },
-  { label: "已验收交付", value: summary.acceptedTasks, unit: "项", coverage: summary.coverage.accepted },
-  { label: "人工投入", value: summary.humanHours, unit: "小时", coverage: summary.coverage.human },
-  { label: "其中返工", value: summary.reworkHours, unit: "小时", coverage: summary.coverage.rework }
-];
-const format = (value: number) => new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(value);
 ---
-
-<section class:list={["agent-observatory-widget", detailed && "agent-observatory-widget--detailed"]} aria-label="Agent 工作个人记录">
-  <div class="agent-observatory-widget__heading">
-    <div>
-      <p class="agent-observatory-kicker">{detailed ? "PERSONAL LOG · 个人实测" : "ONGOING OBSERVATION · 持续观察"}</p>
-      <h2>{detailed ? "个人记录" : <a href="/agents">Agent 工作观察站 <span aria-hidden="true">↗</span></a>}</h2>
-    </div>
-    <p class="agent-observatory-meta">{summary.windowEnd ? `${summary.windowStart} — ${summary.windowEnd}` : "个人数据待记录"}</p>
-  </div>
-  {!detailed && <p class="agent-observatory-widget__intro">一个人能同时推进多少工作，又能得到多少可靠成果。</p>}
-  <dl class="agent-observatory-metrics">
-    {metrics.map((metric) => (
-      <div>
-        <dt>{metric.label}</dt>
-        <dd class:list={[metric.value === null && "agent-observatory-metric--empty"]}>
-          {metric.value === null ? "待记录" : <>{format(metric.value)}<span>{metric.unit}</span></>}
-        </dd>
-        {detailed && metric.coverage === "partial" && <p class="agent-observatory-meta">{metric.value === null ? "记录待补全" : `仅含已记录的 ${summary.observedDays}/7 天`}</p>}
-      </div>
-    ))}
-  </dl>
-  <div class="agent-observatory-widget__foot">
-    <p>{summary.windowEnd ? `截至最近记录日的 7 天窗口 · 已记录 ${summary.observedDays}/7 天` : "从真实记录开始，观察交付与注意力的变化。"}</p>
-    {!detailed && <a href="/agents">查看 {evidenceRecords.length} 条研究证据与记录方法 <span aria-hidden="true">→</span></a>}
-  </div>
-</section>
+<a class="agent-observatory-entry" href="/agents">
+  <svg class="agent-observatory-entry__mark" viewBox="0 0 64 40" fill="none" aria-hidden="true">
+    <path d="M2 9h22M2 18h22M8 5v17M15 5v17" stroke="currentColor" stroke-width="1.3"/>
+    <path d="M3 9h10M14 18h9" stroke="var(--drawing-accent)" stroke-width="3"/>
+    <circle cx="42" cy="13" r="10" stroke="currentColor" stroke-width="1.3"/>
+    <path d="M42 6v7l5 3" stroke="var(--drawing-accent)" stroke-width="1.5"/>
+    <path d="M2 31h50" stroke="currentColor" stroke-width="2"/>
+    <path d="M2 31h15" stroke="var(--drawing-accent)" stroke-width="4"/>
+  </svg>
+  <span class="agent-observatory-entry__copy"><strong>Agent 工作观察站</strong><span>4 个可交互挂件 · 并行、交付与人的投入</span></span>
+  <span class="agent-observatory-entry__arrow" aria-hidden="true">↗</span>
+</a>

@@ -1,0 +1,50 @@
+---
+import type { Coverage } from "../../../lib/agents/observatory";
+import "../../../styles/agent-instruments.css";
+interface Props { id?: string; value?: number | null; coverage?: Coverage; observedDays?: number; }
+const { id = "agent-attention", value = null, coverage = "none", observedDays = 0 } = Astro.props;
+const formatted = value === null ? "待记录" : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(value);
+const coverageLabel = value === null
+  ? coverage === "partial" ? "记录待补全" : "个人实测"
+  : coverage === "partial" ? "已记录 " + observedDays + "/7 天" : "最近 7 天";
+const parts = [
+  { key: "plan", label: "规划", minutes: 30 },
+  { key: "review", label: "审核", minutes: 45 },
+  { key: "rework", label: "返工", minutes: 15 }
+];
+---
+<article class="agent-instrument agent-instrument--attention" data-agent-instrument="attention" aria-labelledby={id + "-title"}>
+  <header class="agent-instrument__header">
+    <div class="agent-instrument__heading">
+      <p class="agent-instrument__eyebrow">03 / 人工投入</p>
+      <h2 class="agent-instrument__name" id={id + "-title"}>投入时钟</h2>
+    </div>
+    <div class="agent-instrument__measurement">
+      <p class="agent-instrument__reading"><strong class="agent-instrument__value">{formatted}</strong><span class="agent-instrument__unit">小时</span></p>
+      <p class="agent-instrument__coverage">{coverageLabel}</p>
+    </div>
+  </header>
+  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>交互示意 · 不计入实测</p>
+
+  <div class="agent-attention__body">
+    <div class="agent-attention__dial" data-attention-dial data-part="plan" aria-hidden="true">
+      <div class="agent-attention__face">
+        <span class="agent-attention__tick agent-attention__tick--top"></span>
+        <span class="agent-attention__tick agent-attention__tick--right"></span>
+        <span class="agent-attention__tick agent-attention__tick--bottom"></span>
+        <span class="agent-attention__tick agent-attention__tick--left"></span>
+        <span class="agent-attention__hand"></span><span class="agent-attention__pin"></span>
+        <span class="agent-attention__total"><strong>90</strong><span>MIN / 示意总量</span></span>
+      </div>
+    </div>
+    <div class="agent-attention__readout">
+      <p class="agent-attention__label">选中阶段</p>
+      <output class="agent-attention__output" data-attention-output aria-live="polite">30 分钟</output>
+      <p class="agent-attention__description" data-attention-description>界定目标、准备上下文与拆分任务。</p>
+      <div class="agent-attention__parts" role="group" aria-label="查看人工投入的示意分配">
+        {parts.map(part => <button class="agent-attention__part" type="button" data-attention-part={part.key} data-minutes={part.minutes} data-instrument-control aria-pressed={part.key === "plan" ? "true" : "false"} disabled><span>{part.label}</span><span class="agent-attention__part-minutes">{part.minutes}</span></button>)}
+      </div>
+    </div>
+  </div>
+  <p class="agent-instrument__footnote">点选阶段看分配 · 返工包含在总投入内</p>
+</article>

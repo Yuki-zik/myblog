@@ -1,0 +1,201 @@
+/* Independent instruments; interaction is initialized by UiControllers. */
+.agent-instruments {
+  width: min(100%, 62.5rem); margin-inline: auto; display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start;
+  gap: 1.5rem 1.75rem; color: var(--text-primary); font-family: var(--font-ui);
+}
+.agent-instrument {
+  box-sizing: border-box; min-width: 0; min-height: 270px; padding: 14px 18px;
+  position: relative; display: flex; flex-direction: column;
+  color: var(--text-primary); font-family: var(--font-ui);
+}
+.agent-instrument :is(h2, h3, p, dl, dt, dd) { margin: 0; }
+.agent-instrument [hidden] { display: none !important; }
+.agent-instrument__header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+.agent-instrument__heading { min-width: 0; }
+.agent-instrument__eyebrow { color: var(--text-secondary); font-size: 10px; line-height: 1.4; letter-spacing: .06em; }
+.agent-instrument .agent-instrument__name { margin-top: 4px; color: inherit; font-size: 19px; font-weight: 650; line-height: 1.25; letter-spacing: -.035em; }
+.agent-instrument__measurement { text-align: right; white-space: nowrap; }
+.agent-instrument__reading { display: flex; align-items: baseline; justify-content: end; gap: 5px; }
+.agent-instrument__value { color: inherit; font-size: 22px; font-weight: 550; line-height: 1.2; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.agent-instrument__unit { color: var(--text-secondary); font-size: 10px; }
+.agent-instrument .agent-instrument__coverage { margin-top: 5px; color: var(--text-secondary); font-size: 10px; line-height: 1.4; }
+.agent-instrument .agent-instrument__demo { display: flex; align-items: center; gap: 6px; margin-top: 10px; color: var(--text-secondary); font-size: 10px; line-height: 1.4; }
+.agent-instrument__demo-dot { flex: 0 0 4px; width: 4px; height: 4px; border: 1px solid var(--drawing-accent-ink); border-radius: 50%; }
+.agent-instrument .agent-instrument__footnote { margin-top: auto; padding-top: 8px; color: var(--text-secondary); font-size: 10px; line-height: 1.4; }
+.agent-instrument :is(button, input, summary):focus-visible { outline: 2px solid var(--drawing-focus); outline-offset: 3px; }
+.agent-instrument button { font: inherit; cursor: pointer; }
+.agent-instrument button:disabled, .agent-instrument input:disabled { cursor: default; opacity: .6; }
+.agent-instrument :is(button, summary, input[type="range"]) { touch-action: manipulation; }
+.agent-instrument__range {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px;
+  margin: 0; padding: 0; border: 0; background: transparent; cursor: ew-resize; accent-color: var(--drawing-accent);
+}
+.agent-instrument__range::-webkit-slider-runnable-track { height: 2px; border-radius: 0; background: var(--border-strong); }
+.agent-instrument__range::-moz-range-track { height: 2px; border-radius: 0; background: var(--border-strong); }
+.agent-instrument__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 22px; height: 22px; margin-top: -10px;
+  border: 5px solid var(--surface-primary); border-radius: 50%; background: var(--drawing-accent);
+  box-shadow: 0 0 0 1px var(--drawing-accent-ink);
+}
+.agent-instrument__range::-moz-range-thumb {
+  box-sizing: border-box; width: 22px; height: 22px; border: 5px solid var(--surface-primary);
+  border-radius: 50%; background: var(--drawing-accent); box-shadow: 0 0 0 1px var(--drawing-accent-ink);
+}
+.agent-instrument__sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; border: 0; clip: rect(0, 0, 0, 0); overflow: hidden; white-space: nowrap; }
+.agent-instruments__noscript { grid-column: 1 / -1; margin: 0; padding-block: 10px; color: var(--text-secondary); font-size: 12px; line-height: 1.7; }
+
+/* 01 — Open-sided parallel rails. */
+.agent-instrument--parallel { border-top: 2px solid var(--text-primary); border-bottom: 1px solid var(--border-strong); padding-inline: 12px; }
+.agent-parallel__diagram { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; margin-top: 16px; }
+.agent-parallel__labels { height: 66px; display: grid; grid-template-rows: repeat(3, 1fr); align-items: center; color: var(--text-secondary); font-family: var(--font-mono); font-size: 10px; }
+.agent-parallel__stage {
+  position: relative; height: 66px; display: grid; grid-template-rows: repeat(3, 1fr);
+  background-image: repeating-linear-gradient(to right, var(--divider) 0, var(--divider) 1px, transparent 1px, transparent 25%);
+  border-right: 1px solid var(--divider);
+}
+.agent-parallel__track { position: relative; align-self: center; height: 12px; background: color-mix(in srgb, var(--surface-subtle) 70%, transparent); }
+.agent-parallel__segment {
+  position: absolute; top: 2px; bottom: 2px; box-sizing: border-box; border: 1px solid var(--border-strong);
+  background: var(--surface-elevated); color: var(--text-secondary); transition: background-color 120ms ease, border-color 120ms ease;
+}
+.agent-parallel__segment[data-active="true"] { border-color: var(--drawing-accent); background: var(--drawing-accent); }
+.agent-parallel__segment-dot { position: absolute; top: 2px; right: 3px; width: 2px; height: 2px; border-radius: 50%; background: var(--surface-primary); }
+.agent-parallel__cursor { position: absolute; z-index: 1; top: -7px; bottom: -7px; left: var(--cursor, 50%); width: 1px; background: var(--drawing-accent-ink); pointer-events: none; }
+.agent-parallel__cursor::before { position: absolute; top: -2px; left: -3px; width: 7px; height: 7px; content: ""; background: var(--drawing-accent); transform: rotate(45deg); }
+.agent-parallel__control { display: block; margin-top: 4px; padding-left: 26px; }
+.agent-parallel__readout { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: auto; font-size: 11px; line-height: 1.5; }
+.agent-parallel__time { display: flex; gap: 8px; align-items: baseline; color: var(--text-secondary); font-family: var(--font-mono); font-size: 10px; }
+.agent-parallel__count { margin-right: 4px; color: var(--drawing-accent-ink); font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* 02 — A clipped ticket stack; evidence expands without clipping. */
+.agent-instrument--delivery { margin-inline: 5px 0; border: 1px solid var(--border-strong); border-radius: 3px 3px 11px 3px; background: var(--surface-primary); box-shadow: 5px 5px 0 var(--surface-subtle); }
+.agent-instrument--delivery::before {
+  position: absolute; top: -7px; left: 24px; box-sizing: border-box; width: 34px; height: 12px;
+  content: ""; border: 2px solid var(--text-primary); border-bottom: 0; border-radius: 5px 5px 0 0; background: var(--page-bg);
+}
+.agent-delivery__tickets { margin-top: 10px; border-top: 1px dashed var(--border-strong); }
+.agent-delivery__ticket { padding-top: 9px; }
+.agent-delivery__ticket-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.agent-delivery__serial { color: var(--text-secondary); font-family: var(--font-mono); font-size: 9px; line-height: 1.4; letter-spacing: .08em; }
+.agent-delivery__category { color: var(--drawing-accent-ink); font-size: 10px; line-height: 1.4; }
+.agent-instrument .agent-delivery__title { margin-top: 4px; font-size: 15px; font-weight: 550; line-height: 1.35; letter-spacing: -.02em; }
+.agent-delivery__details > summary { display: flex; justify-content: space-between; align-items: center; min-height: 44px; gap: 12px; color: var(--text-secondary); font-size: 11px; line-height: 1.5; list-style: none; cursor: pointer; }
+.agent-delivery__details > summary::-webkit-details-marker { display: none; }
+.agent-delivery__detail-mark { color: var(--drawing-accent-ink); font-size: 17px; transition: transform 140ms ease; }
+.agent-delivery__details[open] .agent-delivery__detail-mark { transform: rotate(45deg); }
+.agent-delivery__evidence { display: grid; gap: 10px; padding-bottom: 12px; font-size: 11px; line-height: 1.75; }
+.agent-delivery__evidence dt { color: var(--drawing-accent-ink); font-weight: 600; }
+.agent-delivery__evidence dd { color: var(--text-secondary); }
+.agent-delivery__navigation { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; border-top: 1px solid var(--divider); }
+.agent-delivery__page-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-width: 76px; min-height: 44px; padding: 5px 0; border: 0; background: transparent; color: var(--text-primary); font-size: 11px !important; }
+.agent-delivery__page-button > span[aria-hidden] { color: var(--drawing-accent-ink); font-size: 17px; }
+.agent-delivery__page-button:not(:disabled):hover { color: var(--drawing-accent-ink); }
+.agent-delivery__index { color: var(--text-secondary); font-family: var(--font-mono); font-size: 10px; font-variant-numeric: tabular-nums; }
+
+/* 03 — A dial with stage selection and a moving pointer. */
+.agent-instrument--attention { border-radius: 18px; background: var(--surface-subtle); }
+.agent-attention__body { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 18px; align-items: center; margin-top: 10px; }
+.agent-attention__dial {
+  --hand-angle: 60deg; position: relative; box-sizing: border-box; width: 132px; height: 132px; border: 1px solid var(--border-strong); border-radius: 50%;
+  background: conic-gradient(var(--drawing-accent) 0deg 120deg, var(--text-primary) 120deg 300deg, var(--border-strong) 300deg 360deg);
+}
+.agent-attention__dial[data-part="review"] { --hand-angle: 210deg; }
+.agent-attention__dial[data-part="rework"] { --hand-angle: 330deg; }
+.agent-attention__face { position: absolute; inset: 10px; border: 1px solid var(--border-strong); border-radius: 50%; background: var(--surface-primary); }
+.agent-attention__tick { position: absolute; display: block; background: var(--border-strong); }
+.agent-attention__tick--top, .agent-attention__tick--bottom { left: calc(50% - .5px); width: 1px; height: 6px; }
+.agent-attention__tick--top { top: 5px; }
+.agent-attention__tick--bottom { bottom: 5px; }
+.agent-attention__tick--left, .agent-attention__tick--right { top: calc(50% - .5px); width: 6px; height: 1px; }
+.agent-attention__tick--left { left: 5px; }
+.agent-attention__tick--right { right: 5px; }
+.agent-attention__hand { position: absolute; z-index: 1; bottom: 50%; left: calc(50% - 1px); width: 2px; height: 34px; background: var(--drawing-accent-ink); transform: rotate(var(--hand-angle)); transform-origin: 50% 100%; transition: transform 180ms ease; }
+.agent-attention__pin { position: absolute; z-index: 2; top: calc(50% - 4px); left: calc(50% - 4px); width: 8px; height: 8px; border-radius: 50%; background: var(--drawing-accent); }
+.agent-attention__total { position: absolute; inset-inline: 0; bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 1px; color: var(--text-secondary); }
+.agent-attention__total strong { font-family: var(--font-mono); font-size: 17px; font-weight: 500; line-height: 1; }
+.agent-attention__total > span { font-size: 7px; line-height: 1.3; letter-spacing: .02em; }
+.agent-attention__readout { min-width: 0; }
+.agent-attention__label { color: var(--text-secondary); font-size: 10px; line-height: 1.4; }
+.agent-attention__output { display: block; margin-top: 3px; color: var(--drawing-accent-ink); font-size: 21px; font-weight: 550; line-height: 1.25; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.agent-instrument .agent-attention__description { min-height: 32px; margin-top: 5px; color: var(--text-secondary); font-size: 10px; line-height: 1.6; }
+.agent-attention__parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin-top: 5px; }
+.agent-attention__part { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 44px; min-height: 44px; padding: 4px 2px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--text-secondary); font-size: 10px !important; line-height: 1.3; }
+.agent-attention__part-minutes { font-family: var(--font-mono); font-size: 10px; }
+.agent-attention__part[aria-pressed="true"] { border-color: var(--selected-border); background: var(--surface-primary); color: var(--drawing-accent-ink); }
+.agent-attention__part:not(:disabled):hover { background: var(--surface-primary); }
+
+/* 04 — Inverted reel with a physically extending tape. */
+.agent-instrument--rework { border: 1px solid var(--text-primary); border-radius: 10px 30px 10px 10px; background: var(--text-primary); color: var(--surface-primary); }
+.agent-instrument--rework :is(.agent-instrument__eyebrow, .agent-instrument__unit, .agent-instrument__coverage, .agent-instrument__demo) { color: color-mix(in srgb, var(--surface-primary) 76%, transparent); }
+.agent-instrument--rework .agent-instrument__demo-dot { border-color: var(--drawing-accent); }
+.agent-instrument--rework :is(button, input):focus-visible { outline-color: var(--drawing-accent); }
+.agent-rework__mechanism { position: relative; height: 79px; margin-top: 9px; }
+.agent-rework__tape { position: absolute; top: 16px; right: 3px; left: 63px; height: 49px; }
+.agent-rework__track {
+  position: absolute; inset: 0 0 14px;
+  border-top: 1px solid color-mix(in srgb, var(--surface-primary) 30%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--surface-primary) 30%, transparent);
+  background-image: repeating-linear-gradient(to right, color-mix(in srgb, var(--surface-primary) 30%, transparent) 0, color-mix(in srgb, var(--surface-primary) 30%, transparent) 1px, transparent 1px, transparent 11.1111%);
+}
+.agent-rework__extension {
+  position: absolute; top: 0; left: 0; display: block; box-sizing: border-box;
+  width: max(0px, var(--rework, 16.6667%)); height: 35px;
+  border-top: 1px solid var(--drawing-accent); border-bottom: 1px solid var(--drawing-accent);
+  background-color: var(--drawing-accent);
+  background-image: repeating-linear-gradient(to right, var(--text-primary) 0, var(--text-primary) 1px, transparent 1px, transparent 12px);
+  background-size: 100% 8px; background-repeat: no-repeat; background-position: top left;
+}
+.agent-rework__hook { position: absolute; top: -3px; right: -2px; box-sizing: border-box; width: 5px; height: 41px; border: 1px solid var(--surface-primary); border-left: 0; border-radius: 0 2px 2px 0; background: var(--text-primary); }
+.agent-rework__scale { position: absolute; right: 0; bottom: 0; left: 0; display: flex; justify-content: space-between; color: color-mix(in srgb, var(--surface-primary) 72%, transparent); font-family: var(--font-mono); font-size: 8px; line-height: 1; }
+.agent-rework__reel { position: absolute; top: 0; left: 0; box-sizing: border-box; width: 78px; height: 78px; border: 1px solid color-mix(in srgb, var(--surface-primary) 55%, transparent); border-radius: 50% 50% 15px 50%; background: var(--text-primary); }
+.agent-rework__reel-ring { position: absolute; inset: 9px; border: 1px solid var(--drawing-accent); border-radius: 50%; }
+.agent-rework__reel-ring::after { position: absolute; right: 4px; bottom: 7px; width: 5px; height: 5px; content: ""; border-radius: 50%; background: var(--drawing-accent); }
+.agent-rework__reel-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--drawing-accent); font-family: var(--font-mono); font-size: 10px; font-weight: 500; line-height: 1.15; letter-spacing: .08em; text-align: center; }
+.agent-rework__controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; margin-top: 2px; }
+.agent-rework__control { min-width: 0; }
+.agent-instrument--rework .agent-instrument__range::-webkit-slider-runnable-track { background: color-mix(in srgb, var(--surface-primary) 40%, transparent); }
+.agent-instrument--rework .agent-instrument__range::-moz-range-track { background: color-mix(in srgb, var(--surface-primary) 40%, transparent); }
+.agent-instrument--rework .agent-instrument__range::-webkit-slider-thumb { border-color: var(--text-primary); box-shadow: 0 0 0 1px var(--drawing-accent); }
+.agent-instrument--rework .agent-instrument__range::-moz-range-thumb { border-color: var(--text-primary); box-shadow: 0 0 0 1px var(--drawing-accent); }
+.agent-rework__reset { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 62px; min-height: 44px; padding: 4px 0; border: 0; background: transparent; color: var(--surface-primary); font-size: 11px !important; }
+.agent-rework__reset > span[aria-hidden] { color: var(--drawing-accent); font-size: 22px; line-height: 1; }
+.agent-rework__reset:not(:disabled):hover { color: var(--drawing-accent); }
+.agent-rework__readout { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: auto; font-size: 10px; line-height: 1.5; }
+.agent-rework__readout > output { color: var(--surface-primary); font-size: 17px; font-weight: 550; font-variant-numeric: tabular-nums; }
+.agent-rework__readout > span { color: color-mix(in srgb, var(--surface-primary) 76%, transparent); }
+
+@media (max-width: 850px) and (min-width: 701px) {
+  .agent-instruments { gap: 1.5rem 1rem; }
+  .agent-instrument { padding-inline: 14px; }
+  .agent-attention__body { grid-template-columns: 112px minmax(0, 1fr); gap: 10px; }
+  .agent-attention__dial { width: 112px; height: 112px; }
+  .agent-attention__hand { height: 27px; }
+  .agent-attention__total { bottom: 11px; }
+}
+@media (max-width: 700px) {
+  .agent-instruments { max-width: 30rem; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .agent-instrument { min-height: 264px; }
+  .agent-instrument--delivery { margin-inline: 0 5px; }
+}
+@media (max-width: 380px) {
+  .agent-instrument { padding-inline: 14px; }
+  .agent-instrument--parallel { padding-inline: 8px; }
+  .agent-instrument__header { gap: 8px; }
+  .agent-instrument .agent-instrument__name { font-size: 18px; }
+  .agent-instrument__value { font-size: 21px; }
+  .agent-instrument__eyebrow { font-size: 9px; }
+  .agent-attention__body { grid-template-columns: 100px minmax(0, 1fr); gap: 10px; }
+  .agent-attention__dial { width: 100px; height: 100px; }
+  .agent-attention__face { inset: 8px; }
+  .agent-attention__hand { height: 24px; }
+  .agent-attention__total { bottom: 9px; }
+  .agent-attention__total strong { font-size: 14px; }
+  .agent-attention__total > span { font-size: 6px; }
+  .agent-attention__parts { gap: 2px; }
+  .agent-attention__output { font-size: 19px; }
+  .agent-rework__readout { gap: 6px; font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-instrument *, .agent-instrument *::before, .agent-instrument *::after { transition: none !important; animation: none !important; }
+}

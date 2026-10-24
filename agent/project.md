@@ -1,5 +1,7 @@
 # 项目概况 (A-Znk的blog)
 
+2026-10-24 交互挂件改版（本地验收完成，待发布）：用户要求减小体量、每项数据一个独立外观的挂件，并迁至 Mac mini 开发。工作副本 `/Users/a-znk/Code/myblog-agent-widgets` 已与主线 b6afd53 树一致，Node22.22/pnpm10.30.1 与冻结锁安装可用。独立 `/agents` 改为轨道、票据、表盘、卷尺四种交互；首页短入口，研究与记录默认折叠。示例不写入个人记录，当前真实数据保持为空。迁移及复现见 `docs/mac-mini-agent-widgets.md`。
+
 2026-10-24 已发布（PR #48，46ffc8f）：Agent 工作观察站 https://a-znk.com/agents 及中文主页小挂件，基于既有 Astro discover 页面与语义色彩；公开研究证据与人工确认的个人记录独立展示，暂无个人观测时显示待记录。合并同期双语主线后159项单测、326项浏览器回归、39页sitemap和19对译文校验通过，正式站入口、四项空值、六条证据、来源展开、Markdown下载及中英首页往返已复核。首版栏目为中文内容；v1/v2两批原始截图及来源归档于 `docs/visual-history/2026-10-24-agent-observatory/`。数据口径与维护方法见 `docs/agent-observatory.md`。
 
 2026-10-22 已发布（PR #46，8ba7ef1）：阅读侧目录以当前链接本身为跟随目标，CSS scroll-padding定义舒适区并保留同量尾部空间，当前项和末项不再贴底。149单测/315 E2E全通过，线上600/760/1000px三高度×3章节通过；Guidelines/References距目录底部96.12/112.12px，折叠及内部跟随保持正文位置，返回Typography落点119.91px。24张版本/正式截图与来源见docs/visual-history/2026-10-22-toc-reading-inset/。

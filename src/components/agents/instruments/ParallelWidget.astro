@@ -1,0 +1,48 @@
+---
+import type { Coverage } from "../../../lib/agents/observatory";
+import "../../../styles/agent-instruments.css";
+interface Props { id?: string; value?: number | null; coverage?: Coverage; observedDays?: number; }
+const { id = "agent-parallel", value = null, coverage = "none", observedDays = 0 } = Astro.props;
+const formatted = value === null ? "待记录" : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(value);
+const coverageLabel = value === null
+  ? coverage === "partial" ? "记录待补全" : "个人实测"
+  : coverage === "partial" ? "已记录 " + observedDays + "/7 天" : "最近 7 天";
+const segments = [
+  { label: "A", start: 0, end: 80 },
+  { label: "B", start: 30, end: 105 },
+  { label: "C", start: 60, end: 120 }
+];
+---
+<article class="agent-instrument agent-instrument--parallel" data-agent-instrument="parallel" aria-labelledby={id + "-title"}>
+  <header class="agent-instrument__header">
+    <div class="agent-instrument__heading">
+      <p class="agent-instrument__eyebrow">01 / 独立任务并行峰值</p>
+      <h2 class="agent-instrument__name" id={id + "-title"}>并行轨道</h2>
+    </div>
+    <div class="agent-instrument__measurement">
+      <p class="agent-instrument__reading"><strong class="agent-instrument__value">{formatted}</strong><span class="agent-instrument__unit">条</span></p>
+      <p class="agent-instrument__coverage">{coverageLabel}</p>
+    </div>
+  </header>
+  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>交互示意 · 不计入实测</p>
+
+  <div class="agent-parallel__diagram" aria-hidden="true">
+    <div class="agent-parallel__labels">{segments.map(segment => <span>{segment.label}</span>)}</div>
+    <div class="agent-parallel__stage" data-parallel-stage style="--cursor: 50%">
+      {segments.map(segment => <div class="agent-parallel__track">
+        <span class="agent-parallel__segment" data-parallel-segment data-start={segment.start} data-end={segment.end} data-active="true" style={"left: " + segment.start / 120 * 100 + "%; width: " + (segment.end - segment.start) / 120 * 100 + "%"}>
+          <span class="agent-parallel__segment-dot"></span>
+        </span>
+      </div>)}
+      <span class="agent-parallel__cursor"></span>
+    </div>
+  </div>
+  <label class="agent-parallel__control">
+    <span class="agent-instrument__sr-only">拨动并行轨道的示意时间</span>
+    <input class="agent-instrument__range" type="range" min="0" max="120" step="5" value="60" data-parallel-scrub data-instrument-control aria-describedby={id + "-demo " + id + "-hint"} disabled />
+  </label>
+  <div class="agent-parallel__readout" id={id + "-hint"}>
+    <span class="agent-parallel__time"><span aria-hidden="true">↔</span><output data-parallel-time aria-live="polite">60 min</output></span>
+    <span><output class="agent-parallel__count" data-parallel-count aria-live="polite">3</output><span>条同时推进</span></span>
+  </div>
+</article>
