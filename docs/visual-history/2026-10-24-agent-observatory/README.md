@@ -77,3 +77,5 @@ v2 原图与校验值见本档案。发布后的归档提交仅更新这些文�
 | [agent-instruments-320-light.png](v3/agent-instruments-320-light.png) | /agents | 320×1849 | `6313eab9d7f5052098e49793962f06bd0e8d04839556fe31ae69c82a2ac585ea` |
 | [agent-instruments-390-dark.png](v3/agent-instruments-390-dark.png) | /agents | 390×1810 | `317cdf7cfeca3f53b3b71e4ea836dce6d9b14640e19948d07b789b2486eef3c9` |
 | [agent-instruments-home-entry-1280-light.png](v3/agent-instruments-home-entry-1280-light.png) | / | 1280×900 | `f997eae8b21e2c0da1590304b1684ec3cb10b5cc52e881eb8425c317e50a19ad` |
+
+截图所对应的挂件实现提交为 `60ba11f28e5ff88c8f682222839f250a189db433`。发布前合入同期英文旁注修复主线 `86183a0`；其编译器、旁注样式、双语校验与跨引擎测试完整保留，挂件源文件与上述截图保持一致。最终集成后的完整CI记录随发布回执维护。

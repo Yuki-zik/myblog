@@ -39,5 +39,7 @@
     "src/components/agents/instruments/AttentionWidget.astro": "14d2bef22e2845d974d9b59231087d367c101745e12d87962eaea076baad7dca",
     "src/components/agents/instruments/ParallelWidget.astro": "cbecd8b9afcb8bb066f3130ab82934efabad5c0690df06ff452552605f0a7d5b",
     "src/components/agents/instruments/DeliveryWidget.astro": "fc5d234161906338003c24043b93bfa7fe573f460aace7a1fa35e4e32e8a3a30"
-  }
+  },
+  "implementationCommit": "60ba11f28e5ff88c8f682222839f250a189db433",
+  "integrationBase": "86183a059bdb043557367473862f837237275db2"
 }

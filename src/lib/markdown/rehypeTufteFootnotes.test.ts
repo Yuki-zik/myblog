@@ -530,3 +530,28 @@ describe("rehypeTufteFootnotes", () => {
     expect(extracted[0]?.anchorId).toBe("current-section::p0::li1");
   });
 });
+
+
+describe("translated post footnote contract", () => {
+  it.each([
+    "/repo/src/content/en/posts/example.md",
+    "C:\\repo\\src\\content\\en\\posts\\example.md"
+  ])("extracts translated notes and keeps native links resolvable: %s", (path) => {
+    const { tree, footnoteRefLink } = createFootnoteTree();
+    const file = { path, data: {} as Record<string, any> };
+    rehypeTufteFootnotes()(tree, file);
+    const notes = file.data.astro?.frontmatter?.[TUFTE_MARKDOWN_FOOTNOTES_KEY];
+    expect(notes).toHaveLength(1);
+    expect(notes[0]).toMatchObject({ id: "1", anchorId: "root::p1", referenceOrder: 1 });
+    expect(footnoteRefLink.properties?.href).toBe("#" + TUFTE_RAIL_FOOTNOTE_ID_PREFIX + "1");
+    expect(tree.children.some(node => node.type === "element" && node.tagName === "section")).toBe(false);
+  });
+
+  it.each(["papers", "concepts", "topics"])("does not move %s footnotes into a post-only rail", (collection) => {
+    const { tree, footnotes } = createFootnoteTree();
+    const file = { path: `/repo/src/content/en/${collection}/example.md`, data: {} as Record<string, any> };
+    rehypeTufteFootnotes()(tree, file);
+    expect(tree.children).toContain(footnotes);
+    expect(file.data.astro).toBeUndefined();
+  });
+});
