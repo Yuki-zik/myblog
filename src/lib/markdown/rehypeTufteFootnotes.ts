@@ -288,7 +288,10 @@ function isPostContentFile(file: VFileLike | undefined): boolean {
   }
 
   const normalized = rawPath.replace(/\\/g, "/");
-  return normalized.includes("/content/posts/");
+  // Both editions use the post reader and must produce the same rail contract.
+  // Match only supported post collections; papers/topics/concepts keep their
+  // own endnotes. Normalize Windows separators above before testing the path.
+  return /(?:^|\/)content\/(?:en\/)?posts\//.test(normalized);
 }
 
 function ensureAstroFrontmatterStore(file: VFileLike): Record<string, unknown> {

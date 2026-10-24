@@ -1,0 +1,526 @@
+[
+  {
+    "width": 390,
+    "slug": "paragraph-anchor-design",
+    "status": 200,
+    "refs": 10,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-anchor-contract",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-stable-anchor",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-supabase-rls",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-anchor-format",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-bubble-count",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-warmup",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte-css",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic-tradeoff",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-selection-caveat",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 7992.859375
+  },
+  {
+    "width": 390,
+    "slug": "ant-ai-coding-review",
+    "status": 200,
+    "refs": 8,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-1",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-2",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-3",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-4",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-5",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-6",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-7",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-8",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 7299.078125
+  },
+  {
+    "width": 390,
+    "slug": "myblog-design-manual",
+    "status": 200,
+    "refs": 5,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-current-source",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-waline",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 13169.5
+  },
+  {
+    "width": 1280,
+    "slug": "paragraph-anchor-design",
+    "status": 200,
+    "refs": 10,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-anchor-contract",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-stable-anchor",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-supabase-rls",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-anchor-format",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-bubble-count",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-warmup",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte-css",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic-tradeoff",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-selection-caveat",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 4002.828125
+  },
+  {
+    "width": 1280,
+    "slug": "ant-ai-coding-review",
+    "status": 200,
+    "refs": 8,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-1",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-2",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-3",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-4",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-5",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-6",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-7",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-8",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 4238.5625
+  },
+  {
+    "width": 1280,
+    "slug": "myblog-design-manual",
+    "status": 200,
+    "refs": 5,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-current-source",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-waline",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 6686.96875
+  },
+  {
+    "width": 1440,
+    "slug": "paragraph-anchor-design",
+    "status": 200,
+    "refs": 10,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-anchor-contract",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-stable-anchor",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-supabase-rls",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-anchor-format",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-bubble-count",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-warmup",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte-css",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic-tradeoff",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-selection-caveat",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 5030.796875
+  },
+  {
+    "width": 1440,
+    "slug": "ant-ai-coding-review",
+    "status": 200,
+    "refs": 8,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-1",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-2",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-3",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-4",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-5",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-6",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-7",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-8",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 5060.9375
+  },
+  {
+    "width": 1440,
+    "slug": "myblog-design-manual",
+    "status": 200,
+    "refs": 5,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-current-source",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-waline",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 8708.640625
+  },
+  {
+    "width": 1920,
+    "slug": "paragraph-anchor-design",
+    "status": 200,
+    "refs": 10,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-anchor-contract",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-stable-anchor",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-supabase-rls",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-anchor-format",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-bubble-count",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-warmup",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte-css",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-optimistic-tradeoff",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-selection-caveat",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 4578.609375
+  },
+  {
+    "width": 1920,
+    "slug": "ant-ai-coding-review",
+    "status": 200,
+    "refs": 8,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-note-1",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-2",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-3",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-4",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-5",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-6",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-7",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-8",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 4799.171875
+  },
+  {
+    "width": 1920,
+    "slug": "myblog-design-manual",
+    "status": 200,
+    "refs": 5,
+    "railNotes": 0,
+    "rawEndnotes": 1,
+    "anchorTargets": [
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-note-current-source",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-hig",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-tufte",
+        "exists": true
+      },
+      {
+        "href": "#user-content-fn-ref-waline",
+        "exists": true
+      }
+    ],
+    "noteBoxes": [],
+    "overflow": 0,
+    "bodyH": 7910.984375
+  }
+]

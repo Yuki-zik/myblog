@@ -42,6 +42,31 @@ for (const url of english) {
       const graph = JSON.parse(script.textContent)["@graph"];
       for (const node of graph ?? []) if (node.inLanguage) assert.equal(node.inLanguage, "en", `${path}: schema language`);
     }
+    // A translated page can pass every overflow/SEO check yet bypass the
+    // post-only Markdown pipeline. Verify the complete citation contract.
+    if (path.startsWith("/en/posts/")) {
+      const body = document.querySelector("[data-post-body]");
+      assert(body, `${path}: missing article body`);
+      const references = [...body.querySelectorAll("a[data-footnote-ref]")];
+      const ids = [...new Set(references.map(ref => ref.getAttribute("data-footnote-rail-target")))].sort();
+      const sourceIds = [...new Set([...original.querySelectorAll("[data-post-body] a[data-footnote-ref]")].map(ref => ref.getAttribute("data-footnote-rail-target")))].sort();
+      assert.deepEqual(ids, sourceIds, `${path}: translated references must preserve source footnote identities`);
+      assert(!ids.includes(null), `${path}: references bypassed the margin-note compiler`);
+      assert.equal(body.querySelectorAll("[data-footnotes]").length, 0, `${path}: raw endnotes leaked into article body`);
+      const notes = [...document.querySelectorAll("[data-footnote-rail-item]")];
+      assert.deepEqual(notes.map(note => note.getAttribute("data-footnote-rail-item")).sort(), ids, `${path}: missing or duplicate margin notes`);
+      for (const ref of references) {
+        const id = decodeURIComponent(ref.getAttribute("href").slice(1));
+        assert(document.getElementById(id)?.matches("[data-footnote-rail-item]"), `${path}: reference target does not resolve to a margin note: ${id}`);
+      }
+      for (const note of document.querySelectorAll("[data-marginalia-bubble]")) {
+        assert(note.querySelector(".post-scholar-footnote-body")?.textContent.trim(), `${path}: empty note ${note.id}`);
+        const anchor = note.getAttribute("data-anchor-id");
+        if (anchor) assert(document.getElementById("c-" + anchor), `${path}: missing translated paragraph anchor ${anchor}`);
+        assert(!note.querySelector("[data-footnote-backref]"), `${path}: duplicated raw back-reference`);
+      }
+      assert(![...body.querySelectorAll("h2, h3")].some(h => h.id === "footnote-label"), `${path}: endnote label leaked into TOC`);
+    }
     document.querySelectorAll('script, style, [data-language-switch]').forEach(node => node.remove());
     const walker = document.createTreeWalker(document.body, 4);
     const untranslated = [];

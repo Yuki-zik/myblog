@@ -491,3 +491,43 @@
     width: 100%;
   }
 }
+
+
+/* Marginalia progressively enhance from normal flow. This remains readable
+   without JS and while the controller/font metrics have not initialized. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer {
+  --marginalia-floating: 0;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) {
+  display: grid;
+  gap: 1rem;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) .post-scholar-floating-spacer {
+  display: none;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) .post-scholar-item--bubble {
+  position: relative;
+  inset: auto;
+}
+@media (min-width: 1281px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer {
+    --marginalia-floating: 1;
+  }
+}
+
+
+/* Before enhancement, the title/cover still spans the margin column. Put
+   fallback notes in a second grid row instead of under that spanning cover. */
+@media (min-width: 1281px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri:not([data-marginalia-layout="floating"]) .post-reading-rail {
+    grid-column: 3 / 5;
+    grid-row: 2;
+    align-self: start;
+    width: 100%;
+    max-width: 52rem;
+    margin-top: 1rem;
+  }
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri:not([data-marginalia-layout="floating"]) .post-scholar-footnote-body :where(p) {
+    max-width: 65ch;
+  }
+}

@@ -344,3 +344,6 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 ## 中英双语（2026-10-24）
 
 中文原路由 + `/en` 独立静态译文，共享页面模板与 schema。英文正文在 `src/content/en`，UI/作者/图版映射在 `src/lib/i18n/en.json`。已有译文配对生成双向 hreflang；每种语言自指 canonical，独立搜索与 RSS。语言切换定位对应页面，评论沿用原文 thread path。维护及验证见 `docs/bilingual-publishing.md`。
+
+
+2026-10-24 英文旁注修复：双语检查增补脚注身份/目标/重复注释区约束；渲染默认文流、CSS驱动浮动阈值；新增Chromium/WebKit逐注几何和导航验收。详见docs/visual-history/2026-10-24-bilingual-marginalia/。
