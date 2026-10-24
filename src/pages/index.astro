@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import researchArchitecture from "../assets/home/research-architecture.webp";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import AgentObservatoryWidget from "../components/agents/AgentObservatoryWidget.astro";
 import ExploreGateway from "../components/discover/ExploreGateway.astro";
 import ContentDossier from "../components/discover/ContentDossier.astro";
 import PostCover from "../components/post/PostCover.astro";
@@ -364,7 +365,10 @@ const homeDescription = SITE_DESCRIPTION;
 
       <ExploreGateway graph={buildKnowledgeGraph(posts, topics, concepts)} />
 
+      <AgentObservatoryWidget />
+
       <HomeReferenceFooter variant="full-bleed" />
     </div>
   </div>
 </BaseLayout>
+

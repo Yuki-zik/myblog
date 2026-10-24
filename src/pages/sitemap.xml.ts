@@ -7,7 +7,7 @@ export const prerender = true;
 
 // These are the fixed public HTML routes. Collection routes are added below.
 // Keep in sync with the route files; CI compares the result to Astro's sitemap.
-const PUBLIC_ROUTES = ["/", "/archives", "/author", "/map", "/papers", "/topics"];
+const PUBLIC_ROUTES = ["/", "/agents", "/archives", "/author", "/map", "/papers", "/topics"];
 
 export async function GET(context: APIContext): Promise<Response> {
   const site = context.site ?? new URL("http://localhost:4321/");
@@ -41,3 +41,4 @@ export async function GET(context: APIContext): Promise<Response> {
     }
   });
 }
+
