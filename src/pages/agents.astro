@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DiscoverShell from "../components/discover/DiscoverShell.astro";
+import AgentObservatoryWidget from "../components/agents/AgentObservatoryWidget.astro";
+import { publicObservations, evidenceRecords } from "../lib/agents/observatory";
+
+const days = [...publicObservations.days].sort((a, b) => b.date.localeCompare(a.date));
+const tasks = [...publicObservations.tasks].sort((a, b) => b.date.localeCompare(a.date));
+const taskStatusLabels = { active: "进行中", accepted: "已验收", rejected: "未通过验收", abandoned: "已放弃" };
+const evidence = [...evidenceRecords].sort((a, b) => b.date.localeCompare(a.date));
+const display = (value: number | null) => value === null ? "未记录" : String(value);
+---
+
+<BaseLayout title="Agent 工作观察站" description="记录一个人能同时委托多少任务，以及这些任务带来的可靠交付、人工投入与返工；对照公开研究，观察 Agent 如何改变工作。" runtime="discover" headerVariant="drawing">
+  <DiscoverShell bodyClass="agent-observatory">
+    <header class="agent-observatory-hero">
+      <p class="agent-observatory-kicker">PERSONAL AGENT OBSERVATORY</p>
+      <h1>Agent 工作观察站</h1>
+      <p class="agent-observatory-lead">一个人能同时推进多少工作，<br />又能得到多少可靠成果。</p>
+      <p class="agent-observatory-intro">把 Agent 的并行能力、人的注意力和最终交付放在一起记录。随着工具与工作方式变化，持续检验：增加委托，是否改善了实际工作。</p>
+      <nav class="agent-observatory-links" aria-label="观察站目录"><a href="#personal">个人记录</a><a href="#evidence">研究证据</a><a href="#recording">统计口径与模板</a></nav>
+    </header>
+
+    <div id="personal" class="agent-observatory-section">
+      <AgentObservatoryWidget detailed />
+      {days.length === 0 ? (
+        <div class="agent-observatory-empty">
+          <p class="agent-observatory-kicker">记录的起点</p>
+          <h3>第一条记录，从一次真实交付开始。</h3>
+          <p>个人日志尚未发布。这里会留下并行任务、验收结果、人工投入与返工，也记录过去无暇完成的新工作。历史趋势将从这些记录中逐渐形成。</p>
+          <a href="#recording">查看如何记录 <span aria-hidden="true">↓</span></a>
+        </div>
+      ) : (
+        <div class="agent-observatory-table-wrap" role="region" aria-label="每日观察记录，可横向滚动" tabindex="0">
+          <table><caption>每日记录 · 人工时间包含布置、检查、协调与返工</caption><thead><tr><th scope="col">日期</th><th scope="col">并行峰值</th><th scope="col">人工 / 分钟</th><th scope="col">其中返工 / 分钟</th><th scope="col">变化备注</th></tr></thead><tbody>{days.map((day) => <tr><th scope="row">{day.date}</th><td>{display(day.peakParallelTasks)}</td><td>{display(day.humanMinutes)}</td><td>{display(day.reworkMinutes)}</td><td>{day.note || "—"}</td></tr>)}</tbody></table>
+        </div>
+      )}
+      {tasks.length > 0 && <details class="agent-observatory-details"><summary>查看任务状态与验收依据（含失败和放弃）</summary><ul>{tasks.map((task) => <li><time datetime={task.date}>{task.date}</time> · {taskStatusLabels[task.status]} · {task.evidenceUrl ? <a href={task.evidenceUrl} rel="noopener noreferrer">{task.title}</a> : task.title}{task.acceptanceCriterion && <p>验收标准：{task.acceptanceCriterion}</p>}{task.note && <p>{task.note}</p>}</li>)}</ul></details>}
+    </div>
+
+    <section id="evidence" class="agent-observatory-section" aria-labelledby="agent-evidence-title">
+      <div class="agent-observatory-section-head"><p class="agent-observatory-kicker">EVIDENCE · 公开研究</p><h2 id="agent-evidence-title">能力在增长，收益取决于工作方式。</h2><p>基准实验、现场研究与自报调查测量不同对象。保留各自的条件和边界，逐条阅读。这些资料尚未给出可比较的行业人均 Agent 数量曲线。</p></div>
+      <ol class="agent-observatory-timeline">
+        {evidence.map((item) => (
+          <li id={`evidence-${item.id}`}>
+            <div class="agent-observatory-timeline__date"><time datetime={item.date}>{item.date}</time><span>{item.kind}</span></div>
+            <article>
+              <h3>{item.title}</h3><p>{item.finding}</p>
+              <details class="agent-observatory-details"><summary>适用范围与原始来源</summary><p>{item.limit}</p><a href={item.url} rel="noopener noreferrer">阅读原始研究 <span aria-hidden="true">↗</span></a></details>
+            </article>
+          </li>
+        ))}
+      </ol>
+      <p class="agent-observatory-meta">初始资料整理：2026-10-24。研究发表时间与数据采集时间分别以原文为准。</p>
+    </section>
+
+    <section id="recording" class="agent-observatory-section" aria-labelledby="agent-method-title">
+      <div class="agent-observatory-section-head"><p class="agent-observatory-kicker">METHOD · 统计口径</p><h2 id="agent-method-title">先记事实，再判断生产力。</h2><p>每天记一行投入，每项工作保留一个验收目标。失败、放弃和返工一起留下。</p></div>
+      <dl class="agent-observatory-definitions">
+        <div><dt>01 / 独立任务</dt><dd>以独立验收目标计数。同一任务的多个会话、重试和子 Agent 合并为一项；并行峰值描述观测到的同时推进数量。</dd></div>
+        <div><dt>02 / 可靠交付</dt><dd>达到预先设定的验收标准，并附可核对的结果链接。一个可复核的实验负结果，同样属于有效研究交付。</dd></div>
+        <div><dt>03 / 人工时间</dt><dd>包含布置、补充上下文、审查、协调与返工。同一段注意力只记一次；返工计入人工总时间。</dd></div>
+        <div><dt>04 / 公平比较</dt><dd>在任务类型、范围和验收标准相近时比较投入与产出。个人记录保留描述性结论，跨任务汇总不生成生产力倍数。</dd></div>
+      </dl>
+      <div class="agent-observatory-recording"><div><h3>留下一分钟的工作记录</h3><p>填写日期、并行峰值、人工分钟数和返工分钟数；为每项任务更新状态与验收依据。备注里记录工具变化，以及这次新增的能力。</p><p class="agent-observatory-meta">空缺留空；已测量且确实没有的量填写 0。记录由作者核对后更新到页面。</p></div><div class="agent-observatory-downloads"><a class="agent-observatory-download" href="/agent-observatory-log-template.md" download>下载每日记录模板 <span aria-hidden="true">↓</span></a><a class="agent-observatory-download" href="/agent-observatory-template.json" download>下载空数据文件 <span aria-hidden="true">↓</span></a></div></div>
+    </section>
+  </DiscoverShell>
+</BaseLayout>

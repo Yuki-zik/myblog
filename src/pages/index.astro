@@ -15,6 +15,7 @@ import researchArchitecture from "../assets/home/research-architecture.webp";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ExploreGateway from "../components/discover/ExploreGateway.astro";
+import AgentObservatoryWidget from "../components/agents/AgentObservatoryWidget.astro";
 import ContentDossier from "../components/discover/ContentDossier.astro";
 import PostCover from "../components/post/PostCover.astro";
 import "../styles/home-content-dossiers.css";
@@ -373,6 +374,8 @@ const homeDescription = SITE_DESCRIPTION;
       </section>
 
       <ExploreGateway graph={buildKnowledgeGraph(posts, topics, concepts)} />
+
+      {locale === "zh-CN" && <AgentObservatoryWidget />}
 
       <HomeReferenceFooter variant="full-bleed" />
     </div>
