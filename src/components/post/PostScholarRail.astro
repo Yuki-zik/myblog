@@ -48,7 +48,7 @@ function getEntryAriaLabel(entry: InfoRailEntry): string {
   if (entry.kind === "figure") {
     return t("定位到正文图表说明 {0}", [railLabel(entry.number ?? "")]);
   }
-  return t("定位到正文{0} {1}", [entry.typeLabel, railLabel(entry.number ?? entry.footnote.label)]);
+  return t("定位到正文{0} {1}", [t(entry.typeLabel), railLabel(entry.number ?? entry.footnote.label)]);
 }
 
 const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
@@ -185,7 +185,6 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
     if (window[FLAG]) return;
     window[FLAG] = true;
 
-    const DESKTOP_MEDIA = "(min-width: 1101px)";
     let flashTimer = 0;
     let layoutRaf = 0;
     let hoverBindingCounter = 0;
@@ -412,7 +411,6 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
     function layoutFloatingMarginalia() {
       window.cancelAnimationFrame(layoutRaf);
       layoutRaf = window.requestAnimationFrame(() => {
-        const desktop = window.matchMedia(DESKTOP_MEDIA).matches;
         const layout = document.querySelector(".post-reading-layout--scholarly.post-reading-layout--tri");
         const main = document.querySelector(".post-reading-main");
         const layer = document.querySelector("[data-post-scholar-floating-layer]");
@@ -427,6 +425,11 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
           return;
         }
 
+        // CSS owns the 1280px single-column boundary. Start in normal flow;
+        // enable absolute positioning only inside the same frame that assigns
+        // every note a measured position, so uninitialized notes never stack.
+        const desktop = getComputedStyle(layer).getPropertyValue("--marginalia-floating").trim() === "1";
+        layer.dataset.marginaliaLayout = desktop ? "floating" : "flow";
         if (!desktop) {
           spacer.style.height = "";
           for (const bubble of bubbles) {

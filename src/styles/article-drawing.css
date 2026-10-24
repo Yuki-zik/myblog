@@ -491,3 +491,26 @@
     width: 100%;
   }
 }
+
+
+/* Marginalia progressively enhance from normal flow. This remains readable
+   without JS and while the controller/font metrics have not initialized. */
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer {
+  --marginalia-floating: 0;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) {
+  display: grid;
+  gap: 1rem;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) .post-scholar-floating-spacer {
+  display: none;
+}
+[data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer:not([data-marginalia-layout="floating"]) .post-scholar-item--bubble {
+  position: relative;
+  inset: auto;
+}
+@media (min-width: 1281px) {
+  [data-reading-design="edge"] .post-reading-layout--scholarly.post-reading-layout--tri .post-scholar-floating-layer {
+    --marginalia-floating: 1;
+  }
+}
