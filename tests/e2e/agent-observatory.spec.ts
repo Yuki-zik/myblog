@@ -37,11 +37,20 @@ test("Agent observatory exposes sources and an honest empty record with usable m
   }
 });
 
-test("homepage widget leads to the observation page without adding a header item", async ({ page }) => {
+test("homepage widget leads to the observation page without adding a header item", async ({ page }, testInfo) => {
   await page.goto("/");
   const widget = page.locator(".agent-observatory-widget");
   await expect(widget).toHaveCount(1);
   await expect(page.locator(".site-nav-links > a")).toHaveCount(6);
+  for (const [width, scheme] of [[1280, "light"], [390, "dark"]] as const) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
+    await page.evaluate((color) => document.documentElement.setAttribute("data-color-scheme", color), scheme);
+    await widget.scrollIntoViewIfNeeded();
+    const shot = testInfo.outputPath(`agent-widget-home-${width}-${scheme}.png`);
+    await page.screenshot({ path: shot, animations: "disabled" });
+    await testInfo.attach(`agent-widget-home-${width}-${scheme}`, { path: shot, contentType: "image/png" });
+  }
   await widget.getByRole("link", { name: /查看 \d+ 条研究证据与记录方法/ }).click();
   await expect(page).toHaveURL(/\/agents\/?$/);
 });
