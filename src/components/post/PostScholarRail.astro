@@ -430,6 +430,7 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
         // every note a measured position, so uninitialized notes never stack.
         const desktop = getComputedStyle(layer).getPropertyValue("--marginalia-floating").trim() === "1";
         layer.dataset.marginaliaLayout = desktop ? "floating" : "flow";
+        layout.dataset.marginaliaLayout = layer.dataset.marginaliaLayout;
         if (!desktop) {
           spacer.style.height = "";
           for (const bubble of bubbles) {

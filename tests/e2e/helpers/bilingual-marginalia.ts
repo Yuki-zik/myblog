@@ -37,6 +37,14 @@ async function noteProblems(page: Page) {
         if (p.scrollWidth > p.clientWidth + 1) errors.push(`${note.id}: overflowing paragraph`);
         if (parseFloat(getComputedStyle(p).fontSize) < 14) errors.push(`${note.id}: text too small`);
       }
+      for (const other of document.querySelectorAll<HTMLElement>(".post-title-card, .post-waline-comments-section, .post-pager")) {
+        const box=other.getBoundingClientRect();
+        if (Math.min(rect.right,box.right)-Math.max(rect.left,box.left)>1 && Math.min(rect.bottom,box.bottom)-Math.max(rect.top,box.top)>1) errors.push(`${note.id}: overlaps ${other.className}`);
+      }
+      if (innerWidth>1280 && layer.dataset.marginaliaLayout !== "floating") {
+        const main=document.querySelector(".post-reading-main")!.getBoundingClientRect();
+        if (rect.top<main.bottom-1) errors.push(`${note.id}: fallback must follow the article, clear of its cover`);
+      }
       const source = note.dataset.anchorId;
       if (source && !document.getElementById("c-" + source)) errors.push(`${note.id}: missing source paragraph ${source}`);
       if (layer.dataset.marginaliaLayout === "floating") {
