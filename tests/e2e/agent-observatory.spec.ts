@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import observations from "../../src/data/agent-observatory.json";
+import observations from "../../src/data/agent-observatory.json" with { type: "json" };
 
 test("Agent observatory exposes sources and an honest empty record with usable mobile and dark layouts", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1280, height: 900 });
