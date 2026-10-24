@@ -52,3 +52,10 @@ html[lang="en"] .site-nav-links a { letter-spacing: -0.02em; }
   }
   html[lang="en"] .site-header[data-header-state] .site-nav { gap: 0.25rem; }
 }
+
+@media (max-width: 900px) {
+  /* The new language tool makes the expanded two-row header reach 98px.
+     A shared 100px floor prevents its compact state shortening document flow
+     during search's fixed-body scroll lock, preserving the reading position. */
+  .site-header[data-header-state] { --header-band: 100px; }
+}
