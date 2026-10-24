@@ -240,9 +240,9 @@ function sectionLabel(index: number): string {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .toc-sidebar__toggle-icon,
-    .toc-sidebar__track,
-    .toc-sidebar__progress {
+    .toc-sidebar .toc-sidebar__toggle-icon,
+    .toc-sidebar .toc-sidebar__track,
+    .toc-sidebar .toc-sidebar__progress {
       transition: none;
     }
   }
@@ -273,18 +273,6 @@ function sectionLabel(index: number): string {
       transform 320ms var(--ease-out, ease),
       height 320ms var(--ease-out, ease),
       opacity 320ms var(--ease-out, ease);
-  }
-
-  /*
-   * While the TOC list itself is scrolling to bring the active item into view,
-   * the indicator's coordinate system is moving under it. Animating toward a
-   * target expressed in that frame just renders the rail lagging behind the
-   * list. `toc-client.ts` sets this flag only for that catch-up case and clears
-   * it once the geometry settles, so ordinary reading scroll keeps the 320ms
-   * ease.
-   */
-  .toc-sidebar__progress[data-instant] {
-    transition: none;
   }
 
   /* `.toc-sidebar__list` / `.toc-sidebar__children` list reset, grid and spacing are
