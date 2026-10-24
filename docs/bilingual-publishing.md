@@ -65,3 +65,19 @@ pnpm exec playwright test
 - https://github.com/advisories/GHSA-8c8m-p3m8-cjg8
 
 两套生产依赖审计在原有策略下退出码均为 0；仍有低等级报告及此前已有的审核例外，不宣称依赖零漏洞。补丁后的独立环境中，153 单测、完整构建、双语/SEO 检查和 Waline handler/输入校验/日志隔离 smoke 已通过；完整浏览器回归由 PR CI 再执行。
+
+
+## 正式发布验收 · 2026-10-24
+
+功能版本：`8d04be4140d7384e983423407e31a9af18fcfa61`（PR #49，2026-10-24 14:41:36 UTC 合并）。
+
+- Vercel `myblog` 与 `waline` 正式部署均已成功。
+- 正式域 https://a-znk.com ：19 个中文 + 19 个英文 HTML 全部 HTTP 200；逐页检查 lang、自指 canonical、zh-CN/en/x-default、同页语言切换及 indexability，失败 0。
+- `/en/search-index.json` HTTP 200，共13条英文记录，所有结果指向英文路径，响应 noindex；英文 RSS 为 en、Markdown 镜像 noindex/follow。
+- 最终CI：153单元测试、324浏览器测试全部通过，论文来源、38页SEO、19对语言页、评论smoke、两套既有策略安全审计通过。
+- 全部19个英文页在390/1440px的38组独立浏览器检查无横向溢出或脚本错误；320px导航及无JS阅读/切换另有E2E覆盖。
+- 发布后的 Search engine discovery（run 40103729528）已获 IndexNow HTTP 200，接受38个canonical URLs；百度提交清单已生成。未将提交成功计为搜索引擎实际收录。
+- 既有中文URL和评论thread path保留；新文章仍需配对英文正文，不会在后台自动翻译。维护流程见 `docs/bilingual-publishing.md`。
+
+最终CI：https://github.com/Yuki-zik/myblog/actions/runs/40103056885
+搜索发现通知：https://github.com/Yuki-zik/myblog/actions/runs/40103729528
