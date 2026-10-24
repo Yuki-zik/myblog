@@ -1,4 +1,9 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import type { TocItem } from "./toc-utils";
 
 interface Props {
@@ -7,7 +12,7 @@ interface Props {
   accent?: string;
 }
 
-const { items, title = "文章目录", accent } = Astro.props;
+const { items, title = t("文章目录"), accent } = Astro.props;
 
 function sectionLabel(index: number): string {
   return String(index + 1).padStart(2, "0");
@@ -47,7 +52,7 @@ function sectionLabel(index: number): string {
               items.map((item, index) => (
                 <li class="toc-sidebar__item" data-toc-item data-item-id={item.id}>
                   <a
-                    href={`#${item.id}`}
+                    href={l(`#${item.id}`)}
                     class="toc-sidebar__link toc-sidebar__link--level-2 grid gap-[0.18rem]"
                     data-toc-link
                     data-target-id={item.id}
@@ -72,7 +77,7 @@ function sectionLabel(index: number): string {
                               data-parent-id={item.id}
                             >
                               <a
-                                href={`#${child.id}`}
+                                href={l(`#${child.id}`)}
                                 class="toc-sidebar__link toc-sidebar__link--level-3 grid gap-[0.18rem]"
                                 data-toc-link
                                 data-target-id={child.id}

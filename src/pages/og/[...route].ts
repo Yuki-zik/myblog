@@ -1,3 +1,4 @@
+import { collectionReader } from "../../lib/i18n/content";
 import { OGImageRoute } from "astro-og-canvas";
 import { getCollection } from "astro:content";
 import { ensureOgFonts, OG_CJK_FAMILY } from "../../lib/og/font";
@@ -44,6 +45,14 @@ const pages: Record<string, OgPage> = {
     ])
   )
 };
+
+const english = collectionReader("en");
+for (const collection of ["posts", "topics", "concepts", "papers"] as const) {
+  for (const entry of await english(collection)) {
+    if ("draft" in entry.data && entry.data.draft) continue;
+    pages[`en/${collection}/${entry.id}`] = {title: entry.data.title, description: entry.data.summary ?? ("abstract" in entry.data ? entry.data.abstract : "")};
+  }
+}
 
 export const { getStaticPaths, GET } = await OGImageRoute({
   pages,

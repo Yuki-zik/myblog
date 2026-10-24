@@ -1,12 +1,16 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+
 ---
 
 <div class="header-search relative flex items-center w-full max-w-full" data-header-search>
   <button
     type="button"
     class="header-search-trigger inline-flex items-center w-full min-h-[2.56rem] gap-[0.58rem] rounded-lg border py-[0.16rem] pr-[0.3rem] pl-[0.72rem] text-left cursor-pointer"
-    aria-label="&#x6253;&#x5f00;&#x641c;&#x7d22;"
-    title="搜索（/ 或 Ctrl/⌘+K）"
+    aria-label={t("打开搜索")}
+    title={t("搜索（/ 或 Ctrl/⌘+K）")}
     data-search-trigger
   >
     <span class="header-search-trigger-icon inline-flex items-center justify-center flex-none size-[0.96rem]" aria-hidden="true">
@@ -15,7 +19,7 @@
         <line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
     </span>
-    <span class="header-search-trigger-text min-w-0 flex-auto truncate text-[0.84rem] font-[540] tracking-[-0.025em]">搜索文章 / 主题 / 概念</span>
+    <span class="header-search-trigger-text min-w-0 flex-auto truncate text-[0.84rem] font-[540] tracking-[-0.025em]">{t("搜索文章 / 主题 / 概念")}</span>
     <span class="header-search-trigger-shortcut flex-none rounded-full border py-[0.18rem] px-[0.48rem] text-[0.62rem] font-bold" aria-hidden="true">/</span>
   </button>
 
@@ -27,13 +31,13 @@
       </svg>
     </span>
     <label class="sr-only" for="site-search-input">
-      &#x641c;&#x7d22;&#x7ad9;&#x5185;&#x5185;&#x5bb9;
+      {t("搜索站内内容")}
     </label>
     <input
       id="site-search-input"
       class="header-search-input w-full p-0 bg-transparent"
       type="search"
-      placeholder="&#x641c;&#x7d22;&#x6587;&#x7ae0; / &#x4e3b;&#x9898; / &#x6982;&#x5ff5;"
+      placeholder={t("搜索文章 / 主题 / 概念")}
       autocomplete="off"
       enterkeyhint="search"
       data-search-input
@@ -45,7 +49,7 @@
     <button
       type="button"
       class="header-search-close inline-flex items-center justify-center flex-none size-8 rounded-full border cursor-pointer"
-      aria-label="&#x5173;&#x95ed;&#x641c;&#x7d22;"
+      aria-label={t("关闭搜索")}
       data-search-close
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -68,25 +72,29 @@
       role="listbox"
     ></ul>
   </div>
-  <dialog class="header-search-dialog" aria-label="站内搜索" data-search-dialog></dialog>
+  <dialog class="header-search-dialog" aria-label={t("站内搜索")} data-search-dialog></dialog>
 </div>
 
 <script>
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(window.location.pathname);
+const t = createTranslator(locale);
+
   import { searchIndexItems, type SearchIndexItem } from "../../lib/search/index";
 
   const SEARCH_TYPE_LABELS: Record<SearchIndexItem["type"], string> = {
-    paper: "\u8bba\u6587",
-    post: "\u6587\u7ae0",
-    topic: "\u4e3b\u9898",
-    concept: "\u6982\u5ff5"
+    paper: t("论文"),
+    post: t("文章"),
+    topic: t("主题"),
+    concept: t("概念")
   };
 
   const MESSAGES = {
-    loading: "\u6b63\u5728\u641c\u7d22\u2026",
-    none: "\u672a\u627e\u5230\u7ed3\u679c",
-    loadError: "\u641c\u7d22\u7d22\u5f15\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",
-    keywords: "\u5173\u952e\u8bcd\uff1a",
-    resultCount: (count: number) => `\u627e\u5230 ${count} \u6761\u7ed3\u679c`
+    loading: t("正在搜索…"),
+    none: t("未找到结果"),
+    loadError: t("搜索索引加载失败，请稍后重试"),
+    keywords: t("关键词："),
+    resultCount: (count: number) => t("找到 {0} 条结果", [count])
   };
 
   /* Tailwind scans these literals, so result rows get the same utility
@@ -122,7 +130,7 @@
     }
 
     if (!searchCache.promise) {
-      searchCache.promise = fetch("/search-index.json", {
+      searchCache.promise = fetch(localizePath("/search-index.json", locale), {
         headers: {
           Accept: "application/json"
         }

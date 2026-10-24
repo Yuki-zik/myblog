@@ -1,4 +1,8 @@
 ---
+import { getLocale, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 export type DiscoverAction = {
   href: string;
   label: string;
@@ -36,7 +40,7 @@ function iconMarkup(icon: DiscoverAction["icon"]) {
     <div class:list={["discover-action-pair flex flex-wrap gap-4", className]}>
       {actions.map((action) => (
         <a
-          href={action.href}
+          href={l(action.href)}
           class:list={[
             "discover-action inline-flex min-h-11 items-center gap-3 py-2 text-base font-medium leading-snug",
             `discover-action--${action.variant ?? "secondary"}`

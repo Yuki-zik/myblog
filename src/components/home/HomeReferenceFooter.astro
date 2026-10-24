@@ -1,5 +1,12 @@
 ---
-import { SITE_AUTHOR_PROFILE, SITE_NAME } from "../../lib/site";
+import { getLocale, createTranslator, localizePath, localizeData } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
+const SITE_NAME = localizeData(SOURCE_SITE_NAME, locale);
+
+import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE, SITE_NAME as SOURCE_SITE_NAME } from "../../lib/site";
 
 type HomeFooterLink = {
   href: string;
@@ -12,9 +19,9 @@ interface Props {
 }
 
 const year = new Date().getFullYear();
-const footerNote = SITE_AUTHOR_PROFILE.bioShort ?? "AI / 技术 / 知识网络";
+const footerNote = SITE_AUTHOR_PROFILE.bioShort ?? t("AI / 技术 / 知识网络");
 const footerQuote =
-  SITE_AUTHOR_PROFILE.mission ?? "把研究、工程和写作组织成可执行、可复用、可持续迭代的系统。";
+  SITE_AUTHOR_PROFILE.mission ?? t("把研究、工程和写作组织成可执行、可复用、可持续迭代的系统。");
 const { variant = "full-bleed" } = Astro.props;
 
 const socialNetworkById = new Map(
@@ -46,13 +53,13 @@ const footerLinks = [
   socialNetworkById.get("zhihu")
     ? {
         href: socialNetworkById.get("zhihu")!.href,
-        label: "知乎",
+        label: t("知乎"),
         kind: "zhihu"
       }
     : socialNetworkById.get("xiaohongshu")
       ? {
           href: socialNetworkById.get("xiaohongshu")!.href,
-          label: "小红书",
+          label: t("小红书"),
           kind: "xiaohongshu"
         }
       : null
@@ -83,11 +90,11 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
       <p class="home-reference-footer__quote font-(family-name:--font-ui) text-[0.875rem] leading-[1.7]">“{footerQuote}”</p>
     </div>
 
-    <nav class="home-reference-footer__socials flex items-center justify-end gap-4" aria-label="首页页脚社交链接">
+    <nav class="home-reference-footer__socials flex items-center justify-end gap-4" aria-label={t("首页页脚社交链接")}>
       {
         visibleLinks.map((link) => (
           <a
-            href={link.href}
+            href={l(link.href)}
             target={link.href.startsWith("http") || link.href.startsWith("mailto:") ? "_blank" : undefined}
             rel={link.href.startsWith("http") ? "noreferrer noopener" : undefined}
             class="home-reference-footer__social-link inline-flex h-10 w-10 items-center justify-center rounded-full"
@@ -108,9 +115,9 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
                 <path d="M21.2 4.3 3.8 11.1c-1 .4-1 1.8.1 2.1l4.2 1.3 1.6 5.1c.3 1 1.6 1.2 2.2.4l2.4-3 4.7 3.4c.8.6 1.9.1 2.1-.9l2.2-13.8c.2-1-.8-1.8-1.8-1.4ZM9.3 13.8l8.9-5.9-6.9 6.9-.3 3.2-1.7-4.2Z" />
               </svg>
             ) : link.kind === "zhihu" ? (
-              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">知</span>
+              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">{t("知")}</span>
             ) : (
-              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">书</span>
+              <span class="home-reference-footer__social-text font-(family-name:--font-ui) text-[0.875rem] font-bold">{t("书")}</span>
             )}
           </a>
         ))

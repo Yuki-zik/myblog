@@ -1,5 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection } from "astro:content";
 import ContentDossier from "../../components/discover/ContentDossier.astro";
 import DrawingIndexShell from "../../components/discover/DrawingIndexShell.astro";
 import DrawingPageHeader from "../../components/discover/DrawingPageHeader.astro";
@@ -22,28 +29,28 @@ const paperGroups = [...new Set(papers.map((paper) => paper.data.year))].map((ye
   year,
   papers: papers.filter((paper) => paper.data.year === year)
 }));
-const description = "按年份浏览论文，查找研究摘要、发表信息与原文。";
-const seoDescription = "汇总已公开研究论文，包括多语种语音隐私保护、通用对抗扰动、双激发碳点与机器学习检测；按年份查看摘要、期刊信息、DOI 和原文链接。";
+const description = t("按年份浏览论文，查找研究摘要、发表信息与原文。");
+const seoDescription = t("汇总已公开研究论文，包括多语种语音隐私保护、通用对抗扰动、双激发碳点与机器学习检测；按年份查看摘要、期刊信息、DOI 和原文链接。");
 const site = Astro.site;
 const canonicalUrl = site ? new URL("/papers", site).toString() : "";
 const structuredData = site
   ? buildCollectionPageGraph({
       siteUrl: site.toString(),
       canonicalUrl,
-      title: "论文与研究成果",
+      title: t("论文与研究成果"),
       description: seoDescription,
       breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
-        { name: "论文与研究成果" }
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("论文与研究成果") }
       ]
     })
   : undefined;
 
 const statusLabels = {
-  prototype: "页面样稿",
-  preprint: "预印本",
-  accepted: "已接收",
-  published: "已发表"
+  prototype: t("页面样稿"),
+  preprint: t("预印本"),
+  accepted: t("已接收"),
+  published: t("已发表")
 } as const;
 
 const resourceLabels = {
@@ -60,7 +67,7 @@ const resourceLabels = {
 ---
 
 <BaseLayout
-  title="论文与研究成果"
+  title={t("论文与研究成果")}
   description={seoDescription}
   canonical="/papers"
   runtime="discover"
@@ -70,12 +77,12 @@ const resourceLabels = {
   <DrawingIndexShell kind="papers" bodyClass="papers-index-page papers-index-dossiers">
     <DrawingPageHeader
       kicker="Research / Papers"
-      title="论文与研究成果"
+      title={t("论文与研究成果")}
       description={description}
       count={papers.length}
-      countLabel="项研究成果"
+      countLabel={t("项研究成果")}
     >
-      <a slot="actions" href="/author">研究者简介</a>
+      <a slot="actions" href={l("/author")}>{t("研究者简介")}</a>
     </DrawingPageHeader>
 
     <section class="discover-section">
@@ -91,14 +98,14 @@ const resourceLabels = {
               {group.papers.map((paper) => (
                 <ContentDossier
                   index={String(papers.findIndex((entry) => entry.id === paper.id) + 1).padStart(2, "0")}
-                  label="PUBLICATION / 论文档案"
+                  label={t("PUBLICATION / 论文档案")}
                   title={paper.data.title}
-                  href={`/papers/${paper.id}`}
+                  href={l(`/papers/${paper.id}`)}
                   class="publication-dossier"
                   variant="compact"
                   copyClass="paper-index-row__main"
                   titleClass="publication-dossier__title"
-                  detailsLabel="引用与研究关键词"
+                  detailsLabel={t("引用与研究关键词")}
                   data-paper-card
                   data-publication-dossier
                   aria-label={paper.data.title}
@@ -117,7 +124,7 @@ const resourceLabels = {
                       <>
                         {index > 0 ? <span aria-hidden="true">, </span> : null}
                         {author.url ? (
-                          <a href={author.url} class:list={{ "is-self": author.self }}>{author.name}</a>
+                          <a href={l(author.url)} class:list={{ "is-self": author.self }}>{author.name}</a>
                         ) : (
                           <span class:list={{ "is-self": author.self }}>{author.name}</span>
                         )}
@@ -131,13 +138,13 @@ const resourceLabels = {
                     </div>
                   ) : <p class="paper-index-row__summary">{paper.data.abstract}</p>}
 
-                  <nav slot="footer" class="paper-index-row__resources" aria-label={`${paper.data.title} 资源`}>
-                    <a class="paper-resource-link paper-resource-link--detail" href={`/papers/${paper.id}`}>
-                      阅读详情
+                  <nav slot="footer" class="paper-index-row__resources" aria-label={t("{0} 资源", [paper.data.title])}>
+                    <a class="paper-resource-link paper-resource-link--detail" href={l(`/papers/${paper.id}`)}>
+                      {t("阅读详情")}
                       <span aria-hidden="true">↗</span>
                     </a>
                     {paper.data.resources.map((resource) => (
-                      <a class="paper-resource-link" href={resource.url} target="_blank" rel="noreferrer">
+                      <a class="paper-resource-link" href={l(resource.url)} target="_blank" rel="noreferrer">
                         {resource.label ?? resourceLabels[resource.type]}
                       </a>
                     ))}
@@ -145,21 +152,21 @@ const resourceLabels = {
 
                   <div slot="details" class="publication-dossier__reference">
                     <div class="publication-dossier__citation">
-                      <p class="publication-dossier__label">Citation / 引用</p>
+                      <p class="publication-dossier__label">{t("Citation / 引用")}</p>
                       <p data-publication-citation>
                         {paper.data.citation ?? `${paper.data.authors.map((author) => author.name).join(", ")}. ${paper.data.title}. ${paper.data.venue?.name ?? "Preprint"}, ${paper.data.year}.`}
                       </p>
                       {paper.data.identifiers?.doi ? (
                         <p class="publication-dossier__doi">
                           <span>DOI</span>
-                          <a href={`https://doi.org/${paper.data.identifiers.doi}`} target="_blank" rel="noreferrer">{paper.data.identifiers.doi}</a>
+                          <a href={l(`https://doi.org/${paper.data.identifiers.doi}`)} target="_blank" rel="noreferrer">{paper.data.identifiers.doi}</a>
                         </p>
                       ) : null}
                     </div>
                     {paper.data.keywords?.length ? (
                       <div>
-                        <p class="publication-dossier__label">Keywords / 关键词</p>
-                        <ul class="paper-keywords paper-index-row__keywords" aria-label="论文研究关键词">
+                        <p class="publication-dossier__label">{t("Keywords / 关键词")}</p>
+                        <ul class="paper-keywords paper-index-row__keywords" aria-label={t("论文研究关键词")}>
                           {paper.data.keywords.map((keyword) => <li>{keyword}</li>)}
                         </ul>
                       </div>
@@ -175,10 +182,10 @@ const resourceLabels = {
 
     <aside class="paper-historical-reference" aria-labelledby="paper-reference-title">
       <div class="paper-historical-reference__copy">
-        <p class="paper-historical-reference__eyebrow">历史参考图版 / 1843</p>
-        <h2 id="paper-reference-title">把计算过程留在纸上</h2>
-        <p>Ada Lovelace 在 Note G 中，把伯努利数计算展开为操作步骤、变量与中间结果。循着这张表，可以看到一个计算过程如何被逐步记录。</p>
-        <p class="paper-historical-reference__invitation">点开图版，细看其中的操作序列。</p>
+        <p class="paper-historical-reference__eyebrow">{t("历史参考图版 / 1843")}</p>
+        <h2 id="paper-reference-title">{t("把计算过程留在纸上")}</h2>
+        <p>{t("Ada Lovelace 在 Note G 中，把伯努利数计算展开为操作步骤、变量与中间结果。循着这张表，可以看到一个计算过程如何被逐步记录。")}</p>
+        <p class="paper-historical-reference__invitation">{t("点开图版，细看其中的操作序列。")}</p>
       </div>
       <EditorialFigure
         figure={paperReferenceFigure}

@@ -1,4 +1,8 @@
 ---
+import { getLocale, createTranslator } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+
 interface Props {
   kicker: string;
   title: string;
@@ -20,6 +24,6 @@ const { kicker, title, description, count, countLabel } = Astro.props;
   </div>
   <div class="drawing-index-header__context">
     {description && <p class="drawing-index-description">{description}</p>}
-    {Astro.slots.has("actions") && <nav class="drawing-index-links" aria-label="页面入口"><slot name="actions" /></nav>}
+    {Astro.slots.has("actions") && <nav class="drawing-index-links" aria-label={t("页面入口")}><slot name="actions" /></nav>}
   </div>
 </header>

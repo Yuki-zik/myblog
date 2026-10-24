@@ -3,8 +3,8 @@ import { glob } from "astro/loaders";
 
 const isoDate = z.string().datetime({ offset: true });
 
-const posts = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/posts" }),
+const definePosts = (base: string) => defineCollection({
+  loader: glob({ pattern: "**/*.md", base }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -47,8 +47,8 @@ const posts = defineCollection({
     })
 });
 
-const topics = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/topics" }),
+const defineTopics = (base: string) => defineCollection({
+  loader: glob({ pattern: "**/*.md", base }),
   schema: z.object({
     title: z.string(),
     order: z.number().int().optional(),
@@ -59,8 +59,8 @@ const topics = defineCollection({
   })
 });
 
-const concepts = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/concepts" }),
+const defineConcepts = (base: string) => defineCollection({
+  loader: glob({ pattern: "**/*.md", base }),
   schema: z.object({
     title: z.string(),
     summary: z.string(),
@@ -69,8 +69,8 @@ const concepts = defineCollection({
   })
 });
 
-const papers = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/papers" }),
+const definePapers = (base: string) => defineCollection({
+  loader: glob({ pattern: "**/*.md", base }),
   schema: ({ image }) => z.object({
     title: z.string().min(1),
     subtitle: z.string().min(1).optional(),
@@ -144,7 +144,17 @@ const papers = defineCollection({
   })
 });
 
+const posts = definePosts("./src/content/posts");
+const postsEn = definePosts("./src/content/en/posts");
+const papers = definePapers("./src/content/papers");
+const papersEn = definePapers("./src/content/en/papers");
+const topics = defineTopics("./src/content/topics");
+const topicsEn = defineTopics("./src/content/en/topics");
+const concepts = defineConcepts("./src/content/concepts");
+const conceptsEn = defineConcepts("./src/content/en/concepts");
+
 export const collections = {
+  postsEn, papersEn, topicsEn, conceptsEn,
   posts,
   topics,
   concepts,
