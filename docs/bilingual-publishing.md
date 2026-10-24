@@ -51,3 +51,17 @@ pnpm exec playwright test
 `tests/e2e/bilingual.spec.ts` 覆盖 320/360/390/768/1440px、对应文章切换、英文搜索、图谱、禁用 JavaScript 阅读、深色模式和 spoiler；原有中文导航、目录、评论、图片查看器及布局测试继续运行。
 
 发布后需回查正式域的英文页面、sitemap、页面语言与对应链接。Vercel 主站与 VPS 镜像是两个部署边界，未验证镜像时不得宣称同步完成。
+
+## 本次发布的依赖安全修复
+
+2026-10-24 的 CI 阻断来自既有锁文件中的新公开漏洞，双语单测、构建和 SEO 检查在该步骤之前已经通过。为保留发布门槛，升级 Astro 到 7.3.2、匹配的 markdown-remark 到 7.3.0，并将 Zod 4.x 与 undici 8.x 限制到已修复版本。评论服务仅更新 DOMPurify、Nodemailer、ip-address 的兼容修复版本；不变更 API、数据库、环境变量或已有忽略清单。
+
+官方安全记录：
+- https://github.com/advisories/GHSA-98hj-9722-w3j8
+- https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
+- https://github.com/advisories/GHSA-xjj6-f33q-929c
+- https://github.com/advisories/GHSA-cg2g-xh64-v4q7
+- https://github.com/advisories/GHSA-rxp7-6hxx-x8q5
+- https://github.com/advisories/GHSA-8c8m-p3m8-cjg8
+
+两套生产依赖审计在原有策略下退出码均为 0；仍有低等级报告及此前已有的审核例外，不宣称依赖零漏洞。补丁后的独立环境中，153 单测、完整构建、双语/SEO 检查和 Waline handler/输入校验/日志隔离 smoke 已通过；完整浏览器回归由 PR CI 再执行。
