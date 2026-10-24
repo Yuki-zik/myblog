@@ -1,4 +1,9 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import type { CollectionEntry } from "astro:content";
 import { formatPostDisplayDate } from "../../lib/posts/date";
 
@@ -12,13 +17,13 @@ const pagerPosts = [
   newerPost
     ? {
         post: newerPost,
-        label: "较新文章"
+        label: t("较新文章")
       }
     : null,
   olderPost
     ? {
         post: olderPost,
-        label: "更早文章"
+        label: t("更早文章")
       }
     : null
 ].filter(Boolean) as Array<{
@@ -29,9 +34,9 @@ const pagerPosts = [
 
 {
   pagerPosts.length > 0 ? (
-    <nav class="post-pager" aria-label="继续阅读">
+    <nav class="post-pager" aria-label={t("继续阅读")}>
       {pagerPosts.map(({ post, label }) => (
-        <a class="post-pager-link" href={`/posts/${post.id}`}>
+        <a class="post-pager-link" href={l(`/posts/${post.id}`)}>
           <span class="post-pager-label">{label}</span>
           <strong class="post-pager-title">{post.data.title}</strong>
           <span class="post-pager-meta">

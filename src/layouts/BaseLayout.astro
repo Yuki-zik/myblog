@@ -1,9 +1,19 @@
 ---
+import { getLocale, createTranslator, localizePath, localizeData, localizeStructuredData } from "../lib/i18n/index";
+import { languageAlternates } from "../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
+const SITE_NAME = localizeData(SOURCE_SITE_NAME, locale);
+const SITE_DESCRIPTION = localizeData(SOURCE_SITE_DESCRIPTION, locale);
+
 import "../styles/tailwind.css";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/animations.css";
 import "../styles/layout.css";
+import "../styles/i18n.css";
 import "../styles/search.css";
 import "../styles/theme-toggle.css";
 import "../styles/cards.css";
@@ -26,7 +36,7 @@ import "../styles/paper-drawing.css";
 import HomeReferenceFooter from "../components/home/HomeReferenceFooter.astro";
 import HeaderSearch from "../components/search/HeaderSearch.astro";
 import UiControllers from "../components/UiControllers.astro";
-import { SITE_AUTHOR_PROFILE, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
+import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE, SITE_NAME as SOURCE_SITE_NAME, SITE_DESCRIPTION as SOURCE_SITE_DESCRIPTION } from "../lib/site";
 import { buildBaseNodes, serializeJsonLd, type JsonLdNode } from "../lib/seo/jsonLd";
 
 interface Props {
@@ -78,7 +88,9 @@ const footerVariant = hideFooter
   ? "none"
   : explicitFooterVariant ?? (runtime === "discover" ? "discover" : "reading");
 
-const pathname = Astro.url.pathname;
+const pathname = localizePath(Astro.url.pathname, "zh-CN");
+const alternates = noindex ? [] : await languageAlternates(Astro.url.pathname);
+const otherLanguage = alternates.find(item => item.lang === (locale === "en" ? "zh-CN" : "en"));
 const currentSection = pathname === "/map" || pathname === "/map/"
   ? "explore"
   : pathname === "/"
@@ -94,12 +106,12 @@ const currentSection = pathname === "/map" || pathname === "/map/"
         : "";
 
 const navItems = [
-  { href: "/", label: "\u9996\u9875", section: "home" },
-  { href: "/topics", label: "\u4e3b\u9898", section: "topics" },
-  { href: "/papers", label: "\u8bba\u6587", section: "papers" },
-  { href: "/map", label: "漫游", section: "explore" },
-  { href: "/archives", label: "\u5f52\u6863", section: "archives" },
-  { href: "/author", label: "\u4f5c\u8005", section: "author" }
+  { href: "/", label: t("首页"), section: "home" },
+  { href: "/topics", label: t("主题"), section: "topics" },
+  { href: "/papers", label: t("论文"), section: "papers" },
+  { href: "/map", label: t("漫游"), section: "explore" },
+  { href: "/archives", label: t("归档"), section: "archives" },
+  { href: "/author", label: t("作者"), section: "author" }
 ];
 
 function resolveAbsoluteUrl(value: string | undefined): string | undefined {
@@ -115,18 +127,18 @@ function resolveAbsoluteUrl(value: string | undefined): string | undefined {
   }
 }
 
-const canonicalUrl = resolveAbsoluteUrl(canonical ?? (pathname.replace(/\/+$/, "") || "/"));
-const rssUrl = resolveAbsoluteUrl("/rss.xml");
-const openGraphImageUrl = resolveAbsoluteUrl(openGraphImage);
+const canonicalUrl = resolveAbsoluteUrl(l(canonical ?? (Astro.url.pathname.replace(/\/+$/, "") || "/")));
+const rssUrl = resolveAbsoluteUrl(l("/rss.xml"));
+const openGraphImageUrl = resolveAbsoluteUrl(locale === "en" && openGraphImage?.startsWith("/og/") ? openGraphImage.replace("/og/", "/og/en/") : openGraphImage);
 const twitterCard = openGraphImage ? "summary_large_image" : "summary";
 const fontStylesheetUrl = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Outfit:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@500;600;700&display=swap";
 
 const siteUrlString = Astro.site?.toString();
 const jsonLdHtml = siteUrlString
-  ? serializeJsonLd([
+  ? serializeJsonLd(localizeStructuredData([
       ...buildBaseNodes(siteUrlString, SITE_AUTHOR_PROFILE),
       ...(structuredData ?? [])
-    ])
+    ], locale, Astro.site!))
   : null;
 
 const themeInitScript = `(function () {
@@ -149,7 +161,7 @@ const themeInitScript = `(function () {
 ---
 
 <!doctype html>
-<html lang="zh-CN" class="no-js" data-theme="system" data-color-scheme="light">
+<html lang={locale} class="no-js" data-theme="system" data-color-scheme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -157,17 +169,18 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex, follow" /> : null}
     <meta name="author" content={authorMeta} />
-    {pathname === "/" ? <meta name="baidu-site-verification" content="codeva-WhDD0PxDx9" /> : null}
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {locale === "zh-CN" && pathname === "/" ? <meta name="baidu-site-verification" content="codeva-WhDD0PxDx9" /> : null}
+    <link rel="icon" type="image/svg+xml" href={l("/favicon.svg")} />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
-    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={rssUrl ?? "/rss.xml"} />
+    {alternates.map(item => <link rel="alternate" hreflang={item.lang} href={resolveAbsoluteUrl(item.path)} />)}
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={l(rssUrl ?? "/rss.xml")} />
 
     <!-- Open Graph -->
     <meta property="og:title" content={documentTitle} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={metaType} />
-    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale" content={locale === "en" ? "en_US" : "zh_CN"} />
     {canonicalUrl ? <meta property="og:url" content={canonicalUrl} /> : null}
     {openGraphImageUrl ? <meta property="og:image" content={openGraphImageUrl} /> : null}
     {
@@ -194,11 +207,11 @@ const themeInitScript = `(function () {
     }
 
     <!-- Google Fonts: Space Grotesk (UI chrome) + Source Serif 4 (reading) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={fontStylesheetUrl} media="print" onload="this.media='all'" />
+    <link rel="preconnect" href={l("https://fonts.googleapis.com")} />
+    <link rel="preconnect" href={l("https://fonts.gstatic.com")} crossorigin />
+    <link rel="stylesheet" href={l(fontStylesheetUrl)} media="print" onload="this.media='all'" />
     <noscript>
-      <link rel="stylesheet" href={fontStylesheetUrl} />
+      <link rel="stylesheet" href={l(fontStylesheetUrl)} />
     </noscript>
 
     <script is:inline set:html={themeInitScript} />
@@ -209,15 +222,16 @@ const themeInitScript = `(function () {
         <div class="site-header-inner isolate overflow-hidden origin-top"></div>
       </div>
       <div class="shell grid items-center text-chrome-ink">
-        <a href="/" class="brand justify-self-start font-display font-[650] leading-none tracking-[-0.03em]">{SITE_NAME}</a>
+        <a href={l("/")} class="brand justify-self-start font-display font-[650] leading-none tracking-[-0.03em]">{SITE_NAME}</a>
         <div class="site-header-search-slot w-full min-w-0" data-header-search-slot>
           <HeaderSearch />
+{otherLanguage && <a class="language-switch" href={otherLanguage.path} lang={otherLanguage.lang} hreflang={otherLanguage.lang} aria-label={locale === "en" ? "阅读中文版本" : "Read this page in English"} title={locale === "en" ? "中文版本" : "English version"} data-language-switch>{locale === "en" ? "中文" : "EN"}</a>}
         </div>
         <nav class="site-nav justify-self-end flex items-center min-w-0 gap-[0.65rem]">
           <div class="site-nav-links flex items-center min-w-0 gap-[0.12rem]">
             {navItems.map((item) => (
               <a
-                href={item.href}
+                href={l(item.href)}
                 class="inline-flex items-center min-h-8 rounded-full py-[0.36rem] px-[0.62rem] text-[0.84rem] font-[560] tracking-[-0.02em]"
                 aria-current={currentSection === item.section ? "page" : undefined}
               >
@@ -230,9 +244,9 @@ const themeInitScript = `(function () {
               id="theme-toggle"
               type="button"
               class="theme-toggle inline-flex items-center justify-center flex-none size-[2.28rem] rounded-full border p-0 cursor-pointer"
-              aria-label="切换主题（当前：跟随系统）"
+              aria-label={t("切换主题（当前：跟随系统）")}
               aria-live="polite"
-              title="切换主题"
+              title={t("切换主题")}
             >
               <span class="theme-toggle-icon inline-flex items-center justify-center size-[0.92rem]" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -247,7 +261,7 @@ const themeInitScript = `(function () {
                   <path d="M17.6 6.4l1.6-1.6"></path>
                 </svg>
               </span>
-              <span class="theme-toggle-label sr-only">系统</span>
+              <span class="theme-toggle-label sr-only">{t("系统")}</span>
             </button>
           </div>
         </nav>
@@ -267,8 +281,8 @@ const themeInitScript = `(function () {
       id="back-to-top"
       type="button"
       class="back-to-top fixed right-[1.3rem] bottom-[1.35rem] z-60 inline-flex items-center justify-center size-[2.8rem] rounded-full border border-fab-edge bg-fab text-fab-icon shadow-fab cursor-pointer"
-      aria-label="回到顶部"
-      title="回到顶部"
+      aria-label={t("回到顶部")}
+      title={t("回到顶部")}
     >
       <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="18 15 12 9 6 15"></polyline>

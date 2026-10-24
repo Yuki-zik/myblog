@@ -1,5 +1,6 @@
 import type { APIContext } from "astro";
-import { getCollection } from "astro:content";
+import { collectionReader } from "../lib/i18n/content";
+import { getLocale, createTranslator, localizePath } from "../lib/i18n/index";
 import { getPostUrl } from "../lib/posts/urls";
 import { SITE_AUTHOR_PROFILE, SITE_NAME } from "../lib/site";
 
@@ -13,6 +14,9 @@ function escapeXml(value: string): string {
 }
 
 export async function GET(context: APIContext) {
+  const locale = getLocale(context.url.pathname);
+  const t = createTranslator(locale);
+  const getCollection = collectionReader(locale);
   const site = context.site ?? new URL("http://localhost:4321/");
   const posts = await getCollection("posts", ({ data }) => !data.draft);
 
@@ -24,7 +28,7 @@ export async function GET(context: APIContext) {
 
   const items = sortedPosts
     .map((post) => {
-      const url = getPostUrl(post.id, site);
+      const url = new URL(localizePath(`/posts/${post.id}`, locale), site).toString();
       const categories = post.data.topics
         .map((topic) => `<category>${escapeXml(topic)}</category>`)
         .join("");
@@ -47,10 +51,10 @@ export async function GET(context: APIContext) {
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">',
     "<channel>",
-    `<title>${escapeXml(SITE_NAME)}</title>`,
-    `<description>${escapeXml(SITE_AUTHOR_PROFILE.tagline ?? "主题化知识网络与段落短评博客")}</description>`,
-    `<link>${escapeXml(new URL(".", site).toString())}</link>`,
-    "<language>zh-CN</language>",
+    `<title>${escapeXml(t(SITE_NAME))}</title>`,
+    `<description>${escapeXml(t(SITE_AUTHOR_PROFILE.tagline ?? "主题化知识网络与段落短评博客"))}</description>`,
+    `<link>${escapeXml(new URL(localizePath("/", locale), site).toString())}</link>`,
+    `<language>${locale}</language>`,
     items,
     "</channel>",
     "</rss>"

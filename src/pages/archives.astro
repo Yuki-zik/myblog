@@ -1,5 +1,12 @@
 ---
-import { getCollection } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../lib/i18n/index";
+import { collectionReader } from "../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection } from "astro:content";
 import DrawingIndexShell from "../components/discover/DrawingIndexShell.astro";
 import DrawingPageHeader from "../components/discover/DrawingPageHeader.astro";
 import EmptyState from "../components/discover/EmptyState.astro";
@@ -9,40 +16,40 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 const archiveGroups = buildArchiveGroups(posts);
-const archivesDescription = "按年月倒序排列全部文章，较新的记录在前。";
-const archivesSeoDescription = "按年月浏览 A-Znk 的原创技术文章，涵盖 AI Coding 实战复盘、主题化知识组织、段落锚点设计和博客工程实践，快速找到历史研究笔记。";
+const archivesDescription = t("按年月倒序排列全部文章，较新的记录在前。");
+const archivesSeoDescription = t("按年月浏览 A-Znk 的原创技术文章，涵盖 AI Coding 实战复盘、主题化知识组织、段落锚点设计和博客工程实践，快速找到历史研究笔记。");
 ---
 
-<BaseLayout title="文章归档" description={archivesSeoDescription} runtime="discover" headerVariant="drawing">
+<BaseLayout title={t("文章归档")} description={archivesSeoDescription} runtime="discover" headerVariant="drawing">
   <DrawingIndexShell kind="archives">
     <DrawingPageHeader
       kicker="Archive / Ledger"
-      title="文章归档"
+      title={t("文章归档")}
       description={archivesDescription}
       count={posts.length}
-      countLabel="篇文章"
+      countLabel={t("篇文章")}
     >
-      <a slot="actions" href="/topics">浏览主题</a>
+      <a slot="actions" href={l("/topics")}>{t("浏览主题")}</a>
     </DrawingPageHeader>
 
     <section class="discover-section">
       {
         archiveGroups.length === 0 ? (
-          <EmptyState title="归档暂时为空。" body="等第一批文章发布后，这里会按年月自动生成时间账本。" />
+          <EmptyState title={t("归档暂时为空。")} body={t("等第一批文章发布后，这里会按年月自动生成时间账本。")} />
         ) : (
           <div class="archives-page grid gap-[1.1rem]">
             {archiveGroups.map((yearGroup) => (
               <section class="archive-year-section" aria-labelledby={`archive-year-${yearGroup.year}`} data-archive-year={yearGroup.year} data-ux-reveal="fade-up">
                 <header class="archive-year-tile">
                   <h2 id={`archive-year-${yearGroup.year}`}><span>{yearGroup.year}</span></h2>
-                  <p data-archive-year-count>{String(yearGroup.months.reduce((count, month) => count + month.posts.length, 0)).padStart(2, "0")} 篇文章</p>
+                  <p data-archive-year-count>{String(yearGroup.months.reduce((count, month) => count + month.posts.length, 0)).padStart(2, "0")} {t("篇文章")}</p>
                 </header>
 
                 <div class="archive-year-content grid gap-[0.72rem]">
                   {yearGroup.months.map((month) => (
                     <section class="archive-month-group grid gap-[0.72rem]">
                       <div class="archive-month-node flex items-center gap-[0.62rem]" data-archive-month={month.monthKey}>
-                        <span class="archive-month-label whitespace-nowrap">{month.monthLabel}</span>
+                        <span class="archive-month-label whitespace-nowrap">{locale === "en" ? new Intl.DateTimeFormat("en", {month: "long", timeZone: "UTC"}).format(new Date(month.monthKey + "-01T00:00:00Z")) : month.monthLabel}</span>
                         <span class="archive-month-line h-px w-full" aria-hidden="true"></span>
                       </div>
 

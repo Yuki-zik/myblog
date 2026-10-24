@@ -23,17 +23,18 @@
     "seo:audit": "node scripts/seo/audit-live.mjs",
     "seo:indexnow:dry-run": "node scripts/seo/submit-indexnow.mjs --all --dry-run",
     "seo:test": "node --test scripts/seo/indexnow-utils.test.mjs",
-    "seo:baidu:prepare": "node scripts/seo/prepare-baidu.mjs --all"
+    "seo:baidu:prepare": "node scripts/seo/prepare-baidu.mjs --all",
+    "i18n:check": "node scripts/i18n/check-build.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.2.4",
+    "@astrojs/markdown-remark": "7.3.0",
     "@astrojs/react": "^5.0.6",
     "@astrojs/sitemap": "^3.7.3",
     "@waline/client": "^3.15.0",
-    "astro": "^7.2.8",
+    "astro": "^7.3.2",
     "astro-og-canvas": "^0.13.0",
     "canvaskit-wasm": "^0.41.1",
     "cookie": "2.0.1",
@@ -84,7 +85,9 @@
       "sharp": "^0.35.5",
       "svgo": "^4.1.0",
       "source-map-js@<1.2.2": "1.2.2",
-      "vue@<3.5.42": "3.5.42"
+      "vue@<3.5.42": "3.5.42",
+      "zod@>=4.0.0 <4.6.6": "4.6.6",
+      "undici@>=8.0.0 <8.12.2": "8.12.2"
     }
   }
 }

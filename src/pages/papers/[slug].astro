@@ -1,5 +1,12 @@
 ---
-import { getCollection, render, type CollectionEntry } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection, render, type CollectionEntry } from "astro:content";
 import PaperFigure from "../../components/papers/PaperFigure.astro";
 import ImageViewer from "../../components/media/ImageViewer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -10,7 +17,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const papers = await getCollection("papers", ({ data }) => !data.draft);
+  const papers = await rawGetCollection("papers", ({ data }) => !data.draft);
   return papers.map((paper) => ({
     params: { slug: paper.id },
     props: { paper }
@@ -34,18 +41,18 @@ const structuredData = site
       venue: paper.data.venue?.name,
       doi: paper.data.identifiers?.doi,
       breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
-        { name: "论文", url: new URL("/papers", site).toString() },
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("论文"), url: new URL("/papers", site).toString() },
         { name: paper.data.title }
       ]
     })
   : undefined;
 
 const statusLabels = {
-  prototype: "页面样稿 · 非正式发表",
-  preprint: "预印本",
-  accepted: "已接收",
-  published: "已发表"
+  prototype: t("页面样稿 · 非正式发表"),
+  preprint: t("预印本"),
+  accepted: t("已接收"),
+  published: t("已发表")
 } as const;
 const publishedYear = paper.data.year;
 const citation =
@@ -80,7 +87,7 @@ const resourceLabels = {
 >
   <div class="paper-reading-page" data-paper-detail data-reading-design="metadata">
     <article class="paper-dossier">
-      <a class="paper-dossier__back" href="/papers">← 返回论文索引</a>
+      <a class="paper-dossier__back" href={l("/papers")}>{t("← 返回论文索引")}</a>
 
       <div class="paper-dossier__layout">
         <div class="paper-dossier__main">
@@ -99,26 +106,26 @@ const resourceLabels = {
                   <>
                     {index > 0 ? <span aria-hidden="true"> · </span> : null}
                     {author.url ? (
-                      <a href={author.url} class:list={{ "is-self": author.self }}>{author.name}</a>
+                      <a href={l(author.url)} class:list={{ "is-self": author.self }}>{author.name}</a>
                     ) : (
                       <span class:list={{ "is-self": author.self }}>{author.name}</span>
                     )}
                   </>
                 ))}
               </p>
-              <nav class="paper-primary-actions" aria-label="论文主要资源">
+              <nav class="paper-primary-actions" aria-label={t("论文主要资源")}>
                 {paper.data.resources.map((resource) => (
-                  <a href={resource.url} target="_blank" rel="noreferrer">
+                  <a href={l(resource.url)} target="_blank" rel="noreferrer">
                     {resource.label ?? resourceLabels[resource.type]} ↗
                   </a>
                 ))}
-                <a href="#citation">Cite</a>
+                <a href={l("#citation")}>Cite</a>
               </nav>
             </div>
           </header>
 
           <section class="paper-abstract" data-paper-abstract aria-labelledby="paper-abstract-title">
-            <h2 id="paper-abstract-title">摘要 <span class="paper-section-kicker">Abstract</span></h2>
+            <h2 id="paper-abstract-title">{t("摘要")} <span class="paper-section-kicker">Abstract</span></h2>
             <p>{paper.data.abstract}</p>
           </section>
 
@@ -130,7 +137,7 @@ const resourceLabels = {
             <Content />
           </div>
 
-          <section class="paper-dossier__keywords" aria-label="研究关键词">
+          <section class="paper-dossier__keywords" aria-label={t("研究关键词")}>
             <p class="paper-section-kicker">Keywords</p>
             <ul class="paper-keywords">
               {paper.data.keywords.map((keyword) => <li>{keyword}</li>)}
@@ -138,13 +145,13 @@ const resourceLabels = {
           </section>
         </div>
 
-        <aside class="paper-dossier__sidebar" aria-label="发表信息与引用">
+        <aside class="paper-dossier__sidebar" aria-label={t("发表信息与引用")}>
           <div>
             <p class="paper-section-kicker">Publication</p>
             <dl class="paper-dossier__facts">
               <div>
                 <dt>VENUE</dt>
-                <dd>{paper.data.venue?.name ?? "未指定"}</dd>
+                <dd>{paper.data.venue?.name ?? t("未指定")}</dd>
               </div>
               <div>
                 <dt>YEAR</dt>
@@ -153,7 +160,7 @@ const resourceLabels = {
               {paper.data.identifiers?.doi ? (
                 <div>
                   <dt>DOI</dt>
-                  <dd><a href={`https://doi.org/${paper.data.identifiers.doi}`} target="_blank" rel="noreferrer">{paper.data.identifiers.doi}</a></dd>
+                  <dd><a href={l(`https://doi.org/${paper.data.identifiers.doi}`)} target="_blank" rel="noreferrer">{paper.data.identifiers.doi}</a></dd>
                 </div>
               ) : null}
               {paper.data.identifiers?.arxiv ? (

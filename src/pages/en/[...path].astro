@@ -1,0 +1,37 @@
+---
+import Home from "../index.astro";
+import Author from "../author.astro";
+import Archives from "../archives.astro";
+import Map from "../map.astro";
+import Papers from "../papers/index.astro";
+import Topics from "../topics/index.astro";
+import Post from "../posts/[slug].astro";
+import Paper from "../papers/[slug].astro";
+import Topic from "../topics/[slug].astro";
+import Concept from "../concepts/[slug].astro";
+import { collectionReader, getTranslatedPaths } from "../../lib/i18n/content";
+
+const screens = {home: Home, author: Author, archives: Archives, map: Map, papers: Papers, topics: Topics, post: Post, paper: Paper, topic: Topic, concept: Concept};
+
+export async function getStaticPaths() {
+  const getCollection = collectionReader("en");
+  const available = await getTranslatedPaths();
+  const fixed = [
+    {path: undefined, view: "home"}, {path: "author", view: "author"},
+    {path: "archives", view: "archives"}, {path: "map", view: "map"},
+    {path: "papers", view: "papers"}, {path: "topics", view: "topics"}
+  ].map(({path,view}) => ({params: {path}, props: {view, pageProps: {}}}));
+  const dynamic = [];
+  for (const [collection, view] of [["posts","post"],["papers","paper"],["topics","topic"],["concepts","concept"]] as const) {
+    for (const entry of await getCollection(collection)) {
+      const path = `${collection}/${entry.id}`;
+      if (available.has("/" + path)) dynamic.push({params: {path}, props: {view, pageProps: {[view]: entry}}});
+    }
+  }
+  return [...fixed, ...dynamic];
+}
+const {view, pageProps} = Astro.props;
+// Each route supplies the props declared by its corresponding shared page.
+const Page: import("astro/runtime/server/index.js").AstroComponentFactory = screens[view as keyof typeof screens];
+---
+<Page {...pageProps} />

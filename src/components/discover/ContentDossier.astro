@@ -1,4 +1,9 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import type { HTMLAttributes } from "astro/types";
 import "../../styles/content-dossier.css";
 
@@ -19,14 +24,14 @@ interface Props extends HTMLAttributes<"article"> {
 }
 
 const { index, label, title, description, href, variant = "note", items = [],
-  detailsLabel = "相关内容", titleClass, descriptionClass, copyClass, asLink = false, hasMedia,
+  detailsLabel = t("相关内容"), titleClass, descriptionClass, copyClass, asLink = false, hasMedia,
   class: className, ...attributes } = Astro.props;
 const Root = asLink ? "a" : "article";
 // A named Astro slot can exist even when its conditional content is empty.
 const showMedia = hasMedia ?? Astro.slots.has("media");
 ---
 
-<Root {...attributes} href={asLink ? href : undefined} class:list={["content-dossier", `content-dossier--${variant}`, className]}>
+<Root {...attributes} href={l(asLink ? href : undefined)} class:list={["content-dossier", `content-dossier--${variant}`, className]}>
   <header class="content-dossier__header">
     <div class="content-dossier__locator">
       {index && <span class="content-dossier__index" aria-hidden="true">{index}</span>}
@@ -38,7 +43,7 @@ const showMedia = hasMedia ?? Astro.slots.has("media");
     {showMedia && <div class="content-dossier__media"><slot name="media" /></div>}
     {Astro.slots.has("leading") && <div class="content-dossier__leading"><slot name="leading" /></div>}
     <div class:list={["content-dossier__copy", copyClass]}>
-      {title && <h3 class:list={["content-dossier__title", titleClass]}>{href && !asLink ? <a href={href}>{title}</a> : title}</h3>}
+      {title && <h3 class:list={["content-dossier__title", titleClass]}>{href && !asLink ? <a href={l(href)}>{title}</a> : title}</h3>}
       {description && <p class:list={["content-dossier__description", descriptionClass]}>{description}</p>}
       <slot />
       {items.length > 0 && <ul class="content-dossier__items">{items.map(item => <li>{item}</li>)}</ul>}

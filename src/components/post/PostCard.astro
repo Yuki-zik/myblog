@@ -1,5 +1,12 @@
-﻿---
-import { getCollection, type CollectionEntry } from "astro:content";
+---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection, type CollectionEntry } from "astro:content";
 import PostCover from "./PostCover.astro";
 import "../../styles/editorial-posts.css";
 import MetaIcon from "../ui/MetaIcon.astro";
@@ -29,33 +36,33 @@ const topicTitleBySlug = new Map(topics.map((topic) => [topic.id, topic.data.tit
 const publishedLabel = formatPostDisplayDate(post.data.date);
 const updatedLabel = post.data.updated ? formatPostDisplayDate(post.data.updated) : null;
 const readingMinutes = getPostReadingMinutes(post);
-const readingTimeLabel = readingMinutes <= 1 ? "1 分钟阅读" : `${readingMinutes} 分钟阅读`;
-const topicCountLabel = `${post.data.topics.length} 个主题`;
-const conceptCountLabel = (post.data.concepts?.length ?? 0) > 0 ? `${post.data.concepts!.length} 个概念` : null;
+const readingTimeLabel = readingMinutes <= 1 ? t("1 分钟阅读") : t("{0} 分钟阅读", [readingMinutes]);
+const topicCountLabel = t("{0} 个主题", [post.data.topics.length]);
+const conceptCountLabel = (post.data.concepts?.length ?? 0) > 0 ? t("{0} 个概念", [post.data.concepts!.length]) : null;
 const metaItems = [
   {
     icon: "calendar" as const,
     label: publishedLabel,
-    ariaLabel: `发布日期 ${publishedLabel}`
+    ariaLabel: t("发布日期 {0}", [publishedLabel])
   },
   updatedLabel
     ? {
         icon: "refresh" as const,
         label: updatedLabel,
-        ariaLabel: `更新日期 ${updatedLabel}`
+        ariaLabel: t("更新日期 {0}", [updatedLabel])
       }
     : null,
   compactMetadata ? null : {
     icon: "article" as const,
-    label: "文章",
-    ariaLabel: "文章类型"
+    label: t("文章"),
+    ariaLabel: t("文章类型")
   }
 ] as Array<MetaItem | null>;
 const statItems = [
   {
     icon: "clock" as const,
     label: readingTimeLabel,
-    ariaLabel: `预计阅读时间 ${readingTimeLabel}`
+    ariaLabel: t("预计阅读时间 {0}", [readingTimeLabel])
   },
   compactMetadata ? null : {
     icon: "tag" as const,
@@ -73,12 +80,12 @@ const statItems = [
 ---
 
 <article class="post-card grid min-h-full gap-0 overflow-visible" data-post-card data-ux-reveal="fade-up">
-  <a href={`/posts/${post.id}`} class="post-card-cover-link block" aria-label={`阅读文章：${post.data.title}`}>
+  <a href={l(`/posts/${post.id}`)} class="post-card-cover-link block" aria-label={t("阅读文章：{0}", [post.data.title])}>
     <PostCover post={post} variant="card" />
   </a>
 
   <div class="post-card-body grid">
-    <p class="post-card-meta-row subtle flex flex-wrap items-center gap-x-[0.72rem] gap-y-[0.36rem]" role="group" aria-label="文章元信息">
+    <p class="post-card-meta-row subtle flex flex-wrap items-center gap-x-[0.72rem] gap-y-[0.36rem]" role="group" aria-label={t("文章元信息")}>
       {(metaItems.filter(Boolean) as MetaItem[]).map((item) => (
         <span class="post-card-meta-item inline-flex items-center gap-[0.34rem]">
           <MetaIcon name={item.icon} class="post-card-meta-icon flex-none" />
@@ -89,12 +96,12 @@ const statItems = [
     </p>
 
     <h3 class="post-card-title">
-      <a href={`/posts/${post.id}`}>{post.data.title}</a>
+      <a href={l(`/posts/${post.id}`)}>{post.data.title}</a>
     </h3>
 
     {post.data.summary ? <p class="post-card-summary max-w-[58ch] text-base leading-[1.78]">{post.data.summary}</p> : null}
 
-    <div class="post-card-stats-row flex items-center justify-between gap-[0.8rem] pt-[0.08rem]" role="group" aria-label="文章辅助信息">
+    <div class="post-card-stats-row flex items-center justify-between gap-[0.8rem] pt-[0.08rem]" role="group" aria-label={t("文章辅助信息")}>
       <div class="post-card-stats flex flex-wrap gap-x-[0.72rem] gap-y-[0.42rem]">
         {(statItems.filter(Boolean) as StatItem[]).map((item) => (
           <span class="post-card-stat inline-flex items-center gap-[0.34rem]">
@@ -104,12 +111,12 @@ const statItems = [
           </span>
         ))}
       </div>
-      <span class="post-card-more flex-none whitespace-nowrap text-[0.82rem] font-semibold tracking-[0.01em]">阅读全文</span>
+      <span class="post-card-more flex-none whitespace-nowrap text-[0.82rem] font-semibold tracking-[0.01em]">{t("阅读全文")}</span>
     </div>
 
-    <ul class="pill-list post-card-topics flex-auto" aria-label="文章主题标签">
-      {post.data.topics.map((topicSlug) => (
-        <li><a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a></li>
+    <ul class="pill-list post-card-topics flex-auto" aria-label={t("文章主题标签")}>
+      {post.data.topics.map((topicSlug: string) => (
+        <li><a href={l(`/topics/${topicSlug}`)}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a></li>
       ))}
     </ul>
 

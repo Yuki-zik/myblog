@@ -151,6 +151,10 @@ test("design manual toc follows the spoiler section before the heading reaches t
     )
     .toContain("Spoiler（剧透遮罩）");
 
+  // The rail briefly disables transitions while its own scroll position catches up.
+  // Wait for that documented data-instant phase to finish, without weakening the easing contract.
+  await expect.poll(() => page.locator("[data-toc-progress]").evaluate(node => getComputedStyle(node).transitionDuration)).toContain("0.32s");
+
   const metrics = await page.evaluate(() => {
     const heading = Array.from(document.querySelectorAll("h3")).find((node) =>
       node.textContent?.includes("Spoiler（剧透遮罩）")

@@ -1,23 +1,28 @@
 ---
+import { getLocale, createTranslator, localizePath, localizeData } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import type {KnowledgeGraph} from "../../lib/knowledge/graph";
 import {buildReadingTrails} from "../../lib/knowledge/explore";
 import "../../styles/explore-gateway.css";
 interface Props {graph:KnowledgeGraph; compact?:boolean;}
 const {graph,compact=false}=Astro.props;
-const trail=buildReadingTrails(graph)[0];
+const trail=localizeData(buildReadingTrails(graph)[0], locale);
 const stops=trail?.nodes??graph.nodes.slice(0,3);
 ---
-<a href="/map" class:list={["explore-gateway",compact&&"explore-gateway--compact"]} data-explore-gateway aria-label="进入漫游：发现笔记之间的联系">
+<a href={l("/map")} class:list={["explore-gateway",compact&&"explore-gateway--compact"]} data-explore-gateway aria-label={t("进入漫游：发现笔记之间的联系")}>
   <div class="explore-gateway__copy">
-    <span class="explore-gateway__kicker">漫游 / WANDER</span>
-    <h2>一篇笔记，<br/>能通向哪里？</h2>
-    <p>沿着主题、概念与实践的联系，发现另一条阅读路径。</p>
-    <span class="explore-gateway__action">进去逛逛 <span aria-hidden="true">↗</span></span>
+    <span class="explore-gateway__kicker">{t("漫游 / WANDER")}</span>
+    <h2>{t("一篇笔记，")}<br/>{t("能通向哪里？")}</h2>
+    <p>{t("沿着主题、概念与实践的联系，发现另一条阅读路径。")}</p>
+    <span class="explore-gateway__action">{t("进去逛逛")} <span aria-hidden="true">↗</span></span>
   </div>
-  <div class="explore-gateway__preview" aria-label="阅读路线预览">
+  <div class="explore-gateway__preview" aria-label={t("阅读路线预览")}>
     <div class="explore-gateway__drawing" aria-hidden="true"><i></i><i></i><i></i></div>
     <span class="explore-gateway__caption">ONE NOTE / ANOTHER WAY</span>
     {stops.map((node,i)=><span class={`explore-gateway__stop explore-gateway__stop--${i}`}><span class="explore-gateway__dot" aria-hidden="true"></span><strong>{node.title}</strong><span aria-hidden="true">{String(i+1).padStart(2,"0")}</span></span>)}
-    <span class="explore-gateway__annotation">{graph.nodes.length} 个条目 · {graph.edges.length} 条真实联系</span>
+    <span class="explore-gateway__annotation">{graph.nodes.length} {t("个条目 ·")} {graph.edges.length} {t("条真实联系")}</span>
   </div>
 </a>

@@ -39,6 +39,19 @@
       ]
     },
     {
+      "source": "/en/search-index.json",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(.*).md",
       "headers": [
         {

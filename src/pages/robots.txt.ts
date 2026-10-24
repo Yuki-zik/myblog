@@ -12,6 +12,7 @@ export const GET: APIRoute = (context) => {
     "",
     "# Internal data endpoint — not meant for SERP indexing.",
     "Disallow: /search-index.json",
+    "Disallow: /en/search-index.json",
     "",
     "# Raw .md mirrors (/design.md, /posts/<slug>.md) stay crawlable so the",
     "# X-Robots-Tag: noindex header (vercel.json) is actually seen and applied.",

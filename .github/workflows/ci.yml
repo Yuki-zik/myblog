@@ -43,6 +43,9 @@ jobs:
       - name: Validate canonical sitemap parity
         run: pnpm seo:check-build
 
+      - name: Validate bilingual routes and reading metadata
+        run: pnpm i18n:check
+
       - name: Test search engine submission helpers
         run: pnpm seo:test
 

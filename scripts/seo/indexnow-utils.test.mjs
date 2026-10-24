@@ -33,3 +33,11 @@ test("shared templates and SEO code trigger a complete refresh", () => {
   assert.deepEqual(selectChangedUrls(urls, [], true), urls);
   assert.equal(changedPaths(["src/content/posts/hello.md"]).all, false);
 });
+
+
+test("translated content submits its own canonical English URL", () => {
+  const bilingual = [...urls, "https://a-znk.com/en/posts/hello"];
+  assert.deepEqual(selectChangedUrls(bilingual, ["src/content/en/posts/hello.md"]), [bilingual[3]]);
+  assert.deepEqual(selectChangedUrls(bilingual, ["src/content/posts/covers/hello.svg"]), [bilingual[1], bilingual[3]]);
+  assert.deepEqual(selectChangedUrls(bilingual, ["src/lib/i18n/en.json"]), bilingual);
+});

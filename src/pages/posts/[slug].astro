@@ -1,5 +1,12 @@
 ---
-import { getCollection, render, type CollectionEntry } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection, render, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
@@ -39,7 +46,7 @@ type HeaderStatItem = {
 };
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await rawGetCollection("posts", ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post }
@@ -79,7 +86,7 @@ const markdownFootnotes = Array.isArray(remarkPluginFrontmatter?.[TUFTE_MARKDOWN
   : [];
 
 const readingMinutes = getPostReadingMinutes(post);
-const readingTimeLabel = readingMinutes <= 1 ? "约 1 分钟" : `约 ${readingMinutes} 分钟`;
+const readingTimeLabel = readingMinutes <= 1 ? t("约 1 分钟") : t("约 {0} 分钟", [readingMinutes]);
 const tocTree = buildTocTree(tocItems);
 const publishedLabel = formatPostDisplayDate(post.data.date);
 const updatedLabel = post.data.updated ? formatPostDisplayDate(post.data.updated) : null;
@@ -90,45 +97,45 @@ const headerMetaItems = [
   {
     icon: "calendar" as const,
     label: publishedLabel,
-    ariaLabel: `发布日期 ${publishedLabel}`
+    ariaLabel: t("发布日期 {0}", [publishedLabel])
   },
   updatedLabel
     ? {
         icon: "refresh" as const,
         label: updatedLabel,
-        ariaLabel: `更新日期 ${updatedLabel}`
+        ariaLabel: t("更新日期 {0}", [updatedLabel])
       }
     : null,
   {
     icon: "user" as const,
     label: resolvedAuthor.name,
-    ariaLabel: `作者 ${resolvedAuthor.name}`
+    ariaLabel: t("作者 {0}", [resolvedAuthor.name])
   }
 ] as Array<HeaderMetaItem | null>;
 const headerStats = [
   {
     icon: "clock" as const,
-    label: `${readingTimeLabel}阅读`,
-    ariaLabel: `预计阅读时间 ${readingTimeLabel}阅读`
+    label: t("{0}阅读", [readingTimeLabel]),
+    ariaLabel: t("预计阅读时间 {0}阅读", [readingTimeLabel])
   },
   topicCount > 0
     ? {
         icon: "tag" as const,
-        label: `${topicCount} 个主题`,
-        ariaLabel: `${topicCount} 个主题`
+        label: t("{0} 个主题", [topicCount]),
+        ariaLabel: t("{0} 个主题", [topicCount])
       }
     : null,
   conceptCount > 0
     ? {
         icon: "nodes" as const,
-        label: `${conceptCount} 个概念`,
-        ariaLabel: `${conceptCount} 个概念`
+        label: t("{0} 个概念", [conceptCount]),
+        ariaLabel: t("{0} 个概念", [conceptCount])
       }
     : sectionCount > 0
       ? {
           icon: "section" as const,
-          label: `${sectionCount} 个章节`,
-          ariaLabel: `${sectionCount} 个章节`
+          label: t("{0} 个章节", [sectionCount]),
+          ariaLabel: t("{0} 个章节", [sectionCount])
         }
       : null
 ] as Array<HeaderStatItem | null>;
@@ -150,8 +157,8 @@ const structuredData = site
         : undefined,
       topics: post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug),
       breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
-        { name: "主题", url: new URL("/topics", site).toString() },
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("主题"), url: new URL("/topics", site).toString() },
         ...(post.data.topics[0]
           ? [
               {
@@ -183,13 +190,13 @@ const structuredData = site
 >
   <div class="post-reading-page" data-reading-design="edge">
     <!-- Reading progress bar -->
-    <div role="region" aria-label="阅读状态" data-reading-progress-region>
+    <div role="region" aria-label={t("阅读状态")} data-reading-progress-region>
       <div
         class="reading-progress-bar"
         id="reading-progress-bar"
         data-controller="reading-progress"
         role="progressbar"
-        aria-label="正文阅读进度"
+        aria-label={t("正文阅读进度")}
         aria-valuenow={0}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -199,14 +206,14 @@ const structuredData = site
     </div>
     <div class="post-reading-layout post-reading-layout--scholarly post-reading-layout--tri">
       {tocTree.length > 0 ? (
-        <aside class="post-reading-toc-rail" aria-label="文章目录">
+        <aside class="post-reading-toc-rail" aria-label={t("文章目录")}>
           <TocSidebar items={tocTree} />
         </aside>
       ) : null}
 
       <div class="post-reading-main">
         <article class="post-reading-article">
-          <section class="post-title-card" aria-label="文章标题卡片">
+          <section class="post-title-card" aria-label={t("文章标题卡片")}>
             <header class="content-section post-header post-header--scholarly">
               <div class="post-header-meta-row">
                 <p class="subtle post-header-meta">
@@ -222,7 +229,7 @@ const structuredData = site
               <h1>{post.data.title}</h1>
               {post.data.summary ? <p class="post-header-dek">{post.data.summary}</p> : null}
               {headerStats.length > 0 ? (
-                <div class="post-header-stats-row" role="group" aria-label="文章辅助统计">
+                <div class="post-header-stats-row" role="group" aria-label={t("文章辅助统计")}>
                   {(headerStats.filter(Boolean) as HeaderStatItem[]).map((item) => (
                     <span class="post-header-stat">
                       <MetaIcon name={item.icon} class="post-header-stat-icon" />
@@ -233,13 +240,13 @@ const structuredData = site
                 </div>
               ) : null}
               {post.data.topics.length > 0 ? (
-                <p class="post-header-topics" role="group" aria-label="文章主题标签">
+                <p class="post-header-topics" role="group" aria-label={t("文章主题标签")}>
                   <span class="post-header-topics-label" aria-hidden="true">
                     <MetaIcon name="tag" class="post-header-topics-icon" />
                   </span>
                   {post.data.topics.map((topicSlug) => (
                     <span class="post-header-topic-item">
-                      <a href={`/topics/${topicSlug}`}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a>
+                      <a href={l(`/topics/${topicSlug}`)}>#{topicTitleBySlug.get(topicSlug) ?? topicSlug}</a>
                     </span>
                   ))}
                 </p>
@@ -250,8 +257,8 @@ const structuredData = site
               <div class="post-cover post-cover--hero">
                 <a
                   class="post-cover-stack post-cover-trigger"
-                  href={post.data.cover.src.src}
-                  aria-label={`放大封面：${post.data.cover.alt}`}
+                  href={l(post.data.cover.src.src)}
+                  aria-label={t("放大封面：{0}", [post.data.cover.alt])}
                   aria-haspopup="dialog"
                   aria-controls="post-image-viewer"
                   data-image-viewer-trigger
@@ -287,7 +294,7 @@ const structuredData = site
           </section>
 
           {tocItems.length > 0 ? (
-            <div class="post-toc-mobile-container" role="group" aria-label="移动端目录">
+            <div class="post-toc-mobile-container" role="group" aria-label={t("移动端目录")}>
               <PostToc items={tocItems} variant="mobileOnly" />
             </div>
           ) : null}
@@ -298,12 +305,12 @@ const structuredData = site
         </article>
 
         {relatedPosts.length > 0 ? (
-          <section class="post-related-notes" aria-label="相关笔记">
-            <h2 class="post-related-notes-title">相关笔记</h2>
+          <section class="post-related-notes" aria-label={t("相关笔记")}>
+            <h2 class="post-related-notes-title">{t("相关笔记")}</h2>
             <ul class="post-related-notes-list">
               {relatedPosts.map((related) => (
                 <li class="post-related-notes-item">
-                  <a class="post-related-notes-link" href={getPostPath(related.id)}>
+                  <a class="post-related-notes-link" href={l(getPostPath(related.id))}>
                     {related.title}
                   </a>
                   {related.summary ? (
@@ -316,28 +323,28 @@ const structuredData = site
         ) : null}
 
         <section class="post-waline-comments-section">
-          <WalineComments client:visible path={getPostPath(post.id)} />
+          <WalineComments locale={locale} client:visible path={getPostPath(post.id)} />
         </section>
 
-        <section class="post-reading-family-actions" aria-label="继续浏览">
+        <section class="post-reading-family-actions" aria-label={t("继续浏览")}>
           <ActionPair
             actions={[
               siblings.olderPost
                 ? {
                     href: getPostPath(siblings.olderPost.id),
-                    label: `下一篇：${siblings.olderPost.data.title}`,
+                    label: t("下一篇：{0}", [siblings.olderPost.data.title]),
                     variant: "primary",
                     icon: "arrow"
                   }
                 : {
                     href: "/archives",
-                    label: "翻阅归档",
+                    label: t("翻阅归档"),
                     variant: "primary",
                     icon: "archive"
                   },
               {
                 href: `/topics/${post.data.topics[0]}`,
-                label: `返回主题：${topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]}`,
+                label: t("返回主题：{0}", [topicTitleBySlug.get(post.data.topics[0]) ?? post.data.topics[0]]),
                 variant: "secondary",
                 icon: "topic"
               }
@@ -348,7 +355,7 @@ const structuredData = site
         <PostPager newerPost={siblings.newerPost} olderPost={siblings.olderPost} />
       </div>
 
-      <aside class="post-reading-rail" aria-label="阅读侧栏">
+      <aside class="post-reading-rail" aria-label={t("阅读侧栏")}>
         <PostScholarRail
           tocItems={tocItems}
           figures={post.data.figures ?? []}

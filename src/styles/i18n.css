@@ -1,0 +1,61 @@
+/* Language is a compact tool, never an extra item in the six-link mobile row. */
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  min-height: 2.28rem;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.language-switch:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+html[lang="en"] .site-nav-links a { letter-spacing: -0.02em; }
+@media (max-width: 900px) {
+  html[lang="en"] .site-nav-links a { padding-inline: 0.37rem; font-size: 0.78rem; }
+  .language-switch { min-width: 1.8rem; padding-inline: 0.2rem; }
+}
+@media (max-width: 360px) {
+  html[lang="en"] .site-nav-links a { padding-inline: 0.22rem; font-size: 0.72rem; }
+}
+/* Keep the language control beside search so the existing mobile navigation
+   retains all six destinations on one row. No controls are hidden. */
+.site-header[data-header-state] .site-header-search-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.site-header[data-header-state] .language-switch { flex: 0 0 auto; }
+.site-header[data-header-state] .site-nav-links { flex-wrap: nowrap; }
+@media (max-width: 900px) {
+  .site-header[data-header-state] .site-header-search-slot {
+    width: auto;
+    max-width: none;
+  }
+  .site-header[data-header-state] .site-header-search-slot > [data-header-search] {
+    width: 2.7rem;
+    flex: 0 0 2.7rem;
+  }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a {
+    padding-inline: 0.27rem;
+    font-size: 0.76rem;
+    letter-spacing: -0.025em;
+  }
+}
+@media (max-width: 380px) {
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a {
+    padding-inline: 0.18rem;
+    font-size: 0.72rem;
+  }
+  html[lang="en"] .site-header[data-header-state] .site-nav { gap: 0.25rem; }
+}
+
+@media (max-width: 900px) {
+  /* The new language tool makes the expanded two-row header reach 98px.
+     A shared 100px floor prevents its compact state shortening document flow
+     during search's fixed-body scroll lock, preserving the reading position. */
+  .site-header[data-header-state] { --header-band: 100px; }
+}

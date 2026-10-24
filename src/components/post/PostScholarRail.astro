@@ -1,4 +1,9 @@
 ---
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+
 import { Image } from "astro:assets";
 import PostToc from "./PostToc.astro";
 import type { PostTocItem } from "../../lib/posts/toc";
@@ -28,17 +33,22 @@ const {
 } = Astro.props;
 
 function buildFigureInlineText(figure: PostFigure): string {
-  const parts = [`${figure.kind === "image" ? "图" : "表"}：${figure.title}`];
+  const parts = [`${figure.kind === "image" ? t("图") : t("表")}${locale === "en" ? ": " : "："}${figure.title}`];
   if (figure.summary) parts.push(figure.summary);
   if (figure.caption) parts.push(figure.caption);
-  return parts.join("。");
+  return parts.join(locale === "en" ? ". " : "。");
+}
+
+function railLabel(value: string | number): string {
+  const text = String(value);
+  return locale === "en" ? text.replace(/^图/, "Figure ").replace(/^表/, "Table ") : text;
 }
 
 function getEntryAriaLabel(entry: InfoRailEntry): string {
   if (entry.kind === "figure") {
-    return `定位到正文图表说明 ${entry.number ?? ""}`;
+    return t("定位到正文图表说明 {0}", [railLabel(entry.number ?? "")]);
   }
-  return `定位到正文${entry.typeLabel} ${entry.number ?? entry.footnote.label}`;
+  return t("定位到正文{0} {1}", [entry.typeLabel, railLabel(entry.number ?? entry.footnote.label)]);
 }
 
 const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
@@ -58,7 +68,7 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
             <PostToc items={tocItems} variant="rail" />
           </div>
           <div class="post-scholar-item-footer">
-            <p class="post-scholar-item-type">目录</p>
+            <p class="post-scholar-item-type">{t("目录")}</p>
           </div>
         </article>
       ) : null
@@ -90,11 +100,11 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
                       data-linked-note-anchor-id={figure.anchorId}
                       aria-label={getEntryAriaLabel(entry)}
                     >
-                      {entry.number ?? ""}
+                      {railLabel(entry.number ?? "")}
                     </button>
                     <div class="post-scholar-footnote-content">
                       <div class="post-scholar-footnote-meta">
-                        <span class="post-scholar-item-type-tag">{entry.typeLabel}</span>
+                        <span class="post-scholar-item-type-tag">{t(entry.typeLabel)}</span>
                       </div>
                       <div class="post-scholar-footnote-body">
                       <p>
@@ -102,13 +112,13 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
                         {figure.sourceRefIds && figure.sourceRefIds.length > 0 ? (
                           <>
                             {" "}
-                            来源{" "}
+                            {t("来源")}{" "}
                             {figure.sourceRefIds.map((refId, index) => {
                               const sourceLink = resolveFigureSourceLink(figureSourceLinks, refId);
                               return (
                                 <>
                                   {index > 0 ? "、" : ""}
-                                  <a href={sourceLink.href}>{sourceLink.label}</a>
+                                  <a href={l(sourceLink.href)}>{sourceLink.label}</a>
                                 </>
                               );
                             })}
@@ -146,16 +156,16 @@ const { infoEntries, tocEntry, figureSourceLinks } = buildPostScholarRailModel({
                     type="button"
                     class="post-scholar-footnote-number post-scholar-footnote-number-button"
                     data-footnote-rail-source={entry.footnote.id}
-                    data-footnote-display-number={entry.number ?? entry.footnote.label}
+                    data-footnote-display-number={railLabel(entry.number ?? entry.footnote.label)}
                     data-linked-note-key-source={entry.noteKey}
                     data-linked-note-anchor-id={entry.footnote.anchorId}
                     aria-label={getEntryAriaLabel(entry)}
                   >
-                    {entry.number ?? entry.footnote.label}
+                    {railLabel(entry.number ?? entry.footnote.label)}
                   </button>
                   <div class="post-scholar-footnote-content">
                     <div class="post-scholar-footnote-meta">
-                      <span class="post-scholar-item-type-tag">{entry.typeLabel}</span>
+                      <span class="post-scholar-item-type-tag">{t(entry.typeLabel)}</span>
                     </div>
                     <div class="post-scholar-footnote-body" set:html={entry.footnote.html} />
                   </div>

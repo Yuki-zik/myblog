@@ -1,5 +1,12 @@
 ---
-import { getCollection, render, type CollectionEntry } from "astro:content";
+import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
+import { collectionReader } from "../../lib/i18n/content";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+const l = (value: string | undefined) => localizePath(value, locale);
+const getCollection = collectionReader(locale);
+
+import { getCollection as rawGetCollection, render, type CollectionEntry } from "astro:content";
 import DiscoverShell from "../../components/discover/DiscoverShell.astro";
 import EmptyState from "../../components/discover/EmptyState.astro";
 import PageHero from "../../components/discover/PageHero.astro";
@@ -19,7 +26,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const concepts = await getCollection("concepts");
+  const concepts = await rawGetCollection("concepts");
   return concepts.map((concept) => ({
     params: { slug: concept.id },
     props: { concept }
@@ -46,7 +53,7 @@ const relatedConcepts = (concept.data.related ?? [])
   .filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
 
 const primaryPost = referencedPosts[0] ?? null;
-const conceptDescription = `${concept.data.summary} 从概念返回引用它的文章与主题网络。`;
+const conceptDescription = t("{0} 从概念返回引用它的文章与主题网络。", [concept.data.summary]);
 
 const site = Astro.site;
 const structuredData = site
@@ -56,7 +63,7 @@ const structuredData = site
       title: concept.data.title,
       description: concept.data.summary,
       breadcrumbs: [
-        { name: "首页", url: new URL("/", site).toString() },
+        { name: t("首页"), url: new URL("/", site).toString() },
         { name: concept.data.title }
       ]
     })
@@ -81,19 +88,19 @@ const structuredData = site
         primaryPost
           ? {
               href: `/posts/${primaryPost.id}`,
-              label: `阅读《${primaryPost.data.title}》`,
+              label: t("阅读《{0}》", [primaryPost.data.title]),
               variant: "primary",
               icon: "arrow"
             }
           : {
               href: "/topics",
-              label: "浏览主题",
+              label: t("浏览主题"),
               variant: "primary",
               icon: "topic"
             },
         {
           href: "/topics",
-          label: "返回主题列表",
+          label: t("返回主题列表"),
           variant: "secondary",
           icon: "topic"
         }
@@ -110,24 +117,24 @@ const structuredData = site
         )}
         <div class="concept-reference__index">
           <div class="discover-hero__panel-copy">
-            <p class="discover-hero__panel-label">关联索引</p>
+            <p class="discover-hero__panel-label">{t("关联索引")}</p>
           </div>
           <div class="discover-hero__panel-stats">
             <div class="discover-hero__panel-stat">
               <strong>{String(referencedPosts.length).padStart(2, "0")}</strong>
-              <span>引用文章</span>
+              <span>{t("引用文章")}</span>
             </div>
             <div class="discover-hero__panel-stat">
               <strong>{String(referencedTopics.length).padStart(2, "0")}</strong>
-              <span>关联主题</span>
+              <span>{t("关联主题")}</span>
             </div>
             <div class="discover-hero__panel-stat">
               <strong>{String(concept.data.tags?.length ?? 0).padStart(2, "0")}</strong>
-              <span>标签</span>
+              <span>{t("标签")}</span>
             </div>
             <div class="discover-hero__panel-stat">
               <strong>{String(relatedConcepts.length).padStart(2, "0")}</strong>
-              <span>相关概念</span>
+              <span>{t("相关概念")}</span>
             </div>
           </div>
         </div>
@@ -137,7 +144,7 @@ const structuredData = site
     <section class="discover-section">
       <SectionHead
         kicker="Definition"
-        title="概念说明"
+        title={t("概念说明")}
       />
       <div class="discover-surface discover-rich">
         <Content />
@@ -146,7 +153,7 @@ const structuredData = site
 
     {concept.data.tags?.length ? (
       <div class="discover-concept-tags">
-        <h2>概念标签</h2>
+        <h2>{t("概念标签")}</h2>
         <ul>{concept.data.tags.map((tag) => <li>{tag}</li>)}</ul>
       </div>
     ) : null}
@@ -154,12 +161,12 @@ const structuredData = site
     <section class="discover-section" data-concept-posts>
       <SectionHead
         kicker="Posts"
-        title="引用它的文章"
+        title={t("引用它的文章")}
         countLabel={`${referencedPosts.length} posts`}
       />
       {
         referencedPosts.length === 0 ? (
-          <EmptyState title="暂无文章引用该概念。" body="后续有文章标注这个概念后，这里会自动出现统一的文章卡片列表。" />
+          <EmptyState title={t("暂无文章引用该概念。")} body={t("后续有文章标注这个概念后，这里会自动出现统一的文章卡片列表。")} />
         ) : (
           <div class="discover-post-grid" data-ux-stagger>
             {referencedPosts.map((post) => <PostCard post={post} />)}
@@ -171,16 +178,16 @@ const structuredData = site
     <section class="discover-section">
       <SectionHead
         kicker="Topics"
-        title="引用它的主题"
+        title={t("引用它的主题")}
         countLabel={`${referencedTopics.length} topics`}
       />
       {
         referencedTopics.length === 0 ? (
-          <EmptyState title="暂无主题通过入门路径引用该概念。" body="等主题和 entry post 关系补充完整后，这里会自动形成更清晰的网络。" />
+          <EmptyState title={t("暂无主题通过入门路径引用该概念。")} body={t("等主题和 entry post 关系补充完整后，这里会自动形成更清晰的网络。")} />
         ) : (
           <div class="discover-mini-grid" data-ux-stagger>
             {referencedTopics.map((topic) => (
-              <a href={`/topics/${topic.id}`} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
+              <a href={l(`/topics/${topic.id}`)} class="discover-surface discover-mini-card" data-ux-reveal="fade-up">
                 <span class="discover-mini-card__meta">Topic</span>
                 <h3>{topic.data.title}</h3>
                 <p>{topic.data.summary}</p>

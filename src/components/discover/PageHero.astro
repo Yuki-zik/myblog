@@ -1,4 +1,8 @@
 ---
+import { getLocale, createTranslator } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+
 import ActionPair, { type DiscoverAction } from "./ActionPair.astro";
 
 export type DiscoverHeroStat = {
@@ -45,7 +49,7 @@ const {
       stats.length > 0 ? (
         <ul
           class="discover-hero__stats grid max-w-[48rem] list-none grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-[0.9rem] p-0"
-          aria-label="页面摘要"
+          aria-label={t("页面摘要")}
         >
           {stats.map((stat) => (
             <li class="discover-hero__stat grid gap-[0.18rem] px-4 py-[0.95rem]">

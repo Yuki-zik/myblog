@@ -139,14 +139,14 @@ test("search switches between desktop dropdown and mobile modal without losing t
   await page.keyboard.press("/");
   await page.locator(input).fill("example");
   await expect(page.locator(results).locator("li")).toHaveCount(8);
-  expect(await page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(false);
+  await expect.poll(() => page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(false);
   await page.setViewportSize({ width: 393, height: 700 });
   await expect(page.locator(dialog)).toHaveJSProperty("open", true);
-  expect(await page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(true);
+  await expect.poll(() => page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(true);
   await expect(page.locator(input)).toHaveValue("example");
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(page.locator(input)).toBeVisible();
-  expect(await page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(false);
+  await expect.poll(() => page.locator(dialog).evaluate((element) => element.matches(":modal"))).toBe(false);
   await expect(page.locator(input)).toHaveValue("example");
   await page.keyboard.press("Escape");
   await expect(page.locator("[data-search-trigger]")).toBeFocused();

@@ -1,4 +1,8 @@
 ---
+import { getLocale, createTranslator } from "../../lib/i18n/index";
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+
 import "../../styles/image-viewer.css";
 ---
 
@@ -10,25 +14,25 @@ import "../../styles/image-viewer.css";
   aria-describedby="image-viewer-caption"
 >
   <div class="image-viewer__toolbar">
-    <h2 id="image-viewer-title" class="image-viewer__title">图片预览</h2>
+    <h2 id="image-viewer-title" class="image-viewer__title">{t("图片预览")}</h2>
     <div class="image-viewer__actions">
       <button
         class="image-viewer__control image-viewer__size-toggle"
         type="button"
         data-image-viewer-toggle
-      >原始尺寸</button>
+      >{t("原始尺寸")}</button>
       <a
         class="image-viewer__control image-viewer__original"
         data-image-viewer-original
         target="_blank"
         rel="noopener noreferrer"
-      >查看原图</a>
+      >{t("查看原图")}</a>
     </div>
     <button
       class="image-viewer__control image-viewer__close"
       type="button"
       data-image-viewer-close
-      aria-label="关闭图片预览"
+      aria-label={t("关闭图片预览")}
       autofocus
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -42,7 +46,7 @@ import "../../styles/image-viewer.css";
       class="image-viewer__image-toggle"
       type="button"
       data-image-viewer-image-toggle
-      aria-label="放大到原始尺寸"
+      aria-label={t("放大到原始尺寸")}
     >
       <img class="image-viewer__image" data-image-viewer-image hidden alt="" draggable="false" />
     </button>

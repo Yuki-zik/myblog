@@ -23,7 +23,7 @@ function normalizePath(path: string | undefined): string {
 }
 
 function getContentSurface(path: string | undefined): "posts" | "topics" | "concepts" | null {
-  const normalizedPath = normalizePath(path);
+  const normalizedPath = normalizePath(path).replace("/src/content/en/", "/src/content/");
 
   if (normalizedPath.includes("/src/content/posts/")) return "posts";
   if (normalizedPath.includes("/src/content/topics/")) return "topics";
@@ -47,7 +47,7 @@ function createText(value: string): MarkdownNode {
   };
 }
 
-function createSpoilerSummary(label: string | null | undefined): MarkdownNode {
+function createSpoilerSummary(label: string | null | undefined, defaultLabel = DEFAULT_SPOILER_LABEL): MarkdownNode {
   const trimmedLabel = label?.trim() ?? "";
   return {
     type: "spoilerSummary",
@@ -58,16 +58,16 @@ function createSpoilerSummary(label: string | null | undefined): MarkdownNode {
         "data-spoiler-summary": "",
         ...(trimmedLabel ? {} : { "data-spoiler-blank": "" }),
         className: ["post-spoiler__summary"],
-        "aria-label": trimmedLabel || DEFAULT_SPOILER_LABEL
+        "aria-label": trimmedLabel || defaultLabel
       }
     }
   };
 }
 
-function createInlineSpoilerHint(): MarkdownNode {
+function createInlineSpoilerHint(defaultLabel = DEFAULT_SPOILER_LABEL): MarkdownNode {
   return {
     type: "spoilerInlineHint",
-    children: [createText(DEFAULT_SPOILER_LABEL)],
+    children: [createText(defaultLabel)],
     data: {
       hName: "span",
       hProperties: {
@@ -132,6 +132,7 @@ function validateInlineSpoiler(node: MarkdownNode, file: VFileLike): void {
 
 function transformSpoilerNode(node: MarkdownNode, file: VFileLike): void {
   const surface = getContentSurface(file.path);
+  const defaultLabel = normalizePath(file.path).includes("/src/content/en/") ? "Reveal spoiler" : DEFAULT_SPOILER_LABEL;
   if (surface && surface !== "posts") {
     fail(file, node, "spoiler directives are only supported in posts.");
   }
@@ -145,7 +146,7 @@ function transformSpoilerNode(node: MarkdownNode, file: VFileLike): void {
         className: ["post-spoiler"]
       }
     };
-    node.children = [createSpoilerSummary(node.label), ...(node.children ?? [])];
+    node.children = [createSpoilerSummary(node.label, defaultLabel), ...(node.children ?? [])];
     return;
   }
 
@@ -159,10 +160,10 @@ function transformSpoilerNode(node: MarkdownNode, file: VFileLike): void {
         "data-spoiler-inline": "",
         className: ["post-inline-spoiler"],
         "aria-pressed": "false",
-        "aria-label": DEFAULT_SPOILER_LABEL
+        "aria-label": defaultLabel
       }
     };
-    node.children = [createInlineSpoilerHint(), createInlineSpoilerContent(originalChildren)];
+    node.children = [createInlineSpoilerHint(defaultLabel), createInlineSpoilerContent(originalChildren)];
     return;
   }
 
