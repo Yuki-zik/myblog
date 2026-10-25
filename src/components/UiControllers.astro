@@ -921,6 +921,93 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
       new ResizeObserver(sizeImage).observe(viewport);
     }
 
+
+    function initAgentInstruments() {
+      document.querySelectorAll("[data-agent-instruments]").forEach(function (desk) {
+        if (desk.dataset.ready === "true") return;
+
+        function write(selector, value) {
+          var target = desk.querySelector(selector);
+          if (target) target.textContent = String(value);
+        }
+
+        var parallel = desk.querySelector("[data-parallel-scrub]");
+        var parallelStage = desk.querySelector("[data-parallel-stage]");
+        function updateParallel() {
+          if (!parallel) return;
+          var point = Math.min(120, Math.max(0, Number(parallel.value) || 0));
+          var running = 0;
+          desk.querySelectorAll("[data-parallel-segment]").forEach(function (segment) {
+            var active = Number(segment.dataset.start) <= point && point < Number(segment.dataset.end);
+            segment.dataset.active = active ? "true" : "false";
+            if (active) running += 1;
+          });
+          if (parallelStage) parallelStage.style.setProperty("--cursor", (point / 120 * 100) + "%");
+          write("[data-parallel-time]", point + " min");
+          write("[data-parallel-count]", running);
+          parallel.setAttribute("aria-valuetext", "示意第 " + point + " 分钟，同时推进 " + running + " 项任务");
+        }
+        if (parallel) parallel.addEventListener("input", updateParallel);
+        updateParallel();
+
+        var tickets = Array.from(desk.querySelectorAll("[data-delivery-ticket]"));
+        var ticketIndex = 0;
+        function showTicket(nextIndex) {
+          if (!tickets.length) return;
+          ticketIndex = (nextIndex + tickets.length) % tickets.length;
+          tickets.forEach(function (ticket, index) {
+            ticket.hidden = index !== ticketIndex;
+            if (ticket.hidden) ticket.querySelectorAll("details").forEach(function (detail) { detail.open = false; });
+          });
+          write("[data-delivery-index]", (ticketIndex + 1) + " / " + tickets.length);
+        }
+        var previousTicket = desk.querySelector("[data-delivery-prev]");
+        var nextTicket = desk.querySelector("[data-delivery-next]");
+        if (previousTicket) previousTicket.addEventListener("click", function () { showTicket(ticketIndex - 1); });
+        if (nextTicket) nextTicket.addEventListener("click", function () { showTicket(ticketIndex + 1); });
+        showTicket(0);
+
+        var attentionParts = {
+          plan: { minutes: 30, description: "界定目标、准备上下文与拆分任务。"},
+          review: { minutes: 45, description: "检查结果、核对依据并完成整合。"},
+          rework: { minutes: 15, description: "纠错与重做；这部分已经包含在总投入中。"}
+        };
+        var attentionDial = desk.querySelector("[data-attention-dial]");
+        var partButtons = Array.from(desk.querySelectorAll("[data-attention-part]"));
+        function showAttention(part) {
+          var item = attentionParts[part];
+          if (!item) return;
+          partButtons.forEach(function (button) {
+            button.setAttribute("aria-pressed", button.dataset.attentionPart === part ? "true" : "false");
+          });
+          if (attentionDial) attentionDial.dataset.part = part;
+          write("[data-attention-output]", item.minutes + " 分钟");
+          write("[data-attention-description]", item.description);
+        }
+        partButtons.forEach(function (button) {
+          button.addEventListener("click", function () { showAttention(button.dataset.attentionPart); });
+        });
+        showAttention("plan");
+
+        var rework = desk.querySelector("[data-rework-scrub]");
+        var reworkTape = desk.querySelector("[data-rework-tape]");
+        function updateRework() {
+          if (!rework) return;
+          var minutes = Math.min(90, Math.max(0, Number(rework.value) || 0));
+          if (reworkTape) reworkTape.style.setProperty("--rework", (minutes / 90 * 100) + "%");
+          write("[data-rework-output]", minutes + " 分钟");
+          rework.setAttribute("aria-valuetext", "示意总投入 90 分钟，其中返工 " + minutes + " 分钟");
+        }
+        if (rework) rework.addEventListener("input", updateRework);
+        var resetRework = desk.querySelector("[data-rework-reset]");
+        if (resetRework && rework) resetRework.addEventListener("click", function () { rework.value = "0"; updateRework(); });
+        updateRework();
+
+        desk.querySelectorAll("[data-instrument-control]").forEach(function (control) { control.disabled = false; });
+        desk.dataset.ready = "true";
+      });
+    }
+
     function initResearchSignature() {
       var signatures = document.querySelectorAll("details[data-home-research-signature]");
       if (!signatures.length) return;
@@ -937,6 +1024,7 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
 
     initReveal();
     initResearchSignature();
+    initAgentInstruments();
     initThemeToggle();
     initBackToTop();
     initHeader();

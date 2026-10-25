@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-10-24T15:42:36.780782+00:00",
+  "host": "Mac mini",
+  "baselineCommit": "b6afd5327c2fb48e81211e6632ddd653d70a0b51",
+  "branch": "feat/agent-widgets-mini-20261024",
+  "command": "pnpm exec playwright test --config=.agent-widgets.playwright.config.ts tests/e2e/agent-instruments-contract.spec.ts tests/e2e/agent-observatory.spec.ts tests/e2e/capsule-header.spec.ts",
+  "productionBuild": true,
+  "browserResult": "11 passed",
+  "screenshots": [
+    {
+      "file": "agent-instruments-1280-light.png",
+      "sha256": "a1ecd8bbcf965b8b1b6837ab6745b7c090efc40a5eafef57f0e550289ff592e3",
+      "source": "test-results/agent-widgets-v3/agent-observatory-compact--edef1--and-preserve-source-access/agent-instruments-1280-light.png"
+    },
+    {
+      "file": "agent-instruments-320-light.png",
+      "sha256": "6313eab9d7f5052098e49793962f06bd0e8d04839556fe31ae69c82a2ac585ea",
+      "source": "test-results/agent-widgets-v3/agent-observatory-compact--edef1--and-preserve-source-access/agent-instruments-320-light.png"
+    },
+    {
+      "file": "agent-instruments-390-dark.png",
+      "sha256": "317cdf7cfeca3f53b3b71e4ea836dce6d9b14640e19948d07b789b2486eef3c9",
+      "source": "test-results/agent-widgets-v3/agent-observatory-compact--edef1--and-preserve-source-access/agent-instruments-390-dark.png"
+    },
+    {
+      "file": "agent-instruments-home-entry-1280-light.png",
+      "sha256": "f997eae8b21e2c0da1590304b1684ec3cb10b5cc52e881eb8425c317e50a19ad",
+      "source": "test-results/agent-widgets-v3/agent-observatory-the-home-fbfd7-es-the-bilingual-navigation/agent-instruments-home-entry-1280-light.png"
+    }
+  ],
+  "sourceSha256": {
+    "src/pages/agents.astro": "2cb27785e705a466def6bec00c1874522b4dfaaa85a9d5318829c7b71def10cb",
+    "src/components/UiControllers.astro": "5d8f6177e3fbe27cd9ae0c16f95b40c0f79c49e8a678a784c4a68da77ddcf5da",
+    "src/components/agents/AgentObservatoryWidget.astro": "14d99e81b3f9abf1b4c000398995fd5b228b9c94ad80044164c583032c0d5da2",
+    "src/components/agents/AgentInstrumentDesk.astro": "a06dc2eb4118756de851ba5f063fa6cded85fa9f9b95db9646a4dea02b1011a7",
+    "src/styles/agent-observatory.css": "d39b7d14a6f621f2ecd6f98f5a1bcd51f175aab8f6b51b9317e84ac42c8be26c",
+    "src/styles/agent-instruments.css": "001cc880d0c3144747c1a156beed4a52342c30a3a35f154c60c61c8a115edf00",
+    "src/components/agents/instruments/ReworkWidget.astro": "4c2a4d907ecd2a6669686463b8258abde5acfaaa6456e32a078d03d088d0e296",
+    "src/components/agents/instruments/AttentionWidget.astro": "14d2bef22e2845d974d9b59231087d367c101745e12d87962eaea076baad7dca",
+    "src/components/agents/instruments/ParallelWidget.astro": "cbecd8b9afcb8bb066f3130ab82934efabad5c0690df06ff452552605f0a7d5b",
+    "src/components/agents/instruments/DeliveryWidget.astro": "fc5d234161906338003c24043b93bfa7fe573f460aace7a1fa35e4e32e8a3a30"
+  },
+  "implementationCommit": "60ba11f28e5ff88c8f682222839f250a189db433",
+  "integrationBase": "4cac12d796e2e1bb341e9065e5caca1101965c31"
+}
