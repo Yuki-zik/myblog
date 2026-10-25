@@ -274,12 +274,41 @@ function createSyncScheduler(sync: () => void): {
 const settleHandles = new WeakMap<HTMLElement, number>();
 
 /*
+ * Limit the distance travelled in each rendered frame. Native `smooth` scroll
+ * completes on a time curve, so a delayed frame can still move the list by
+ * hundreds of pixels in one paint on an overloaded reader device. A bounded
+ * step makes the visual movement predictable regardless of the frame rate.
+ */
+const TOC_MAX_PX_PER_FRAME = 24;
+const TOC_FOLLOW_EASE = 0.26;
+const TOC_FADE_DISTANCE = 160;
+const TOC_FOLLOW_MAX_FRAMES = 120;
+
+type TocFollowState = {
+  frame: number;
+  target: number;
+  progressLine: HTMLElement;
+  frames: number;
+  stagnantFrames: number;
+};
+const tocFollowStates = new WeakMap<HTMLElement, TocFollowState>();
+
+function cancelTocFollow(container: HTMLElement): void {
+  const state = tocFollowStates.get(container);
+  if (!state) return;
+  window.cancelAnimationFrame(state.frame);
+  delete state.progressLine.dataset.following;
+  tocFollowStates.delete(container);
+}
+
+/*
  * Follow within the TOC's padded reading area, without moving the document.
- * CSS defines both the edge insets and enough trailing space for the last link.
+ * Do not scroll ancestor containers: the article keeps its own reading position.
  */
 function scrollItemIntoViewWithin(
   container: HTMLElement,
   item: HTMLElement,
+  progressLine: HTMLElement,
 ): void {
   const containerRect = container.getBoundingClientRect();
   const itemRect = item.getBoundingClientRect();
@@ -294,14 +323,66 @@ function scrollItemIntoViewWithin(
     delta = itemRect.bottom - bottom;
   }
 
-  if (Math.abs(delta) < 1) return;
+  if (Math.abs(delta) < 1) {
+    // A newly selected link is already comfortably visible. Do not let an
+    // earlier section's in-flight follow continue dragging the list away.
+    cancelTocFollow(container);
+    return;
+  }
+  const maxTop = Math.max(container.scrollHeight - container.clientHeight, 0);
+  const target = Math.min(Math.max(container.scrollTop + delta, 0), maxTop);
+  if (prefersReducedMotion()) {
+    cancelTocFollow(container);
+    container.scrollTop = target;
+    return;
+  }
 
-  // Scroll only the sidebar; respect reduced-motion preferences.
-  container.scrollTo({
-    top: Math.min(Math.max(container.scrollTop + delta, 0),
-      Math.max(container.scrollHeight - container.clientHeight, 0)),
-    behavior: prefersReducedMotion() ? "instant" : "smooth",
-  });
+  // A newer section updates the same in-flight destination. It never creates a
+  // competing animation, or restarts the scroll when the site header changes.
+  const running = tocFollowStates.get(container);
+  if (running) {
+    running.target = target;
+    if (Math.abs(target - container.scrollTop) > TOC_FADE_DISTANCE) {
+      running.progressLine.dataset.following = "true";
+    }
+    return;
+  }
+
+  const state: TocFollowState = {
+    frame: 0,
+    target,
+    progressLine,
+    frames: 0,
+    stagnantFrames: 0,
+  };
+  tocFollowStates.set(container, state);
+  if (Math.abs(target - container.scrollTop) > TOC_FADE_DISTANCE) {
+    progressLine.dataset.following = "true";
+  }
+
+  const step = () => {
+    const remaining = state.target - container.scrollTop;
+    if (Math.abs(remaining) < 0.75 ||
+        state.frames >= TOC_FOLLOW_MAX_FRAMES ||
+        state.stagnantFrames >= 4) {
+      if (Math.abs(remaining) < 0.75) container.scrollTop = state.target;
+      delete state.progressLine.dataset.following;
+      tocFollowStates.delete(container);
+      return;
+    }
+
+    const distance = Math.min(
+      Math.abs(remaining),
+      Math.max(1.5, Math.min(TOC_MAX_PX_PER_FRAME, Math.abs(remaining) * TOC_FOLLOW_EASE)),
+    );
+    const before = container.scrollTop;
+    container.scrollTop = before + Math.sign(remaining) * distance;
+    state.frames += 1;
+    state.stagnantFrames = Math.abs(container.scrollTop - before) < 0.5
+      ? state.stagnantFrames + 1 : 0;
+    state.frame = window.requestAnimationFrame(step);
+  };
+  state.frame = window.requestAnimationFrame(step);
 }
 
 function cancelSettle(progressLine: HTMLElement): void {
@@ -352,11 +433,17 @@ function updateProgress(
   // Repeating a smooth-scroll destination on every reading scroll frame
   // restarts that animation. Follow only on selection/geometry changes.
   if (followActiveLink) {
-    scrollItemIntoViewWithin(scrollBody, activeEntry.link);
+    scrollItemIntoViewWithin(scrollBody, activeEntry.link, progressLine);
   }
 
-  // During smooth sidebar movement, the scroll listener measures each frame.
-  // Keep the progress transition active so it never snaps into a new section.
+  // The TOC's own scroll event will update the marker at each follow step.
+  // Page/header scroll callbacks only need one measurement; don't start a
+  // competing settle loop on every frame of the bounded animation.
+  if (!followActiveLink) {
+    renderProgress();
+    return;
+  }
+
   let previous = renderProgress();
   let stableFrames = 0;
   let frames = 0;
@@ -640,6 +727,12 @@ export function initTocSidebar(root: Element): (() => void) | void {
   window.addEventListener("site-header-framechange", onHeaderFrameChange);
 
   const removeCollapseToggle = bindCollapseToggle(root, onResize);
+  const interruptFollow = () => cancelTocFollow(scrollBody);
+  scrollBody.addEventListener("wheel", interruptFollow, { passive: true });
+  scrollBody.addEventListener("touchstart", interruptFollow, { passive: true });
+  scrollBody.addEventListener("pointerdown", interruptFollow, { passive: true });
+  const toggleButton = root.querySelector("[data-toc-toggle]");
+  toggleButton?.addEventListener("click", interruptFollow);
 
   requestSync();
 
@@ -652,6 +745,11 @@ export function initTocSidebar(root: Element): (() => void) | void {
     window.removeEventListener("resize", onResize);
     window.removeEventListener("hashchange", onHashChange);
     window.removeEventListener("site-header-framechange", onHeaderFrameChange);
+    scrollBody.removeEventListener("wheel", interruptFollow);
+    scrollBody.removeEventListener("touchstart", interruptFollow);
+    scrollBody.removeEventListener("pointerdown", interruptFollow);
+    toggleButton?.removeEventListener("click", interruptFollow);
+    cancelTocFollow(scrollBody);
     cancelSettle(progressLine);
     cancel();
   };

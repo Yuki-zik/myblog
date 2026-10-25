@@ -1,0 +1,34 @@
+[
+  {
+    "name": "chromium",
+    "locale": "zh",
+    "mid": {
+      "opacity": 0.357069,
+      "followFlag": true,
+      "innerScroll": 48
+    },
+    "after": {
+      "opacity": 1,
+      "active": "07References（参考资料）",
+      "markerGap": 3.4140625,
+      "innerScroll": 410,
+      "overflow": false
+    }
+  },
+  {
+    "name": "webkit",
+    "locale": "en",
+    "mid": {
+      "opacity": 0,
+      "followFlag": true,
+      "innerScroll": 168
+    },
+    "after": {
+      "opacity": 1,
+      "active": "07References",
+      "markerGap": 4.0625,
+      "innerScroll": 298,
+      "overflow": false
+    }
+  }
+]

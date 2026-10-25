@@ -211,6 +211,8 @@ function sectionLabel(index: number): string {
     padding-left: 1.2rem;
     padding-bottom: var(--toc-follow-inset);
     scroll-padding-block: 1.25rem var(--toc-follow-inset);
+    scroll-behavior: auto;
+    overflow-anchor: none;
     scrollbar-width: none;
   }
 
@@ -273,6 +275,14 @@ function sectionLabel(index: number): string {
       transform 320ms var(--ease-out, ease),
       height 320ms var(--ease-out, ease),
       opacity 320ms var(--ease-out, ease);
+  }
+
+  /* Long jumps move the TOC in bounded steps. Hide the detached marker while
+     it crosses distant entries, then fade it in at the settled current link. */
+  .toc-sidebar__progress[data-following="true"] {
+    opacity: 0;
+    /* Disappear quickly before a long traverse; return with the normal 320ms fade. */
+    transition-duration: 320ms, 320ms, 90ms;
   }
 
   /* `.toc-sidebar__list` / `.toc-sidebar__children` list reset, grid and spacing are
