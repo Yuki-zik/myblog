@@ -15,15 +15,15 @@
     },
     "concepts/optimistic-ui.md": {
       "sourceHash": "ca9de873ff009a19eac367ca22bb0dfeecd132fef7bec75d7ce93aa4078b3803",
-      "targetHash": "77797239da4ebf2544244c57b2b4ca2e16f627e7eb2c271e11b9bf53a1b10917",
-      "translatedAt": "2026-10-25T07:25:34.301Z",
-      "provider": "existing-reviewed",
-      "model": null,
-      "promptVersion": null,
-      "glossaryVersion": null,
+      "targetHash": "b1bd7685b229ebd603941dd1b309b69ecc95e89e85d561cdd5da78795c3ed073",
+      "translatedAt": "2026-10-25T08:14:24.610Z",
+      "provider": "codex-cli",
+      "model": "gpt-6-astra",
+      "promptVersion": "zh-source-text-v1",
+      "glossaryVersion": "2026-10-25.1",
       "state": "current",
-      "provenance": "existing-reviewed",
-      "semanticReview": "human-adopted"
+      "semanticReview": "passed",
+      "headingMap": {}
     },
     "papers/duap-multilingual-speech-privacy.md": {
       "sourceHash": "781fbf09fab8b14dae7b7e81e73c2b350e6cdaf80d653480b74bd74742400fc1",

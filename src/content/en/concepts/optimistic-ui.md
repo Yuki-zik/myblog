@@ -1,6 +1,6 @@
 ---
 title: Optimistic UI
-summary: Updating the interface before server confirmation to provide faster feedback when commenting.
+summary: "Update the interface before server confirmation to provide faster feedback on comment interactions."
 tags:
   - ux
   - interaction
@@ -8,4 +8,4 @@ related:
   - anchor-id
 ---
 
-Display a submitted comment beneath its paragraph immediately, then confirm or roll it back according to the server response.
+After a short comment is submitted, display it below the paragraph first, then confirm or roll back the update based on the server response&#46;
