@@ -84,3 +84,9 @@ v2 原图与校验值见[视觉档案](visual-history/2026-10-24-agent-observato
 ## 交互挂件本地验收 · 2026-10-24
 
 Mac mini 上159项单测与11项生产构建浏览器检查全部通过；39页canonical、19对译文和13条英文搜索项、论文图片来源检查通过。桌面1280×900的四挂件首屏、320px浅色、390px暗色及82px中文首页入口已逐张检查。原图、校验值和源码快照标识见[视觉档案v3](visual-history/2026-10-24-agent-observatory/README.md#v3--每项数据一个交互挂件迁至-mac-mini-开发)。公开发布以PR与部署回执为准。
+
+## 交互挂件正式发布 · 2026-10-25
+
+PR #52 已以 `3f66cb4` 上线，应用文件树与经过[完整CI](https://github.com/Yuki-zik/myblog/actions/runs/40171903366)的 `d072b28` 一致。164项单测、351项浏览器测试、SEO/双语与审计门禁全部通过。生产域鼠标/键盘/触屏均已实际操作，图形反馈和读数同步；桌面挂件区564px高、首页入口82px，手机深浅色无溢出，实测与示意保持隔离。两项Vercel正式部署成功，原图与验证结果见[视觉档案](visual-history/2026-10-24-agent-observatory/README.md)。
+
+Mac mini继续作为开发位置：`/Users/a-znk/Code/myblog-agent-widgets`，当前工作分支为跟踪 `origin/main` 的 `main`；原功能分支保留作为检查点。开发、生产构建与视觉验收均已在该机器完成。

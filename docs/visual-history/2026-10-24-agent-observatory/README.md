@@ -81,3 +81,20 @@ v2 原图与校验值见本档案。发布后的归档提交仅更新这些文�
 截图所对应的挂件实现提交为 `60ba11f28e5ff88c8f682222839f250a189db433`。发布前合入同期英文旁注修复主线 `86183a0`；其编译器、旁注样式、双语校验与跨引擎测试完整保留，挂件源文件与上述截图保持一致。最终集成后的完整CI记录随发布回执维护。
 
 PR #52 的集成提交 `473b138` 在 [CI 40171236152](https://github.com/Yuki-zik/myblog/actions/runs/40171236152) 通过全部检查：164项单测、349项浏览器测试、构建/SEO/双语与审计。准备发布时主线合入 PR #50（4cac12d）的阅读目录平滑跟随修复，已继续保留其全部源码与回归；挂件源文件与截图仍一致。最终发布以最新集成回执为准。
+
+## v3 正式发布 · 2026-10-25
+
+[PR #52](https://github.com/Yuki-zik/myblog/pull/52) 已以 `3f66cb4399b42784a8525fea1f37ef44fc4fcec4` 合入 main。发布提交与最终集成头 `d072b288b0e42bb277853a54b075a88807c23add` 的完整文件树相同：`920ca8a13fa353e57aeacd9d2839fe534c1b2349`。[CI 40171903366](https://github.com/Yuki-zik/myblog/actions/runs/40171903366) 通过164项单测、351项浏览器测试、构建/39页canonical/19对译文/13条英文搜索、两套依赖审计及Waline smoke。同期英文旁注和目录平滑跟随修复均完整保留。
+
+myblog与waline两项正式部署均成功。正式地址：<https://a-znk.com/agents>。Mac mini上的实际生产域浏览器复核通过：鼠标拖动会移动轨道游标，键盘端点显示相应并发数；翻票和原生验收详情有效；阶段选择同时改变读数与表盘指针；返工滑杆实际伸长卷尺，回卷后数值与图形长度均为零。四项实测始终保持待记录。
+
+桌面1280×900中，挂件区为1000×564px，顶部212px，首屏完整可见；中文主页入口82px。320px浅色与390px暗色无水平溢出，触屏点选表盘/返工尺及回卷通过。六条研究、原始来源、空JSON模板、中文入口与英文首页六导航均复核，未捕获脚本异常。无JavaScript读取及来源展开已由同一代码树的CI覆盖。
+
+四张正式原图保留在 `v3-production/`，没有重绘或覆盖历史截图。桌面挂件与390px暗色原图与v3实现态逐字节相同；320px浅色与首页图也已逐张复核，首页图包含当时漫游区的悬停边框反馈。详细几何和交互结果见 `production-verification.json`；同一集成代码的本地产物验证见 `local-geometry-verification.json`。
+
+| 文件 | PNG尺寸 | SHA-256 |
+|---|---|---|
+| [production-agents-1280-light.png](v3-production/production-agents-1280-light.png) | 1280×900 | `a1ecd8bbcf965b8b1b6837ab6745b7c090efc40a5eafef57f0e550289ff592e3` |
+| [production-home-entry-1280-light.png](v3-production/production-home-entry-1280-light.png) | 1280×900 | `0c86175b2f93ef928123fc9c8e0f61530c842e4c34fa92436d54c7495f416ecd` |
+| [production-agents-320-light.png](v3-production/production-agents-320-light.png) | 320×1849 | `a8a94163452ee527f6cca3cb2a76a9261dc663e61d8284fef9e607a3bcf0d8e8` |
+| [production-agents-390-dark.png](v3-production/production-agents-390-dark.png) | 390×1810 | `317cdf7cfeca3f53b3b71e4ea836dce6d9b14640e19948d07b789b2486eef3c9` |

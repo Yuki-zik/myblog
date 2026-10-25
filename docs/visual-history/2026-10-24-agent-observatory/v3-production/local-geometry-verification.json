@@ -1,0 +1,46 @@
+{
+  "base": "http://127.0.0.1:4187",
+  "checkedAt": "2026-10-25T07:15:40.148Z",
+  "expectedCommit": "d072b288b0e42bb277853a54b075a88807c23add",
+  "screenshots": [
+    "production-agents-1280-light.png",
+    "production-home-entry-1280-light.png",
+    "production-agents-320-light.png",
+    "production-agents-390-dark.png"
+  ],
+  "views": [
+    {
+      "viewport": "1280x900",
+      "scheme": "light",
+      "desk": {
+        "x": 140,
+        "y": 212.015625,
+        "width": 1000,
+        "height": 564
+      }
+    },
+    {
+      "viewport": "320x900",
+      "scheme": "light",
+      "overflow": false,
+      "touchControls": true
+    },
+    {
+      "viewport": "390x900",
+      "scheme": "dark",
+      "overflow": false,
+      "touchControls": true
+    }
+  ],
+  "interactions": {
+    "parallel": "mouse drag moves cursor; keyboard endpoints show 0 and 1",
+    "delivery": "next and keyboard previous change visible ticket; native evidence expands",
+    "attention": "stage choice changes reading and visible hand rotation",
+    "rework": "range extends tape; reset returns value and visible length to zero"
+  },
+  "errors": [],
+  "references": "six sources and empty JSON template confirmed",
+  "homeEntryHeight": 82,
+  "bilingual": "Chinese entry opens dedicated page; English homepage retains six links and no untranslated widget",
+  "status": "passed"
+}
