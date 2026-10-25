@@ -1,7 +1,13 @@
 ---
+import {getLocale, createTranslator} from "../../lib/i18n/index";
+import {createPageLocalizer} from "../../lib/i18n/content";
+const locale=getLocale(Astro.url.pathname);
+const t=createTranslator(locale);
+const l=await createPageLocalizer(locale);
+
 import "../../styles/agent-observatory.css";
 ---
-<a class="agent-observatory-entry" href="/agents">
+<a class="agent-observatory-entry" href={l("/agents")}>
   <svg class="agent-observatory-entry__mark" viewBox="0 0 64 40" fill="none" aria-hidden="true">
     <path d="M2 9h22M2 18h22M8 5v17M15 5v17" stroke="currentColor" stroke-width="1.3"/>
     <path d="M3 9h10M14 18h9" stroke="var(--drawing-accent)" stroke-width="3"/>
@@ -10,6 +16,6 @@ import "../../styles/agent-observatory.css";
     <path d="M2 31h50" stroke="currentColor" stroke-width="2"/>
     <path d="M2 31h15" stroke="var(--drawing-accent)" stroke-width="4"/>
   </svg>
-  <span class="agent-observatory-entry__copy"><strong>Agent 工作观察站</strong><span>4 个可交互挂件 · 并行、交付与人的投入</span></span>
+  <span class="agent-observatory-entry__copy"><strong>{t("Agent 工作观察站")}</strong><span>{t("4 个可交互挂件 · 并行、交付与人的投入")}</span></span>
   <span class="agent-observatory-entry__arrow" aria-hidden="true">↗</span>
 </a>

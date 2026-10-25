@@ -1,5 +1,6 @@
+import { collectionReader } from "../../../lib/i18n/content";
 import type { APIContext } from "astro";
-import { getCollection, type CollectionEntry } from "astro:content";
+import { type CollectionEntry } from "astro:content";
 
 /**
  * Per-post raw Markdown mirror (`/posts/<slug>.md`) for LLM/agent retrieval.
@@ -13,7 +14,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const posts = await getCollection("postsEn", ({ data }) => !data.draft);
+  const posts = await collectionReader("en")("posts", ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post }

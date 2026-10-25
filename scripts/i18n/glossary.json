@@ -1,0 +1,11 @@
+{
+  "version": "2026-10-25.1",
+  "terms": {
+    "旁注": "marginalia",
+    "脚注": "footnote",
+    "知识图谱": "knowledge graph",
+    "段落锚点": "paragraph anchor",
+    "乐观更新": "optimistic update",
+    "漫游": "Wander"
+  }
+}

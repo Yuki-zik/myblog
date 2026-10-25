@@ -59,3 +59,21 @@ html[lang="en"] .site-nav-links a { letter-spacing: -0.02em; }
      during search's fixed-body scroll lock, preserving the reading position. */
   .site-header[data-header-state] { --header-band: 100px; }
 }
+/* Preserve six readable labels on the smallest default-text English header.
+   At enlarged text sizes the container layout is free to wrap whole labels. */
+@media (max-width: 360px) {
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a {
+    padding-inline: 0.09rem;
+  }
+}
+@media (max-width: 360px) {
+  html[lang="en"] .site-header[data-header-state] .site-nav-links { gap: 0.08rem; }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a { padding-inline: 0.06rem; }
+}
+@media (max-width: 360px) {
+  /* Extra inline space absorbs platform font metrics at 320px, including
+     the expanded animation state. Keep the font size and every destination. */
+  html[lang="en"] .site-header[data-header-state] { --header-content-inset: 8px; }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links { gap: 0.08rem; }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a { padding-inline: 0; }
+}

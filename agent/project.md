@@ -350,3 +350,8 @@ sticky 顶部导航在文档流中预留 68px/手机两行约96px。原动画从
 
 
 2026-10-24 英文旁注修复：双语检查增补脚注身份/目标/重复注释区约束；渲染默认文流、CSS驱动浮动阈值；新增Chromium/WebKit逐注几何和导航验收。详见docs/visual-history/2026-10-24-bilingual-marginalia/。
+
+
+## 中文源自动英文同步（2026-10-25）
+
+四类 Markdown 单源写作，译文哈希与人工改译保护；Mac mini 固定执行器轮询 GitHub main，模型仅翻译文字，受控 PR 经完整 CI/预览后合并。20 对页面覆盖含新版观察站，搜索字段中英合并并支持多关键词。正文新增、过期、缺译、草稿及删除均有构建层处理。操作文档：docs/automatic-english-sync.md。

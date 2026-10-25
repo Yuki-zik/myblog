@@ -23,3 +23,8 @@ tmp
 
 # Supabase CLI metadata (not application configuration).
 supabase/.temp/
+
+# Local translation worker recovery data and Python caches
+.translation-engine.lock/
+.translation-retired/
+scripts/i18n/__pycache__/

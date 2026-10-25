@@ -252,3 +252,17 @@ describe("full-content search (D4)", () => {
     expect(searchIndexItems([withBody], "keyword-xyz").map((i) => i.url)).toEqual(["/posts/p2"]);
   });
 });
+
+describe('bilingual source field coverage', () => {
+  it('indexes subtitle and full abstract even when a short summary exists', () => {
+    const items = buildSearchIndex([], [createPaper('paper', {
+      title: 'DUAP', subtitle: 'Speech privacy protection', summary: 'Short preview',
+      abstract: 'An abstract with a distinctive tail: transferable perturbations.',
+      keywords: ['multilingual']
+    }), createPaper('draft', { draft: true, title: 'Hidden draft' })], [], []);
+    expect(items).toHaveLength(1);
+    for (const query of ['speech privacy', 'transferable perturbations', 'multilingual']) {
+      expect(searchIndexItems(items, query)[0]?.url).toBe('/papers/paper');
+    }
+  });
+});

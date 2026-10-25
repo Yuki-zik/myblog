@@ -86,7 +86,9 @@ test("the homepage keeps only a compact entry and preserves the bilingual naviga
   await expect(page).toHaveURL(/\/agents\/?$/);
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await expect(page.locator(".agent-observatory-entry, [data-agent-instruments]")).toHaveCount(0);
+  await expect(page.locator(".agent-observatory-entry")).toHaveCount(1);
+  await expect(page.locator(".agent-observatory-entry")).toHaveAttribute("href", "/en/agents");
+  await expect(page.locator("[data-agent-instruments]")).toHaveCount(0);
   await expect(page.locator(".site-nav-links > a")).toHaveCount(6);
 });
 

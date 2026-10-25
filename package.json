@@ -24,7 +24,12 @@
     "seo:indexnow:dry-run": "node scripts/seo/submit-indexnow.mjs --all --dry-run",
     "seo:test": "node --test scripts/seo/indexnow-utils.test.mjs",
     "seo:baidu:prepare": "node scripts/seo/prepare-baidu.mjs --all",
-    "i18n:check": "node scripts/i18n/check-build.mjs"
+    "i18n:check": "node scripts/i18n/check-build.mjs",
+    "i18n:status": "node scripts/i18n/translate.mjs --status",
+    "i18n:translate": "node scripts/i18n/translate.mjs --semantic-review",
+    "i18n:test": "node --test scripts/i18n/*.test.mjs && python3 -m unittest discover -s scripts/i18n -p \"test_*.py\"",
+    "i18n:bootstrap": "node scripts/i18n/translate.mjs --bootstrap",
+    "i18n:check-lifecycle": "node scripts/i18n/check-lifecycle.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
@@ -50,7 +55,10 @@
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
-    "unist-util-visit-parents": "^6.0.2"
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit-parents": "^6.0.2",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
@@ -78,7 +86,7 @@
       "fast-xml-builder": "1.1.7",
       "devalue": "^5.9.3",
       "smol-toml": "^1.9.0",
-      "yaml": "^2.8.3",
+      "yaml": "^2.9.0",
       "js-yaml": "^4.3.2",
       "vite@>=7.0.0 <7.3.7": "7.3.7",
       "postcss": "^8.5.18",

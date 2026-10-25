@@ -1,9 +1,9 @@
 ---
 import { getLocale, createTranslator, localizePath } from "../../lib/i18n/index";
-import { collectionReader } from "../../lib/i18n/content";
+import { createPageLocalizer, collectionReader } from "../../lib/i18n/content";
 const locale = getLocale(Astro.url.pathname);
 const t = createTranslator(locale);
-const l = (value: string | undefined) => localizePath(value, locale);
+const l = await createPageLocalizer(locale);
 const getCollection = collectionReader(locale);
 
 import { getCollection as rawGetCollection } from "astro:content";

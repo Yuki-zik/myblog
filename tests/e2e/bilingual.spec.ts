@@ -13,8 +13,10 @@ for (const width of [320, 360, 390, 768, 1440]) {
       const rect = item.getBoundingClientRect(); return {x:rect.x,right:rect.right,y:rect.y,bottom:rect.bottom};
     }));
     for (const rect of boxes) {expect(rect.x).toBeGreaterThanOrEqual(-1);expect(rect.right).toBeLessThanOrEqual(width + 1);}
-    const navigationTops = await page.locator(".site-nav-links a").evaluateAll(items => items.map(item => item.getBoundingClientRect().top));
-    expect(Math.max(...navigationTops)-Math.min(...navigationTops)).toBeLessThan(2);
+    await expect.poll(async () => {
+      const tops = await page.locator(".site-nav-links a").evaluateAll(items => items.map(item => item.getBoundingClientRect().top));
+      return Math.max(...tops) - Math.min(...tops);
+    }).toBeLessThan(2);
     await page.screenshot({path:testInfo.outputPath(`english-home-${width}.png`),fullPage:false});
     await page.goto("/en/posts/paragraph-anchor-design");
     await expect(page.locator("h1")).toContainText("Paragraph Anchors");

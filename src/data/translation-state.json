@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "entries": {
+    "concepts/anchor-id.md": {
+      "sourceHash": "615f5ad8462f307b0e21c8f9ff312daf415d585e88d0ee18e6b90c1380663740",
+      "targetHash": "510de39ac8e6483a6aea2c267dc65568a996d45a214519778d1f4e77c27073bb",
+      "translatedAt": "2026-10-25T07:25:34.298Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "concepts/optimistic-ui.md": {
+      "sourceHash": "ca9de873ff009a19eac367ca22bb0dfeecd132fef7bec75d7ce93aa4078b3803",
+      "targetHash": "77797239da4ebf2544244c57b2b4ca2e16f627e7eb2c271e11b9bf53a1b10917",
+      "translatedAt": "2026-10-25T07:25:34.301Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "papers/duap-multilingual-speech-privacy.md": {
+      "sourceHash": "781fbf09fab8b14dae7b7e81e73c2b350e6cdaf80d653480b74bd74742400fc1",
+      "targetHash": "cb5b0702373387cdd54b3aff4486cc0b4152f1ab31c13104f96a449cc54867c6",
+      "translatedAt": "2026-10-25T07:25:34.304Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "papers/oxicams-carbon-dots-machine-learning.md": {
+      "sourceHash": "10339f2a5de3829cb408156028c112b97d0988838bc38811a1c712cb04d62372",
+      "targetHash": "45d8c9739e2dc7c25df19f04c43b201b68bf5473bf196d037bdabe5907d64b1f",
+      "translatedAt": "2026-10-25T07:25:34.307Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "posts/ant-ai-coding-review.md": {
+      "sourceHash": "a685792ff49269c52ae486b800b97797b4e4e3a8cc99d9c08fdeab585d5caed2",
+      "targetHash": "5cf4e4ae646af16b01690e4b2b6aac7670db9c7c02d71893fcf473fba0debc59",
+      "translatedAt": "2026-10-25T07:25:34.309Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "posts/myblog-design-manual.md": {
+      "sourceHash": "405c18ee432e14d07a6c2f99cb2d414e75d8248fb6c5d7e4570a73af0884d580",
+      "targetHash": "2c8647d30d779d94c622415c8dfc2cb5051155e793fa58d6c1325f841e5d74c4",
+      "translatedAt": "2026-10-25T07:25:34.309Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "posts/paragraph-anchor-design.md": {
+      "sourceHash": "7dbe6753f1822ae9b373d133daa339d44686af7cf4c1bacc71b84ed14024203b",
+      "targetHash": "5fed65ba71396e913665a7aaf7b20e2ae61e71487d92fa2ec1f84e51cc3d9adc",
+      "translatedAt": "2026-10-25T07:25:34.311Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "posts/why-topic-first.md": {
+      "sourceHash": "4953f181b6acef6e0e58e6cfd3f9ba59b715192af1c682279ceb878a7e35e52b",
+      "targetHash": "f18a1572f91dd4395975e6a2912d0c6569791e1ef1771356b4c68c5908ddb90e",
+      "translatedAt": "2026-10-25T07:25:34.311Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "topics/agent-engineering.md": {
+      "sourceHash": "8b13017b0690ef7141d92b87318d3089dc16a3bc96831419683b54e3c56b3ad8",
+      "targetHash": "0eb027d1c0bd124a38fb6353f2266805ccde8de8f48f550f21a3ca294a6e1fb9",
+      "translatedAt": "2026-10-25T07:25:34.312Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "topics/ai-coding.md": {
+      "sourceHash": "45bddf6014aaf4837f77b10e3639364fd732e65bf8e564d995547aebca2a8f66",
+      "targetHash": "d13d9647e359f9082b11cb6ab863f928dd85e320cc3ac4763975a39acd477f85",
+      "translatedAt": "2026-10-25T07:25:34.314Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "topics/exam-review.md": {
+      "sourceHash": "19a5e9d061a0a307dc9cd4b9938ccbabc3b37c54b3305cb03b41fcb4d1318e2f",
+      "targetHash": "f008bc2d18eef46e421d50cbea03ded13131e97a52fe9f93382780932ea46799",
+      "translatedAt": "2026-10-25T07:25:34.314Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "topics/knowledge-network.md": {
+      "sourceHash": "ae81acea543ac255bb8350d06ed031656b979e78cadc7c56e3bce0cbbb4a561e",
+      "targetHash": "6b13e56390e956727f5b6a99a77290d3037e95406a988649f470979c62aed4fc",
+      "translatedAt": "2026-10-25T07:25:34.316Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    },
+    "topics/paragraph-review.md": {
+      "sourceHash": "3c9d02ce9d5aa203bb7df7ff31e41b7b8de3461e8c24e582111a1d11c69c4c1e",
+      "targetHash": "be1daa3f7ec5dce7ffab0d40a4fba022e0ba71ee713abfe02cc98c37e5701af1",
+      "translatedAt": "2026-10-25T07:25:34.317Z",
+      "provider": "existing-reviewed",
+      "model": null,
+      "promptVersion": null,
+      "glossaryVersion": null,
+      "state": "current",
+      "provenance": "existing-reviewed",
+      "semanticReview": "human-adopted"
+    }
+  }
+}

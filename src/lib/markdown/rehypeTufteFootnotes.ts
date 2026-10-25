@@ -243,7 +243,8 @@ function getSectionBaseAnchorId(element: Element, slugger: Slugger): string {
 }
 
 function getListItemIndex(element: Element, ancestors: unknown[]): number | undefined {
-  const parent = ancestors[ancestors.length - 1];
+  // References are visited below sup/p; find the actual list item parent.
+  const parent = ancestors[ancestors.indexOf(element) - 1];
   const siblings =
     parent && typeof parent === "object" && Array.isArray((parent as HastNode).children)
       ? (parent as HastNode).children
@@ -267,14 +268,21 @@ function getListItemIndex(element: Element, ancestors: unknown[]): number | unde
   return undefined;
 }
 
-function ensureListItemAnchor(element: Element, ancestors: unknown[], baseAnchorId: string): string {
+function ensureListItemAnchor(element: Element, ancestors: unknown[], baseAnchorId: string, usedIds: Set<string>): string {
   const existing = getElementAnchorId(element);
   if (existing) {
     return existing;
   }
 
   const listItemIndex = getListItemIndex(element, ancestors) ?? 1;
-  const anchorId = `${baseAnchorId}::li${listItemIndex}`;
+  const candidate = `${baseAnchorId}::li${listItemIndex}`;
+  let anchorId = candidate;
+  // Nested and separate lists may share both the paragraph and sibling index.
+  // Reserve all author anchors first, and allocate only unused synthetic IDs.
+  for (let suffix = 2; usedIds.has(`c-${anchorId}`); suffix += 1) {
+    anchorId = `${candidate}::${suffix}`;
+  }
+  usedIds.add(`c-${anchorId}`);
   element.properties ??= {};
   (element.properties as Record<string, unknown>).id = `c-${anchorId}`;
   (element.properties as Record<string, unknown>)["data-anchor"] = anchorId;
@@ -509,6 +517,10 @@ export function applyTufteFootnoteClasses(tree: Root): void {
 
 function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; referenceOrder: number }> {
   const meta = new Map<string, { anchorId?: string; referenceOrder: number }>();
+  const usedIds = new Set<string>();
+  visitParents(tree, "element", (node) => {
+    if (typeof node.properties?.id === "string") usedIds.add(node.properties.id);
+  });
   const slugger = new Slugger();
   let order = 0;
   let lastAnchorId: string | undefined;
@@ -551,7 +563,7 @@ function collectFootnoteRefMeta(tree: Root): Map<string, { anchorId?: string; re
         : currentSectionBaseAnchorId;
     const anchorId =
       paragraphAnchorId ||
-      (listItemAncestor ? ensureListItemAnchor(listItemAncestor, ancestors, fallbackBaseAnchorId) : undefined);
+      (listItemAncestor ? ensureListItemAnchor(listItemAncestor, ancestors, fallbackBaseAnchorId, usedIds) : undefined);
 
     meta.set(footnoteId, {
       anchorId,

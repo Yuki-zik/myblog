@@ -142,3 +142,19 @@
   .home-content-note .post-cover-img { transition: none; }
   .home-content-note:is(:hover, :focus-visible) .post-cover-img--main { transform: none; }
 }
+
+/* Paired cards can be narrow on wide screens, especially with larger root
+ * text. Measure the card rather than assuming a desktop viewport fits. */
+.home-content-note { container: recent-note / inline-size; }
+@container recent-note (max-width: 20rem) {
+  .home-content-note .content-dossier__main--illustrated {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .home-content-note .content-dossier__copy { order: 1; }
+  .home-content-note .content-dossier__media { order: 2; }
+  .home-content-note .home-reference-recent-item__meta {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+.home-content-note .content-dossier__copy { overflow-wrap: anywhere; }

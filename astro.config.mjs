@@ -8,6 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { rehypeParagraphAnchors } from "./src/lib/markdown/rehypeParagraphAnchors";
 import { rehypeTufteFootnotes } from "./src/lib/markdown/rehypeTufteFootnotes";
+import { rehypeBilingualLinks } from "./src/lib/markdown/rehypeBilingualLinks";
 import { remarkSpoilers } from "./src/lib/markdown/remarkSpoilers";
 
 const site = process.env.SITE_URL?.trim();
@@ -54,7 +55,7 @@ export default defineConfig({
     // Shiki is applied separately by Astro via `shikiConfig` below.
     processor: unified({
       remarkPlugins: [remarkDirective, remarkSpoilers, remarkMath],
-      rehypePlugins: [rehypeKatex, rehypeParagraphAnchors, rehypeTufteFootnotes]
+      rehypePlugins: [rehypeKatex, rehypeParagraphAnchors, rehypeTufteFootnotes, rehypeBilingualLinks]
     }),
     // Dual-theme syntax highlighting. `defaultColor: false` emits
     // `--shiki-light`/`--shiki-dark` token vars; src/styles/code.css picks the

@@ -271,7 +271,10 @@ test("header search supports keyboard selection and enter navigation", async ({ 
   await expect(results.locator("a")).toContainText(["A-Znk的blog：设计说明书"]);
   await expect(input).toHaveAttribute("role", "combobox");
   await expect(results).toHaveAttribute("role", "listbox");
-  await expect(results.locator("[role='option']")).toHaveCount(1);
+  // Bilingual full-text search also returns related pages. The exact title
+  // remains first; keyboard selection must work with the entire result list.
+  await expect(results.locator("a").first()).toHaveAttribute("href", "/posts/myblog-design-manual");
+  await expect.poll(() => results.locator("[role='option']").count()).toBeGreaterThanOrEqual(1);
 
   const panelMetrics = await page.evaluate(() => {
     const headerInner = document.querySelector(".site-header-inner") as HTMLElement | null;
@@ -304,6 +307,8 @@ test("header search supports keyboard selection and enter navigation", async ({ 
   expect(activeId).toBeTruthy();
   await expect(results.locator(`#${activeId}`)).toHaveAttribute("aria-selected", "true");
 
+  await page.keyboard.press("ArrowUp");
+  await expect(results.locator("[role='option']").first()).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/posts\/myblog-design-manual$/);
 });

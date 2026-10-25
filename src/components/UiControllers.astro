@@ -3,7 +3,7 @@ import { getLocale, createTranslator } from "../lib/i18n/index";
 const locale = getLocale(Astro.url.pathname);
 const t = createTranslator(locale);
 
-const uiMessages = Object.fromEntries(["[data-reading-progress-region]", "en-US", "site-header-framechange", "亮色", "切换主题（当前：亮色）", "切换主题（当前：深色）", "切换主题（当前：跟随系统）", "原始尺寸", "图片加载失败，可尝试查看原图。", "放大到原始尺寸", "正在加载图片…", "深色", "系统", "缩小到适应窗口", "适应窗口"].map(key => [key, t(key)]));
+const uiMessages = Object.fromEntries(["{0} 分钟", "亮色", "切换主题（当前：亮色）", "切换主题（当前：深色）", "切换主题（当前：跟随系统）", "原始尺寸", "图片加载失败，可尝试查看原图。", "放大到原始尺寸", "检查结果、核对依据并完成整合。", "正在加载图片…", "深色", "界定目标、准备上下文与拆分任务。", "示意第 {0} 分钟，同时推进 {1} 项任务", "系统", "纠错与重做；这部分已经包含在总投入中。", "缩小到适应窗口", "适应窗口"].map(key => [key, t(key)]));
 
 ---
 <script is:inline define:vars={{ uiMessages }}>
@@ -945,7 +945,7 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
           if (parallelStage) parallelStage.style.setProperty("--cursor", (point / 120 * 100) + "%");
           write("[data-parallel-time]", point + " min");
           write("[data-parallel-count]", running);
-          parallel.setAttribute("aria-valuetext", "示意第 " + point + " 分钟，同时推进 " + running + " 项任务");
+          parallel.setAttribute("aria-valuetext", t("示意第 {0} 分钟，同时推进 {1} 项任务", [point, running]));
         }
         if (parallel) parallel.addEventListener("input", updateParallel);
         updateParallel();
@@ -968,9 +968,9 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
         showTicket(0);
 
         var attentionParts = {
-          plan: { minutes: 30, description: "界定目标、准备上下文与拆分任务。"},
-          review: { minutes: 45, description: "检查结果、核对依据并完成整合。"},
-          rework: { minutes: 15, description: "纠错与重做；这部分已经包含在总投入中。"}
+          plan: { minutes: 30, description: t("界定目标、准备上下文与拆分任务。")},
+          review: { minutes: 45, description: t("检查结果、核对依据并完成整合。")},
+          rework: { minutes: 15, description: t("纠错与重做；这部分已经包含在总投入中。")}
         };
         var attentionDial = desk.querySelector("[data-attention-dial]");
         var partButtons = Array.from(desk.querySelectorAll("[data-attention-part]"));
@@ -981,7 +981,7 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
             button.setAttribute("aria-pressed", button.dataset.attentionPart === part ? "true" : "false");
           });
           if (attentionDial) attentionDial.dataset.part = part;
-          write("[data-attention-output]", item.minutes + " 分钟");
+          write("[data-attention-output]", t("{0} 分钟", [item.minutes]));
           write("[data-attention-description]", item.description);
         }
         partButtons.forEach(function (button) {
@@ -995,8 +995,8 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
           if (!rework) return;
           var minutes = Math.min(90, Math.max(0, Number(rework.value) || 0));
           if (reworkTape) reworkTape.style.setProperty("--rework", (minutes / 90 * 100) + "%");
-          write("[data-rework-output]", minutes + " 分钟");
-          rework.setAttribute("aria-valuetext", "示意总投入 90 分钟，其中返工 " + minutes + " 分钟");
+          write("[data-rework-output]", t("{0} 分钟", [minutes]));
+          rework.setAttribute("aria-valuetext", "示意总投入 90 分钟，其中返工 " + t("{0} 分钟", [minutes]));
         }
         if (rework) rework.addEventListener("input", updateRework);
         var resetRework = desk.querySelector("[data-rework-reset]");

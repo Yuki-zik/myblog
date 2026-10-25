@@ -22,7 +22,7 @@ export function localizePath(value: string | undefined, locale: Locale): string 
   const path = splitAt < 0 ? value : value.slice(0, splitAt);
   const suffix = splitAt < 0 ? "" : value.slice(splitAt);
   const unprefixed = path.replace(/^\/en(?=\/|$)/, "") || "/";
-  if (!/^\/(?:$|(?:topics|posts|papers|concepts)(?:\/|$)|(?:author|archives|map)$|(?:rss\.xml|search-index\.json|design\.md)$)/.test(unprefixed)) return value;
+  if (!/^\/(?:$|(?:topics|posts|papers|concepts)(?:\/|$)|(?:author|archives|map|agents)$|(?:rss\.xml|search-index\.json|design\.md)$)/.test(unprefixed)) return value;
   const clean = unprefixed.replace(/\/+$/, "") || "/";
   return (locale === "en" ? "/en" + (clean === "/" ? "" : clean) : clean) + suffix;
 }

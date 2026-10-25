@@ -32,7 +32,7 @@ export async function assertBoundedTocFollow(page: Page, path: string): Promise<
       function check() {
         const maxScroll = list.scrollHeight - list.clientHeight;
         if ((list.scrollTop >= maxScroll - 1 &&
-          performance.now() - lastChange >= 160) ||
+          performance.now() - lastChange >= 160 && !marker.hasAttribute("data-following")) ||
           performance.now() - started >= 9000) {
           resolve();
         } else {

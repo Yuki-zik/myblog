@@ -1,8 +1,9 @@
 ---
+import { createPageLocalizer } from "../../lib/i18n/content";
 import { getLocale, createTranslator, localizePath, localizeData } from "../../lib/i18n/index";
 const locale = getLocale(Astro.url.pathname);
 const t = createTranslator(locale);
-const l = (value: string | undefined) => localizePath(value, locale);
+const l = await createPageLocalizer(locale);
 
 import type {KnowledgeGraph} from "../../lib/knowledge/graph";
 import {buildReadingTrails} from "../../lib/knowledge/explore";

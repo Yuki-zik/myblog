@@ -55,7 +55,8 @@ let shortDescriptions = 0;
 const work = async (url) => {
   const path = new URL(url).pathname;
   const { body, headers } = await read(path, BAIDU_UA);
-  assert.match(body, /<html[^>]+lang="zh-CN"/, path + " html language");
+  const locale = /^\/en(?:\/|$)/.test(path) ? "en" : "zh-CN";
+  assert.ok(body.includes(`lang="${locale}"`), path + " html language");
   assert.match(body, /<title[^>]*>[^<]+<\/title>/, path + " title");
   const description = body.match(/<meta name="description" content="([^"]+)"/)?.[1];
   assert.ok(description, path + " description");
@@ -85,6 +86,6 @@ for (let i = 0; i < urls.length; i += 3) {
 for (const item of issues) console.error("SEO audit failure:", item.url, item.error);
 assert.equal(issues.length, 0, "production HTML audits must pass");
 console.log("Production SEO audit passed: " + urls.length +
-  " canonical Chinese pages, " + ogPaperCount +
+  " canonical multilingual pages, " + ogPaperCount +
   " papers with OG images, " + shortDescriptions +
   " short search descriptions for editorial review.");

@@ -1,4 +1,4 @@
-import rawObservations from "../../data/agent-observatory.json";
+import rawObservations from "../../data/agent-observatory.json" with { type: "json" };
 
 export type Coverage = "none" | "partial" | "complete";
 export type TaskCategory = "code" | "research" | "writing" | "operations" | "other";
