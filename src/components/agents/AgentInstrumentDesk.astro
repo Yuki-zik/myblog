@@ -6,6 +6,7 @@ const t=createTranslator(locale);
 const l=await createPageLocalizer(locale);
 
 import { summary } from "../../lib/agents/observatory";
+import { history, historySummary } from "../../lib/agents/history";
 import ParallelWidget from "./instruments/ParallelWidget.astro";
 import DeliveryWidget from "./instruments/DeliveryWidget.astro";
 import AttentionWidget from "./instruments/AttentionWidget.astro";
@@ -16,8 +17,8 @@ const { id = "agent-instrument-desk" } = Astro.props;
 ---
 <section id={id} class="agent-instruments" data-agent-instruments data-agent-instrument-desk aria-label={t("四件 Agent 工作观察挂件")}>
   <ParallelWidget id={id + "-parallel"} value={summary.peakParallel} coverage={summary.coverage.peak} observedDays={summary.observedDays} />
-  <DeliveryWidget id={id + "-delivery"} value={summary.acceptedTasks} coverage={summary.coverage.accepted} observedDays={summary.observedDays} />
+  <DeliveryWidget id={id + "-delivery"} value={summary.acceptedTasks} coverage={summary.coverage.accepted} observedDays={summary.observedDays} historyItems={history.items} reviewedDate={historySummary.reviewedDate} />
   <AttentionWidget id={id + "-attention"} value={summary.humanHours} coverage={summary.coverage.human} observedDays={summary.observedDays} />
   <ReworkWidget id={id + "-rework"} value={summary.reworkHours} coverage={summary.coverage.rework} observedDays={summary.observedDays} />
-  <noscript><p class="agent-instruments__noscript">{t("个人实测与示意图可直接阅读；启用 JavaScript 后可拨动、翻页和回卷。")}</p></noscript>
+  <noscript><p class="agent-instruments__noscript">{t("个人记录、历史票据与示意图可直接阅读；启用 JavaScript 后可拨动、翻页和回卷。")}</p></noscript>
 </section>

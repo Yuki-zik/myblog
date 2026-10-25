@@ -10,6 +10,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import AgentInstrumentDesk from "../components/agents/AgentInstrumentDesk.astro";
 import { publicObservations, summary, evidenceRecords } from "../lib/agents/observatory";
+import { history, historySummary, historyDate } from "../lib/agents/history";
 import "../styles/agent-observatory.css";
 
 const days = [...publicObservations.days].sort((a, b) => b.date.localeCompare(a.date));
@@ -26,18 +27,35 @@ const display = (value: number | null) => value === null ? t("未记录") : Stri
         <h1>{t("Agent 工作观察站")}</h1>
         <p class="agent-observatory-intro">{t("四件小工具，记录 Agent 与人的协作。")}</p>
       </div>
-      <p class="agent-observatory-status">{summary.windowEnd ? `${summary.windowStart} — ${summary.windowEnd}` : t("个人数据待记录")}</p>
+      <p class="agent-observatory-status">{summary.windowEnd ? `${summary.windowStart} — ${summary.windowEnd}` : historySummary.count ? t("历史已更新 · {0}", [historySummary.reviewedDate]) : t("个人数据待记录")}</p>
     </header>
 
     <AgentInstrumentDesk />
-    <p class="agent-observatory-window">{summary.windowEnd ? t("截至最近记录日的 7 天窗口 · 已记录 {0}/7 天", [summary.observedDays]) : t("实测从第一条记录开始。控件可试用，示意数值不计入实测。")}</p>
+    <p class="agent-observatory-window">{summary.windowEnd ? t("截至最近记录日的 7 天窗口 · 已记录 {0}/7 天", [summary.observedDays]) : historySummary.count ? t("已回溯 {0} 项公开交付；并发与工时待记录。示意数值不计入实测。", [historySummary.count]) : t("实测从第一条记录开始。控件可试用，示意数值不计入实测。")}</p>
 
     <details class="agent-observatory-reference" data-agent-reference>
       <summary><span>{t("研究、记录与方法")}</span><small>{evidence.length} {t("条来源 · 记录模板")}</small></summary>
       <div class="agent-observatory-reference__body">
+        {history.items.length > 0 && <section id="history" class="agent-observatory-section" aria-labelledby="agent-history-title" data-agent-history>
+          <h2 id="agent-history-title">{t("历史回溯")}</h2>
+          <p class="agent-observatory-meta">{t("根据相关会话线索与项目 history 整理，以公开变更核对。同一目标的多次修订合为一项；本次仅回溯部分博客工作。")}</p>
+          <p class="agent-observatory-meta">{t("合并状态与用户验收分别记录；这里的数量仅表示本次回溯覆盖，不能据此计算生产力提升。")}</p>
+          <p class="agent-observatory-meta">{t("回溯更新：{0} · 日期口径：{1}", [historySummary.reviewedDate, history.reportingTimezone])}</p>
+          <ul class="agent-history-list">
+            {history.items.map(item => <li data-history-record={item.id}>
+              <div class="agent-history-list__heading"><time datetime={item.deliveredAt}>{historyDate(item.deliveredAt)}</time><strong>{t(item.title)}</strong></div>
+              <details class="agent-observatory-details">
+                <summary>{t("展开成果与依据")}</summary>
+                <p>{t(item.outcome)}</p><p>{t(item.adjustment)}</p>
+                <div class="agent-delivery__sources">{item.evidence.map(source => <a href={source.url} rel="noopener noreferrer">{source.label} <span aria-hidden="true">↗</span></a>)}</div>
+              </details>
+            </li>)}
+          </ul>
+          <p class="agent-observatory-meta">{t("仅公开工作摘要与项目依据。消息间隔、工具等待和会话跨度不计作人工投入；并发需要运行起止记录。")}</p>
+        </section>}
         <section id="personal" class="agent-observatory-section" aria-labelledby="agent-records-title">
           <h2 id="agent-records-title">{t("个人记录")}</h2>
-          {days.length === 0 ? <p class="agent-observatory-meta">{t("尚无已发布的个人记录。每天填写投入、任务状态与验收依据，核对后更新。")}</p> : (
+          {days.length === 0 ? <p class="agent-observatory-meta">{t(historySummary.count ? "交付票夹已补入历史项目；每日并发、人工投入与返工时间尚待记录。" : "尚无已发布的个人记录。每天填写投入、任务状态与验收依据，核对后更新。")}</p> : (
             <div class="agent-observatory-table-wrap" role="region" aria-label={t("每日观察记录，可横向滚动")} tabindex="0">
               <table><caption>{t("人工时间包含布置、检查、协调与返工")}</caption><thead><tr><th scope="col">{t("日期")}</th><th scope="col">{t("并行峰值")}</th><th scope="col">{t("人工 / 分钟")}</th><th scope="col">{t("其中返工 / 分钟")}</th><th scope="col">{t("变化备注")}</th></tr></thead><tbody>{days.map((day) => <tr><th scope="row">{day.date}</th><td>{display(day.peakParallelTasks)}</td><td>{display(day.humanMinutes)}</td><td>{display(day.reworkMinutes)}</td><td>{day.note ? t(day.note) : "—"}</td></tr>)}</tbody></table>
             </div>
