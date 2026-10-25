@@ -1,0 +1,25 @@
+{
+  "url": "https://a-znk.com/en/concepts/optimistic-ui",
+  "status": 200,
+  "newTranslation": true,
+  "current": true,
+  "state": {
+    "status": "current",
+    "lastMerged": {
+      "pr": 55,
+      "sha": "984ce1d38956f9f4d6932524ff7f585a4e1a1144",
+      "at": "2026-10-25T08:27:04.670205+00:00"
+    },
+    "pending": null,
+    "translationRuns": 1,
+    "errorCode": null,
+    "checkedAt": "2026-10-25T08:27:12.859342+00:00",
+    "acceptanceProbe": {
+      "kind": "existing-concept-regeneration",
+      "key": "concepts/optimistic-ui.md",
+      "sourceSha": "b4bb1cf131d1296c95bf538549590c5437ca72ec",
+      "originalChineseHash": "ca9de873ff009a19eac367ca22bb0dfeecd132fef7bec75d7ce93aa4078b3803",
+      "startedAt": "2026-10-25T08:14:10.068344+00:00"
+    }
+  }
+}
