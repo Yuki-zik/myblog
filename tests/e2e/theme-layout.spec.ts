@@ -985,6 +985,26 @@ test("article toc sidebar keeps the last section visible and the progress rail i
     );
   });
 
+  // Following a distant chapter is now an intentional smooth scroll.
+  // Wait for both the list and the progress indicator to reach their final
+  // positions before asserting settled geometry.
+  await page.waitForFunction(() => {
+    const body = document.querySelector<HTMLElement>("[data-toc-sidebar-body]");
+    const active = document.querySelector<HTMLElement>("[data-toc-sidebar] [data-toc-link].is-active");
+    const marker = document.querySelector<HTMLElement>("[data-toc-progress]");
+    if (!body || !active || !marker) return false;
+    const item = active.closest<HTMLElement>("[data-toc-item]");
+    if (!item) return false;
+    const bodyRect = body.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const markerRect = marker.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    return itemRect.top >= bodyRect.top - 1 &&
+      itemRect.bottom <= bodyRect.bottom + 1 &&
+      Math.abs(markerRect.bottom - activeRect.bottom) <= 24 &&
+      marker.getAnimations().every((animation) => animation.playState !== "running");
+  }, undefined, { timeout: 8000 });
+
   const metrics = await page.evaluate(() => {
     const body = document.querySelector(
       "[data-toc-sidebar-body]",
