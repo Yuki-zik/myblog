@@ -1,5 +1,5 @@
 {
-  "status": "local-verified",
+  "status": "production-verified",
   "publicBase": "33e649b3295fdfe801a3cb1401a2713523178513",
   "baselineTree": "c3fe6d908d348422042f1b36992cc9bf8cd2f8dd",
   "screenshots": [
@@ -86,5 +86,35 @@
     ],
     "complete": true,
     "passed": true
-  }
+  },
+  "release": {
+    "pr": 57,
+    "url": "https://github.com/Yuki-zik/myblog/pull/57",
+    "testedHead": "8c09733708872b979be74912b3dfc53302749557",
+    "mergeCommit": "e5c9c0c5da6f9016e3f952207d1198645b9bf1f8",
+    "tree": "df79ec6ce2d1a0a880ca8f2c47c41929e0bd6624",
+    "ci": "https://github.com/Yuki-zik/myblog/actions/runs/40187443746",
+    "status": "merged"
+  },
+  "fullBrowserTests": 390,
+  "productionScreenshots": [
+    {
+      "file": "production/history-live-en-390-dark.png",
+      "width": 390,
+      "height": 1887,
+      "sha256": "c4f7174fce0f1567892cc5a20065879a91f631e1babf6733f03525683eb78fa2"
+    },
+    {
+      "file": "production/history-live-ticket-evidence.png",
+      "width": 481,
+      "height": 414,
+      "sha256": "66ac590fe0b2dfbeed2f45fc1f54daa7ca615feea50ca7252d44e624b2234013"
+    },
+    {
+      "file": "production/history-live-zh-1280-light.png",
+      "width": 1280,
+      "height": 900,
+      "sha256": "16f6f00bd40a6d03d1f960941edd5c62d1804498cf7e5caea15db6324bc8b60f"
+    }
+  ]
 }

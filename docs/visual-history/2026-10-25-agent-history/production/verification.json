@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-25T11:16:09.798Z",
+  "base": "https://a-znk.com",
+  "expectedCommit": "e5c9c0c5da6f9016e3f952207d1198645b9bf1f8",
+  "historySha256": "646760deda545b133571bf62f875a2201c817e27ae97f97d6614e94178444acb",
+  "workItems": 6,
+  "sourceCount": 12,
+  "views": [
+    {
+      "route": "/agents",
+      "width": 1280,
+      "height": 900,
+      "colorScheme": "light",
+      "hasTouch": false,
+      "widgetBox": {
+        "x": 140,
+        "y": 212.015625,
+        "width": 1000,
+        "height": 564
+      },
+      "displayedValues": [
+        "待记录",
+        "6",
+        "待记录",
+        "待记录"
+      ],
+      "screenshot": "history-live-zh-1280-light.png",
+      "ticketsChecked": 6
+    },
+    {
+      "route": "/en/agents",
+      "width": 390,
+      "height": 844,
+      "colorScheme": "dark",
+      "hasTouch": true,
+      "widgetBox": {
+        "x": 16,
+        "y": 268.46875,
+        "width": 358,
+        "height": 1128
+      },
+      "displayedValues": [
+        "Not recorded",
+        "6",
+        "Not recorded",
+        "Not recorded"
+      ],
+      "screenshot": "history-live-en-390-dark.png",
+      "ticketsChecked": 6
+    }
+  ],
+  "status": "passed",
+  "noJavaScriptAllSources": true,
+  "errors": [],
+  "pr": "https://github.com/Yuki-zik/myblog/pull/57",
+  "ci": "https://github.com/Yuki-zik/myblog/actions/runs/40187443746",
+  "testedHead": "8c09733708872b979be74912b3dfc53302749557",
+  "publishedTree": "df79ec6ce2d1a0a880ca8f2c47c41929e0bd6624",
+  "unitTests": 179,
+  "browserTests": 390
+}
