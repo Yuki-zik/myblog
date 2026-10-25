@@ -1,0 +1,2 @@
+.translation-status { display: grid; gap: .35rem; padding: 1rem 1.2rem; margin-block: 1rem; border-inline-start: 3px solid var(--drawing-accent, currentColor); background: var(--surface-primary); font-size: .9rem; line-height: 1.6; overflow-wrap: anywhere; }
+.translation-status a { justify-self: start; }

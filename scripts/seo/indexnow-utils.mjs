@@ -44,6 +44,7 @@ export function changedPaths(files) {
       file === "astro.config.mjs" ||
       file === "src/content.config.ts" ||
       file === "src/lib/site.ts" ||
+      file === "src/data/translation-state.json" ||
       file.startsWith("src/pages/") ||
       file.startsWith("src/layouts/") ||
       file.startsWith("src/lib/seo/") ||

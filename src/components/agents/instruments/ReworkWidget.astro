@@ -1,26 +1,32 @@
 ---
+import {getLocale, createTranslator} from "../../../lib/i18n/index";
+import {createPageLocalizer} from "../../../lib/i18n/content";
+const locale=getLocale(Astro.url.pathname);
+const t=createTranslator(locale);
+const l=await createPageLocalizer(locale);
+
 import type { Coverage } from "../../../lib/agents/observatory";
 import "../../../styles/agent-instruments.css";
 interface Props { id?: string; value?: number | null; coverage?: Coverage; observedDays?: number; }
 const { id = "agent-rework", value = null, coverage = "none", observedDays = 0 } = Astro.props;
-const formatted = value === null ? "待记录" : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(value);
+const formatted = value === null ? t("待记录") : new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value);
 const coverageLabel = value === null
-  ? coverage === "partial" ? "记录待补全" : "个人实测"
-  : coverage === "partial" ? "已记录 " + observedDays + "/7 天" : "最近 7 天";
+  ? coverage === "partial" ? t("记录待补全") : t("个人实测")
+  : coverage === "partial" ? t("已记录 ") + observedDays + t("/7 天") : t("最近 7 天");
 
 ---
 <article class="agent-instrument agent-instrument--rework" data-agent-instrument="rework" aria-labelledby={id + "-title"}>
   <header class="agent-instrument__header">
     <div class="agent-instrument__heading">
-      <p class="agent-instrument__eyebrow">04 / 其中返工</p>
-      <h2 class="agent-instrument__name" id={id + "-title"}>返工卷尺</h2>
+      <p class="agent-instrument__eyebrow">{t("04 / 其中返工")}</p>
+      <h2 class="agent-instrument__name" id={id + "-title"}>{t("返工卷尺")}</h2>
     </div>
     <div class="agent-instrument__measurement">
-      <p class="agent-instrument__reading"><strong class="agent-instrument__value">{formatted}</strong><span class="agent-instrument__unit">小时</span></p>
+      <p class="agent-instrument__reading"><strong class="agent-instrument__value">{formatted}</strong><span class="agent-instrument__unit">{t("小时")}</span></p>
       <p class="agent-instrument__coverage">{coverageLabel}</p>
     </div>
   </header>
-  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>交互示意 · 不计入实测</p>
+  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>{t("交互示意 · 不计入实测")}</p>
 
   <div class="agent-rework__mechanism" aria-hidden="true">
     <div class="agent-rework__tape" data-rework-tape style="--rework: 16.6667%">
@@ -32,10 +38,10 @@ const coverageLabel = value === null
   </div>
   <div class="agent-rework__controls">
     <label class="agent-rework__control">
-      <span class="agent-instrument__sr-only">拉动返工示意分钟数，总投入为九十分钟</span>
+      <span class="agent-instrument__sr-only">{t("拉动返工示意分钟数，总投入为九十分钟")}</span>
       <input class="agent-instrument__range" type="range" min="0" max="90" step="5" value="15" data-rework-scrub data-instrument-control aria-describedby={id + "-demo " + id + "-hint"} disabled />
     </label>
-    <button class="agent-rework__reset" type="button" data-rework-reset data-instrument-control aria-label="将返工示意卷尺回卷到零" disabled><span aria-hidden="true">↶</span><span>回卷</span></button>
+    <button class="agent-rework__reset" type="button" data-rework-reset data-instrument-control aria-label={t("将返工示意卷尺回卷到零")} disabled><span aria-hidden="true">↶</span><span>{t("回卷")}</span></button>
   </div>
-  <div class="agent-rework__readout" id={id + "-hint"}><output data-rework-output aria-live="polite">15 分钟</output><span>总投入 90 分钟中的返工</span></div>
+  <div class="agent-rework__readout" id={id + "-hint"}><output data-rework-output aria-live="polite">{t("15 分钟")}</output><span>{t("总投入 90 分钟中的返工")}</span></div>
 </article>

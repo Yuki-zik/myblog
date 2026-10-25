@@ -81,7 +81,7 @@ test("typing surfaces matching posts, topics and concepts with type badges", asy
 
   // Every row links somewhere real and is labelled with its collection.
   results.forEach((result) => {
-    expect(result.href).toMatch(/^\/(posts|topics|concepts)\//);
+    expect(result.href).toMatch(/^\/(?:posts|topics|concepts|papers|author|agents|map|archives)(?:\/|$)/);
     expect(result.title.length).toBeGreaterThan(0);
     expect(result.badge.length).toBeGreaterThan(0);
   });
@@ -228,9 +228,9 @@ test("the search index endpoint exposes every published collection entry", async
   ]);
 
   index.forEach((item) => {
-    expect(["post", "paper", "topic", "concept"]).toContain(item.type);
+    expect(["post", "paper", "topic", "concept", "page"]).toContain(item.type);
     expect(item.title.length).toBeGreaterThan(0);
-    expect(item.url).toMatch(/^\/(posts|papers|topics|concepts)\//);
+    expect(item.url).toMatch(/^\/(?:$|(?:posts|papers|topics|concepts|author|agents|map|archives)(?:\/|$))/);
     expect(Array.isArray(item.keywords)).toBe(true);
   });
 

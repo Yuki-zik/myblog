@@ -1,8 +1,9 @@
 ---
+import { createPageLocalizer } from "../../lib/i18n/content";
 import { getLocale, createTranslator, localizePath, localizeData } from "../../lib/i18n/index";
 const locale = getLocale(Astro.url.pathname);
 const t = createTranslator(locale);
-const l = (value: string | undefined) => localizePath(value, locale);
+const l = await createPageLocalizer(locale);
 const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
 const SITE_NAME = localizeData(SOURCE_SITE_NAME, locale);
 

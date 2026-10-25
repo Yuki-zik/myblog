@@ -1,9 +1,10 @@
 ---
 import { getLocale, createTranslator, localizePath, localizeData, localizeStructuredData } from "../lib/i18n/index";
-import { languageAlternates } from "../lib/i18n/content";
+import { createPageLocalizer, languageAlternates, pageTranslationStatus } from "../lib/i18n/content";
 const locale = getLocale(Astro.url.pathname);
+const translation = locale === "en" ? await pageTranslationStatus(Astro.url.pathname) : undefined;
 const t = createTranslator(locale);
-const l = (value: string | undefined) => localizePath(value, locale);
+const l = await createPageLocalizer(locale);
 const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
 const SITE_NAME = localizeData(SOURCE_SITE_NAME, locale);
 const SITE_DESCRIPTION = localizeData(SOURCE_SITE_DESCRIPTION, locale);
@@ -14,6 +15,7 @@ import "../styles/base.css";
 import "../styles/animations.css";
 import "../styles/layout.css";
 import "../styles/i18n.css";
+import "../styles/translation-status.css";
 import "../styles/search.css";
 import "../styles/theme-toggle.css";
 import "../styles/cards.css";
@@ -216,7 +218,7 @@ const themeInitScript = `(function () {
 
     <script is:inline set:html={themeInitScript} />
   </head>
-  <body class={bodyClass} data-runtime={runtime} data-header-variant={headerVariant}>
+  <body class={bodyClass} data-runtime={runtime} data-header-variant={headerVariant} data-translation-state={translation?.state}>
     <header class="site-header sticky top-0 z-80" data-header-state="top" data-header-variant={headerVariant}>
       <div class="site-header-surface-clip" aria-hidden="true">
         <div class="site-header-inner isolate overflow-hidden origin-top"></div>
@@ -268,7 +270,14 @@ const themeInitScript = `(function () {
       </div>
     </header>
 	    <main class:list={["shell", mainClass]} data-runtime={runtime}>
-	      <slot />
+	      {translation && ["stale", "untracked"].includes(translation.state) && (
+        <aside class="translation-status" data-translation-notice role="status">
+          <strong>{translation.state === "stale" ? "English update pending" : "Translation synchronization pending"}</strong>
+          <span>The Chinese original has the latest version. This English edition remains available while its update is checked.</span>
+          <a href={translation.sourcePath} lang="zh-CN">Read the latest Chinese version ↗</a>
+        </aside>
+      )}
+      <slot />
 	    </main>
 	    {
 	      footerVariant === "none"

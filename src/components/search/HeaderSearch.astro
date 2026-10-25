@@ -86,7 +86,8 @@ const t = createTranslator(locale);
     paper: t("论文"),
     post: t("文章"),
     topic: t("主题"),
-    concept: t("概念")
+    concept: t("概念"),
+    page: locale === "en" ? "Page" : "页面"
   };
 
   const MESSAGES = {
@@ -426,7 +427,7 @@ const t = createTranslator(locale);
 
         const badge = document.createElement("span");
         badge.className = `${RESULT_TYPE_CLASS} header-search-result-type--${item.type}`;
-        badge.textContent = SEARCH_TYPE_LABELS[item.type] ?? item.type;
+        badge.textContent = [SEARCH_TYPE_LABELS[item.type] ?? item.type, item.languageLabel].filter(Boolean).join(" · ");
 
         topRow.append(title, badge);
         link.append(topRow);

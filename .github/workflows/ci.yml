@@ -34,6 +34,9 @@ jobs:
       - name: Run unit tests (vitest)
         run: pnpm test
 
+      - name: Validate translation engine lifecycle
+        run: pnpm i18n:test
+
       - name: Validate paper cover provenance
         run: pnpm papers:check
 
@@ -45,6 +48,9 @@ jobs:
 
       - name: Validate bilingual routes and reading metadata
         run: pnpm i18n:check
+
+      - name: Verify Chinese-only updates and translation withdrawal
+        run: pnpm i18n:check-lifecycle
 
       - name: Test search engine submission helpers
         run: pnpm seo:test

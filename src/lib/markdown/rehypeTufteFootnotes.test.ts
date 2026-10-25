@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Element, Root } from "hast";
 import {
+  type TufteRailFootnote,
   TUFTE_MARKDOWN_FOOTNOTES_KEY,
   TUFTE_RAIL_FOOTNOTE_ID_PREFIX,
   applyTufteFootnoteClasses,
@@ -553,5 +554,45 @@ describe("translated post footnote contract", () => {
     rehypeTufteFootnotes()(tree, file);
     expect(tree.children).toContain(footnotes);
     expect(file.data.astro).toBeUndefined();
+  });
+});
+
+
+describe("list reference identity", () => {
+  it.each(["/repo/src/content/posts/example.md", "/repo/src/content/en/posts/example.md"])("uniquely resolves sibling, nested and separate lists in %s", (path) => {
+    const el = (tagName: string, children: Element[] = [], properties = {}): Element =>
+      ({ type: "element", tagName, properties, children });
+    const refs: Element[] = [];
+    const item = (id: string) => {
+      const ref = el("a", [], { href: `#user-content-fn-${id}`, dataFootnoteRef: "" });
+      refs.push(ref);
+      return el("li", [el("p", [el("sup", [ref])])]);
+    };
+    const first = item("first");
+    first.children.push(el("ul", [item("nested"), item("nested-sibling")]));
+    const paragraph = el("p", [], { id: "c-section::p3", "data-anchor": "section::p3" });
+    const tree: Root = { type: "root", children: [paragraph,
+      el("ul", [first, item("sibling")]), el("ol", [item("separate"), item("separate-sibling")]),
+      el("section", [el("ol", refs.map(ref => el("li", [], { id: String(ref.properties.href).slice(1) })))], { dataFootnotes: "" })
+    ] };
+    const file = { path, data: {} as { astro?: { frontmatter: Record<string, TufteRailFootnote[]> } } };
+    rehypeTufteFootnotes()(tree, file);
+    const nodes: Element[] = [];
+    const walk = (node: Root | Element) => {
+      for (const child of node.children) if (child.type === "element") { nodes.push(child); walk(child); }
+    };
+    walk(tree);
+    const notes = file.data.astro!.frontmatter[TUFTE_MARKDOWN_FOOTNOTES_KEY];
+    expect(notes).toHaveLength(6);
+    for (const note of notes) {
+      const matches = nodes.filter(node => node.properties.id === `c-${note.anchorId}`);
+      expect(matches, note.id).toHaveLength(1);
+      const contains = (node: Element): boolean => node.properties["data-footnote-rail-target"] === note.id ||
+        node.children.some(child => child.type === "element" && contains(child));
+      expect(contains(matches[0]), note.id).toBe(true);
+    }
+    expect(new Set(notes.map(note => note.anchorId)).size).toBe(6);
+    expect(paragraph.properties.id).toBe("c-section::p3");
+    expect(first.properties.id).toBe("c-section::p3::li1");
   });
 });

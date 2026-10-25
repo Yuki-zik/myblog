@@ -1,10 +1,14 @@
 import type { CollectionEntry } from "astro:content";
 
-export type SearchIndexItemType = "paper" | "post" | "topic" | "concept";
+export type SearchIndexItemType = "paper" | "post" | "topic" | "concept" | "page";
 
 export interface SearchIndexItem {
   type: SearchIndexItemType;
   title: string;
+  language?: "zh-CN" | "en";
+  languageLabel?: string;
+  alternateTitles?: string[];
+  alternateSummaries?: string[];
   url: string;
   summary?: string;
   keywords: readonly string[];
@@ -20,7 +24,8 @@ const TYPE_PRIORITY: Record<SearchIndexItemType, number> = {
   paper: 0,
   post: 1,
   topic: 2,
-  concept: 3
+  concept: 3,
+  page: 4
 };
 
 function compactStrings(values: Array<string | undefined>): string[] {
@@ -47,7 +52,8 @@ function compactStrings(values: Array<string | undefined>): string[] {
 export function normalizeSearchText(value: string): string {
   return value
     .normalize("NFKC")
-    .toLocaleLowerCase()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -77,54 +83,58 @@ export function extractSearchableText(markdown: string): string {
     .trim();
 }
 
+const segmenter = new Intl.Segmenter("zh-CN", { granularity: "word" });
+function containsTerm(text: string, term: string): boolean {
+  if (/\p{Script=Han}/u.test(term)) return text.includes(term);
+  // Whole Latin words prevent e.g. AI from matching chair, mail or training.
+  return (` ${text} `).includes(` ${term} `);
+}
+function phraseScore(item: SearchIndexItem, query: string): number {
+  let score = -1;
+  for (const title of [item.title, ...(item.alternateTitles ?? [])].map(normalizeSearchText)) {
+    if (title === query) score = Math.max(score, 500);
+    else if (containsTerm(title, query)) score = Math.max(score, title.startsWith(query) ? 420 : 340);
+  }
+  for (const keyword of item.keywords.map(normalizeSearchText)) {
+    if (keyword === query) score = Math.max(score, 300);
+    else if (containsTerm(keyword, query)) score = Math.max(score, keyword.startsWith(query) ? 260 : 220);
+  }
+  if ([item.summary ?? "", ...(item.alternateSummaries ?? [])].some(s => containsTerm(normalizeSearchText(s), query))) score = Math.max(score, 140);
+  if (containsTerm(normalizeSearchText(item.body ?? ""), query)) score = Math.max(score, 100);
+  return score;
+}
 export function scoreSearchMatch(item: SearchIndexItem, queryInput: string): number {
   const query = normalizeSearchText(queryInput);
-  if (!query) {
-    return -1;
-  }
+  if (!query) return -1;
+  const terms = [...new Set([...segmenter.segment(query)].filter(s => s.isWordLike).map(s => s.segment))];
+  if (!terms.length) return -1;
+  const scores = terms.map(term => phraseScore(item, term));
+  if (scores.some(score => score < 0)) return -1;
+  const phrase = phraseScore(item, query);
+  // Retain the existing single-term weights and tie breaks. A full phrase wins
+  // over scattered terms; all terms must still match a real indexed field.
+  return terms.length === 1 ? scores[0] : Math.max(...scores) + (phrase >= 0 ? phrase : 0);
+}
 
-  const title = normalizeSearchText(item.title);
-  const summary = normalizeSearchText(item.summary ?? "");
-  const keywords = item.keywords.map((keyword) => normalizeSearchText(keyword));
-
-  let score = -1;
-
-  if (title === query) {
-    score = Math.max(score, 500);
-  }
-
-  if (title.startsWith(query)) {
-    score = Math.max(score, 420);
-  } else if (title.includes(query)) {
-    score = Math.max(score, 340);
-  }
-
-  keywords.forEach((keyword) => {
-    if (!keyword) {
-      return;
-    }
-
-    if (keyword === query) {
-      score = Math.max(score, 300);
-    } else if (keyword.startsWith(query)) {
-      score = Math.max(score, 260);
-    } else if (keyword.includes(query)) {
-      score = Math.max(score, 220);
-    }
+/** Source records are authoritative: translations never resurrect deleted/draft sources. */
+export function mergeSearchEditions(source: SearchIndexItem[], translated: SearchIndexItem[], locale: "zh-CN" | "en"): SearchIndexItem[] {
+  const counterparts = new Map(translated.map(item => [item.url, item]));
+  return source.map(original => {
+    const counterpart = counterparts.get(original.url);
+    const display = locale === "en" && counterpart ? counterpart : original;
+    const language = locale === "en" && counterpart ? "en" : "zh-CN";
+    const editions = counterpart ? [original, counterpart] : [original];
+    return {
+      ...display,
+      url: language === "en" ? `/en${original.url === "/" ? "" : original.url}` : original.url,
+      language,
+      languageLabel: language === "en" ? "English" : locale === "en" ? "中文 · Chinese fallback" : "中文",
+      alternateTitles: compactStrings(editions.flatMap(item => [item.title, ...(item.alternateTitles ?? [])])),
+      alternateSummaries: compactStrings(editions.flatMap(item => [item.summary, ...(item.alternateSummaries ?? [])])),
+      keywords: compactStrings(editions.flatMap(item => [...item.keywords])),
+      body: editions.map(item => item.body ?? "").join("\n")
+    };
   });
-
-  if (summary.includes(query)) {
-    score = Math.max(score, 140);
-  }
-
-  if (item.body) {
-    const body = normalizeSearchText(item.body);
-    if (body.includes(query)) {
-      score = Math.max(score, 100);
-    }
-  }
-
-  return score;
 }
 
 export function searchIndexItems(
@@ -171,10 +181,10 @@ export function searchIndexItems(
 }
 
 export function buildSearchIndex(
-  posts: CollectionEntry<"posts">[],
-  papers: CollectionEntry<"papers">[],
-  topics: CollectionEntry<"topics">[],
-  concepts: CollectionEntry<"concepts">[]
+  posts: Pick<CollectionEntry<"posts">, "id" | "data" | "body">[],
+  papers: Pick<CollectionEntry<"papers">, "id" | "data" | "body">[],
+  topics: Pick<CollectionEntry<"topics">, "id" | "data" | "body">[],
+  concepts: Pick<CollectionEntry<"concepts">, "id" | "data" | "body">[]
 ): SearchIndexItem[] {
   const postItems: SearchIndexItem[] = posts
     .filter((post) => !post.data.draft)
@@ -202,7 +212,8 @@ export function buildSearchIndex(
         paper.data.venue?.name,
         paper.data.venue?.short
       ]),
-      body: extractSearchableText(paper.body ?? ""),
+      body: extractSearchableText([paper.data.abstract, paper.body ?? ""].join("\n")),
+      alternateTitles: compactStrings([paper.data.subtitle]),
       date: paper.data.publicationDate,
       year: paper.data.year,
       updated: paper.data.updated
@@ -226,5 +237,5 @@ export function buildSearchIndex(
     body: extractSearchableText(concept.body ?? "")
   }));
 
-  return [...paperItems, ...postItems, ...topicItems, ...conceptItems];
+  return [...paperItems, ...postItems, ...topicItems, ...conceptItems].map(item => ({...item, alternateTitles: [...(item.alternateTitles ?? []), item.url.split("/").at(-1)!]}));
 }

@@ -1,4 +1,11 @@
 ---
+import {getLocale, createTranslator} from "../lib/i18n/index";
+import {createPageLocalizer} from "../lib/i18n/content";
+const locale=getLocale(Astro.url.pathname);
+const t=createTranslator(locale);
+const l=await createPageLocalizer(locale);
+
+import { englishLogDownload } from "../lib/agents/downloads";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import AgentInstrumentDesk from "../components/agents/AgentInstrumentDesk.astro";
@@ -7,64 +14,64 @@ import "../styles/agent-observatory.css";
 
 const days = [...publicObservations.days].sort((a, b) => b.date.localeCompare(a.date));
 const tasks = [...publicObservations.tasks].sort((a, b) => b.date.localeCompare(a.date));
-const taskStatusLabels = { active: "进行中", accepted: "已验收", rejected: "未通过验收", abandoned: "已放弃" };
+const taskStatusLabels = { active: t("进行中"), accepted: t("已验收"), rejected: t("未通过验收"), abandoned: t("已放弃") };
 const evidence = [...evidenceRecords].sort((a, b) => b.date.localeCompare(a.date));
-const display = (value: number | null) => value === null ? "未记录" : String(value);
+const display = (value: number | null) => value === null ? t("未记录") : String(value);
 ---
-<BaseLayout title="Agent 工作观察站" description="四个可交互的小挂件，观察独立任务并行、可靠交付、人工投入和返工。" runtime="discover" headerVariant="drawing">
+<BaseLayout title={t("Agent 工作观察站")} description={t("四个可交互的小挂件，观察独立任务并行、可靠交付、人工投入和返工。")} runtime="discover" headerVariant="drawing">
   <DiscoverShell bodyClass="agent-observatory">
     <header class="agent-observatory-hero">
       <div>
-        <p class="agent-observatory-kicker">AGENT INSTRUMENTS · 交互挂件</p>
-        <h1>Agent 工作观察站</h1>
-        <p class="agent-observatory-intro">四件小工具，记录 Agent 与人的协作。</p>
+        <p class="agent-observatory-kicker">{t("AGENT INSTRUMENTS · 交互挂件")}</p>
+        <h1>{t("Agent 工作观察站")}</h1>
+        <p class="agent-observatory-intro">{t("四件小工具，记录 Agent 与人的协作。")}</p>
       </div>
-      <p class="agent-observatory-status">{summary.windowEnd ? `${summary.windowStart} — ${summary.windowEnd}` : "个人数据待记录"}</p>
+      <p class="agent-observatory-status">{summary.windowEnd ? `${summary.windowStart} — ${summary.windowEnd}` : t("个人数据待记录")}</p>
     </header>
 
     <AgentInstrumentDesk />
-    <p class="agent-observatory-window">{summary.windowEnd ? `截至最近记录日的 7 天窗口 · 已记录 ${summary.observedDays}/7 天` : "实测从第一条记录开始。控件可试用，示意数值不计入实测。"}</p>
+    <p class="agent-observatory-window">{summary.windowEnd ? t("截至最近记录日的 7 天窗口 · 已记录 {0}/7 天", [summary.observedDays]) : t("实测从第一条记录开始。控件可试用，示意数值不计入实测。")}</p>
 
     <details class="agent-observatory-reference" data-agent-reference>
-      <summary><span>研究、记录与方法</span><small>{evidence.length} 条来源 · 记录模板</small></summary>
+      <summary><span>{t("研究、记录与方法")}</span><small>{evidence.length} {t("条来源 · 记录模板")}</small></summary>
       <div class="agent-observatory-reference__body">
         <section id="personal" class="agent-observatory-section" aria-labelledby="agent-records-title">
-          <h2 id="agent-records-title">个人记录</h2>
-          {days.length === 0 ? <p class="agent-observatory-meta">尚无已发布的个人记录。每天填写投入、任务状态与验收依据，核对后更新。</p> : (
-            <div class="agent-observatory-table-wrap" role="region" aria-label="每日观察记录，可横向滚动" tabindex="0">
-              <table><caption>人工时间包含布置、检查、协调与返工</caption><thead><tr><th scope="col">日期</th><th scope="col">并行峰值</th><th scope="col">人工 / 分钟</th><th scope="col">其中返工 / 分钟</th><th scope="col">变化备注</th></tr></thead><tbody>{days.map((day) => <tr><th scope="row">{day.date}</th><td>{display(day.peakParallelTasks)}</td><td>{display(day.humanMinutes)}</td><td>{display(day.reworkMinutes)}</td><td>{day.note || "—"}</td></tr>)}</tbody></table>
+          <h2 id="agent-records-title">{t("个人记录")}</h2>
+          {days.length === 0 ? <p class="agent-observatory-meta">{t("尚无已发布的个人记录。每天填写投入、任务状态与验收依据，核对后更新。")}</p> : (
+            <div class="agent-observatory-table-wrap" role="region" aria-label={t("每日观察记录，可横向滚动")} tabindex="0">
+              <table><caption>{t("人工时间包含布置、检查、协调与返工")}</caption><thead><tr><th scope="col">{t("日期")}</th><th scope="col">{t("并行峰值")}</th><th scope="col">{t("人工 / 分钟")}</th><th scope="col">{t("其中返工 / 分钟")}</th><th scope="col">{t("变化备注")}</th></tr></thead><tbody>{days.map((day) => <tr><th scope="row">{day.date}</th><td>{display(day.peakParallelTasks)}</td><td>{display(day.humanMinutes)}</td><td>{display(day.reworkMinutes)}</td><td>{day.note ? t(day.note) : "—"}</td></tr>)}</tbody></table>
             </div>
           )}
-          {tasks.length > 0 && <details class="agent-observatory-details"><summary>任务与验收依据（含失败和放弃）</summary><ul>{tasks.map((task) => <li><time datetime={task.date}>{task.date}</time> · {taskStatusLabels[task.status]} · {task.evidenceUrl ? <a href={task.evidenceUrl} rel="noopener noreferrer">{task.title}</a> : task.title}{task.acceptanceCriterion && <p>验收标准：{task.acceptanceCriterion}</p>}{task.note && <p>{task.note}</p>}</li>)}</ul></details>}
+          {tasks.length > 0 && <details class="agent-observatory-details"><summary>{t("任务与验收依据（含失败和放弃）")}</summary><ul>{tasks.map((task) => <li><time datetime={task.date}>{task.date}</time> · {taskStatusLabels[task.status]} · {task.evidenceUrl ? <a href={l(task.evidenceUrl)} rel="noopener noreferrer">{t(task.title)}</a> : t(task.title)}{task.acceptanceCriterion && <p>{t("验收标准：")}{t(task.acceptanceCriterion)}</p>}{task.note && <p>{t(task.note)}</p>}</li>)}</ul></details>}
         </section>
 
         <section id="evidence" class="agent-observatory-section" aria-labelledby="agent-evidence-title">
-          <h2 id="agent-evidence-title">公开研究</h2>
-          <p class="agent-observatory-meta">不同研究测量不同对象；保留各自的实验条件和适用范围。</p>
+          <h2 id="agent-evidence-title">{t("公开研究")}</h2>
+          <p class="agent-observatory-meta">{t("不同研究测量不同对象；保留各自的实验条件和适用范围。")}</p>
           <ol class="agent-observatory-timeline">
             {evidence.map((item) => (
               <li id={`evidence-${item.id}`}>
-                <div class="agent-observatory-timeline__date"><time datetime={item.date}>{item.date}</time><span>{item.kind}</span></div>
-                <article><h3>{item.title}</h3><p>{item.finding}</p><details class="agent-observatory-details"><summary>适用范围与原始来源</summary><p>{item.limit}</p><a href={item.url} rel="noopener noreferrer">阅读原始研究 <span aria-hidden="true">↗</span></a></details></article>
+                <div class="agent-observatory-timeline__date"><time datetime={item.date}>{item.date}</time><span>{t(item.kind)}</span></div>
+                <article><h3>{t(item.title)}</h3><p>{t(item.finding)}</p><details class="agent-observatory-details"><summary>{t("适用范围与原始来源")}</summary><p>{t(item.limit)}</p><a href={l(item.url)} rel="noopener noreferrer">{t("阅读原始研究")} <span aria-hidden="true">↗</span></a></details></article>
               </li>
             ))}
           </ol>
-          <p class="agent-observatory-meta">初始资料整理：2026-10-24。这些资料尚未给出统一口径的行业人均 Agent 数量曲线。</p>
+          <p class="agent-observatory-meta">{t("初始资料整理：2026-10-24。这些资料尚未给出统一口径的行业人均 Agent 数量曲线。")}</p>
         </section>
 
         <section id="recording" class="agent-observatory-section" aria-labelledby="agent-method-title">
-          <h2 id="agent-method-title">统计口径与模板</h2>
+          <h2 id="agent-method-title">{t("统计口径与模板")}</h2>
           <dl class="agent-observatory-definitions">
-            <div><dt>独立任务</dt><dd>按独立验收目标计数。同一任务的会话、重试和子 Agent 沿用同一个 ID。并行峰值是实际观察到的同时推进数量。</dd></div>
-            <div><dt>可靠交付</dt><dd>达到预定标准，保留可核对的结果链接；经过复核的研究负结果也属于有效交付。</dd></div>
-            <div><dt>人工投入</dt><dd>包含布置、补充上下文、审核、协调与返工。同一段注意力只计一次，返工属于总投入。</dd></div>
-            <div><dt>比较条件</dt><dd>任务类型、范围和质量标准应相近。空缺留空，真实测得的零填写 0；保留失败、放弃及工具变化。</dd></div>
+            <div><dt>{t("独立任务")}</dt><dd>{t("按独立验收目标计数。同一任务的会话、重试和子 Agent 沿用同一个 ID。并行峰值是实际观察到的同时推进数量。")}</dd></div>
+            <div><dt>{t("可靠交付")}</dt><dd>{t("达到预定标准，保留可核对的结果链接；经过复核的研究负结果也属于有效交付。")}</dd></div>
+            <div><dt>{t("人工投入")}</dt><dd>{t("包含布置、补充上下文、审核、协调与返工。同一段注意力只计一次，返工属于总投入。")}</dd></div>
+            <div><dt>{t("比较条件")}</dt><dd>{t("任务类型、范围和质量标准应相近。空缺留空，真实测得的零填写 0；保留失败、放弃及工具变化。")}</dd></div>
           </dl>
           <div class="agent-observatory-downloads">
-            <a href="/agent-observatory-log-template.md" download>下载每日记录模板 <span aria-hidden="true">↓</span></a>
-            <a href="/agent-observatory-template.json" download>下载空数据文件 <span aria-hidden="true">↓</span></a>
+            <a href={locale === "en" ? englishLogDownload : "/agent-observatory-log-template.md"} download={locale === "en" ? "agent-work-log-template.md" : ""}>{t("下载每日记录模板")} <span aria-hidden="true">↓</span></a>
+            <a href={l("/agent-observatory-template.json")} download>{t("下载空数据文件")} <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="agent-observatory-meta">每日记录包含并行峰值，未包含任务起止时间。挂件中的分钟轨道为交互示意；个人实测以经核对的记录为准。</p>
+          <p class="agent-observatory-meta">{t("每日记录包含并行峰值，未包含任务起止时间。挂件中的分钟轨道为交互示意；个人实测以经核对的记录为准。")}</p>
         </section>
       </div>
     </details>

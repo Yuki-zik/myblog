@@ -1070,3 +1070,37 @@ body[data-header-variant="drawing"] .header-search-result-type--paper {
 @media (max-width: 380px) {
   .site-header[data-header-state] .site-nav a { padding-inline: 0.25rem; }
 }
+
+/* Container queries use the actual root font, unlike rem media queries.
+ * Reflow the chrome when its available measure cannot hold enlarged text.
+ * At normal desktop sizes the original capsule grid remains unchanged. */
+.site-header { container: header-layout / inline-size; }
+
+@container header-layout (max-width: 50rem) {
+  .site-header[data-header-state] .shell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .68rem;
+    padding-block: 8px;
+  }
+  .site-header[data-header-state] .brand { margin-inline-end: auto; }
+  .site-header[data-header-state] .site-header-search-slot {
+    width: min(100%, 22rem);
+    flex: 0 1 auto;
+  }
+  .site-header[data-header-state] .site-nav {
+    flex: 1 0 100%;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .site-header[data-header-state] .site-nav .site-nav-links {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+  }
+  .site-header[data-header-state] .site-header-inner { height: 100%; }
+}
+@media (max-width: 900px) {
+  @container header-layout (max-width: 50rem) {
+    .site-header[data-header-state] .site-header-search-slot { width: auto; }
+  }
+}
