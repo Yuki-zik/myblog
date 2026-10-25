@@ -287,14 +287,21 @@ function scrollItemIntoViewWithin(
   const top = containerRect.top + (Number.parseFloat(styles.scrollPaddingTop) || 0);
   const bottom = containerRect.bottom - (Number.parseFloat(styles.scrollPaddingBottom) || 0);
 
+  let delta = 0;
   if (itemRect.top < top || itemRect.height > bottom - top) {
-    container.scrollTop += itemRect.top - top;
-    return;
+    delta = itemRect.top - top;
+  } else if (itemRect.bottom > bottom) {
+    delta = itemRect.bottom - bottom;
   }
 
-  if (itemRect.bottom > bottom) {
-    container.scrollTop += itemRect.bottom - bottom;
-  }
+  if (Math.abs(delta) < 1) return;
+
+  // Scroll only the sidebar; respect reduced-motion preferences.
+  container.scrollTo({
+    top: Math.min(Math.max(container.scrollTop + delta, 0),
+      Math.max(container.scrollHeight - container.clientHeight, 0)),
+    behavior: prefersReducedMotion() ? "instant" : "smooth",
+  });
 }
 
 function cancelSettle(progressLine: HTMLElement): void {
@@ -302,7 +309,6 @@ function cancelSettle(progressLine: HTMLElement): void {
   if (handle !== undefined) {
     window.cancelAnimationFrame(handle);
     settleHandles.delete(progressLine);
-    delete progressLine.dataset.instant;
   }
 }
 
@@ -312,6 +318,7 @@ function updateProgress(
   trackLine: HTMLElement,
   progressLine: HTMLElement,
   scrollBody: HTMLElement,
+  followActiveLink: boolean,
 ): void {
   const activeEntry =
     entries.find((entry) => entry.id === activeId) ?? entries[0];
@@ -319,7 +326,6 @@ function updateProgress(
   cancelSettle(progressLine);
 
   if (!activeEntry) {
-    delete progressLine.dataset.instant;
     progressLine.style.height = "0px";
     progressLine.style.transform = "translateY(0px)";
     return;
@@ -343,50 +349,17 @@ function updateProgress(
     return offset;
   };
 
-  const scrollTopBefore = scrollBody.scrollTop;
-  /*
-   * Only the TOC's own scroller may move here.
-   *
-   * `scrollIntoView` walks every scrollable ancestor, so on a TOC link click it
-   * also nudged the page — which then fought the smooth `heading.scrollIntoView`
-   * that `bindTocLinkClicks` performs immediately afterwards, leaving the target
-   * heading under the sticky header. Scrolling the container directly keeps the
-   * catch-up local.
-   */
-  // A parent <li> includes all of its children; following that whole branch
-  // can push the actual current heading out of view. Follow the link itself.
-  scrollItemIntoViewWithin(scrollBody, activeEntry.link);
-
-  /*
-   * `scrollIntoView` on this container is synchronous (the TOC body resolves to
-   * `scroll-behavior: auto`), so comparing scrollTop here tells us whether this
-   * update is a catch-up that moved the list under the indicator.
-   */
-  const tocScrolled = Math.abs(scrollBody.scrollTop - scrollTopBefore) > 0.5;
-  if (tocScrolled) {
-    progressLine.dataset.instant = "true";
+  // Repeating a smooth-scroll destination on every reading scroll frame
+  // restarts that animation. Follow only on selection/geometry changes.
+  if (followActiveLink) {
+    scrollItemIntoViewWithin(scrollBody, activeEntry.link);
   }
 
-  /*
-   * Re-measure until the sticky sidebar, the page scroll and the TOC's own
-   * scroll have all settled.
-   *
-   * Measuring once right after scrollIntoView() is not enough. While the
-   * layout is still in flight the active link can measure *above* the track,
-   * which drives `activeCenter` negative and clamps the indicator to offset 0
-   * — so jumping to the end of a long article made the rail visibly snap to
-   * the top before sliding back down. The previous implementation tried to
-   * cover that with a one-shot scroll listener plus a fixed 140ms timer; the
-   * listener never fires when scrollIntoView() is a no-op, and 140ms is a
-   * guess that loses on a slow frame.
-   */
+  // During smooth sidebar movement, the scroll listener measures each frame.
+  // Keep the progress transition active so it never snaps into a new section.
   let previous = renderProgress();
   let stableFrames = 0;
   let frames = 0;
-
-  const finish = () => {
-    delete progressLine.dataset.instant;
-  };
 
   const step = () => {
     settleHandles.delete(progressLine);
@@ -398,7 +371,6 @@ function updateProgress(
     previous = next;
 
     if (stableFrames >= SETTLE_STABLE_FRAMES || frames >= SETTLE_MAX_FRAMES) {
-      finish();
       return;
     }
 
@@ -415,6 +387,7 @@ function applySidebarState(
   trackLine: HTMLElement,
   progressLine: HTMLElement,
   scrollBody: HTMLElement,
+  followActiveLink: boolean,
 ): void {
   applyLinkState(entries, activeId);
 
@@ -430,7 +403,7 @@ function applySidebarState(
     }
   }
 
-  updateProgress(entries, activeId, trackLine, progressLine, scrollBody);
+  updateProgress(entries, activeId, trackLine, progressLine, scrollBody, followActiveLink);
 }
 
 /*
@@ -517,6 +490,10 @@ function bindCollapseToggle(
     if (prefersReducedMotion()) {
       setState(collapsed);
       viewport.style.height = "";
+      // Opening without an animation still changes the scrollable geometry.
+      if (!collapsed) {
+        onChange();
+      }
       return;
     }
 
@@ -596,12 +573,15 @@ export function initTocSidebar(root: Element): (() => void) | void {
   const headings = entries.map((entry) => entry.heading);
   const activeResolver = createActiveIdResolver(headings);
   let activeId = headings[0]?.id ?? "";
+  let needsFollow = true;
 
   const { requestSync, cancel } = createSyncScheduler(() => {
     const nextActiveId = activeResolver.resolve();
     if (!nextActiveId) {
       return;
     }
+    const followActiveLink = needsFollow || nextActiveId !== activeId;
+    needsFollow = false;
     activeId = nextActiveId;
     applySidebarState(
       entries,
@@ -610,6 +590,7 @@ export function initTocSidebar(root: Element): (() => void) | void {
       trackLine,
       progressLine,
       scrollBody,
+      followActiveLink,
     );
   });
 
@@ -617,6 +598,7 @@ export function initTocSidebar(root: Element): (() => void) | void {
   const removeClickHandlers = bindTocLinkClicks(entries, (id) => {
     activeResolver.lock(id);
     activeId = id;
+    needsFollow = false;
     applySidebarState(
       entries,
       activeId,
@@ -624,10 +606,18 @@ export function initTocSidebar(root: Element): (() => void) | void {
       trackLine,
       progressLine,
       scrollBody,
+      true,
     );
   });
 
-  const onResize = () => requestSync();
+  const onResize = () => {
+    needsFollow = true;
+    requestSync();
+  };
+  // The TOC's internal scroll also moves the progress marker's coordinates.
+  const onTocScroll = () => {
+    updateProgress(entries, activeId, trackLine, progressLine, scrollBody, false);
+  };
   /*
    * Scroll events keep the manual lock alive, so a click-initiated smooth
    * scroll holds the reader's selection for as long as it is actually running
@@ -639,13 +629,17 @@ export function initTocSidebar(root: Element): (() => void) | void {
     requestSync();
   };
   const onHashChange = () => requestSync();
+  // The floating header changes state while the page moves. Recompute marker
+  // geometry without restarting an already running internal follow animation.
+  const onHeaderFrameChange = () => requestSync();
 
   window.addEventListener("scroll", onScroll, { passive: true });
+  scrollBody.addEventListener("scroll", onTocScroll, { passive: true });
   window.addEventListener("resize", onResize, { passive: true });
   window.addEventListener("hashchange", onHashChange);
-  window.addEventListener("site-header-framechange", onResize);
+  window.addEventListener("site-header-framechange", onHeaderFrameChange);
 
-  const removeCollapseToggle = bindCollapseToggle(root, requestSync);
+  const removeCollapseToggle = bindCollapseToggle(root, onResize);
 
   requestSync();
 
@@ -654,9 +648,10 @@ export function initTocSidebar(root: Element): (() => void) | void {
     removeClickHandlers();
     removeCollapseToggle?.();
     window.removeEventListener("scroll", onScroll);
+    scrollBody.removeEventListener("scroll", onTocScroll);
     window.removeEventListener("resize", onResize);
     window.removeEventListener("hashchange", onHashChange);
-    window.removeEventListener("site-header-framechange", onResize);
+    window.removeEventListener("site-header-framechange", onHeaderFrameChange);
     cancelSettle(progressLine);
     cancel();
   };

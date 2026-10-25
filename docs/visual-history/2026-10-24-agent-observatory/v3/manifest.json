@@ -41,5 +41,5 @@
     "src/components/agents/instruments/DeliveryWidget.astro": "fc5d234161906338003c24043b93bfa7fe573f460aace7a1fa35e4e32e8a3a30"
   },
   "implementationCommit": "60ba11f28e5ff88c8f682222839f250a189db433",
-  "integrationBase": "86183a059bdb043557367473862f837237275db2"
+  "integrationBase": "4cac12d796e2e1bb341e9065e5caca1101965c31"
 }
