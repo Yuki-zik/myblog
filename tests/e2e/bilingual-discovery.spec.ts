@@ -1,3 +1,4 @@
+import history from "../../src/data/agent-history.json" with { type: "json" };
 import { test, expect } from '@playwright/test';
 import { searchIndexItems, type SearchIndexItem } from '../../src/lib/search';
 import { evidenceRecords } from '../../src/lib/agents/observatory';
@@ -76,7 +77,7 @@ test('English observatory and home share translated data, methods and downloads'
   await expect(page.locator('[data-attention-output]')).toHaveText('45 min');
   await expect(page.locator('[data-attention-description]')).toContainText('Check results');
   await page.locator('[data-delivery-next]').click();
-  await expect(page.locator('[data-delivery-index]')).toHaveText('2 / 3');
+  await expect(page.locator('[data-delivery-index]')).toHaveText(`2 / ${history.items.length || 3}`);
   await page.locator('[data-rework-reset]').click();
   await expect(page.locator('[data-rework-output]')).toHaveText('0 min');
   expect(errors).toEqual([]);

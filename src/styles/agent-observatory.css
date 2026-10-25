@@ -59,3 +59,10 @@
   .agent-observatory-entry__mark { width: 38px; }
 }
 @media (prefers-reduced-motion: reduce) { .agent-observatory-entry__arrow { transition: none; } }
+
+/* Reviewed work stays inside the existing closed reference disclosure. */
+.agent-history-list { margin: 1rem 0; padding: 0; list-style: none; }
+.agent-history-list > li { padding-block: .8rem; border-top: 1px solid var(--divider); }
+.agent-history-list__heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1rem; font-size: .8rem; }
+.agent-history-list__heading time { color: var(--text-secondary); font-size: .7rem; font-variant-numeric: tabular-nums; }
+.agent-history-list .agent-observatory-details p + p { margin-top: .4rem; }

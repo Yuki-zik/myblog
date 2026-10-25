@@ -1,3 +1,4 @@
+import history from "../../src/data/agent-history.json" with { type: "json" };
 import { test, expect } from "@playwright/test";
 import observations from "../../src/data/agent-observatory.json" with { type: "json" };
 
@@ -8,10 +9,10 @@ test("each instrument has an independent reversible interaction while measured v
   const measured = desk.locator(".agent-instrument__value");
   const before = await measured.allTextContents();
   await desk.locator("[data-delivery-next]").click();
-  await expect(desk.locator("[data-delivery-index]")).toHaveText("2 / 3");
+  await expect(desk.locator("[data-delivery-index]")).toHaveText(`2 / ${history.items.length || 3}`);
   await expect(desk.locator("[data-delivery-ticket]:not([hidden])")).toHaveCount(1);
   await desk.locator("[data-delivery-prev]").click();
-  await expect(desk.locator("[data-delivery-index]")).toHaveText("1 / 3");
+  await expect(desk.locator("[data-delivery-index]")).toHaveText(`1 / ${history.items.length || 3}`);
   const ticket = desk.locator("[data-delivery-ticket]:not([hidden])");
   await ticket.locator("summary").click();
   await expect(ticket.locator("details")).toHaveAttribute("open", "");
@@ -50,7 +51,7 @@ test("compact instruments remain readable in narrow light and dark views and pre
       expect(box!.x + box!.width).toBeLessThanOrEqual(width + 1);
     }
     if (!observations.days.length) {
-      for (const value of await desk.locator(".agent-instrument__value").all()) await expect(value).toContainText("待记录");
+      for (const value of await desk.locator('[data-agent-instrument]:not([data-agent-instrument="delivery"]) .agent-instrument__value').all()) await expect(value).toContainText("待记录");
     }
     const sources = page.locator("[data-agent-reference]");
     await expect(sources).not.toHaveAttribute("open", "");
@@ -100,6 +101,10 @@ test("without JavaScript measurements and reference disclosures remain readable"
   for (const control of await page.locator("[data-agent-instruments] button, [data-agent-instruments] input").all()) await expect(control).toBeDisabled();
   await expect(page.locator("[data-agent-instruments] noscript")).toBeVisible();
   await page.locator("[data-agent-reference] > summary").click();
+  await expect(page.locator("[data-history-record]")).toHaveCount(history.items.length);
+  const firstRecord = page.locator("[data-history-record]").first();
+  await firstRecord.locator("summary").click();
+  await expect(firstRecord.locator("a").first()).toHaveAttribute("href", history.items[0].evidence[0].url);
   await expect(page.getByRole("heading", { name: "公开研究", exact: true })).toBeVisible();
   const source = page.locator(".agent-observatory-timeline details").first();
   await source.locator("summary").click();
@@ -107,4 +112,33 @@ test("without JavaScript measurements and reference disclosures remain readable"
   await expect(source.getByRole("link")).toHaveAttribute("href", /^https:\/\//);
   await expect(page.getByRole("link", { name: /下载每日记录模板/ })).toBeVisible();
   await context.close();
+});
+
+test("reviewed tickets expose real public evidence in both editions without inventing measurements", async ({ page }) => {
+  for (const route of ["/agents", "/en/agents"]) {
+    await page.goto(route);
+    const desk = page.locator("[data-agent-instruments]");
+    const delivery = desk.locator('[data-agent-instrument="delivery"]');
+    await expect(delivery).toHaveAttribute("data-delivery-mode", "history");
+    await expect(delivery.locator(".agent-instrument__value")).toHaveText(String(history.items.length));
+    await expect(delivery).not.toContainText(/DEMO|交互示意|Illustrative interaction/);
+    const before = await desk.locator(".agent-instrument__value").allTextContents();
+    for (const [index, item] of history.items.entries()) {
+      const ticket = delivery.locator("[data-delivery-ticket]:not([hidden])");
+      await expect(ticket).toHaveAttribute("data-history-work-id", item.id);
+      await expect(delivery.locator("[data-delivery-index]")).toHaveText(`${index + 1} / ${history.items.length}`);
+      await ticket.locator("summary").click();
+      const links = ticket.locator("[data-history-evidence]");
+      await expect(links).toHaveCount(item.evidence.length);
+      for (const [i, source] of item.evidence.entries()) await expect(links.nth(i)).toHaveAttribute("href", source.url);
+      await delivery.locator("[data-delivery-next]").click();
+      await expect(delivery.locator("details[open]")).toHaveCount(0);
+    }
+    await expect(delivery.locator("[data-delivery-index]")).toHaveText(`1 / ${history.items.length}`);
+    await delivery.locator("[data-delivery-prev]").focus();
+    await delivery.locator("[data-delivery-prev]").press("Enter");
+    await expect(delivery.locator("[data-delivery-index]")).toHaveText(`${history.items.length} / ${history.items.length}`);
+    expect(await desk.locator(".agent-instrument__value").allTextContents()).toEqual(before);
+    if (route.startsWith("/en")) expect(await delivery.textContent()).not.toMatch(/[\u4e00-\u9fff]/u);
+  }
 });

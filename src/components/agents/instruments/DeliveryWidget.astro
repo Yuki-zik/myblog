@@ -1,28 +1,40 @@
 ---
-import {getLocale, createTranslator} from "../../../lib/i18n/index";
-import {createPageLocalizer} from "../../../lib/i18n/content";
-const locale=getLocale(Astro.url.pathname);
-const t=createTranslator(locale);
-const l=await createPageLocalizer(locale);
-
+import { getLocale, createTranslator } from "../../../lib/i18n/index";
 import type { Coverage } from "../../../lib/agents/observatory";
+import { historyDate, type HistoryWorkItem } from "../../../lib/agents/history";
 import "../../../styles/agent-instruments.css";
-interface Props { id?: string; value?: number | null; coverage?: Coverage; observedDays?: number; }
-const { id = "agent-delivery", value = null, coverage = "none", observedDays = 0 } = Astro.props;
-const formatted = value === null ? t("待记录") : new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value);
-const coverageLabel = value === null
+
+const locale = getLocale(Astro.url.pathname);
+const t = createTranslator(locale);
+interface Props {
+  id?: string;
+  value?: number | null;
+  coverage?: Coverage;
+  observedDays?: number;
+  historyItems?: HistoryWorkItem[];
+  reviewedDate?: string;
+}
+const {
+  id = "agent-delivery", value = null, coverage = "none", observedDays = 0,
+  historyItems = [], reviewedDate = ""
+} = Astro.props;
+const hasHistory = historyItems.length > 0;
+const formatted = hasHistory ? String(historyItems.length)
+  : value === null ? t("待记录") : new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value);
+const coverageLabel = hasHistory ? t("已核对 · {0}", [reviewedDate]) : value === null
   ? coverage === "partial" ? t("记录待补全") : t("个人实测")
   : coverage === "partial" ? t("已记录 ") + observedDays + t("/7 天") : t("最近 7 天");
-const tickets = [
+const demos = [
   { number: "01", category: t("界面"), title: t("一处界面修正"), criterion: t("约定的页面在桌面和手机上均能正常使用。"), evidence: t("示意票据没有关联真实项目。实际验收需附页面、变更或检查记录。") },
   { number: "02", category: t("研究"), title: t("一份资料摘记"), criterion: t("主要结论能回到原始来源，并明确适用范围。"), evidence: t("这里展示验收结构。真实交付应提供来源链接与可查阅的摘记。") },
   { number: "03", category: t("文字"), title: t("一次文本整理"), criterion: t("事实与原稿一致，约定的修改已经逐项检查。"), evidence: t("此票仅供翻阅演示。实际成果应附最终稿或可检查的修订记录。") }
 ];
+const ticketCount = hasHistory ? historyItems.length : demos.length;
 ---
-<article class="agent-instrument agent-instrument--delivery" data-agent-instrument="delivery" aria-labelledby={id + "-title"}>
+<article class="agent-instrument agent-instrument--delivery" data-agent-instrument="delivery" data-delivery-mode={hasHistory ? "history" : "demo"} aria-labelledby={id + "-title"}>
   <header class="agent-instrument__header">
     <div class="agent-instrument__heading">
-      <p class="agent-instrument__eyebrow">{t("02 / 已验收交付")}</p>
+      <p class="agent-instrument__eyebrow">{t(hasHistory ? "02 / 可核对交付" : "02 / 已验收交付")}</p>
       <h2 class="agent-instrument__name" id={id + "-title"}>{t("交付票夹")}</h2>
     </div>
     <div class="agent-instrument__measurement">
@@ -30,10 +42,21 @@ const tickets = [
       <p class="agent-instrument__coverage">{coverageLabel}</p>
     </div>
   </header>
-  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>{t("交互示意 · 不计入实测")}</p>
+  <p class="agent-instrument__demo" id={id + "-demo"}><span class="agent-instrument__demo-dot" aria-hidden="true"></span>{t(hasHistory ? "部分历史回溯" : "交互示意 · 不计入实测")}</p>
 
   <div class="agent-delivery__tickets" id={id + "-tickets"}>
-    {tickets.map((ticket,index) => <section class="agent-delivery__ticket" data-delivery-ticket hidden={index !== 0} aria-label={t("示意票据 ") + ticket.number + "：" + ticket.title}>
+    {hasHistory ? historyItems.map((ticket, index) => <section class="agent-delivery__ticket" data-delivery-ticket data-history-work-id={ticket.id} hidden={index !== 0} aria-label={t("历史票据 ") + (index + 1) + ": " + t(ticket.title)}>
+      <div class="agent-delivery__ticket-top"><time class="agent-delivery__serial" datetime={ticket.deliveredAt}>{historyDate(ticket.deliveredAt)}</time><span class="agent-delivery__category">{t(ticket.category)} · {t(ticket.status === "published" ? "已上线" : "已合并")}</span></div>
+      <h3 class="agent-delivery__title">{t(ticket.title)}</h3>
+      <details class="agent-delivery__details">
+        <summary><span>{t("展开成果与依据")}</span><span class="agent-delivery__detail-mark" aria-hidden="true">＋</span></summary>
+        <dl class="agent-delivery__evidence">
+          <div><dt>{t("交付内容")}</dt><dd>{t(ticket.outcome)}</dd></div>
+          <div><dt>{t("过程与调整")}</dt><dd>{t(ticket.adjustment)}</dd></div>
+          <div><dt>{t("公开依据")}</dt><dd class="agent-delivery__sources">{ticket.evidence.map(source => <a href={source.url} data-history-evidence rel="noopener noreferrer">{source.label} <span aria-hidden="true">↗</span></a>)}</dd></div>
+        </dl>
+      </details>
+    </section>) : demos.map((ticket, index) => <section class="agent-delivery__ticket" data-delivery-ticket hidden={index !== 0} aria-label={t("示意票据 ") + ticket.number + ": " + ticket.title}>
       <div class="agent-delivery__ticket-top"><span class="agent-delivery__serial">DEMO / {ticket.number}</span><span class="agent-delivery__category">{ticket.category}</span></div>
       <h3 class="agent-delivery__title">{ticket.title}</h3>
       <details class="agent-delivery__details">
@@ -45,9 +68,9 @@ const tickets = [
       </details>
     </section>)}
   </div>
-  <nav class="agent-delivery__navigation" aria-label={t("翻阅示意票据")}>
-    <button class="agent-delivery__page-button" type="button" data-delivery-prev data-instrument-control aria-label={t("上一张示意票据")} aria-controls={id + "-tickets"} disabled><span aria-hidden="true">←</span><span>{t("上一张")}</span></button>
-    <output class="agent-delivery__index" data-delivery-index aria-live="polite">1 / 3</output>
-    <button class="agent-delivery__page-button" type="button" data-delivery-next data-instrument-control aria-label={t("下一张示意票据")} aria-controls={id + "-tickets"} disabled><span>{t("下一张")}</span><span aria-hidden="true">→</span></button>
+  <nav class="agent-delivery__navigation" aria-label={t(hasHistory ? "交付票据" : "翻阅示意票据")}>
+    <button class="agent-delivery__page-button" type="button" data-delivery-prev data-instrument-control aria-label={t(hasHistory ? "上一张交付票据" : "上一张示意票据")} aria-controls={id + "-tickets"} disabled><span aria-hidden="true">←</span><span>{t("上一张")}</span></button>
+    <output class="agent-delivery__index" data-delivery-index aria-live="polite">1 / {ticketCount}</output>
+    <button class="agent-delivery__page-button" type="button" data-delivery-next data-instrument-control aria-label={t(hasHistory ? "下一张交付票据" : "下一张示意票据")} aria-controls={id + "-tickets"} disabled><span>{t("下一张")}</span><span aria-hidden="true">→</span></button>
   </nav>
 </article>

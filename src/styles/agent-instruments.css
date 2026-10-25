@@ -87,6 +87,8 @@
 .agent-delivery__evidence { display: grid; gap: 10px; padding-bottom: 12px; font-size: 11px; line-height: 1.75; }
 .agent-delivery__evidence dt { color: var(--drawing-accent-ink); font-weight: 600; }
 .agent-delivery__evidence dd { color: var(--text-secondary); }
+.agent-delivery__sources { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.agent-delivery__sources a { overflow-wrap: anywhere; }
 .agent-delivery__navigation { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; border-top: 1px solid var(--divider); }
 .agent-delivery__page-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-width: 76px; min-height: 44px; padding: 5px 0; border: 0; background: transparent; color: var(--text-primary); font-size: 11px !important; }
 .agent-delivery__page-button > span[aria-hidden] { color: var(--drawing-accent-ink); font-size: 17px; }

@@ -1,0 +1,90 @@
+{
+  "status": "local-verified",
+  "publicBase": "33e649b3295fdfe801a3cb1401a2713523178513",
+  "baselineTree": "c3fe6d908d348422042f1b36992cc9bf8cd2f8dd",
+  "screenshots": [
+    {
+      "file": "agent-history-1280-light.png",
+      "width": 1280,
+      "height": 900,
+      "sha256": "16f6f00bd40a6d03d1f960941edd5c62d1804498cf7e5caea15db6324bc8b60f"
+    },
+    {
+      "file": "agent-history-320-light.png",
+      "width": 320,
+      "height": 1849,
+      "sha256": "e3738d9ee1e8e327ac87b8c85d90fe121a9d0a85f2ba8fc449e9d4aec519c16e"
+    },
+    {
+      "file": "agent-history-390-dark.png",
+      "width": 390,
+      "height": 1810,
+      "sha256": "497f8d4b90e1dce7da1fab97310370017ee881416e2b5f9e49eaf8a9a4c22f84"
+    },
+    {
+      "file": "agent-history-en-desktop.png",
+      "width": 1280,
+      "height": 3752,
+      "sha256": "5e375b1d9d513e9f6c98496b96538b0385ac2ca6e282e3b2fee478dd02358597"
+    }
+  ],
+  "sourceSha256": {
+    "src/data/agent-history.json": "646760deda545b133571bf62f875a2201c817e27ae97f97d6614e94178444acb",
+    "src/lib/agents/history.ts": "45a57ad425b09c4b48d1a56a4caa2bc59f52d4e5653d88943db583d46881609f",
+    "src/components/agents/AgentInstrumentDesk.astro": "ebd01f492d902871eaf98850860846e42dbd22743058230300528eb3a6569470",
+    "src/components/agents/instruments/DeliveryWidget.astro": "b546606d18dcd1a79511d20bb91492fb146b2579cbdd55d1bca85e282eaff1ba",
+    "src/pages/agents.astro": "7ec2f37b1204ea0f92afc12640c49b71278cb5442545e217539e8e0fef8ca10b",
+    "src/lib/i18n/en.json": "5390b9677ffcac028f405db6c30df75bb9fcc581f4af354080ac414370a2669e",
+    "src/styles/agent-instruments.css": "2c5515a79ff63cf5d3bd2f1e28e0e8e092eed310ad12b14cdb0ad3ddebcbb31d",
+    "src/styles/agent-observatory.css": "834890667387cf427649c249a7c1aac074465465aa7f0024ba5b2bc617e80a9b"
+  },
+  "unitTests": 179,
+  "targetedBrowserTests": 9,
+  "translationTests": 22,
+  "workerTests": 7,
+  "canonicalPages": 40,
+  "translationPairs": 20,
+  "localChecks": {
+    "results": [
+      {
+        "command": [
+          "pnpm",
+          "i18n:test"
+        ],
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "pnpm",
+          "exec",
+          "playwright",
+          "test",
+          "--config",
+          ".agent-widgets.playwright.config.ts",
+          "tests/e2e/agent-instruments-contract.spec.ts",
+          "tests/e2e/agent-observatory.spec.ts",
+          "tests/e2e/bilingual-discovery.spec.ts",
+          "--workers=2",
+          "--reporter=line"
+        ],
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "pnpm",
+          "seo:check-build"
+        ],
+        "exitCode": 0
+      },
+      {
+        "command": [
+          "pnpm",
+          "i18n:check"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "complete": true,
+    "passed": true
+  }
+}

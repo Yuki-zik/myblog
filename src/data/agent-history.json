@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-25T10:59:31Z",
+  "reportingTimezone": "America/Los_Angeles",
+  "scope": "博客公开开发工作 · 部分回溯",
+  "items": [
+    {
+      "id": "agent-work-observatory",
+      "title": "Agent 工作观察站",
+      "category": "开发",
+      "outcome": "独立页呈现轨道、票夹、时钟和卷尺四种交互，首页提供紧凑入口，键盘与触屏均可操作。",
+      "adjustment": "将大面板缩为四个独立挂件，研究与方法收起；迁至 Mac mini 开发，并复查手机与桌面操作。",
+      "deliveredAt": "2026-10-25T07:19:37Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #48",
+          "url": "https://github.com/Yuki-zik/myblog/pull/48"
+        },
+        {
+          "label": "PR #52",
+          "url": "https://github.com/Yuki-zik/myblog/pull/52"
+        }
+      ]
+    },
+    {
+      "id": "bilingual-publishing-reading",
+      "title": "中英双语阅读与发布",
+      "category": "阅读",
+      "outcome": "中英文页面共用模板与导航，提供语言切换、配对链接和双语检索，观察站也有对应英文页面。",
+      "adjustment": "补齐英文旁注及阅读检查，加入中文源更新后的英文同步，并保留人工修改与译文状态检查。",
+      "deliveredAt": "2026-10-25T08:26:00Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #49",
+          "url": "https://github.com/Yuki-zik/myblog/pull/49"
+        },
+        {
+          "label": "PR #51",
+          "url": "https://github.com/Yuki-zik/myblog/pull/51"
+        },
+        {
+          "label": "PR #54",
+          "url": "https://github.com/Yuki-zik/myblog/pull/54"
+        },
+        {
+          "label": "PR #55",
+          "url": "https://github.com/Yuki-zik/myblog/pull/55"
+        }
+      ]
+    },
+    {
+      "id": "article-toc-follow",
+      "title": "文章目录跟随",
+      "category": "阅读",
+      "outcome": "侧目录随阅读定位当前章节，末项保留可读间距；中英文章共用这一行为，正文位置保持稳定。",
+      "adjustment": "跟随方式从原生平滑滚动改为逐帧限速，减少跳帧造成的突跳；手动操作可中断自动跟随。",
+      "deliveredAt": "2026-10-25T07:45:50Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #46",
+          "url": "https://github.com/Yuki-zik/myblog/pull/46"
+        },
+        {
+          "label": "PR #50",
+          "url": "https://github.com/Yuki-zik/myblog/pull/50"
+        },
+        {
+          "label": "PR #53",
+          "url": "https://github.com/Yuki-zik/myblog/pull/53"
+        }
+      ]
+    },
+    {
+      "id": "paper-original-figures",
+      "title": "论文原图预览",
+      "category": "论文",
+      "outcome": "论文方法图在作者页、论文列表和详情页共用，保持原图比例与颜色，并支持打开原始尺寸查看。",
+      "adjustment": "裁图保留原比例，取消固定画布与放大；手工选定的预览保持优先，未知的 PDF 页码留空。",
+      "deliveredAt": "2026-10-21T17:50:08Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #44",
+          "url": "https://github.com/Yuki-zik/myblog/pull/44"
+        }
+      ]
+    },
+    {
+      "id": "shared-content-dossiers",
+      "title": "共享内容档案",
+      "category": "界面",
+      "outcome": "作者项目、首页近期、归档与论文列表使用共享档案组件，组合真实图文、来源与可展开内容。",
+      "adjustment": "按内容角色调整标题、图文层次与留白，修正空图位置和手机断行，保留已有内容与原始图片。",
+      "deliveredAt": "2026-10-21T12:18:03Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #42",
+          "url": "https://github.com/Yuki-zik/myblog/pull/42"
+        }
+      ]
+    },
+    {
+      "id": "comment-reading-width",
+      "title": "评论区宽度",
+      "category": "界面",
+      "outcome": "评论区与文章正文采用一致的阅读宽度，修复桌面编辑器明显收窄的问题，手机布局继续沿用。",
+      "adjustment": "恢复评论容器的完整宽度，保留既有最大版心和内部结构，并在五个视口检查实际渲染尺寸。",
+      "deliveredAt": "2026-10-19T07:01:33Z",
+      "status": "merged",
+      "evidence": [
+        {
+          "label": "PR #29",
+          "url": "https://github.com/Yuki-zik/myblog/pull/29"
+        }
+      ]
+    }
+  ]
+}
