@@ -70,3 +70,10 @@ html[lang="en"] .site-nav-links a { letter-spacing: -0.02em; }
   html[lang="en"] .site-header[data-header-state] .site-nav-links { gap: 0.08rem; }
   html[lang="en"] .site-header[data-header-state] .site-nav-links > a { padding-inline: 0.06rem; }
 }
+@media (max-width: 360px) {
+  /* Extra inline space absorbs platform font metrics at 320px, including
+     the expanded animation state. Keep the font size and every destination. */
+  html[lang="en"] .site-header[data-header-state] { --header-content-inset: 8px; }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links { gap: 0.08rem; }
+  html[lang="en"] .site-header[data-header-state] .site-nav-links > a { padding-inline: 0; }
+}
