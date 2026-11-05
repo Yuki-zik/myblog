@@ -1,0 +1,203 @@
+---
+/**
+ * Optional, client-only reading aid for the English edition of a post.
+ * Leave Markdown/HTML untouched at build time so SEO, citations, TOC and
+ * no-JavaScript reading remain identical.
+ */
+---
+
+<div class="bionic-reading-control" data-bionic-reading-control hidden>
+  <span class="bionic-reading-control__eyebrow">Reading mode</span>
+  <button
+    type="button"
+    class="bionic-reading-control__toggle"
+    data-bionic-reading-toggle
+    aria-label="Bionic reading"
+    aria-pressed="false"
+    title="Emphasize the first letters of English words"
+  >
+    <span class="bionic-reading-control__sample" aria-hidden="true"><b>Bi</b>onic</span>
+    <span class="bionic-reading-control__name">Bionic reading</span>
+    <span class="bionic-reading-control__track" aria-hidden="true">
+      <span class="bionic-reading-control__thumb"></span>
+    </span>
+  </button>
+</div>
+
+<style>
+  .bionic-reading-control[hidden] { display: none !important; }
+  .bionic-reading-control {
+    width: min(100%, 50rem);
+    margin: 0 auto 1.2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    color: var(--article-ink-soft);
+    font-family: var(--font-ui);
+  }
+  .bionic-reading-control__eyebrow {
+    font-size: 0.7rem;
+    font-weight: 550;
+    letter-spacing: 0.04em;
+    opacity: 0.82;
+  }
+  .bionic-reading-control__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.25rem;
+    border: 1px solid var(--article-rule);
+    border-radius: 999px;
+    padding: 0.32rem 0.58rem 0.32rem 0.75rem;
+    background: var(--article-paper-deep);
+    color: var(--article-ink);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease;
+  }
+  .bionic-reading-control__toggle:hover {
+    border-color: var(--article-accent);
+  }
+  .bionic-reading-control__toggle:focus-visible {
+    outline: 2px solid var(--article-accent);
+    outline-offset: 3px;
+  }
+  .bionic-reading-control__sample {
+    font-family: var(--reading-serif);
+    font-size: 0.9rem;
+    letter-spacing: -0.015em;
+  }
+  .bionic-reading-control__sample b { font-weight: 760; }
+  .bionic-reading-control__name { white-space: nowrap; }
+  .bionic-reading-control__track {
+    box-sizing: border-box;
+    width: 1.82rem;
+    height: 1.04rem;
+    border: 1px solid var(--article-rule-strong);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--article-ink-faint) 25%, transparent);
+    padding: 0.1rem;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 160ms ease;
+  }
+  .bionic-reading-control__thumb {
+    display: block;
+    width: 0.68rem;
+    height: 0.68rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--article-paper);
+    box-shadow: 0 0.5px 2px color-mix(in srgb, var(--article-ink) 25%, transparent);
+    transition: transform 160ms ease;
+  }
+  .bionic-reading-control__toggle[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--article-accent) 58%, var(--article-rule));
+    background: color-mix(in srgb, var(--article-accent) 8%, var(--article-paper-deep));
+  }
+  .bionic-reading-control__toggle[aria-pressed="true"] .bionic-reading-control__track {
+    background: var(--article-accent);
+  }
+  .bionic-reading-control__toggle[aria-pressed="true"] .bionic-reading-control__thumb {
+    transform: translateX(0.75rem);
+  }
+  /* Generated inline spans have no Astro scope attributes. */
+  :global([data-post-body] .bionic-reading__prefix) {
+    font-weight: 760;
+    font-synthesis: weight;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bionic-reading-control__toggle,
+    .bionic-reading-control__track,
+    .bionic-reading-control__thumb { transition: none; }
+  }
+</style>
+
+<script>
+  const control = document.querySelector<HTMLElement>("[data-bionic-reading-control]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-bionic-reading-toggle]");
+  const body = document.querySelector<HTMLElement>("[data-post-body]");
+
+  if (control && toggle && body && document.documentElement.lang.toLowerCase().startsWith("en")) {
+    const STORAGE_KEY = "reading-bionic-english";
+    // Only style continuous Latin words of 4+ characters. Leave technical
+    // abbreviations, numbers, non-Latin scripts and punctuation unchanged.
+    const WORD = /[A-Za-zÀ-ÖØ-öø-ÿ]{4,}/g;
+    const SKIP = "a, pre, code, kbd, samp, script, style, textarea, button, math, svg, .katex, .math, .sr-only, [aria-hidden='true'], [contenteditable], [data-bionic-ignore], [data-bionic-fragment]";
+    const CANDIDATE = "p, li, blockquote";
+
+    function restore() {
+      body!.querySelectorAll<HTMLElement>("[data-bionic-fragment]").forEach((wrapper) => {
+        // textContent is identical to the original source text. Restoring each
+        // original text node avoids re-rendering or changing neighboring markup.
+        wrapper.replaceWith(document.createTextNode(wrapper.textContent ?? ""));
+      });
+    }
+
+    function emphasize() {
+      const walker = document.createTreeWalker(body!, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const textNode = node as Text;
+          const parent = textNode.parentElement;
+          if (!parent || !parent.closest(CANDIDATE) || parent.closest(SKIP)) return NodeFilter.FILTER_REJECT;
+          if (parent.closest("h1, h2, h3, h4, table, figcaption, [lang='zh-CN'], [lang='zh']")) return NodeFilter.FILTER_REJECT;
+          WORD.lastIndex = 0;
+          return WORD.test(textNode.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+
+      const nodes: Text[] = [];
+      let candidate: Node | null;
+      while ((candidate = walker.nextNode())) nodes.push(candidate as Text);
+
+      for (const node of nodes) {
+        const source = node.data;
+        const wrapper = document.createElement("span");
+        wrapper.dataset.bionicFragment = "";
+        const fragment = document.createDocumentFragment();
+        let offset = 0;
+        WORD.lastIndex = 0;
+        let match: RegExpExecArray | null;
+        while ((match = WORD.exec(source)) !== null) {
+          const word = match[0];
+          if (match.index > offset) fragment.appendChild(document.createTextNode(source.slice(offset, match.index)));
+          const prefix = document.createElement("span");
+          prefix.className = "bionic-reading__prefix";
+          const split = Math.max(2, Math.ceil(word.length * 0.45));
+          prefix.textContent = word.slice(0, split);
+          fragment.appendChild(prefix);
+          fragment.appendChild(document.createTextNode(word.slice(split)));
+          offset = match.index + word.length;
+        }
+        if (offset < source.length) fragment.appendChild(document.createTextNode(source.slice(offset)));
+        wrapper.appendChild(fragment);
+        node.replaceWith(wrapper);
+      }
+    }
+
+    function apply(enabled: boolean) {
+      restore();
+      if (enabled) emphasize();
+      toggle!.setAttribute("aria-pressed", String(enabled));
+      body!.dataset.bionicReading = enabled ? "on" : "off";
+    }
+
+    let enabled = false;
+    try {
+      enabled = window.localStorage.getItem(STORAGE_KEY) === "on";
+    } catch {
+      // Private browsing or blocked storage: use an in-memory preference.
+    }
+
+    apply(enabled);
+    control.hidden = false;
+    toggle.addEventListener("click", () => {
+      enabled = !enabled;
+      apply(enabled);
+      try { window.localStorage.setItem(STORAGE_KEY, enabled ? "on" : "off"); } catch { /* no storage */ }
+    });
+  }
+</script>
