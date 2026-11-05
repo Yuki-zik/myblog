@@ -12,6 +12,7 @@ import WalineComments from "../../components/comments/WalineComments";
 import TocSidebar from "../../components/article/TocSidebar.astro";
 import { buildTocTree } from "../../components/article/toc-utils";
 import PostToc from "../../components/post/PostToc.astro";
+import BionicReadingToggle from "../../components/post/BionicReadingToggle.astro";
 import PostPager from "../../components/post/PostPager.astro";
 import PostScholarRail from "../../components/post/PostScholarRail.astro";
 import ActionPair from "../../components/discover/ActionPair.astro";
@@ -298,6 +299,8 @@ const structuredData = site
               <PostToc items={tocItems} variant="mobileOnly" />
             </div>
           ) : null}
+
+          {locale === "en" && <BionicReadingToggle />}
 
           <section class="post-body post-body--scholarly" data-post-body>
             <Content />
