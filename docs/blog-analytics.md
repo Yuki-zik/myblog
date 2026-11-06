@@ -28,7 +28,7 @@ GoatCounter 2.7.0，自托管 SQLite；已有 VPS 453 MiB 内存，不为统计�
 - `outbound_telegram/discord/github/email/rss/external`：点击类别，不是入群、
   新增订阅、付费或真实收入；不采集完整目标地址。
 - 事件与流量分别统计，主流量图 `no-events=true`。不能把行为事件加成 PV。
-- 公开计数由上游缓存，更新延迟最长约 4 小时；后台写入通常按 10 秒缓冲。
+- 公开计数通过只读聚合快照每分钟更新；后台写入通常按 10 秒缓冲。
 
 ## 隐私与实现
 

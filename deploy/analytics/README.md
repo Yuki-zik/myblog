@@ -85,3 +85,17 @@ tracking requests then occur. Reverting the feature PR removes collection and
 public counters while leaving original reading/Walline features unchanged.
 Stop only `blog-analytics.service` to disable backend; clients fail silently.
 Do not disable the unrelated private VPS traffic monitor.
+
+## Public counters: tested base-path compatibility fix
+
+GoatCounter 2.7.0 ingests and aggregates correctly under `/analytics`, but the
+visitor-counter handler slices a fixed nine-character prefix from URL.Path.
+In a reproducible isolated database this yielded 404 for an existing article
+with one deduplicated hit. We do not fork the collector or route admin APIs out.
+`export_counters.py` reads only site 1, event=0 article aggregates and atomically
+writes public en/zh JSON snapshots. A one-minute systemd timer refreshes them.
+Nginx serves only the validated article files, not TOTAL/events or arbitrary DB
+queries. Missing remains 404 and an em dash. Expired aggregate files are removed.
+Install exporter/service/timer in the same manner as backup; create
+`/var/cache/blog-analytics/counters` owned by bloganalytics, 0755.
+This is a tiny scheduled reader, not a second resident server.
