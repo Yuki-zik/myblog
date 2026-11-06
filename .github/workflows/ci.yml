@@ -34,6 +34,9 @@ jobs:
       - name: Run unit tests (vitest)
         run: pnpm test
 
+      - name: Verify analytics backup and restore
+        run: pnpm analytics:check
+
       - name: Validate translation engine lifecycle
         run: pnpm i18n:test
 

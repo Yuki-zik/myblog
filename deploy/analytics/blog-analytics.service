@@ -1,0 +1,23 @@
+[Unit]
+Description=Blog analytics (GoatCounter 2.7.0)
+After=network.target
+[Service]
+User=bloganalytics
+Group=bloganalytics
+WorkingDirectory=/var/lib/blog-analytics
+Environment=GOMEMLIMIT=80MiB
+ExecStart=/opt/blog-analytics/goatcounter serve -db sqlite+/var/lib/blog-analytics/analytics.sqlite3 -listen 127.0.0.1:18766 -tls http -public-port 8443 -base-path /analytics -dbconn 4,2 -store-every 10 -ratelimit count:20/1,login:5/60 -smtp smtp://127.0.0.1:1
+Restart=on-failure
+RestartSec=5
+MemoryHigh=100M
+MemoryMax=128M
+CPUQuota=35%
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/blog-analytics
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+UMask=0027
+[Install]
+WantedBy=multi-user.target

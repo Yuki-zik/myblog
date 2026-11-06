@@ -1,0 +1,17 @@
+[Unit]
+Description=Validate and back up blog analytics SQLite
+After=blog-analytics.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/blog-analytics/backup.py
+User=root
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/var/lib/blog-analytics
+ReadWritePaths=/var/backups/blog-analytics
+MemoryMax=64M
+CPUQuota=15%
+TimeoutStartSec=120

@@ -59,6 +59,19 @@
           "value": "noindex, follow"
         }
       ]
+    },
+    {
+      "source": "/_analytics/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -83,12 +96,25 @@
       ],
       "destination": "https://a-znk.com/:path",
       "statusCode": 301
+    },
+    {
+      "source": "/analytics",
+      "destination": "https://vps.a-znk.com:8443/analytics/",
+      "permanent": false
     }
   ],
   "rewrites": [
     {
       "source": "/_waline/api/:path*",
       "destination": "https://waline-smoky-five-24.vercel.app/api/:path*"
+    },
+    {
+      "source": "/_analytics/count",
+      "destination": "https://vps.a-znk.com:8443/analytics/count"
+    },
+    {
+      "source": "/_analytics/counter/:path*",
+      "destination": "https://vps.a-znk.com:8443/analytics/counter/:path*"
     }
   ]
 }

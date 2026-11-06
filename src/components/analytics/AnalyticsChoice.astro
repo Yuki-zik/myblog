@@ -1,0 +1,26 @@
+---
+import { getLocale } from "../../lib/i18n/index";
+const en = getLocale(Astro.url.pathname) === "en";
+const { compact = false } = Astro.props;
+---
+<div class:list={["analytics-choice", compact && "analytics-choice--compact"]} data-analytics-controls>
+  <p data-analytics-status role="status">{en ? "Analytics is off until you choose to allow it" : "访问统计尚未启用，由你选择是否允许"}</p>
+  <div class="analytics-choice__buttons" role="group" aria-label={en ? "Anonymous analytics preference" : "匿名访问统计设置"}>
+    <button type="button" data-analytics-choice="on" aria-pressed="false">{en ? "Allow anonymous analytics" : "允许匿名统计"}</button>
+    <button type="button" data-analytics-choice="off" aria-pressed="false">{en ? "Keep it off" : "关闭统计"}</button>
+  </div>
+  <noscript><p>{en ? "JavaScript is disabled. No optional analytics will be sent." : "JavaScript 已关闭，不会上报可选访问统计。"}</p></noscript>
+</div>
+<style>
+  .analytics-choice { color:var(--text-secondary);font-family:var(--font-ui);font-size:0.88rem;line-height:1.6; }
+  .analytics-choice p { margin:0 0 0.65rem; }
+  .analytics-choice__buttons { display:flex;flex-wrap:wrap;gap:0.5rem; }
+  button { font:inherit;color:var(--text-primary);background:var(--surface-primary);border:1px solid var(--border-strong);border-radius:var(--radius-control);padding:0.55rem 0.8rem;min-height:44px;cursor:pointer; }
+  button:hover, button[aria-pressed="true"] { border-color:var(--drawing-accent-ink);color:var(--drawing-accent-ink); }
+  button:focus-visible { outline:2px solid var(--drawing-focus);outline-offset:3px; }
+  button:disabled { opacity:0.65;cursor:not-allowed; }
+  .analytics-choice--compact { font-size:0.72rem;margin-top:0.5rem; }
+  .analytics-choice--compact p { margin-bottom:0.25rem; }
+  .analytics-choice--compact button { font-size:0.72rem;padding:0.25rem 0.45rem;min-height:36px; }
+  :global(.no-js) .analytics-choice__buttons { display:none; }
+</style>

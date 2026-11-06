@@ -8,6 +8,7 @@ const SITE_AUTHOR_PROFILE = localizeData(SOURCE_SITE_AUTHOR_PROFILE, locale);
 const SITE_NAME = localizeData(SOURCE_SITE_NAME, locale);
 
 import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE, SITE_NAME as SOURCE_SITE_NAME } from "../../lib/site";
+import AnalyticsChoice from "../analytics/AnalyticsChoice.astro";
 
 type HomeFooterLink = {
   href: string;
@@ -85,6 +86,8 @@ const visibleLinks = footerLinks.filter(Boolean) as HomeFooterLink[];
       </div>
       <p class="home-reference-footer__note font-(family-name:--font-ui) text-[0.75rem]">{SITE_AUTHOR_PROFILE.name} · {footerNote}</p>
       <p class="home-reference-footer__copy font-(family-name:--font-ui) text-[0.75rem]">© {year} {SITE_AUTHOR_PROFILE.name}. All rights reserved.</p>
+      <a class="home-reference-footer__copy" href={locale === "en" ? "/en/privacy" : "/privacy"}>{locale === "en" ? "Privacy & analytics" : "隐私与访问统计"}</a>
+      <AnalyticsChoice compact />
     </div>
 
     <div class="home-reference-footer__quote-block text-center">

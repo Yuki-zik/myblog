@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AnalyticsChoice from "../components/analytics/AnalyticsChoice.astro";
+import {getLocale} from "../lib/i18n/index";
+const en=getLocale(Astro.url.pathname)==="en";
+const title=en ? "Privacy & analytics" : "隐私与访问统计";
+---
+<BaseLayout title={title} description={en ? "What this blog measures, what it leaves private, and your choices." : "说明博客记录什么、不记录什么，以及如何控制匿名访问统计。"} runtime="discover" headerVariant="drawing">
+  <article class="privacy-page">
+    <header><p class="privacy-kicker">PRIVACY · YOUR CHOICE</p><h1>{title}</h1><p class="privacy-intro">{en ? "Good measurement should improve the writing, not follow the reader." : "统计用于改进内容，阅读体验由你掌握。"}</p><p class="privacy-date">{en ? "Updated 6 November 2026" : "更新于 2026 年 11 月 6 日"}</p></header>
+    <section class="privacy-preference" aria-labelledby="privacy-choice-heading">
+      <h2 id="privacy-choice-heading">{en ? "Your choice, on this browser" : "这个浏览器，由你决定"}</h2>
+      <p>{en ? "Optional analytics stays off until you allow it. You can change your choice here or in the footer at any time. Do Not Track and Global Privacy Control always take priority." : "可选访问统计默认关闭，获得你的允许后才启用。你可以随时在这里或页脚修改选择；浏览器的 Do Not Track 和 Global Privacy Control 信号优先。"}</p>
+      <AnalyticsChoice />
+    </section>
+    <section><h2>{en ? "What is measured" : "会记录什么"}</h2>
+      <p>{en ? "Public page paths and titles, an external referring domain or an approved campaign label, coarse browser/operating-system and country summaries, and a few aggregate reading events. Chinese and English editions are reported separately." : "公开页面的路径与标题、外部来源域名或经过白名单筛选的渠道标签、浏览器／系统和国家级汇总，以及少量阅读行为事件。中英文版本分开统计。"}</p>
+      <p>{en ? "Reading events include reaching 25%, 50%, 75% or 90% of an article after at least 10 active seconds; 30, 60 and 180 seconds of estimated active reading; bionic-reading and language switches; and outbound-link categories such as Telegram, Discord, GitHub, email and RSS." : "阅读事件包括：前台活动至少 10 秒后到达正文的 25%、50%、75%、90%；估计活动阅读达到 30、60、180 秒；切换仿生阅读或语言；以及 Telegram、Discord、GitHub、邮件、RSS 等外链类别的点击。"}</p>
+    </section>
+    <section><h2>{en ? "What stays private" : "不会收集什么"}</h2>
+      <p>{en ? "No advertising cookies, cross-site identifier, session replay, keystrokes, selected text, comment contents, email addresses, search queries, invite codes or full referral URLs are sent by this analytics module. URL query strings and fragments are removed before collection. Exact screen size and region-level location collection are disabled." : "这套统计不发送广告 Cookie、跨站标识、会话录像、按键内容、选中文字、评论正文、邮箱、搜索词、邀请代码或完整来源网址。网址查询参数与片段在上报前移除；精确屏幕尺寸和地区级位置统计关闭。"}</p>
+      <p>{en ? "GoatCounter uses the IP address and User-Agent transiently in server memory to estimate repeat visits for up to eight hours. Normal visitor IPs and full User-Agent strings are not stored in the analytics database. Aggregate data is retained for 730 days; individual pageview history is disabled. Encrypted transport does not remove the infrastructure providers' normal network processing." : "GoatCounter 在服务器内存中短暂处理 IP 与 User-Agent，用于估计最长八小时内的重复访问；正常访客的 IP 与完整 User-Agent 不写入统计数据库。汇总数据保留 730 天，逐条浏览历史关闭。HTTPS 加密不会消除基础设施服务商正常的网络处理。"}</p>
+      <p>{en ? "The service is self-hosted on the site's overseas infrastructure. Consent preferences are stored locally in this browser. Operational backups are private and retained for 14 days. Existing hosting, font and comment services operate separately from optional analytics; commenting remains voluntary." : "统计服务由本站自行部署在境外基础设施上。允许／关闭的选择只保存在当前浏览器。运维备份不公开，保留 14 天。现有托管、字体和评论服务独立于可选统计运行；发表评论始终是自愿行为。"}</p>
+    </section>
+    <section><h2>{en ? "How to read the numbers" : "如何理解这些数字"}</h2>
+      <p>{en ? "Tracked visits cover consenting readers only. Repeat visits to the same page are deduplicated within the collector's session window; these are estimates, not verified people or raw reload counts. Public article counters show that edition's tracked visits, subject to data retention and an aggregation/cache delay of about one minute. An em dash means unavailable, not zero." : "统计只覆盖已同意的读者。同一页面在收集器的会话窗口内重复访问会去重，因此数字是访问估计，不代表经过验证的真实人数，也不等于刷新次数。文章公开计数显示该语言版本的统计访问，受保留期限和约一分钟的汇总延迟影响；横线表示暂不可用，不代表零。"}</p>
+      <p>{en ? "Scroll depth does not prove comprehension or completion. Active time is a visibility, focus and recent-activity heuristic. An outbound click does not prove a subscription, group join or purchase. Events are kept separate from the main traffic totals. No historical visits are invented or backfilled." : "滚动深度不证明理解或读完；活动时间由页面可见、窗口焦点和近期操作估算。外链点击不证明订阅、入群或购买。行为事件与主要流量总数分开，历史未记录的访问不补造。"}</p>
+      <p>{en ? "Reading a public counter is a read-only request and does not increment it. Declining analytics does not change the article, navigation, bionic-reading setting or comments." : "读取公开计数是只读请求，不会增加计数。拒绝统计不影响正文、导航、仿生阅读设置或评论。"}</p>
+    </section>
+    <section><h2>{en ? "Questions & data requests" : "联系与数据请求"}</h2><p>{en ? "Contact the author through the author page. Because optional analytics does not use a persistent personal identifier, it cannot provide a personal cross-device browsing history." : "可通过作者页联系站点维护者。可选统计不使用持久个人标识，因此无法提供个人跨设备浏览历史。"} <a href={en ? "/en/author" : "/author"}>{en ? "Contact the author" : "联系作者"} ↗</a></p></section>
+  </article>
+</BaseLayout>
+<style>
+  .privacy-page { max-width:48rem;margin:3rem auto 5rem;padding:0 1rem;color:var(--text-primary); }
+  .privacy-page header { border-bottom:1px solid var(--border-default);padding-bottom:1.7rem;margin-bottom:2rem; }
+  .privacy-kicker { color:var(--drawing-accent-ink);font:600 0.72rem/1.5 var(--font-ui);letter-spacing:0.12em; }
+  h1 { font-family:var(--font-ui);font-size:clamp(2rem,5vw,3.25rem);line-height:1.2;margin:0.5rem 0 1rem;letter-spacing:-0.035em; }
+  .privacy-intro { font-size:1.15rem;line-height:1.65; }
+  .privacy-date { color:var(--text-secondary);font-size:0.8rem; }
+  section { margin:2rem 0; }
+  h2 { font-family:var(--font-ui);font-size:1.25rem;line-height:1.5;margin-bottom:0.85rem; }
+  section p { line-height:1.85;font-size:0.98rem;margin:0.7rem 0; }
+  .privacy-preference { border:1px solid var(--border-strong);border-left:3px solid var(--drawing-accent);padding:1.25rem 1.4rem;background:var(--surface-primary); }
+  a { color:var(--drawing-accent-ink);text-decoration:underline;text-underline-offset:0.2em; }
+  @media(max-width:480px){.privacy-page{margin-top:1.5rem;padding:0 0.3rem}.privacy-preference{padding:1rem}}
+</style>

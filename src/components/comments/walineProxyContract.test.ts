@@ -12,7 +12,7 @@ const config = JSON.parse(readFileSync(resolve(process.cwd(), "vercel.json"), "u
 
 describe("first-party Waline API gateway config", () => {
   it("proxies only API requests to the existing Waline backend", () => {
-    expect(config.rewrites).toEqual([
+    expect(config.rewrites?.filter(rule => rule.source.startsWith("/_waline"))).toEqual([
       {
         source: "/_waline/api/:path*",
         destination: `${LEGACY_WALINE_URL}/api/:path*`,

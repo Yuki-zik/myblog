@@ -1,0 +1,18 @@
+[Unit]
+Description=Publish read-only article visit aggregates
+After=blog-analytics.service
+[Service]
+Type=oneshot
+User=bloganalytics
+Group=bloganalytics
+ExecStart=/usr/bin/python3 /opt/blog-analytics/export_counters.py
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/var/lib/blog-analytics
+ReadWritePaths=/var/cache/blog-analytics/counters
+MemoryMax=48M
+CPUQuota=10%
+TimeoutStartSec=30
+UMask=0022

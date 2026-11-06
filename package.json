@@ -29,7 +29,8 @@
     "i18n:translate": "node scripts/i18n/translate.mjs --semantic-review",
     "i18n:test": "node --test scripts/i18n/*.test.mjs && python3 -m unittest discover -s scripts/i18n -p \"test_*.py\"",
     "i18n:bootstrap": "node scripts/i18n/translate.mjs --bootstrap",
-    "i18n:check-lifecycle": "node scripts/i18n/check-lifecycle.mjs"
+    "i18n:check-lifecycle": "node scripts/i18n/check-lifecycle.mjs",
+    "analytics:check": "python3 -m unittest discover -s deploy/analytics -p \"test_*.py\""
   },
   "engines": {
     "node": ">=22.12.0"
