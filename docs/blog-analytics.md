@@ -15,7 +15,7 @@ GoatCounter 2.7.0，自托管 SQLite；已有 VPS 453 MiB 内存，不为统计�
 
 - 统计访问：同一页面在最长 8 小时的临时会话内去重。不能解释为精确人数、
   原始刷新次数，或跨设备 UV。各文章访问数相加也不等于全站独立人数。
-- 数据覆盖：只统计主动允许且未发送 DNT/GPC 的读者。拒绝、广告拦截、网络
+- 数据覆盖：只统计未退出且未发送 DNT/GPC 的读者。主动退出、广告拦截、网络
   故障和浏览器自动化会造成缺失；不可称为全部实际流量。
 - 文章统计：`/posts/slug` 与 `/en/posts/slug` 分开；不会补造上线前历史。
 - 来源：仅外部域名，或白名单 `utm_source` / `utm_campaign` 标签。普通查询
@@ -32,7 +32,7 @@ GoatCounter 2.7.0，自托管 SQLite；已有 VPS 453 MiB 内存，不为统计�
 
 ## 隐私与实现
 
-默认关闭，页脚和 `/privacy`、`/en/privacy` 可以修改。偏好只存本地
+默认启用站内匿名聚合统计，不弹首次访问同意框。通过 `/privacy`、`/en/privacy` 告知用途并允许随时关闭或重新启用，页脚保留隐私设置链接。旧版本选择关闭的访客仍保持关闭。偏好只存本地
 `analytics-consent-v1`，DNT/GPC 优先，不设置追踪 Cookie 或跨站用户 ID。
 加载上游脚本之前设置 `no_onload/no_events`，封装 `get_data` 清除查询与屏幕
 宽度，再以 `fetch` 的 `keepalive`、`credentials:omit`、`referrerPolicy:no-referrer`
@@ -45,11 +45,11 @@ GoatCounter 2.7.0，自托管 SQLite；已有 VPS 453 MiB 内存，不为统计�
 服务在境外 VPS，页面已有明确说明；无地区/IP地址展示。GoatCounter 短暂
 使用 IP+UA 进行八小时会话判断，正常访客的原始 IP/完整 UA 不写统计数据库。
 国家、浏览器等按聚合表保存；不启用逐条浏览历史，保留 730 天。
-这项技术配置不等于对所有司法辖区作出合规保证。
+仅用于改进本站服务的聚合统计，不与会员、广告定向、跨站行为或交易身份关联。ICO 统计用途豁免要求充分告知与方便拒绝；CNIL 适用范围更窄。中国 PIPL 仍要求合法处理依据及告知。当前技术配置不能保证在所有司法辖区均符合免同意条件，扩展到个人画像或营销前须重新评估。
 
 ## 架构与维护
 
-`BaseLayout` 标明可信路由 → 共用 client → 允许后加载固定版本 tracker →
+`BaseLayout` 标明可信路由 → 共用 client → 未退出且未触发隐私信号时加载固定版本 tracker →
 同源 `/_analytics/count` → Vercel rewrite / 镜像 Nginx → localhost GoatCounter。
 公开文章计数单独只读；详细仪表盘在 `/analytics` 登录，管理 API 不经前端。
 采集端失败最多损失统计，正常阅读、目录、评论与仿生模式不受阻断。
@@ -60,7 +60,7 @@ GoatCounter 2.7.0，自托管 SQLite；已有 VPS 453 MiB 内存，不为统计�
 ## 验收
 
 必须通过：模型/配置单元测试；SQLite WAL 在线备份与恢复测试；中英隐私页、
-允许/拒绝、DNT/GPC、请求头脱敏、前台活动阈值、事件去重、外链分类、故障
+默认启用/退出持久生效/重新开启、DNT/GPC、请求头脱敏、前台活动阈值、事件去重、外链分类、故障
 降级及手机明暗模式浏览器测试；原有 bionic/TOC/Waline 回归；全量 CI。
 最终上线证据与准确测试结果写入 visual-history/任务记录，未验证项不得写通过。
 

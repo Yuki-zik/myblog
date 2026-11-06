@@ -26,7 +26,14 @@ export function initAnalytics(): () => void {
   const pending = new Set<string>();
   const depths = new Set<number>();
   let preference: string | null = null;
-  try { preference = localStorage.getItem(CONSENT_KEY); } catch { /* no persistent consent */ }
+  // If the browser cannot persist an opt-out, fail closed rather than silently
+  // collecting again after the next page navigation.
+  try {
+    const probe = CONSENT_KEY + "-storage-check";
+    localStorage.setItem(probe, "ok");
+    localStorage.removeItem(probe);
+    preference = localStorage.getItem(CONSENT_KEY);
+  } catch { preference = "off"; }
   let scriptPromise: Promise<boolean> | undefined;
   let pageSent = false;
   let activeSeconds = 0;
@@ -39,15 +46,14 @@ export function initAnalytics(): () => void {
   function updateControls() {
     const blocked = privacySignal();
     const text = blocked ? (en ? "Disabled by your browser privacy signal" : "浏览器隐私信号：统计已关闭")
-      : preference === "on" ? (en ? "Anonymous analytics allowed" : "已允许匿名访问统计")
-      : preference === "off" ? (en ? "Analytics disabled" : "访问统计已关闭")
-      : (en ? "Analytics is off until you choose to allow it" : "访问统计尚未启用，由你选择是否允许");
+      : preference !== null && preference !== "on" ? (en ? "Anonymous analytics are off on this browser" : "此浏览器已关闭匿名统计")
+      : (en ? "Anonymous aggregate analytics are on; you can turn them off here" : "匿名汇总统计已开启，可随时在此关闭");
     document.querySelectorAll<HTMLElement>("[data-analytics-status]").forEach(el => { el.textContent = text; });
     document.querySelectorAll<HTMLButtonElement>("[data-analytics-choice]").forEach(button => {
-      button.setAttribute("aria-pressed", String(button.dataset.analyticsChoice === preference && !blocked));
+      button.setAttribute("aria-pressed", String(!blocked && (button.dataset.analyticsChoice === "off" ? preference === "off" : preference === null || preference === "on")));
       button.disabled = blocked && button.dataset.analyticsChoice === "on";
     });
-    root.dataset.analyticsConsent = blocked ? "blocked" : preference === "on" ? "on" : "off";
+    root.dataset.analyticsConsent = blocked ? "blocked" : preference !== null && preference !== "on" ? "off" : "on";
   }
 
   function loadTracker(): Promise<boolean> {
@@ -103,7 +109,7 @@ export function initAnalytics(): () => void {
 
   function setPreference(value: string | null) {
     preference = value === "on" || value === "off" ? value : null;
-    try { if (preference) localStorage.setItem(CONSENT_KEY,preference); } catch { /* current-page choice still works */ }
+    try { if (preference) localStorage.setItem(CONSENT_KEY,preference); } catch { preference = "off"; }
     activeSeconds = 0; lastTick = performance.now(); lastActivity = lastTick;
     updateControls();
     if (allowed()) void send();

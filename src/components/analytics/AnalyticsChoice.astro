@@ -4,10 +4,10 @@ const en = getLocale(Astro.url.pathname) === "en";
 const { compact = false } = Astro.props;
 ---
 <div class:list={["analytics-choice", compact && "analytics-choice--compact"]} data-analytics-controls>
-  <p data-analytics-status role="status">{en ? "Analytics is off until you choose to allow it" : "访问统计尚未启用，由你选择是否允许"}</p>
+  <p data-analytics-status role="status">{en ? "Anonymous aggregate analytics are on; you can turn them off here" : "匿名汇总统计已开启，可随时在此关闭"}</p>
   <div class="analytics-choice__buttons" role="group" aria-label={en ? "Anonymous analytics preference" : "匿名访问统计设置"}>
-    <button type="button" data-analytics-choice="on" aria-pressed="false">{en ? "Allow anonymous analytics" : "允许匿名统计"}</button>
-    <button type="button" data-analytics-choice="off" aria-pressed="false">{en ? "Keep it off" : "关闭统计"}</button>
+    <button type="button" data-analytics-choice="on" aria-pressed="true">{en ? "Turn analytics on" : "开启匿名统计"}</button>
+    <button type="button" data-analytics-choice="off" aria-pressed="false">{en ? "Turn analytics off" : "关闭匿名统计"}</button>
   </div>
   <noscript><p>{en ? "JavaScript is disabled. No optional analytics will be sent." : "JavaScript 已关闭，不会上报可选访问统计。"}</p></noscript>
 </div>
