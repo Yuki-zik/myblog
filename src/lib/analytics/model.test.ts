@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 import { analyticsAllowed, cleanPath, sourceLabel, outboundKind, readingMilestones, parsePublicCount, eventPath } from "./model";
 
 describe("privacy-preserving analytics contract", () => {
-  it("only collects on approved public hosts with consent, honoring privacy signals", () => {
+  it("automatically collects anonymous site statistics unless opted out or privacy signals block it", () => {
     expect(analyticsAllowed({host:"a-znk.com", preference:"on"})).toBe(true);
     for (const host of ["localhost", "127.0.0.1", "myblog-test.vercel.app", "a-znk.com.evil.test"]) expect(analyticsAllowed({host,preference:"on"})).toBe(false);
-    for (const preference of [null, "off", "broken"]) expect(analyticsAllowed({host:"a-znk.com",preference})).toBe(false);
+    expect(analyticsAllowed({host:"a-znk.com",preference:null})).toBe(true);
+    for (const preference of ["off", "broken"]) expect(analyticsAllowed({host:"a-znk.com",preference})).toBe(false);
+    expect(analyticsAllowed({host:"a-znk.com",preference:null,dnt:"1"})).toBe(false);
+    expect(analyticsAllowed({host:"a-znk.com",preference:null,gpc:true})).toBe(false);
     expect(analyticsAllowed({host:"a-znk.com",preference:"on",dnt:"1"})).toBe(false);
     expect(analyticsAllowed({host:"a-znk.com",preference:"on",gpc:true})).toBe(false);
   });

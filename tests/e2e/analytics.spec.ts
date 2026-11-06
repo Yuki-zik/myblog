@@ -26,13 +26,11 @@ async function fixture(page:Page, options:{dnt?:boolean;gpc?:boolean;consent?:st
   return sent;
 }
 
-test("consent gates collection; URL secrets never leave; off prevents later events",async({page})=>{
+test("automatic aggregate analytics redact identifiers; opt-out immediately stops events",async({page})=>{
   const sent=await fixture(page);
   await page.goto("https://a-znk.com/en/posts/myblog-design-manual?email=private@example.com&utm_source=telegram&utm_campaign=private-token#secret");
   await expect(page.locator("[data-public-visit-count]")).toHaveText("1,234");
-  expect(sent).toHaveLength(0);
-  await expect(page.locator('script[src*="count.v2.7.0"]')).toHaveCount(0);
-  await page.getByRole("button",{name:"Allow anonymous analytics",exact:true}).click();
+  await expect(page.locator('script[src*="count.v2.7.0"]')).toHaveCount(1);
   await expect.poll(()=>sent.filter(url=>!url.searchParams.get("e")).length).toBe(1);
   const request=sent[0];
   expect(request.searchParams.get("p")).toBe("/en/posts/myblog-design-manual");
@@ -41,27 +39,32 @@ test("consent gates collection; URL secrets never leave; off prevents later even
   expect(request.href).not.toMatch(/private|secret|example\.com/);
   await page.getByRole("button",{name:"Bionic reading",exact:true}).click();
   await expect.poll(()=>sent.some(url=>url.searchParams.get("p")==="bionic_on:/en/posts/myblog-design-manual")).toBe(true);
-  await page.getByRole("button",{name:"Keep it off",exact:true}).click();
+  await page.goto("https://a-znk.com/en/privacy");
+  await page.getByRole("button",{name:"Turn analytics off",exact:true}).click();
   const before=sent.length;
+  await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
   await page.getByRole("button",{name:"Bionic reading",exact:true}).click();
-  expect(sent.length).toBe(before);
   await page.reload();
-  await expect(page.locator("[data-analytics-status]")).toHaveText("Analytics disabled");
   expect(sent.length).toBe(before);
+  await page.goto("https://a-znk.com/en/privacy");
+  await expect(page.locator("[data-analytics-status]")).toHaveText("Anonymous analytics are off on this browser");
+  await page.getByRole("button",{name:"Turn analytics on",exact:true}).click();
+  await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
+  await expect.poll(()=>sent.length).toBeGreaterThan(before);
 });
 
-for(const privacy of ["dnt","gpc"] as const) test(`${privacy} overrides saved consent`,async({page})=>{
+for(const privacy of ["dnt","gpc"] as const) test(`${privacy} overrides automatic audience analytics`,async({page})=>{
   const sent=await fixture(page,{[privacy]:true,consent:"on"});
   await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
-  await expect(page.getByRole("button",{name:"Allow anonymous analytics",exact:true})).toBeDisabled();
-  await expect(page.locator("[data-analytics-status]")).toContainText("browser privacy signal");
   await expect(page.locator('script[src*="count.v2.7.0"]')).toHaveCount(0);
+  await page.goto("https://a-znk.com/en/privacy");
+  await expect(page.getByRole("button",{name:"Turn analytics on",exact:true})).toBeDisabled();
+  await expect(page.locator("[data-analytics-status]")).toContainText("browser privacy signal");
   expect(sent).toHaveLength(0);
 });
 
 test("failed counter remains unavailable and local previews never collect",async({page})=>{
   await page.goto("/en/posts/myblog-design-manual");
-  await page.getByRole("button",{name:"Allow anonymous analytics",exact:true}).click();
   await expect(page.locator('script[src*="count.v2.7.0"]')).toHaveCount(0);
   await fixture(page,{counterError:true});
   await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
@@ -74,9 +77,13 @@ for(const locale of ["", "/en"]) for(const scheme of ["light","dark"] as const) 
   await page.emulateMedia({colorScheme:scheme});
   await page.goto(`${locale}/privacy`);
   await expect(page.locator("h1")).toHaveText(locale ? "Privacy & analytics" : "隐私与访问统计");
-  const button=page.locator('[data-analytics-choice="on"]').first();
-  await button.focus();await page.keyboard.press("Enter");
-  await expect(button).toHaveAttribute("aria-pressed","true");
+  const off=page.locator('[data-analytics-choice="off"]').first();
+  const on=page.locator('[data-analytics-choice="on"]').first();
+  await expect(on).toHaveAttribute("aria-pressed","true");
+  await off.focus();await page.keyboard.press("Enter");
+  await expect(off).toHaveAttribute("aria-pressed","true");
+  await on.focus();await page.keyboard.press("Enter");
+  await expect(on).toHaveAttribute("aria-pressed","true");
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await expect(page.locator('[data-language-switch]')).toHaveAttribute("href",locale ? "/privacy" : "/en/privacy");
   await page.screenshot({path:testInfo.outputPath(`privacy-${locale ? "en":"zh"}-${scheme}.png`),fullPage:true});
@@ -87,7 +94,6 @@ test("reading milestones require active time and are emitted once; outbound is o
   await page.addInitScript(()=>{Object.defineProperty(document,"hasFocus",{value:()=>true});});
   await page.clock.install();
   await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
-  await page.getByRole("button",{name:"Allow anonymous analytics",exact:true}).click();
   await expect.poll(()=>sent.length).toBeGreaterThan(0);
   await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
   await page.clock.runFor(6000);
@@ -101,3 +107,20 @@ test("reading milestones require active time and are emitted once; outbound is o
   await expect.poll(()=>sent.some(url=>url.searchParams.get("p")==="outbound_telegram:/en/posts/myblog-design-manual")).toBe(true);
   expect(sent.map(url=>url.href).join(" ")).not.toContain("private-invite");
 });
+
+test("storage blocked by browser leaves analytics off",async({page})=>{
+  const sent=await fixture(page);
+  await page.addInitScript(()=>{
+    const original=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key:string,value:string){
+      if(key.startsWith("analytics-consent-v1")) throw new Error("storage blocked");
+      return original.call(this,key,value);
+    };
+  });
+  await page.goto("https://a-znk.com/en/posts/myblog-design-manual");
+  await expect(page.locator('script[src*="count.v2.7.0"]')).toHaveCount(0);
+  expect(sent).toHaveLength(0);
+  await page.goto("https://a-znk.com/en/privacy");
+  await expect(page.locator("[data-analytics-status]")).toContainText("off on this browser");
+});
+

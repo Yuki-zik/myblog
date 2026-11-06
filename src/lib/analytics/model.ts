@@ -4,7 +4,7 @@ export const CAMPAIGN_SOURCES = new Set(["telegram", "tg", "discord", "x", "twit
 const CAMPAIGNS = new Set(["bionic-reading", "weekly-digest", "agent-memory", "blog-launch"]);
 
 export function analyticsAllowed(input: { host: string; preference: string | null; dnt?: string | null; gpc?: boolean }): boolean {
-  return PUBLIC_HOSTS.has(input.host) && input.preference === "on" && input.dnt !== "1" && !input.gpc;
+  return PUBLIC_HOSTS.has(input.host) && (input.preference === null || input.preference === "on") && input.dnt !== "1" && !input.gpc;
 }
 
 /** Only static, public blog routes; never query/search/form values or fragments. */

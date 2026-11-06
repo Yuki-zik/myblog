@@ -1,3 +1,12 @@
+# Follow-up · 2026-11-06 Auto aggregate analytics
+
+- [x] Existing main and anonymous collection audited; legal boundaries reviewed.
+- [x] Implement default-on, no first-visit prompt, visible privacy controls, preserved prior opt-out, DNT/GPC, fail-closed storage.
+- [x] Unit, build, SEO/bilingual and targeted browser checks run locally.
+- [ ] Full GitHub CI, review and production validation.
+
+---
+
 # Current task — 2026-11-06 blog analytics
 
 User approved end-to-end analytics. Exact initial upstream: 0940315. Isolated snapshot; do not push unrelated local baseline history.
