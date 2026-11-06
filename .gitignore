@@ -28,3 +28,6 @@ supabase/.temp/
 .translation-engine.lock/
 .translation-retired/
 scripts/i18n/__pycache__/
+
+# Local analytics backup test bytecode (no private state is committed).
+deploy/analytics/__pycache__/

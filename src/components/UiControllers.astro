@@ -1035,3 +1035,8 @@ const t = (key, values = []) => (uiMessages[key] ?? key).replace(/\{(\d+)\}/g, (
     initImageViewer();
   })();
 </script>
+
+<script>
+  import { initAnalytics } from "../lib/analytics/client";
+  initAnalytics();
+</script>

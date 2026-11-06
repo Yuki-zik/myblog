@@ -29,7 +29,7 @@ export function entryReader(locale: Locale) {
   return async <K extends SourceCollection>(key: K, id: string): Promise<CollectionEntry<K> | undefined> =>
     (await collectionReader(locale)(key)).find(entry => entry.id === id);
 }
-export const FIXED_ROUTES = ["/", "/author", "/papers", "/topics", "/archives", "/map", "/agents"] as const;
+export const FIXED_ROUTES = ["/", "/author", "/papers", "/topics", "/archives", "/map", "/agents", "/privacy"] as const;
 export async function getTranslatedPaths(): Promise<Set<string>> {
   const paths = new Set<string>(FIXED_ROUTES);
   for (const source of Object.keys(aliases) as SourceCollection[]) {

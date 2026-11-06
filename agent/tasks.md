@@ -1,3 +1,18 @@
+# Current task — 2026-11-06 blog analytics
+
+User approved end-to-end analytics. Exact initial upstream: 0940315. Isolated snapshot; do not push unrelated local baseline history.
+
+- [x] Inspect existing collection, deployment and privacy boundaries.
+- [x] Verify VPS resources: 453 MiB RAM, existing mirror/proxies preserved.
+- [ ] Test-first client consent, sanitization, scoped collection, engagement and counters.
+- [ ] Provision pinned GoatCounter 2.7.0 + SQLite under memory cap; private authenticated dashboard, backups and retention.
+- [ ] Integrate first-party endpoints, bilingual privacy/settings and public article visit counts.
+- [ ] Real-browser/mobile/dark-mode QA, full CI and staged release.
+
+Decision: use lightweight mature GoatCounter rather than Node/PostgreSQL Umami on this constrained host. Opt-in analytics; DNT/GPC override; no contents/identifiers or search queries. Public article counter represents visits, not human unique people. No fake historical backfill.
+
+---
+
 # 任务清单
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |

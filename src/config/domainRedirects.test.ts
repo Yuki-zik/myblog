@@ -33,7 +33,7 @@ describe("canonical-domain redirects", () => {
 
   it("does not add a catch-all redirect to the canonical host", () => {
     for (const rule of config.redirects ?? []) {
-      expect(rule.has?.some((condition) => condition.type === "host" && condition.value === "a-znk.com")).toBe(false);
+      expect(rule.has?.some((condition) => condition.type === "host" && condition.value === "a-znk.com") ?? false).toBe(false);
     }
   });
 });

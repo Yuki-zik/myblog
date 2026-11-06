@@ -218,7 +218,9 @@ const themeInitScript = `(function () {
 
     <script is:inline set:html={themeInitScript} />
   </head>
-  <body class={bodyClass} data-runtime={runtime} data-header-variant={headerVariant} data-translation-state={translation?.state}>
+  <body class={bodyClass} data-runtime={runtime} data-header-variant={headerVariant} data-translation-state={translation?.state}
+    data-analytics-config data-analytics-path={Astro.url.pathname}
+    data-analytics-enabled={!noindex && import.meta.env.PUBLIC_ANALYTICS_ENABLED !== "false" ? "true" : "false"}>
     <header class="site-header sticky top-0 z-80" data-header-state="top" data-header-variant={headerVariant}>
       <div class="site-header-surface-clip" aria-hidden="true">
         <div class="site-header-inner isolate overflow-hidden origin-top"></div>
