@@ -1,3 +1,7 @@
+## 2026-11-06 — consent-based blog analytics
+
+Implemented and tested in PR60 (`feat/blog-analytics-20261106`) from production0940315. Lightweight GoatCounter/SQLite selected after verifying453MiB VPS constraints. Added bilingual privacy/consent, first-party requests, article counts and bounded reading/outbound events; synthetic traffic isolated.187 unit tests,15 targeted browser tests and4 Python operations tests pass. Installed hard-limited service, private login boundary, validated daily backup/restore, and minute-based public aggregate snapshots. Full CI/production release recorded on PR60; do not claim historical PV/UV or real subscriptions from click events. Details: docs/blog-analytics.md; operations: deploy/analytics/README.md.
+
 # 项目时间轴
 
 | 日期时间 | 任务/变更 | 修改文件 | 实现逻辑 | 修改动机 | 结果/备注 |
