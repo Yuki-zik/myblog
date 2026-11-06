@@ -10,7 +10,7 @@
 
 ## 目录结构
 
-- `package.json`: 固定 `@waline/vercel@1.40.3`
+- `package.json`: 固定 `@waline/vercel@1.41.0`
 - `index.cjs`: Waline server 入口
 - `vercel.json`: Vercel 路由到 Waline handler
 - `env.example`: Waline server 环境变量样例

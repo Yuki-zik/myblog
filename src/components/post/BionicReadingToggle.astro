@@ -126,7 +126,7 @@
     // Only style continuous Latin words of 4+ characters. Leave technical
     // abbreviations, numbers, non-Latin scripts and punctuation unchanged.
     const WORD = /[A-Za-zÀ-ÖØ-öø-ÿ]{4,}/g;
-    const SKIP = "a, pre, code, kbd, samp, script, style, textarea, button, math, svg, .katex, .math, .sr-only, [aria-hidden='true'], [contenteditable], [data-bionic-ignore], [data-bionic-fragment]";
+    const SKIP = "a, pre, code, kbd, samp, script, style, textarea, button, summary, math, svg, .katex, .math, .sr-only, [aria-hidden='true'], [contenteditable], [data-spoiler], .post-inline-spoiler, [data-bionic-ignore], [data-bionic-fragment]";
     const CANDIDATE = "p, li, blockquote";
 
     function restore() {
@@ -143,7 +143,9 @@
           const textNode = node as Text;
           const parent = textNode.parentElement;
           if (!parent || !parent.closest(CANDIDATE) || parent.closest(SKIP)) return NodeFilter.FILTER_REJECT;
-          if (parent.closest("h1, h2, h3, h4, table, figcaption, [lang='zh-CN'], [lang='zh']")) return NodeFilter.FILTER_REJECT;
+          if (parent.closest("h1, h2, h3, h4, table, figcaption")) return NodeFilter.FILTER_REJECT;
+          const localLanguage = parent.closest<HTMLElement>("[lang]");
+          if (localLanguage && !localLanguage.lang.toLowerCase().startsWith("en")) return NodeFilter.FILTER_REJECT;
           WORD.lastIndex = 0;
           return WORD.test(textNode.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
         }

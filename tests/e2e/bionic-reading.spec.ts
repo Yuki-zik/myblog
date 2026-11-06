@@ -13,6 +13,10 @@ test("English posts can toggle bionic reading without changing article content o
     fixture.id = "bionic-test-fixture";
     fixture.innerHTML = 'Reading technical research articles with <code>int main()</code> and <a href="#bionic-test-fixture">working links</a>.';
     document.querySelector("[data-post-body]")?.prepend(fixture);
+    const excluded = document.createElement("div");
+    excluded.id = "bionic-test-excluded";
+    excluded.innerHTML = '<p><span lang="fr">Bonjour extraordinaire</span> and <span class="post-inline-spoiler">Hidden spoiler text</span></p><details data-spoiler><summary>Reveal something unexpected</summary><p>Hidden interactive explanation</p></details>';
+    document.querySelector("[data-post-body]")?.append(excluded);
   });
 
   const textBefore = await article.textContent();
@@ -25,6 +29,9 @@ test("English posts can toggle bionic reading without changing article content o
   await expect(page.locator("#bionic-test-fixture .bionic-reading__prefix").first()).toBeVisible();
   await expect(page.locator("#bionic-test-fixture code .bionic-reading__prefix")).toHaveCount(0);
   await expect(page.locator("#bionic-test-fixture a .bionic-reading__prefix")).toHaveCount(0);
+  await expect(page.locator("#bionic-test-excluded [lang='fr'] .bionic-reading__prefix")).toHaveCount(0);
+  await expect(page.locator("#bionic-test-excluded [data-spoiler] .bionic-reading__prefix")).toHaveCount(0);
+  await expect(page.locator("#bionic-test-excluded .post-inline-spoiler .bionic-reading__prefix")).toHaveCount(0);
   expect(await article.textContent()).toBe(textBefore);
   expect(await page.locator("#bionic-test-fixture code").textContent()).toBe(codeBefore);
   expect(await page.locator("#bionic-test-fixture a").getAttribute("href")).toBe(linkBefore);
