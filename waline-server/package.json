@@ -2,6 +2,7 @@
   "name": "myblog-waline-server",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.30.1",
   "description": "Standalone Waline server deployment unit for MyBlog",
   "engines": {
     "node": ">=20"
