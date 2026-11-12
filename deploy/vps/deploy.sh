@@ -13,5 +13,5 @@ REMOTE="/var/www/a-znk-blog/releases/$RELEASE"
 SSH=(ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 -p "$PORT" "$HOST")
 "${SSH[@]}" "install -d -m 755 '$REMOTE'"
 COPYFILE_DISABLE=1 tar --no-xattrs -C dist -czf - . | "${SSH[@]}" "tar -xzf - -C '$REMOTE'"
-"${SSH[@]}" "set -eu; test -s '$REMOTE/index.html'; test -s '$REMOTE/sitemap-index.xml'; chmod -R a+rX '$REMOTE'; ln -s '$REMOTE' /var/www/a-znk-blog/current.next; mv -Tf /var/www/a-znk-blog/current.next /var/www/a-znk-blog/current; curl -fsS -H 'Host: a-znk.com' http://127.0.0.1/ >/dev/null"
-printf 'Published %s to %s (HTTP mirror; TLS/DNS status must be verified separately).\n' "$RELEASE" "$HOST"
+"${SSH[@]}" "set -eu; test -s '$REMOTE/index.html'; test -s '$REMOTE/sitemap-index.xml'; chmod -R a+rX '$REMOTE'; ln -s '$REMOTE' /var/www/a-znk-blog/current.next; mv -Tf /var/www/a-znk-blog/current.next /var/www/a-znk-blog/current; curl --fail --silent --show-error --connect-timeout 5 --max-time 12 --resolve vps.a-znk.com:8443:127.0.0.1 https://vps.a-znk.com:8443/ -o /dev/null"
+printf 'Published %s to %s (VPS HTTPS mirror verified locally; Vercel and external DNS status are separate).\n' "$RELEASE" "$HOST"
