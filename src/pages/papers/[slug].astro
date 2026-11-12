@@ -11,6 +11,7 @@ import PaperFigure from "../../components/papers/PaperFigure.astro";
 import ImageViewer from "../../components/media/ImageViewer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildScholarlyArticleGraph } from "../../lib/seo/jsonLd";
+import { buildHighwireMetadata, paperSearchDescription, paperSearchTitle } from "../../lib/seo/highwire";
 
 interface Props {
   paper: CollectionEntry<"papers">;
@@ -28,6 +29,9 @@ const { paper } = Astro.props;
 const { Content } = await render(paper);
 const canonicalPath = `/papers/${paper.id}`;
 const site = Astro.site;
+const scholarlyMeta = site
+  ? buildHighwireMetadata(paper.data, new URL(canonicalPath, site).toString())
+  : undefined;
 const structuredData = site
   ? buildScholarlyArticleGraph({
       siteUrl: site.toString(),
@@ -72,14 +76,15 @@ const resourceLabels = {
 ---
 
 <BaseLayout
-  title={paper.data.title}
-  description={paper.data.abstract}
+  title={locale === "zh-CN" ? paperSearchTitle(paper.data) : paper.data.title}
+  description={locale === "zh-CN" ? paperSearchDescription(paper.data) : paper.data.abstract}
+  scholarlyMeta={scholarlyMeta}
+  openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : undefined}
   authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
   canonical={canonicalPath}
   metaType="article"
   publishedTime={paper.data.publicationDate}
   modifiedTime={paper.data.updated}
-  openGraphImage={`/og/papers/${paper.id}.png`}
   runtime="reading"
   headerVariant="drawing"
   mainClass="shell--paper-reading reading-drawing"

@@ -63,6 +63,8 @@ interface Props {
    * callers only pass the extra nodes that reference those shared @ids.
    */
   structuredData?: JsonLdNode[];
+  /** Source-verified Highwire citation tags, only for scholarly detail pages. */
+  scholarlyMeta?: ReadonlyArray<{ name: string; content: string }>;
 }
 
 const {
@@ -81,7 +83,8 @@ const {
   headerVariant = "drawing",
   hideFooter = false,
   footerVariant: explicitFooterVariant,
-  structuredData
+  structuredData,
+  scholarlyMeta
 } = Astro.props;
 
 const documentTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
@@ -171,6 +174,7 @@ const themeInitScript = `(function () {
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex, follow" /> : null}
     <meta name="author" content={authorMeta} />
+    {scholarlyMeta?.map((item) => <meta name={item.name} content={item.content} />)}
     {locale === "zh-CN" && pathname === "/" ? <meta name="baidu-site-verification" content="codeva-WhDD0PxDx9" /> : null}
     <link rel="icon" type="image/svg+xml" href={l("/favicon.svg")} />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}

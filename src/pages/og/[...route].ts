@@ -4,7 +4,7 @@ import { getCollection } from "astro:content";
 import { ensureOgFonts, OG_CJK_FAMILY } from "../../lib/og/font";
 
 /**
- * Build-time Open Graph cards (1200×630) for posts/topics/concepts at
+ * Build-time Open Graph cards (1200×630) for posts/topics/concepts/papers at
  * `/og/<collection>/<slug>.png`. Uses the site's midnight→navy gradient + a
  * moonlight accent edge so shared links stay on-brand. Excluded from the
  * sitemap in astro.config.
@@ -14,7 +14,7 @@ const [posts, topics, concepts, papers] = await Promise.all([
   getCollection("posts", ({ data }) => !data.draft),
   getCollection("topics"),
   getCollection("concepts"),
-  getCollection("papers", ({ data }) => !data.draft)
+  getCollection("papers", ({ data }) => !data.draft && data.status !== "prototype")
 ]);
 
 interface OgPage {
