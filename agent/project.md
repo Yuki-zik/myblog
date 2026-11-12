@@ -1,5 +1,6 @@
 # 项目概况 (A-Znk的blog)
 
+2026-11-12 分支与工作树全面整合：合入 PR #56（`5777313`，依赖锁预检工作流 `.github/workflows/dependency-preflight.yml`），并将 PR #25（`dbabe31`，VPS 静态镜像流量防护与 CN CIDR 更新器 `deploy/vps/traffic-guard/`）及 PR #36（`85ce505`，已发表论文 Google Scholar Highwire 元信息 `src/lib/seo/highwire.ts`，保留双语 `/en/papers/[slug]` 与非样稿 OG 图契约）合入 `main`。清理 11 个二级 worktree（未提交 WIP 归档于本地分支 `ops/vps-auto-sync-20261018` `483b89c`）、44 个已合并本地分支与 59 个已合并/已关闭远端分支，`origin` 仅保留 `main` 与未合并草稿 PR #47（`origin/draft/open-weight-alignment-attack-defense-20261024`）。192 项 Vitest 单测、2 项流量防护 Python 测试、43 页构建、42 canonical SEO 检查及 21 对中英双语检查全部通过。
 
 2026-10-24 已发布（PR #48，46ffc8f）：Agent 工作观察站 https://a-znk.com/agents 及中文主页小挂件，基于既有 Astro discover 页面与语义色彩；公开研究证据与人工确认的个人记录独立展示，暂无个人观测时显示待记录。合并同期双语主线后159项单测、326项浏览器回归、39页sitemap和19对译文校验通过，正式站入口、四项空值、六条证据、来源展开、Markdown下载及中英首页往返已复核。首版栏目为中文内容；v1/v2两批原始截图及来源归档于 `docs/visual-history/2026-10-24-agent-observatory/`。数据口径与维护方法见 `docs/agent-observatory.md`。
 

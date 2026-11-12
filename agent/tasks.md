@@ -26,6 +26,7 @@ Decision: use lightweight mature GoatCounter rather than Node/PostgreSQL Umami o
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 仓库分支与多工作树全面整合（PR #56 `5777313` 锁文件预检、PR #25 `dbabe31` VPS 静态镜像流量防护与 CN CIDR 更新器、PR #36 `85ce505` Highwire 学术论文引用元信息合入 `main`；清理 11 个二级 worktree、44 个本地分支与 59 个远端分支，仅保留 `main`、本地 WIP 归档 `483b89c` 及未合并草稿 PR #47） | ✅ | Antigravity Swarm | 2026-11-12 |
 | 高 | 会话/history回溯已上线（PR #57，e5c9c0c）：12份公开变更归并6项真实票据，中英翻阅/来源/无JS完整读取；工时与并发保持未知。Mac mini开发，179单测/390浏览器及生产回查通过 | ✅ | ChatGPT + 口径/文案/实现审阅 agents | 2026-10-25 |
 | 高 | 中文源自动英文同步正式启用；PR54修复+PR55真实自动发布完成，40页/20对语言、389浏览器测试与线上双引擎验收通过 | ✅ | ChatGPT + 三个实现Agent/独立审查 | 2026-10-25 |
 | 高 | 目录平滑跟随二次修复：每帧位移≤24px、远跳标记淡出；中英 Chromium/WebKit、反向跳转及原目录场景20/20 E2E通过，164单测与双语构建检查通过，待完整CI与线上验收 | ⏳ | ChatGPT | 2026-10-25 |
