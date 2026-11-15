@@ -42,6 +42,11 @@ for (const mdPath of ["/posts/myblog-design-manual.md", "/papers/duap-multilingu
   assert.ok(body.startsWith("# "), mdPath + " must start with Markdown heading");
   assert.match(headers.get("x-robots-tag") ?? "", /noindex/i, mdPath + " must send X-Robots-Tag noindex");
 }
+for (const dataPath of ["/papers/duap-multilingual-speech-privacy.bib", "/agents/dataset.json", "/agents/dataset.csv"]) {
+  const { body, headers } = await read(dataPath);
+  assert.ok(body.trim().length > 20, dataPath + " must be non-empty");
+  assert.match(headers.get("x-robots-tag") ?? "", /noindex/i, dataPath + " must send X-Robots-Tag noindex");
+}
 const { body: directXml } = await read("/sitemap.xml");
 assert.match(directXml, /<urlset\b/);
 const urls = extractSitemapUrls(directXml, ORIGIN);

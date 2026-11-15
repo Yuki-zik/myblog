@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "description": "24 bilingual golden queries spanning entity disambiguation, DUAP multilingual speech privacy fan-out sub-queries, agent engineering telemetry/dataset discovery, and reading systems.",
+  "queries": [
+    {
+      "id": "entity-en-duap",
+      "bucket": "entity",
+      "locale": "en",
+      "query": "Qianli Ma DUAP Whisper speech privacy IEEE TIFS",
+      "expectedRoutes": ["/en/papers/duap-multilingual-speech-privacy", "/papers/duap-multilingual-speech-privacy", "/en/author"]
+    },
+    {
+      "id": "entity-zh-duap",
+      "bucket": "entity",
+      "locale": "zh-CN",
+      "query": "马千里 Whisper 多语种语音隐私保护 DUAP",
+      "expectedRoutes": ["/papers/duap-multilingual-speech-privacy", "/author"]
+    },
+    {
+      "id": "entity-en-orcid",
+      "bucket": "entity",
+      "locale": "en",
+      "query": "Qianli Ma 0009-0005-2060-4172 research blog",
+      "expectedRoutes": ["/en/author", "/author", "/en/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "entity-zh-author",
+      "bucket": "entity",
+      "locale": "zh-CN",
+      "query": "A-Znk 马千里 模型安全 Agent 工程 个人主页",
+      "expectedRoutes": ["/author", "/"]
+    },
+    {
+      "id": "entity-en-author",
+      "bucket": "entity",
+      "locale": "en",
+      "query": "A-Znk Qianli Ma LLM security agent engineering",
+      "expectedRoutes": ["/en/author", "/en"]
+    },
+    {
+      "id": "entity-doi",
+      "bucket": "entity",
+      "locale": "en",
+      "query": "10.1109/TIFS.2026.3671687 BibTeX citation",
+      "expectedRoutes": ["/en/papers/duap-multilingual-speech-privacy", "/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-en-lfd-encoders",
+      "bucket": "paper-fanout",
+      "locale": "en",
+      "query": "Language Feature Disentanglement dual encoders language content swap reconstruction Mel spectrogram Whisper",
+      "expectedRoutes": ["/en/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-en-losses",
+      "bucket": "paper-fanout",
+      "locale": "en",
+      "query": "DUAP language identification cross-entropy loss L2 regularization reconstruction loss Whisper",
+      "expectedRoutes": ["/en/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-en-physical-codec",
+      "bucket": "paper-fanout",
+      "locale": "en",
+      "query": "Whisper universal adversarial perturbation over-the-air physical playback AAC MP3 compression word error rate",
+      "expectedRoutes": ["/en/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-zh-lfd-mechanism",
+      "bucket": "paper-fanout",
+      "locale": "zh-CN",
+      "query": "语言特征解耦 LFD 语言编码器 内容编码器 交换重建 Mel 频谱 Whisper",
+      "expectedRoutes": ["/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-zh-monolingual-limit",
+      "bucket": "paper-fanout",
+      "locale": "zh-CN",
+      "query": "为什么单语种语音对抗样本难以迁移到 Whisper 多语种自动语音识别",
+      "expectedRoutes": ["/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "duap-zh-wer-table",
+      "bucket": "paper-fanout",
+      "locale": "zh-CN",
+      "query": "DUAP 三种 Whisper 模型规模 英语 95% 多语种 85% 物理场景 87% 词错误率",
+      "expectedRoutes": ["/papers/duap-multilingual-speech-privacy"]
+    },
+    {
+      "id": "agents-zh-observatory",
+      "bucket": "agents-dataset",
+      "locale": "zh-CN",
+      "query": "Agent 工作观察站 独立任务并行 人工注意力投入 返工比例 统计口径",
+      "expectedRoutes": ["/agents"]
+    },
+    {
+      "id": "agents-en-observatory",
+      "bucket": "agents-dataset",
+      "locale": "en",
+      "query": "Agent Work Observatory parallel tasks human attention rework METR randomized trial",
+      "expectedRoutes": ["/en/agents", "/agents"]
+    },
+    {
+      "id": "agents-en-dataset",
+      "bucket": "agents-dataset",
+      "locale": "en",
+      "query": "AI coding agent delivery history public records CSV JSON dataset",
+      "expectedRoutes": ["/en/agents", "/agents"]
+    },
+    {
+      "id": "agents-zh-exam",
+      "bucket": "agents-dataset",
+      "locale": "zh-CN",
+      "query": "蚂蚁 AI Coding 笔试 CodeFuse 复盘 踩坑 时间线",
+      "expectedRoutes": ["/posts/ant-ai-coding-review"]
+    },
+    {
+      "id": "agents-en-exam",
+      "bucket": "agents-dataset",
+      "locale": "en",
+      "query": "Ant Group AI coding exam CodeFuse retrospective pitfalls MVP pytest",
+      "expectedRoutes": ["/en/posts/ant-ai-coding-review"]
+    },
+    {
+      "id": "agents-zh-harness",
+      "bucket": "agents-dataset",
+      "locale": "zh-CN",
+      "query": "Agent Engineering 把提示词工具调用与评测收束成可维护的智能体系统",
+      "expectedRoutes": ["/topics/agent-engineering", "/posts/ant-ai-coding-review"]
+    },
+    {
+      "id": "systems-zh-anchor",
+      "bucket": "reading-systems",
+      "locale": "zh-CN",
+      "query": "段落锚点短评 anchor_id sectionSlug 最小实现",
+      "expectedRoutes": ["/posts/paragraph-anchor-design", "/concepts/anchor-id"]
+    },
+    {
+      "id": "systems-en-anchor",
+      "bucket": "reading-systems",
+      "locale": "en",
+      "query": "minimal paragraph-anchored comments anchor_id sectionSlug implementation",
+      "expectedRoutes": ["/en/posts/paragraph-anchor-design", "/en/concepts/anchor-id"]
+    },
+    {
+      "id": "systems-zh-manual",
+      "bucket": "reading-systems",
+      "locale": "zh-CN",
+      "query": "博客设计说明书 双栏学者页边栏 脚注归并 知识图谱",
+      "expectedRoutes": ["/posts/myblog-design-manual"]
+    },
+    {
+      "id": "systems-en-manual",
+      "bucket": "reading-systems",
+      "locale": "en",
+      "query": "blog design manual scholar margin rail sidenotes knowledge graph",
+      "expectedRoutes": ["/en/posts/myblog-design-manual"]
+    },
+    {
+      "id": "systems-zh-topic-first",
+      "bucket": "reading-systems",
+      "locale": "zh-CN",
+      "query": "为什么主题页应成为博客第一入口 按问题空间组织写作",
+      "expectedRoutes": ["/posts/why-topic-first", "/topics/knowledge-network"]
+    },
+    {
+      "id": "systems-zh-optimistic",
+      "bucket": "reading-systems",
+      "locale": "zh-CN",
+      "query": "Optimistic UI 乐观更新 失败回滚 交互反馈",
+      "expectedRoutes": ["/concepts/optimistic-ui", "/posts/paragraph-anchor-design"]
+    }
+  ]
+}

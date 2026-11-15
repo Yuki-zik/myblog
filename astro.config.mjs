@@ -37,6 +37,8 @@ export default defineConfig({
       filter: (page) =>
         !page.endsWith(".json") &&
         !page.endsWith(".md") &&
+        !page.endsWith(".bib") &&
+        !page.endsWith(".csv") &&
         !page.endsWith("/sitemap.xml") &&
         !page.endsWith("/llms.txt") &&
         !page.endsWith("/llms-full.txt") &&

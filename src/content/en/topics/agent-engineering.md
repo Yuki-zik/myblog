@@ -9,6 +9,6 @@ relatedTopics:
   - exam-review
 ---
 
-This topic records how prompts, rules, tools, and validation can be integrated into agent workflows that actually run.
+This topic examines how prompts, repository rules (`AGENTS.md`), tool calls, automated evaluation, and human-maintained task boards converge into maintainable, verifiable agent systems (agent engineering and harness design).
 
-The main concerns are task decomposition, context management, test-first development, and organizing deliverables.
+Core threads span task decomposition, single-session versus multi-agent context isolation, test-first verification (`pytest` / TDD), and deliverable acceptance—complementing the empirical concurrency, human-attention, and rework metrics tracked in the [Agent Work Observatory](/en/agents).

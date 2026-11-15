@@ -215,6 +215,7 @@ test("GEO endpoints expose bilingual LLMs indexes, full-text corpora, and clean 
       .flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? []);
     return {
       markdownHref: doc.querySelector('link[rel="alternate"][type="text/markdown"]')?.getAttribute("href"),
+      bibtexHref: doc.querySelector('link[rel="alternate"][type="application/x-bibtex"]')?.getAttribute("href"),
       llmsHref: doc.querySelector('link[rel="alternate"][type="text/plain"]')?.getAttribute("href"),
       citationUrl: doc.querySelector('meta[name="citation_abstract_html_url"]')?.getAttribute("content"),
       citationLang: doc.querySelector('meta[name="citation_language"]')?.getAttribute("content"),
@@ -224,11 +225,35 @@ test("GEO endpoints expose bilingual LLMs indexes, full-text corpora, and clean 
   }, enPaperHtml);
 
   expect(enPaperMeta.markdownHref).toBe("https://myblog.example/en/papers/duap-multilingual-speech-privacy.md");
+  expect(enPaperMeta.bibtexHref).toBe("https://myblog.example/papers/duap-multilingual-speech-privacy.bib");
   expect(enPaperMeta.llmsHref).toBe("https://myblog.example/en/llms.txt");
   expect(enPaperMeta.citationUrl).toBe("https://myblog.example/en/papers/duap-multilingual-speech-privacy");
   expect(enPaperMeta.citationLang).toBe("en");
   expect(enPaperMeta.ogImage).toBe("https://myblog.example/og/en/papers/duap-multilingual-speech-privacy.png");
   expect(enPaperMeta.scholarlyImage).toMatch(/^https:\/\/myblog\.example\/_astro\//);
+
+  const bibRes = await request.get("/papers/duap-multilingual-speech-privacy.bib");
+  expect(bibRes.ok()).toBe(true);
+  expect(await bibRes.text()).toContain("@article{ma2026duap");
+
+  const datasetJsonRes = await request.get("/agents/dataset.json");
+  expect(datasetJsonRes.ok()).toBe(true);
+  const datasetJson = await datasetJsonRes.json();
+  expect(datasetJson.schemaVersion).toBe(1);
+  expect(datasetJson.canonicalUrl).toBe("https://myblog.example/agents");
+
+  const datasetCsvRes = await request.get("/agents/dataset.csv");
+  expect(datasetCsvRes.ok()).toBe(true);
+  expect(await datasetCsvRes.text()).toContain("record_type,id,date,");
+
+  const agentsHtml = await (await request.get("/en/agents")).text();
+  const agentsSchemaTypes = await page.evaluate((html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+      .flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? [])
+      .map((node) => node["@type"]);
+  }, agentsHtml);
+  expect(agentsSchemaTypes).toContain("Dataset");
 
   const enOxicamsHtml = await (await request.get("/en/papers/oxicams-carbon-dots-machine-learning")).text();
   const enOxicamsScholarlyImage = await page.evaluate((html) => {

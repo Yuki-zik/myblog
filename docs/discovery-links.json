@@ -1,20 +1,28 @@
 {
-  "date": "2026-10-18",
-  "origin": "https://a-znk-blog.vercel.app/",
+  "date": "2026-11-16",
+  "origin": "https://a-znk.com",
   "references": [
     {
       "repo": "Yuki-zik/Yuki-zik",
       "path": "README.md",
       "branch": "main",
-      "beforeSha": "e630cd3303e600bde363edfd23ea3a9496d7686e",
-      "afterSha": "72f73cb1c08190e10aece93a250482a169fb006e",
-      "commit": "9d3f4fd0ad0e8f823d326fc738804fbeb33ed647",
-      "commitUrl": "https://github.com/Yuki-zik/Yuki-zik/commit/9d3f4fd0ad0e8f823d326fc738804fbeb33ed647",
+      "beforeSha": "72f73cb1c08190e10aece93a250482a169fb006e",
+      "afterSha": "13e768f1946ad99f1be2112751f9b8060225d3fb",
+      "commit": "8f5e00f4cd30fae7e3a8dffb05b4f2d85e3e5d77",
+      "commitUrl": "https://github.com/Yuki-zik/Yuki-zik/commit/8f5e00f4cd30fae7e3a8dffb05b4f2d85e3e5d77",
       "readmeUrl": "https://github.com/Yuki-zik/Yuki-zik/blob/main/README.md",
       "addedUrls": [
-        "https://a-znk-blog.vercel.app/",
-        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
-        "https://a-znk-blog.vercel.app/papers"
+        "https://a-znk.com",
+        "https://a-znk.com/en",
+        "https://a-znk.com/author",
+        "https://a-znk.com/papers/duap-multilingual-speech-privacy",
+        "https://a-znk.com/en/papers/duap-multilingual-speech-privacy",
+        "https://a-znk.com/agents",
+        "https://a-znk.com/en/agents",
+        "https://a-znk.com/posts/ant-ai-coding-review",
+        "https://a-znk.com/en/posts/ant-ai-coding-review",
+        "https://a-znk.com/papers",
+        "https://a-znk.com/en/papers"
       ],
       "apiReadbackMatches": true
     },
@@ -22,13 +30,14 @@
       "repo": "Yuki-zik/ai-coding-assessment-toolkit",
       "path": "README.md",
       "branch": "main",
-      "beforeSha": "67a93fa781bec8dcd5fb6cda3d43a8893f566f15",
-      "afterSha": "1e89f8fed9f9d4a422f18d01780ae7a0a5d4fe32",
-      "commit": "bca054d5594d579e4417e39d5aa717ab0ba3356c",
-      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/commit/bca054d5594d579e4417e39d5aa717ab0ba3356c",
+      "beforeSha": "1e89f8fed9f9d4a422f18d01780ae7a0a5d4fe32",
+      "afterSha": "67810dca8026a94c70782e5f1ed7627807983239",
+      "commit": "258f57b5fe5db6d9a746ace55738685fb3b4eca6",
+      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/commit/258f57b5fe5db6d9a746ace55738685fb3b4eca6",
       "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/blob/main/README.md",
       "addedUrls": [
-        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+        "https://a-znk.com/posts/ant-ai-coding-review",
+        "https://a-znk.com/en/posts/ant-ai-coding-review"
       ],
       "apiReadbackMatches": true
     },
@@ -36,13 +45,14 @@
       "repo": "Yuki-zik/ai-coding-assessment-toolkit-zh",
       "path": "README.md",
       "branch": "main",
-      "beforeSha": "9992c831eaaa6a6fc29fddcc4a7083879cad8d59",
-      "afterSha": "d5cbb8af916657253f777890df9859c6386721ba",
-      "commit": "5e77de554a201690ba4f6ff854ee343fc8da31c6",
-      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/commit/5e77de554a201690ba4f6ff854ee343fc8da31c6",
+      "beforeSha": "d5cbb8af916657253f777890df9859c6386721ba",
+      "afterSha": "b03013fc812cfeafff375a4680e0ebea61e31f58",
+      "commit": "06ffa1ae55bc622c1427739eb8c71c6fabc0b83f",
+      "commitUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/commit/06ffa1ae55bc622c1427739eb8c71c6fabc0b83f",
       "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/blob/main/README.md",
       "addedUrls": [
-        "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+        "https://a-znk.com/posts/ant-ai-coding-review",
+        "https://a-znk.com/en/posts/ant-ai-coding-review"
       ],
       "apiReadbackMatches": true
     },
@@ -50,14 +60,15 @@
       "repo": "Yuki-zik/Better-Call-Codex",
       "path": "README.md",
       "branch": "main",
-      "beforeSha": "f07d29cff328629ac4c80011f920370135c0564e",
-      "afterSha": "0f81ac6aa5eb8430b645f331b06a7dd81ed7d559",
-      "commit": "327aaf4f2d9ab5b9ec000e14a01c3def32155d81",
-      "commitUrl": "https://github.com/Yuki-zik/Better-Call-Codex/commit/327aaf4f2d9ab5b9ec000e14a01c3def32155d81",
+      "beforeSha": "0f81ac6aa5eb8430b645f331b06a7dd81ed7d559",
+      "afterSha": "0aee82aa3f3a4479b794101ed8b53c9cf0eed16d",
+      "commit": "0636e44c16e2cb2e3bf5c6f7ef9c224fdb8f5692",
+      "commitUrl": "https://github.com/Yuki-zik/Better-Call-Codex/commit/0636e44c16e2cb2e3bf5c6f7ef9c224fdb8f5692",
       "readmeUrl": "https://github.com/Yuki-zik/Better-Call-Codex/blob/main/README.md",
       "addedUrls": [
-        "https://a-znk-blog.vercel.app/topics/ai-coding",
-        "https://a-znk-blog.vercel.app/"
+        "https://a-znk.com/topics/ai-coding",
+        "https://a-znk.com",
+        "https://a-znk.com/en"
       ],
       "apiReadbackMatches": true
     }
@@ -65,42 +76,69 @@
   "readback": {
     "repositories": [
       {
-        "repo": "Yuki-zik/Yuki-zik",
-        "readmeUrl": "https://github.com/Yuki-zik/Yuki-zik/blob/main/README.md",
+        "repo": "Yuki-zik/myblog",
+        "readmeUrl": "https://github.com/Yuki-zik/myblog/blob/main/README.md",
+        "homepageUrl": "https://a-znk.com",
         "rawStatus": 200,
         "publicLinksPresent": true,
         "addedUrls": [
-          "https://a-znk-blog.vercel.app/",
-          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
-          "https://a-znk-blog.vercel.app/papers"
+          "https://a-znk.com",
+          "https://a-znk.com/en",
+          "https://a-znk.com/author"
+        ]
+      },
+      {
+        "repo": "Yuki-zik/Yuki-zik",
+        "readmeUrl": "https://github.com/Yuki-zik/Yuki-zik/blob/main/README.md",
+        "homepageUrl": "https://a-znk.com/author",
+        "rawStatus": 200,
+        "publicLinksPresent": true,
+        "addedUrls": [
+          "https://a-znk.com",
+          "https://a-znk.com/en",
+          "https://a-znk.com/author",
+          "https://a-znk.com/papers/duap-multilingual-speech-privacy",
+          "https://a-znk.com/en/papers/duap-multilingual-speech-privacy",
+          "https://a-znk.com/agents",
+          "https://a-znk.com/en/agents",
+          "https://a-znk.com/posts/ant-ai-coding-review",
+          "https://a-znk.com/en/posts/ant-ai-coding-review",
+          "https://a-znk.com/papers",
+          "https://a-znk.com/en/papers"
         ]
       },
       {
         "repo": "Yuki-zik/ai-coding-assessment-toolkit",
         "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit/blob/main/README.md",
+        "homepageUrl": "https://a-znk.com/posts/ant-ai-coding-review",
         "rawStatus": 200,
         "publicLinksPresent": true,
         "addedUrls": [
-          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+          "https://a-znk.com/posts/ant-ai-coding-review",
+          "https://a-znk.com/en/posts/ant-ai-coding-review"
         ]
       },
       {
         "repo": "Yuki-zik/ai-coding-assessment-toolkit-zh",
         "readmeUrl": "https://github.com/Yuki-zik/ai-coding-assessment-toolkit-zh/blob/main/README.md",
+        "homepageUrl": "https://a-znk.com/posts/ant-ai-coding-review",
         "rawStatus": 200,
         "publicLinksPresent": true,
         "addedUrls": [
-          "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review"
+          "https://a-znk.com/posts/ant-ai-coding-review",
+          "https://a-znk.com/en/posts/ant-ai-coding-review"
         ]
       },
       {
         "repo": "Yuki-zik/Better-Call-Codex",
         "readmeUrl": "https://github.com/Yuki-zik/Better-Call-Codex/blob/main/README.md",
+        "homepageUrl": "https://a-znk.com/topics/ai-coding",
         "rawStatus": 200,
         "publicLinksPresent": true,
         "addedUrls": [
-          "https://a-znk-blog.vercel.app/topics/ai-coding",
-          "https://a-znk-blog.vercel.app/"
+          "https://a-znk.com/topics/ai-coding",
+          "https://a-znk.com",
+          "https://a-znk.com/en"
         ]
       }
     ],
@@ -140,10 +178,12 @@
     "llmsLinkCount": 14,
     "authorIncluded": true,
     "papersIncluded": 2,
-    "personUrl": "https://a-znk-blog.vercel.app/author",
+    "personUrl": "https://a-znk.com/author",
     "personSameAs": [
       "https://github.com/yuki-zik",
-      "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
+      "https://scholar.google.com/citations?user=NTwrnCIAAAAJ",
+      "https://orcid.org/0009-0005-2060-4172",
+      "https://www.zhihu.com/people/A-Znk"
     ],
     "googleVerificationPreserved": true,
     "blogReadmeEntrypoints": 3
@@ -153,7 +193,7 @@
       {
         "route": "/posts/paragraph-anchor-design",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/posts/paragraph-anchor-design",
+        "canonical": "https://a-znk.com/posts/paragraph-anchor-design",
         "design": "edge",
         "title": "段落锚点短评的最小实现",
         "paragraphAnchors": 20,
@@ -163,7 +203,7 @@
       {
         "route": "/posts/ant-ai-coding-review",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/posts/ant-ai-coding-review",
+        "canonical": "https://a-znk.com/posts/ant-ai-coding-review",
         "design": "edge",
         "title": "蚂蚁 AI Coding 笔试复盘",
         "paragraphAnchors": 21,
@@ -173,7 +213,7 @@
       {
         "route": "/posts/why-topic-first",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/posts/why-topic-first",
+        "canonical": "https://a-znk.com/posts/why-topic-first",
         "design": "edge",
         "title": "为什么主题页应成为博客第一入口",
         "paragraphAnchors": 5,
@@ -183,7 +223,7 @@
       {
         "route": "/posts/myblog-design-manual",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/posts/myblog-design-manual",
+        "canonical": "https://a-znk.com/posts/myblog-design-manual",
         "design": "edge",
         "title": "A-Znk的blog：设计说明书",
         "paragraphAnchors": 36,
@@ -193,7 +233,7 @@
       {
         "route": "/papers/duap-multilingual-speech-privacy",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/papers/duap-multilingual-speech-privacy",
+        "canonical": "https://a-znk.com/papers/duap-multilingual-speech-privacy",
         "design": "metadata",
         "title": "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
         "paragraphAnchors": 4,
@@ -203,7 +243,7 @@
       {
         "route": "/papers/oxicams-carbon-dots-machine-learning",
         "status": 200,
-        "canonical": "https://a-znk-blog.vercel.app/papers/oxicams-carbon-dots-machine-learning",
+        "canonical": "https://a-znk.com/papers/oxicams-carbon-dots-machine-learning",
         "design": "metadata",
         "title": "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning",
         "paragraphAnchors": 5,

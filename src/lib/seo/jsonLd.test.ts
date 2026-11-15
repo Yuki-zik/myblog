@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { SiteAuthorProfile } from "../site";
 import {
+  buildAgentDatasetGraph,
   buildBaseNodes,
   buildBlogPostingGraph,
   buildBreadcrumb,
@@ -317,6 +318,44 @@ describe("buildProfilePageGraph and buildDefinedTermGraph", () => {
         "@type": "Person",
         name: "Wenjie Zhang",
         sameAs: "https://orcid.org/0009-0004-4401-2385"
+      }
+    ]);
+  });
+
+  it("builds a Dataset + CollectionPage graph with JSON and CSV DataDownload distributions", () => {
+    const graph = buildAgentDatasetGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/agents",
+      title: "Agent 工作观察站",
+      description: "观察站描述",
+      datasetName: "Agent Work Observatory Open Dataset",
+      datasetDescription:
+        "Empirical literature index, reviewed public repository delivery records, and structured daily observation logs for human-agent software engineering.",
+      measurementTechnique:
+        "Public repository audit and structured daily task/attention logging; unmeasured quantities remain null.",
+      dateModified: "2026-10-25T00:00:00Z",
+      keywords: ["AI agents", "METR", "agent engineering"],
+      breadcrumbs: [
+        { name: "首页", url: "https://blog.example.com/" },
+        { name: "Agent 工作观察站" }
+      ]
+    });
+
+    const page = graph.find((node) => node["@type"] === "CollectionPage")!;
+    const dataset = graph.find((node) => node["@type"] === "Dataset")!;
+    expect(page.mainEntity).toEqual({ "@id": "https://blog.example.com/agents#dataset" });
+    expect(dataset.isAccessibleForFree).toBe(true);
+    expect(dataset.creator).toEqual({ "@id": personId(SITE) });
+    expect(dataset.distribution).toEqual([
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: "https://blog.example.com/agents/dataset.json"
+      },
+      {
+        "@type": "DataDownload",
+        encodingFormat: "text/csv",
+        contentUrl: "https://blog.example.com/agents/dataset.csv"
       }
     ]);
   });

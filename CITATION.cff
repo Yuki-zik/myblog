@@ -1,0 +1,84 @@
+cff-version: 1.2.0
+message: "If you reference research notes, engineering documentation, or publications from this repository, please cite the relevant work below."
+title: "A-Znk Blog: Research Notes, Publications, and Agent Work Observatory"
+type: software
+authors:
+  - family-names: Ma
+    given-names: Qianli
+    alias: A-Znk
+    orcid: "https://orcid.org/0009-0005-2060-4172"
+    website: "https://a-znk.com/author"
+url: "https://a-znk.com"
+repository-code: "https://github.com/Yuki-zik/myblog"
+keywords:
+  - speech privacy
+  - universal adversarial perturbations
+  - Whisper
+  - multilingual ASR
+  - agent engineering
+  - LLM systems
+preferred-citation:
+  type: article
+  title: "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection"
+  authors:
+    - family-names: Ma
+      given-names: Qianli
+      orcid: "https://orcid.org/0009-0005-2060-4172"
+    - family-names: Zhang
+      given-names: Wenjie
+      orcid: "https://orcid.org/0009-0004-4401-2385"
+    - family-names: Chen
+      given-names: Jiahao
+      orcid: "https://orcid.org/0000-0002-5894-662X"
+    - family-names: Jia
+      given-names: Jiazhen
+      orcid: "https://orcid.org/0009-0009-5033-626X"
+    - family-names: Wang
+      given-names: Rangding
+    - family-names: Yan
+      given-names: Diqun
+      orcid: "https://orcid.org/0000-0002-5241-7276"
+  journal: "IEEE Transactions on Information Forensics and Security"
+  volume: 21
+  start: 3703
+  end: 3718
+  year: 2026
+  doi: "10.1109/TIFS.2026.3671687"
+  url: "https://a-znk.com/papers/duap-multilingual-speech-privacy"
+references:
+  - type: article
+    title: "Ratiometric Determination and Discrimination of Oxicams via Dual-Excitation Carbon Dots Assisted by Machine Learning"
+    authors:
+      - family-names: Zhang
+        given-names: Yihao
+      - family-names: Ma
+        given-names: Qianli
+        orcid: "https://orcid.org/0009-0005-2060-4172"
+      - family-names: Gao
+        given-names: Sineng
+      - family-names: Liu
+        given-names: Xinru
+      - family-names: Xing
+        given-names: Haoming
+      - family-names: Hu
+        given-names: Houwen
+      - family-names: Wang
+        given-names: Linfan
+      - family-names: Li
+        given-names: Weihao
+      - family-names: Zhang
+        given-names: Ting
+      - family-names: Hou
+        given-names: Yafei
+        orcid: "https://orcid.org/0000-0002-9240-0743"
+      - family-names: Chen
+        given-names: Da
+        orcid: "https://orcid.org/0000-0002-0334-9502"
+    journal: "Analytical Chemistry"
+    volume: 97
+    issue: 39
+    start: 21428
+    end: 21437
+    year: 2025
+    doi: "10.1021/acs.analchem.5c03226"
+    url: "https://a-znk.com/papers/oxicams-carbon-dots-machine-learning"

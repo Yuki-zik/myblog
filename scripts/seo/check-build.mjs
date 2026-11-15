@@ -32,7 +32,7 @@ assert(
 assert(new Set(directUrls).size === directUrls.length, "duplicate URLs");
 const siteOrigin = new URL(directUrls[0]).origin;
 assert(directUrls.every((url) => url.startsWith(siteOrigin + "/")), "foreign URL");
-assert(!directUrls.some((url) => /\.(md|txt|json|xml)(?:$|\?)/.test(url)), "non-HTML route in sitemap");
+assert(!directUrls.some((url) => /\.(md|txt|json|xml|bib|csv)(?:$|\?)/.test(url)), "non-HTML route in sitemap");
 
 // Crawl & AI agent directives
 assert(robots.includes("Sitemap: " + new URL("/sitemap.xml", siteOrigin).toString()), "robots sitemap mismatch");
@@ -41,10 +41,23 @@ for (const agent of ["OAI-SearchBot", "Claude-SearchBot", "PerplexityBot", "GPTB
 }
 assert(robots.includes("/llms.txt") && robots.includes("/llms-full.txt"), "robots.txt missing LLM corpus pointers");
 
-// GEO corpus endpoints & bilingual feeds
-for (const endpoint of ["llms.txt", "en/llms.txt", "llms-full.txt", "en/llms-full.txt", "rss.xml", "en/rss.xml"]) {
+// GEO corpus endpoints, open datasets & bilingual feeds
+for (const endpoint of [
+  "llms.txt",
+  "en/llms.txt",
+  "llms-full.txt",
+  "en/llms-full.txt",
+  "rss.xml",
+  "en/rss.xml",
+  "agents/dataset.json",
+  "agents/dataset.csv"
+]) {
   assertNonEmptyFile(endpoint);
 }
+const datasetJson = JSON.parse(read("agents/dataset.json"));
+assert(datasetJson.schemaVersion === 1, "agents/dataset.json invalid schemaVersion");
+assert(datasetJson.personalObservations?.summary?.peakParallel === null || typeof datasetJson.personalObservations?.summary?.peakParallel === "number", "agents/dataset.json invalid summary");
+assert(read("agents/dataset.csv").startsWith("record_type,id,date,"), "agents/dataset.csv missing header row");
 const llmsZh = read("llms.txt");
 const llmsEn = read("en/llms.txt");
 for (const section of ["## Author", "## Papers", "## Topics", "## Posts", "## Optional"]) {
@@ -137,6 +150,23 @@ for (const rawUrl of directUrls) {
   if (pathname === "/author" || pathname === "/en/author") {
     assert(types.has("ProfilePage"), `${pathname}: missing ProfilePage JSON-LD`);
   }
+  if (pathname === "/agents" || pathname === "/en/agents") {
+    assert(types.has("Dataset") && types.has("CollectionPage"), `${pathname}: missing Dataset + CollectionPage JSON-LD`);
+    const datasetNode = graphNodes.find((node) => node["@type"] === "Dataset");
+    const dsDescLen = String(datasetNode?.description ?? "").length;
+    assert(
+      dsDescLen >= 50 && dsDescLen <= 5000,
+      `${pathname}: Dataset description must be 50..5000 chars per Google Dataset Search (${dsDescLen})`
+    );
+    assert(
+      Array.isArray(datasetNode?.distribution) && datasetNode.distribution.length >= 2,
+      `${pathname}: Dataset missing DataDownload distribution entries`
+    );
+    for (const distItem of datasetNode.distribution) {
+      const distPath = new URL(distItem.contentUrl, parsed.origin).pathname.slice(1);
+      assertNonEmptyFile(distPath, `${pathname} Dataset DataDownload`);
+    }
+  }
   if (/^\/(?:en\/)?concepts\/[^/]+$/.test(pathname)) {
     assert(types.has("DefinedTerm"), `${pathname}: missing DefinedTerm JSON-LD`);
   }
@@ -150,8 +180,11 @@ for (const rawUrl of directUrls) {
       assert(types.has("ScholarlyArticle"), `${pathname}: missing ScholarlyArticle JSON-LD`);
       const absUrl = document.querySelector('meta[name="citation_abstract_html_url"]')?.getAttribute("content");
       const citLang = document.querySelector('meta[name="citation_language"]')?.getAttribute("content");
+      const bibLink = document.querySelector('link[rel="alternate"][type="application/x-bibtex"]')?.getAttribute("href");
       assert(absUrl === parsed.href, `${pathname}: citation_abstract_html_url mismatch (${absUrl})`);
       assert(citLang === (isEn ? "en" : "zh"), `${pathname}: citation_language mismatch (${citLang})`);
+      assert(Boolean(bibLink), `${pathname}: missing application/x-bibtex alternate link`);
+      assertNonEmptyFile(new URL(bibLink, parsed.origin).pathname.slice(1), `${pathname} BibTeX endpoint`);
     }
   }
 }
