@@ -55,7 +55,8 @@ function highwirePublicationDate(paper: PaperSeoSource): string {
  */
 export function buildHighwireMetadata(
   paper: PaperSeoSource,
-  canonicalUrl: string
+  canonicalUrl: string,
+  options?: { locale?: "zh-CN" | "en" }
 ): ScholarlyMetaTag[] {
   if (paper.draft || paper.status === "prototype") return [];
 
@@ -65,6 +66,10 @@ export function buildHighwireMetadata(
     { name: "citation_publication_date", content: highwirePublicationDate(paper) },
     { name: "citation_abstract_html_url", content: canonicalUrl }
   ];
+
+  if (options?.locale) {
+    result.push({ name: "citation_language", content: options.locale === "en" ? "en" : "zh" });
+  }
 
   if (paper.venue?.type === "journal") {
     result.push({ name: "citation_journal_title", content: paper.venue.name });

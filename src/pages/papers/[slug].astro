@@ -10,7 +10,7 @@ import { getCollection as rawGetCollection, render, type CollectionEntry } from 
 import PaperFigure from "../../components/papers/PaperFigure.astro";
 import ImageViewer from "../../components/media/ImageViewer.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { buildScholarlyArticleGraph } from "../../lib/seo/jsonLd";
+import { buildScholarlyArticleGraph, buildWebPageGraph } from "../../lib/seo/jsonLd";
 import { buildHighwireMetadata, paperSearchDescription, paperSearchTitle } from "../../lib/seo/highwire";
 
 interface Props {
@@ -28,28 +28,47 @@ export async function getStaticPaths() {
 const { paper } = Astro.props;
 const { Content } = await render(paper);
 const canonicalPath = `/papers/${paper.id}`;
+const localizedCanonicalPath = localizePath(canonicalPath, locale);
 const site = Astro.site;
 const scholarlyMeta = site
-  ? buildHighwireMetadata(paper.data, new URL(canonicalPath, site).toString())
+  ? buildHighwireMetadata(
+      paper.data,
+      new URL(localizedCanonicalPath, site).toString(),
+      { locale }
+    )
   : undefined;
+const paperBreadcrumbs = site
+  ? [
+      { name: t("首页"), url: new URL("/", site).toString() },
+      { name: t("论文"), url: new URL("/papers", site).toString() },
+      { name: paper.data.title }
+    ]
+  : [];
 const structuredData = site
-  ? buildScholarlyArticleGraph({
-      siteUrl: site.toString(),
-      canonicalUrl: new URL(canonicalPath, site).toString(),
-      title: paper.data.title,
-      description: paper.data.abstract,
-      authors: paper.data.authors,
-      datePublished: paper.data.publicationDate,
-      dateModified: paper.data.updated,
-      keywords: paper.data.keywords,
-      venue: paper.data.venue?.name,
-      doi: paper.data.identifiers?.doi,
-      breadcrumbs: [
-        { name: t("首页"), url: new URL("/", site).toString() },
-        { name: t("论文"), url: new URL("/papers", site).toString() },
-        { name: paper.data.title }
-      ]
-    })
+  ? paper.data.status !== "prototype"
+    ? buildScholarlyArticleGraph({
+        siteUrl: site.toString(),
+        canonicalUrl: new URL(canonicalPath, site).toString(),
+        title: paper.data.title,
+        description: paper.data.abstract,
+        authors: paper.data.authors,
+        datePublished: paper.data.publicationDate,
+        dateModified: paper.data.updated,
+        keywords: paper.data.keywords,
+        venue: paper.data.venue?.name,
+        doi: paper.data.identifiers?.doi,
+        imageUrl: paper.data.cover?.src.src
+          ? new URL(paper.data.cover.src.src, site).toString()
+          : new URL(`/og/papers/${paper.id}.png`, site).toString(),
+        breadcrumbs: paperBreadcrumbs
+      })
+    : buildWebPageGraph({
+        siteUrl: site.toString(),
+        canonicalUrl: new URL(canonicalPath, site).toString(),
+        title: paper.data.title,
+        description: paper.data.abstract,
+        breadcrumbs: paperBreadcrumbs
+      })
   : undefined;
 
 const statusLabels = {
@@ -79,7 +98,9 @@ const resourceLabels = {
   title={locale === "zh-CN" ? paperSearchTitle(paper.data) : paper.data.title}
   description={locale === "zh-CN" ? paperSearchDescription(paper.data) : paper.data.abstract}
   scholarlyMeta={scholarlyMeta}
-  openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : undefined}
+  openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : "/og/papers.png"}
+  openGraphImageAlt={paper.data.cover?.alt ?? paper.data.title}
+  markdownAlternate={paper.data.status !== "prototype" ? `/papers/${paper.id}.md` : undefined}
   authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
   canonical={canonicalPath}
   metaType="article"

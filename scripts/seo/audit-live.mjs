@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { extractSitemapUrls } from "./indexnow-utils.mjs";
 
-const ORIGIN = "https://a-znk.com";
+const ORIGIN = (process.env.SEO_AUDIT_ORIGIN ?? "https://a-znk.com").replace(/\/$/, "");
 const BAIDU_UA = "Baiduspider (+http://www.baidu.com/search/spider.html)";
 const KEY = "1f4849388e587d6cc6e6895197d146371b570010e26f487f";
 
@@ -24,8 +24,24 @@ async function read(path, userAgent) {
 }
 
 const robots = (await read("/robots.txt")).body;
-assert.match(robots, /Sitemap: https:\/\/a-znk\.com\/sitemap\.xml/);
+assert.ok(robots.includes(`Sitemap: ${ORIGIN}/sitemap.xml`), "robots.txt sitemap origin");
 assert.match(robots, /User-agent: \*/);
+assert.match(robots, /User-agent: OAI-SearchBot/);
+for (const geoPath of ["/llms.txt", "/en/llms.txt", "/llms-full.txt", "/en/llms-full.txt"]) {
+  const { body, headers } = await read(geoPath);
+  assert.ok(body.startsWith("# "), geoPath + " must start with Markdown heading");
+  const robotsTag = headers.get("x-robots-tag") ?? "";
+  if (geoPath.endsWith("llms-full.txt")) {
+    assert.match(robotsTag, /noindex/i, geoPath + " must send X-Robots-Tag noindex");
+  } else {
+    assert.ok(!/noindex/i.test(robotsTag), geoPath + " must remain indexable");
+  }
+}
+for (const mdPath of ["/posts/myblog-design-manual.md", "/papers/duap-multilingual-speech-privacy.md"]) {
+  const { body, headers } = await read(mdPath);
+  assert.ok(body.startsWith("# "), mdPath + " must start with Markdown heading");
+  assert.match(headers.get("x-robots-tag") ?? "", /noindex/i, mdPath + " must send X-Robots-Tag noindex");
+}
 const { body: directXml } = await read("/sitemap.xml");
 assert.match(directXml, /<urlset\b/);
 const urls = extractSitemapUrls(directXml, ORIGIN);
@@ -66,9 +82,13 @@ const work = async (url) => {
   assert.ok(!/noindex/i.test(headers.get("x-robots-tag") ?? ""), path + " noindex header");
   const canonical = body.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   assert.equal(canonical, normalize(url), path + " canonical URL");
-  if (path.startsWith("/papers/")) {
-    const og = body.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
-    assert.equal(og, ORIGIN + "/og" + path + ".png", path + " paper OG image");
+  const og = body.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+  assert.ok(og, path + " og:image");
+  if ((path.startsWith("/papers/") || path.startsWith("/en/papers/")) && !/paper-status--prototype/.test(body)) {
+    const expectedOgPath = path.startsWith("/en/")
+      ? "/og/en" + path.slice("/en".length) + ".png"
+      : "/og" + path + ".png";
+    assert.equal(og, ORIGIN + expectedOgPath, path + " paper OG image");
     ogPaperCount++;
   }
 };

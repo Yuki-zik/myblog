@@ -1,6 +1,8 @@
 const CONTENT_COLLECTION = /^src\/content\/(posts|papers|topics|concepts)\/(.+)\.md$/;
 const ENGLISH_COLLECTION = /^src\/content\/en\/(posts|papers|topics|concepts)\/(.+)\.md$/;
 const POST_COVER = /^src\/content\/posts\/covers\/(.+)\.(?:png|jpe?g|webp|svg)$/i;
+const PAPER_COVER = /^src\/content\/papers\/covers\/(.+)\.(?:png|jpe?g|webp|svg)$/i;
+const AGENT_DATA = /^src\/data\/agent-(?:observatory|history)\.json$/;
 
 export function extractSitemapUrls(xml, host) {
   if (!xml.includes("<urlset")) {
@@ -21,6 +23,7 @@ export function extractSitemapUrls(xml, host) {
 export function changedPaths(files) {
   const paths = new Set();
   let all = false;
+  let paperCovers = false;
   for (const filename of files) {
     const file = filename.trim();
     const english = file.match(ENGLISH_COLLECTION);
@@ -32,6 +35,21 @@ export function changedPaths(files) {
     if (cover) {
       paths.add("/posts/" + cover[1]);
       paths.add("/en/posts/" + cover[1]);
+      continue;
+    }
+    if (PAPER_COVER.test(file)) {
+      // Paper cover assets use figure filenames (e.g. duap-lfd-overview.png) and
+      // appear across /papers, /author, and paper detail pages.
+      paperCovers = true;
+      paths.add("/papers");
+      paths.add("/en/papers");
+      paths.add("/author");
+      paths.add("/en/author");
+      continue;
+    }
+    if (AGENT_DATA.test(file)) {
+      paths.add("/agents");
+      paths.add("/en/agents");
       continue;
     }
     const match = file.match(CONTENT_COLLECTION);
@@ -54,11 +72,16 @@ export function changedPaths(files) {
       all = true;
     }
   }
-  return { all, paths };
+  return { all, paperCovers, paths };
 }
 
 export function selectChangedUrls(sitemapUrls, changedFiles, all = false) {
-  const { all: allRoutes, paths } = changedPaths(changedFiles);
+  const { all: allRoutes, paperCovers, paths } = changedPaths(changedFiles);
   if (all || allRoutes) return sitemapUrls;
-  return sitemapUrls.filter((url) => paths.has(new URL(url).pathname));
+  return sitemapUrls.filter((url) => {
+    const pathname = new URL(url).pathname;
+    if (paths.has(pathname)) return true;
+    if (paperCovers && /^\/(?:en\/)?papers\/[^/]+$/.test(pathname)) return true;
+    return false;
+  });
 }

@@ -11,6 +11,7 @@ import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import AgentInstrumentDesk from "../components/agents/AgentInstrumentDesk.astro";
 import { publicObservations, summary, evidenceRecords } from "../lib/agents/observatory";
 import { history, historySummary, historyDate } from "../lib/agents/history";
+import { buildCollectionPageGraph } from "../lib/seo/jsonLd";
 import "../styles/agent-observatory.css";
 
 const days = [...publicObservations.days].sort((a, b) => b.date.localeCompare(a.date));
@@ -18,8 +19,23 @@ const tasks = [...publicObservations.tasks].sort((a, b) => b.date.localeCompare(
 const taskStatusLabels = { active: t("进行中"), accepted: t("已验收"), rejected: t("未通过验收"), abandoned: t("已放弃") };
 const evidence = [...evidenceRecords].sort((a, b) => b.date.localeCompare(a.date));
 const display = (value: number | null) => value === null ? t("未记录") : String(value);
+const agentsTitle = t("Agent 工作观察站");
+const agentsSeoDescription = t("通过四个可交互小挂件持续观察 Agent 独立任务并行、可靠交付、人工注意力投入与返工比例，汇总公开实证研究与真实交付回溯。");
+const site = Astro.site;
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL("/agents", site).toString(),
+      title: agentsTitle,
+      description: agentsSeoDescription,
+      breadcrumbs: [
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: agentsTitle }
+      ]
+    })
+  : undefined;
 ---
-<BaseLayout title={t("Agent 工作观察站")} description={t("四个可交互的小挂件，观察独立任务并行、可靠交付、人工投入和返工。")} runtime="discover" headerVariant="drawing">
+<BaseLayout title={agentsTitle} description={agentsSeoDescription} canonical="/agents" openGraphImage="/og/agents.png" structuredData={structuredData} runtime="discover" headerVariant="drawing">
   <DiscoverShell bodyClass="agent-observatory">
     <header class="agent-observatory-hero">
       <div>

@@ -63,4 +63,13 @@ describe("scholarly discovery metadata", () => {
     expect(buildHighwireMetadata({ ...paper, draft: true }, "https://a-znk.com/papers/draft")).toEqual([]);
     expect(buildHighwireMetadata({ ...paper, status: "prototype" }, "https://a-znk.com/papers/sample")).toEqual([]);
   });
+
+  it("emits citation_language and preserves localized abstract URL when locale is supplied", () => {
+    const enMeta = buildHighwireMetadata(paper, "https://a-znk.com/en/papers/duap", { locale: "en" });
+    expect(enMeta).toContainEqual({ name: "citation_abstract_html_url", content: "https://a-znk.com/en/papers/duap" });
+    expect(enMeta).toContainEqual({ name: "citation_language", content: "en" });
+
+    const zhMeta = buildHighwireMetadata(paper, "https://a-znk.com/papers/duap", { locale: "zh-CN" });
+    expect(zhMeta).toContainEqual({ name: "citation_language", content: "zh" });
+  });
 });

@@ -1,7 +1,6 @@
 import type { APIContext } from "astro";
 import { collectionReader } from "../lib/i18n/content";
 import { getLocale, createTranslator, localizePath } from "../lib/i18n/index";
-import { getPostUrl } from "../lib/posts/urls";
 import { SITE_AUTHOR_PROFILE, SITE_NAME } from "../lib/site";
 
 function escapeXml(value: string): string {
@@ -26,6 +25,14 @@ export async function GET(context: APIContext) {
     return bTime - aTime;
   });
 
+  const latestModifiedMs = sortedPosts.reduce((max, post) => {
+    const candidate = new Date(post.data.updated ?? post.data.date).getTime();
+    return Number.isFinite(candidate) && candidate > max ? candidate : max;
+  }, 0);
+
+  const selfUrl = new URL(localizePath("/rss.xml", locale), site).toString();
+  const channelLink = new URL(localizePath("/", locale), site).toString();
+
   const items = sortedPosts
     .map((post) => {
       const url = new URL(localizePath(`/posts/${post.id}`, locale), site).toString();
@@ -49,12 +56,14 @@ export async function GET(context: APIContext) {
 
   const body = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">',
+    '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">',
     "<channel>",
     `<title>${escapeXml(t(SITE_NAME))}</title>`,
     `<description>${escapeXml(t(SITE_AUTHOR_PROFILE.tagline ?? "主题化知识网络与段落短评博客"))}</description>`,
-    `<link>${escapeXml(new URL(localizePath("/", locale), site).toString())}</link>`,
+    `<link>${escapeXml(channelLink)}</link>`,
+    `<atom:link href="${escapeXml(selfUrl)}" rel="self" type="application/rss+xml" />`,
     `<language>${locale}</language>`,
+    ...(latestModifiedMs > 0 ? [`<lastBuildDate>${new Date(latestModifiedMs).toUTCString()}</lastBuildDate>`] : []),
     items,
     "</channel>",
     "</rss>"

@@ -51,6 +51,9 @@ interface Props {
   publishedTime?: string;
   modifiedTime?: string;
   openGraphImage?: string;
+  openGraphImageAlt?: string;
+  /** Clean Markdown mirror path (e.g. `/posts/<slug>.md`) for GEO / LLM citation discovery. */
+  markdownAlternate?: string;
   runtime: "discover" | "reading";
   bodyClass?: string;
   mainClass?: string;
@@ -77,6 +80,8 @@ const {
   publishedTime,
   modifiedTime,
   openGraphImage,
+  openGraphImageAlt,
+  markdownAlternate,
   runtime,
   bodyClass,
   mainClass,
@@ -132,9 +137,20 @@ function resolveAbsoluteUrl(value: string | undefined): string | undefined {
   }
 }
 
-const canonicalUrl = resolveAbsoluteUrl(l(canonical ?? (Astro.url.pathname.replace(/\/+$/, "") || "/")));
-const rssUrl = resolveAbsoluteUrl(l("/rss.xml"));
-const openGraphImageUrl = resolveAbsoluteUrl(locale === "en" && openGraphImage?.startsWith("/og/") ? openGraphImage.replace("/og/", "/og/en/") : openGraphImage);
+const canonicalUrl = noindex && !canonical
+  ? undefined
+  : resolveAbsoluteUrl(l(canonical ?? (Astro.url.pathname.replace(/\/+$/, "") || "/")));
+const rssUrl = resolveAbsoluteUrl(localizePath("/rss.xml", locale));
+const llmsUrl = !noindex ? resolveAbsoluteUrl(localizePath("/llms.txt", locale)) : undefined;
+const markdownAlternateUrl = !noindex && markdownAlternate
+  ? resolveAbsoluteUrl(localizePath(markdownAlternate, locale))
+  : undefined;
+const localizedOgPath = locale === "en" && openGraphImage?.startsWith("/og/") && !openGraphImage.startsWith("/og/en/")
+  ? openGraphImage.replace("/og/", "/og/en/")
+  : openGraphImage;
+const openGraphImageUrl = resolveAbsoluteUrl(localizedOgPath);
+const isGeneratedOgCard = Boolean(localizedOgPath?.startsWith("/og/") && localizedOgPath.endsWith(".png"));
+const resolvedOgAlt = openGraphImageAlt ?? documentTitle;
 const twitterCard = openGraphImage ? "summary_large_image" : "summary";
 const fontStylesheetUrl = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Outfit:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@500;600;700&display=swap";
 
@@ -172,14 +188,19 @@ const themeInitScript = `(function () {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{documentTitle}</title>
     <meta name="description" content={description} />
-    {noindex ? <meta name="robots" content="noindex, follow" /> : null}
+    <meta
+      name="robots"
+      content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
+    />
     <meta name="author" content={authorMeta} />
     {scholarlyMeta?.map((item) => <meta name={item.name} content={item.content} />)}
     {locale === "zh-CN" && pathname === "/" ? <meta name="baidu-site-verification" content="codeva-WhDD0PxDx9" /> : null}
     <link rel="icon" type="image/svg+xml" href={l("/favicon.svg")} />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
     {alternates.map(item => <link rel="alternate" hreflang={item.lang} href={resolveAbsoluteUrl(item.path)} />)}
-    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={l(rssUrl ?? "/rss.xml")} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={rssUrl ?? localizePath("/rss.xml", locale)} />
+    {markdownAlternateUrl ? <link rel="alternate" type="text/markdown" title={`${title} (Markdown)`} href={markdownAlternateUrl} /> : null}
+    {llmsUrl ? <link rel="alternate" type="text/plain" title={`${SITE_NAME} LLMs Index`} href={llmsUrl} /> : null}
 
     <!-- Open Graph -->
     <meta property="og:title" content={documentTitle} />
@@ -187,8 +208,13 @@ const themeInitScript = `(function () {
     <meta property="og:description" content={description} />
     <meta property="og:type" content={metaType} />
     <meta property="og:locale" content={locale === "en" ? "en_US" : "zh_CN"} />
+    {otherLanguage ? <meta property="og:locale:alternate" content={otherLanguage.lang === "en" ? "en_US" : "zh_CN"} /> : null}
     {canonicalUrl ? <meta property="og:url" content={canonicalUrl} /> : null}
     {openGraphImageUrl ? <meta property="og:image" content={openGraphImageUrl} /> : null}
+    {openGraphImageUrl ? <meta property="og:image:alt" content={resolvedOgAlt} /> : null}
+    {openGraphImageUrl && isGeneratedOgCard ? <meta property="og:image:type" content="image/png" /> : null}
+    {openGraphImageUrl && isGeneratedOgCard ? <meta property="og:image:width" content="1200" /> : null}
+    {openGraphImageUrl && isGeneratedOgCard ? <meta property="og:image:height" content="630" /> : null}
     {
       metaType === "article" && publishedTime ? (
         <meta property="article:published_time" content={publishedTime} />
@@ -205,6 +231,7 @@ const themeInitScript = `(function () {
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={description} />
     {openGraphImageUrl ? <meta name="twitter:image" content={openGraphImageUrl} /> : null}
+    {openGraphImageUrl ? <meta name="twitter:image:alt" content={resolvedOgAlt} /> : null}
 
     {
       jsonLdHtml ? (
@@ -213,11 +240,11 @@ const themeInitScript = `(function () {
     }
 
     <!-- Google Fonts: Space Grotesk (UI chrome) + Source Serif 4 (reading) -->
-    <link rel="preconnect" href={l("https://fonts.googleapis.com")} />
-    <link rel="preconnect" href={l("https://fonts.gstatic.com")} crossorigin />
-    <link rel="stylesheet" href={l(fontStylesheetUrl)} media="print" onload="this.media='all'" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fontStylesheetUrl} media="print" onload="this.media='all'" />
     <noscript>
-      <link rel="stylesheet" href={l(fontStylesheetUrl)} />
+      <link rel="stylesheet" href={fontStylesheetUrl} />
     </noscript>
 
     <script is:inline set:html={themeInitScript} />

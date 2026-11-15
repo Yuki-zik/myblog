@@ -45,7 +45,7 @@ export async function createPageLocalizer(locale: Locale) {
     const localized = localizePath(value, locale);
     if (locale !== "en" || !localized?.startsWith("/en")) return localized;
     const url = new URL(localized, "https://local.invalid");
-    if (/\.(?:md|xml|json)$/.test(url.pathname)) return localized;
+    if (/\.(?:md|xml|json|txt)$/.test(url.pathname)) return localized;
     const source = localizePath(url.pathname, "zh-CN");
     return available.has(source) ? localized : localizePath(value, "zh-CN");
   };

@@ -19,6 +19,8 @@ test("retrieval clients can follow author and paper URLs from the public index",
   expect(people).toHaveLength(1);
   expect(people[0].url).toBe("https://myblog.example/author");
   expect(people[0].sameAs).toContain("https://github.com/yuki-zik");
+  expect(people[0].sameAs).toContain("https://orcid.org/0009-0005-2060-4172");
+  expect(people[0].sameAs).toContain("https://www.zhihu.com/people/A-Znk");
 });
 
 async function sitemapLocations(page: Page, xml: string): Promise<string[]> {
@@ -162,4 +164,103 @@ test("homepage advertises Baidu site ownership verification", async ({ page, req
     return Array.from(document.querySelectorAll('meta[name="baidu-site-verification"]'), (meta) => meta.getAttribute("content"));
   }, await response.text());
   expect(verificationCodes).toEqual(["codeva-WhDD0PxDx9"]);
+});
+
+test("GEO endpoints expose bilingual LLMs indexes, full-text corpora, and clean Markdown mirrors", async ({ page, request }) => {
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toContain("User-agent: OAI-SearchBot");
+  expect(robots).toContain("User-agent: Claude-SearchBot");
+  expect(robots).toContain("User-agent: PerplexityBot");
+  expect(robots).toContain("https://myblog.example/llms.txt");
+  expect(robots).toContain("https://myblog.example/llms-full.txt");
+
+  const llmsZh = await (await request.get("/llms.txt")).text();
+  expect(llmsZh).toContain("0009-0005-2060-4172");
+  expect(llmsZh).toContain("https://myblog.example/papers/duap-multilingual-speech-privacy.md");
+  expect(llmsZh).toContain("## Optional");
+  expect(llmsZh).toContain("https://myblog.example/llms-full.txt");
+
+  const llmsEnRes = await request.get("/en/llms.txt");
+  expect(llmsEnRes.ok()).toBe(true);
+  const llmsEn = await llmsEnRes.text();
+  expect(llmsEn).toContain("https://myblog.example/en/author");
+  expect(llmsEn).toContain("https://myblog.example/en/papers/duap-multilingual-speech-privacy");
+  expect(llmsEn).toContain("https://myblog.example/en/llms-full.txt");
+
+  for (const corpusPath of ["/llms-full.txt", "/en/llms-full.txt"]) {
+    const res = await request.get(corpusPath);
+    expect(res.ok(), corpusPath).toBe(true);
+    const body = await res.text();
+    expect(body).toContain("10.1109/TIFS.2026.3671687");
+    expect(body.length).toBeGreaterThan(2000);
+  }
+
+  for (const mdPath of [
+    "/posts/myblog-design-manual.md",
+    "/en/posts/myblog-design-manual.md",
+    "/papers/duap-multilingual-speech-privacy.md",
+    "/en/papers/duap-multilingual-speech-privacy.md"
+  ]) {
+    const res = await request.get(mdPath);
+    expect(res.ok(), mdPath).toBe(true);
+    const md = await res.text();
+    expect(md.startsWith("# ")).toBe(true);
+    expect(md).toContain("Canonical URL: https://myblog.example/");
+  }
+
+  const enPaperHtml = await (await request.get("/en/papers/duap-multilingual-speech-privacy")).text();
+  const enPaperMeta = await page.evaluate((html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const graph = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+      .flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? []);
+    return {
+      markdownHref: doc.querySelector('link[rel="alternate"][type="text/markdown"]')?.getAttribute("href"),
+      llmsHref: doc.querySelector('link[rel="alternate"][type="text/plain"]')?.getAttribute("href"),
+      citationUrl: doc.querySelector('meta[name="citation_abstract_html_url"]')?.getAttribute("content"),
+      citationLang: doc.querySelector('meta[name="citation_language"]')?.getAttribute("content"),
+      ogImage: doc.querySelector('meta[property="og:image"]')?.getAttribute("content"),
+      scholarlyImage: graph.find((node) => node["@type"] === "ScholarlyArticle")?.image
+    };
+  }, enPaperHtml);
+
+  expect(enPaperMeta.markdownHref).toBe("https://myblog.example/en/papers/duap-multilingual-speech-privacy.md");
+  expect(enPaperMeta.llmsHref).toBe("https://myblog.example/en/llms.txt");
+  expect(enPaperMeta.citationUrl).toBe("https://myblog.example/en/papers/duap-multilingual-speech-privacy");
+  expect(enPaperMeta.citationLang).toBe("en");
+  expect(enPaperMeta.ogImage).toBe("https://myblog.example/og/en/papers/duap-multilingual-speech-privacy.png");
+  expect(enPaperMeta.scholarlyImage).toMatch(/^https:\/\/myblog\.example\/_astro\//);
+
+  const enOxicamsHtml = await (await request.get("/en/papers/oxicams-carbon-dots-machine-learning")).text();
+  const enOxicamsScholarlyImage = await page.evaluate((html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const graph = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+      .flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? []);
+    return graph.find((node) => node["@type"] === "ScholarlyArticle")?.image;
+  }, enOxicamsHtml);
+  expect(enOxicamsScholarlyImage).toBe("https://myblog.example/og/en/papers/oxicams-carbon-dots-machine-learning.png");
+
+  const authorHtml = await (await request.get("/author")).text();
+  const conceptHtml = await (await request.get("/concepts/anchor-id")).text();
+  const schemaTypes = await page.evaluate(({ aHtml, cHtml }) => {
+    const extractTypes = (html: string) =>
+      Array.from(new DOMParser().parseFromString(html, "text/html").querySelectorAll('script[type="application/ld+json"]'))
+        .flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? [])
+        .map((node) => node["@type"]);
+    return { author: extractTypes(aHtml), concept: extractTypes(cHtml) };
+  }, { aHtml: authorHtml, cHtml: conceptHtml });
+
+  expect(schemaTypes.author).toContain("ProfilePage");
+  expect(schemaTypes.concept).toContain("DefinedTerm");
+
+  for (const route of ["/", "/en", "/author", "/en/author", "/agents", "/map", "/privacy"]) {
+    const html = await (await request.get(route)).text();
+    const ogUrl = await page.evaluate((raw) => {
+      const doc = new DOMParser().parseFromString(raw, "text/html");
+      return doc.querySelector('meta[property="og:image"]')?.getAttribute("content") ?? "";
+    }, html);
+    expect(ogUrl, route).toMatch(/^https:\/\/myblog\.example\/og\//);
+    const imgRes = await request.get(new URL(ogUrl).pathname);
+    expect(imgRes.ok(), `${route} -> ${ogUrl}`).toBe(true);
+    expect(imgRes.headers()["content-type"]).toContain("image/png");
+  }
 });

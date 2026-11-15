@@ -24,7 +24,7 @@ import { TUFTE_MARKDOWN_FOOTNOTES_KEY } from "../../lib/markdown/rehypeTufteFoot
 import { resolvePostAuthor } from "../../lib/posts/author";
 import { formatPostDisplayDate } from "../../lib/posts/date";
 import { getPostSiblings } from "../../lib/posts/navigation";
-import { getPostReadingMinutes } from "../../lib/posts/readingTime";
+import { countHybridWords, getPostReadingMinutes } from "../../lib/posts/readingTime";
 import { buildPostToc } from "../../lib/posts/toc";
 import { getPostPath } from "../../lib/posts/urls";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -145,6 +145,8 @@ const headerStats = [
 // JSON-LD: BlogPosting graph. Topics are rendered as visible chips → `about`;
 // concepts are only surfaced as a count (not named) so we omit `mentions`.
 const canonicalPath = post.data.canonical ?? getPostPath(post.id);
+const postWordCount = countHybridWords(post.body ?? "");
+const topicLabels = post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug);
 const site = Astro.site;
 const structuredData = site
   ? buildBlogPostingGraph({
@@ -156,8 +158,10 @@ const structuredData = site
       dateModified: post.data.updated,
       imageUrl: post.data.cover?.src.src
         ? new URL(post.data.cover.src.src, site).toString()
-        : undefined,
-      topics: post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug),
+        : new URL(`/og/posts/${post.id}.png`, site).toString(),
+      wordCount: postWordCount,
+      readingMinutes,
+      topics: topicLabels,
       breadcrumbs: [
         { name: t("首页"), url: new URL("/", site).toString() },
         { name: t("主题"), url: new URL("/topics", site).toString() },
@@ -184,6 +188,8 @@ const structuredData = site
   publishedTime={post.data.date}
   modifiedTime={post.data.updated}
   openGraphImage={`/og/posts/${post.id}.png`}
+  openGraphImageAlt={post.data.cover?.alt ?? post.data.title}
+  markdownAlternate={`/posts/${post.id}.md`}
   runtime="reading"
   bodyClass="article-paper-page"
   headerVariant="drawing"

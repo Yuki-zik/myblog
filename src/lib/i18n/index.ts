@@ -22,7 +22,7 @@ export function localizePath(value: string | undefined, locale: Locale): string 
   const path = splitAt < 0 ? value : value.slice(0, splitAt);
   const suffix = splitAt < 0 ? "" : value.slice(splitAt);
   const unprefixed = path.replace(/^\/en(?=\/|$)/, "") || "/";
-  if (!/^\/(?:$|(?:topics|posts|papers|concepts)(?:\/|$)|(?:author|archives|map|agents|privacy)$|(?:rss\.xml|search-index\.json|design\.md)$)/.test(unprefixed)) return value;
+  if (!/^\/(?:$|(?:topics|posts|papers|concepts)(?:\/|$)|(?:author|archives|map|agents|privacy)$|(?:rss\.xml|search-index\.json|design\.md|llms\.txt|llms-full\.txt)$)/.test(unprefixed)) return value;
   const clean = unprefixed.replace(/\/+$/, "") || "/";
   return (locale === "en" ? "/en" + (clean === "/" ? "" : clean) : clean) + suffix;
 }
@@ -48,13 +48,27 @@ export function localizeStructuredData<T>(value: T, locale: Locale, site: URL): 
       if (input.startsWith(site.origin + "/")) {
         const url = new URL(input);
         if (key === "@id" && ["#website", "#person-a-znk"].includes(url.hash)) return input;
+        if (url.pathname.startsWith("/og/") && !url.pathname.startsWith("/og/en/")) {
+          url.pathname = url.pathname.replace(/^\/og\//, "/og/en/");
+          return url.toString();
+        }
         url.pathname = localizePath(url.pathname, locale);
         return url.toString();
       }
       return t(input);
     }
-    if (Array.isArray(input)) return input.map(item => visit(item));
-    if (input && typeof input === "object") return Object.fromEntries(Object.entries(input).map(([k, v]) => [k, visit(v, k)]));
+    if (Array.isArray(input)) return input.map(item => visit(item, key));
+    if (input && typeof input === "object") {
+      const record = input as Record<string, unknown>;
+      return Object.fromEntries(
+        Object.entries(record).map(([k, v]) => {
+          if (k === "alternateName" && record["@type"] === "WebSite") {
+            return [k, ["A-Znk的blog", "A-Znk的博客"]];
+          }
+          return [k, visit(v, k)];
+        })
+      );
+    }
     return input;
   }
   return visit(value) as T;

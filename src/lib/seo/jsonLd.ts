@@ -31,6 +31,11 @@ function abs(path: string, siteUrl: string): string {
   return new URL(path, siteUrl).toString();
 }
 
+function normalizeOrcidUrl(orcid: string): string {
+  const clean = orcid.trim().replace(/^https?:\/\/orcid\.org\//i, "");
+  return `https://orcid.org/${clean}`;
+}
+
 export function websiteId(siteUrl: string): string {
   return abs("#website", siteUrl);
 }
@@ -51,12 +56,21 @@ export function buildBaseNodes(siteUrl: string, author: SiteAuthorProfile): Json
   if (author.socials?.scholar) {
     sameAs.push(author.socials.scholar);
   }
+  if (author.socials?.orcid) {
+    sameAs.push(normalizeOrcidUrl(author.socials.orcid));
+  }
+  if (author.socials?.zhihu) {
+    sameAs.push(author.socials.zhihu);
+  }
 
   const person: JsonLdNode = {
     "@type": "Person",
     "@id": personId(siteUrl),
     name: author.name,
     ...(author.publicationName ? { alternateName: author.publicationName } : {}),
+    ...(author.bioShort ? { jobTitle: author.bioShort } : {}),
+    ...(author.intro ? { description: author.intro } : {}),
+    ...(author.blogScope?.length ? { knowsAbout: author.blogScope } : {}),
     url: author.homepage || abs("/author", siteUrl),
     ...(sameAs.length ? { sameAs } : {})
   };
@@ -88,6 +102,30 @@ export function buildBreadcrumb(pageUrl: string, items: BreadcrumbItem[]): JsonL
   };
 }
 
+export interface ProfilePageInput {
+  siteUrl: string;
+  canonicalUrl: string;
+  title: string;
+  description?: string;
+  breadcrumbs: BreadcrumbItem[];
+}
+
+export function buildProfilePageGraph(input: ProfilePageInput): JsonLdNode[] {
+  const page: JsonLdNode = {
+    "@type": "ProfilePage",
+    "@id": `${input.canonicalUrl}#profilepage`,
+    name: input.title,
+    url: input.canonicalUrl,
+    ...(input.description ? { description: input.description } : {}),
+    inLanguage: "zh-CN",
+    mainEntity: { "@id": personId(input.siteUrl) },
+    isPartOf: { "@id": websiteId(input.siteUrl) },
+    breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
+  };
+
+  return [page, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
+}
+
 export interface BlogPostingInput {
   siteUrl: string;
   /** Absolute canonical URL of the post. */
@@ -102,6 +140,8 @@ export interface BlogPostingInput {
   topics?: string[];
   /** Visible concept titles → schema `mentions`. Pass only if rendered on the page. */
   concepts?: string[];
+  wordCount?: number;
+  readingMinutes?: number;
   breadcrumbs: BreadcrumbItem[];
 }
 
@@ -114,11 +154,16 @@ export function buildBlogPostingGraph(input: BlogPostingInput): JsonLdNode[] {
     datePublished: input.datePublished,
     dateModified: input.dateModified ?? input.datePublished,
     inLanguage: "zh-CN",
+    isAccessibleForFree: true,
     mainEntityOfPage: input.canonicalUrl,
     author: { "@id": personId(input.siteUrl) },
     publisher: { "@id": personId(input.siteUrl) },
     isPartOf: { "@id": websiteId(input.siteUrl) },
     ...(input.imageUrl ? { image: input.imageUrl } : {}),
+    ...(input.wordCount && input.wordCount > 0 ? { wordCount: input.wordCount } : {}),
+    ...(input.readingMinutes && input.readingMinutes > 0
+      ? { timeRequired: `PT${Math.max(1, Math.round(input.readingMinutes))}M` }
+      : {}),
     ...(input.topics?.length
       ? { about: input.topics.map((name) => ({ "@type": "Thing", name })) }
       : {}),
@@ -136,12 +181,13 @@ export interface ScholarlyArticleInput {
   canonicalUrl: string;
   title: string;
   description: string;
-  authors: Array<{ name: string; url?: string; self?: boolean }>;
+  authors: Array<{ name: string; url?: string; orcid?: string; self?: boolean }>;
   datePublished?: string;
   dateModified?: string;
   keywords: string[];
   venue?: string;
   doi?: string;
+  imageUrl?: string;
   breadcrumbs: BreadcrumbItem[];
 }
 
@@ -160,15 +206,27 @@ export function buildScholarlyArticleGraph(input: ScholarlyArticleInput): JsonLd
     author: input.authors.map((author) =>
       author.self
         ? { "@id": personId(input.siteUrl) }
-        : { "@type": "Person", name: author.name, ...(author.url ? { url: author.url } : {}) }
+        : {
+            "@type": "Person",
+            name: author.name,
+            ...(author.url ? { url: author.url } : {}),
+            ...(author.orcid ? { sameAs: normalizeOrcidUrl(author.orcid) } : {})
+          }
     ),
     ...(input.datePublished ? { datePublished: input.datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
     inLanguage: "zh-CN",
+    isAccessibleForFree: true,
     mainEntityOfPage: input.canonicalUrl,
     isPartOf: publicationParts,
     keywords: input.keywords,
-    ...(input.doi ? { identifier: { "@type": "PropertyValue", propertyID: "DOI", value: input.doi } } : {}),
+    ...(input.imageUrl ? { image: input.imageUrl } : {}),
+    ...(input.doi
+      ? {
+          identifier: { "@type": "PropertyValue", propertyID: "DOI", value: input.doi },
+          sameAs: `https://doi.org/${input.doi}`
+        }
+      : {}),
     breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
   };
 
@@ -196,6 +254,58 @@ export function buildCollectionPageGraph(input: CollectionPageInput): JsonLdNode
   };
 
   return [page, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
+}
+
+export function buildWebPageGraph(input: CollectionPageInput): JsonLdNode[] {
+  const page: JsonLdNode = {
+    "@type": "WebPage",
+    "@id": `${input.canonicalUrl}#webpage`,
+    name: input.title,
+    url: input.canonicalUrl,
+    ...(input.description ? { description: input.description } : {}),
+    inLanguage: "zh-CN",
+    isPartOf: { "@id": websiteId(input.siteUrl) },
+    breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
+  };
+
+  return [page, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
+}
+
+export interface DefinedTermPageInput {
+  siteUrl: string;
+  canonicalUrl: string;
+  title: string;
+  description: string;
+  tags?: string[];
+  breadcrumbs: BreadcrumbItem[];
+}
+
+export function buildDefinedTermGraph(input: DefinedTermPageInput): JsonLdNode[] {
+  const termId = `${input.canonicalUrl}#definedterm`;
+  const term: JsonLdNode = {
+    "@type": "DefinedTerm",
+    "@id": termId,
+    name: input.title,
+    description: input.description,
+    url: input.canonicalUrl,
+    inLanguage: "zh-CN",
+    inDefinedTermSet: abs("/map", input.siteUrl)
+  };
+
+  const page: JsonLdNode = {
+    "@type": "CollectionPage",
+    "@id": `${input.canonicalUrl}#collectionpage`,
+    name: input.title,
+    url: input.canonicalUrl,
+    description: input.description,
+    inLanguage: "zh-CN",
+    ...(input.tags?.length ? { keywords: input.tags } : {}),
+    mainEntity: { "@id": termId },
+    isPartOf: { "@id": websiteId(input.siteUrl) },
+    breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
+  };
+
+  return [page, term, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
 }
 
 /**
