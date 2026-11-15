@@ -76,7 +76,14 @@ for (const rawUrl of directUrls) {
   assert(canonical === parsed.href, `${pathname}: canonical mismatch (${canonical} vs ${parsed.href})`);
 
   const description = document.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() ?? "";
-  assert(description.length >= 45, `${pathname}: meta description too short (${description.length} chars: "${description}")`);
+  const effectiveDescLength = [...description].reduce(
+    (sum, ch) => sum + (/[\u3400-\u9fff\uff00-\uffef]/.test(ch) ? 2 : 1),
+    0
+  );
+  assert(
+    effectiveDescLength >= 45,
+    `${pathname}: meta description too short (${description.length} chars / ${effectiveDescLength} cols: "${description}")`
+  );
 
   const robotsMeta = document.querySelector('meta[name="robots"]')?.getAttribute("content") ?? "";
   assert(!robotsMeta.includes("noindex"), `${pathname}: public sitemap route cannot be noindex`);

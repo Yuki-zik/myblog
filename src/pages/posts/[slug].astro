@@ -147,13 +147,6 @@ const headerStats = [
 const canonicalPath = post.data.canonical ?? getPostPath(post.id);
 const postWordCount = countHybridWords(post.body ?? "");
 const topicLabels = post.data.topics.map((slug) => topicTitleBySlug.get(slug) ?? slug);
-const rawSummary = post.data.summary ?? "";
-const postSeoDescription =
-  rawSummary.length >= 45 || !rawSummary
-    ? rawSummary || undefined
-    : locale === "en"
-      ? `${rawSummary} (${topicLabels.join(", ")} · A-Znk Blog)`
-      : `${rawSummary}（涵盖${topicLabels.join("、")}的技术笔记 · A-Znk的blog）`;
 const site = Astro.site;
 const structuredData = site
   ? buildBlogPostingGraph({
@@ -188,7 +181,7 @@ const structuredData = site
 
 <BaseLayout
   title={post.data.title}
-  description={postSeoDescription}
+  description={post.data.summary}
   authorMeta={resolvedAuthor.name}
   canonical={post.data.canonical ?? getPostPath(post.id)}
   metaType="article"
