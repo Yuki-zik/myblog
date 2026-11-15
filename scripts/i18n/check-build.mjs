@@ -44,6 +44,10 @@ for (const url of english) {
     assert(document.querySelector('meta[name="description"]')?.content.trim(), `${path}: description`);
     for (const link of document.querySelectorAll('a[href^="/"]:not([data-language-switch])')) {
       const target = new URL(link.getAttribute("href"), url).pathname;
+      if (/\.(?:bib|csv|json|md|txt|xml)$/i.test(target)) {
+        await access(resolve(root, target.slice(1)));
+        continue;
+      }
       if (/^\/(?:posts|topics|concepts|papers|author|archives|map|agents)(?:\/|$)/.test(target)) {
         assert(paths.has(target), `${path}: missing source fallback ${target}`);
         const equivalent = "/en" + (target === "/" ? "" : target);

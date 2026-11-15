@@ -26,9 +26,9 @@
       "headingMap": {}
     },
     "papers/duap-multilingual-speech-privacy.md": {
-      "sourceHash": "781fbf09fab8b14dae7b7e81e73c2b350e6cdaf80d653480b74bd74742400fc1",
-      "targetHash": "cb5b0702373387cdd54b3aff4486cc0b4152f1ab31c13104f96a449cc54867c6",
-      "translatedAt": "2026-10-25T07:25:34.304Z",
+      "sourceHash": "3f3922813bc56d4545b084946780610ad5451b35ded95ded27933724e368e28d",
+      "targetHash": "cb460d454f149efbc53666cf10901f729a48defff781a9627eee6b66930d248c",
+      "translatedAt": "2026-11-16T00:00:00.000Z",
       "provider": "existing-reviewed",
       "model": null,
       "promptVersion": null,
@@ -50,9 +50,9 @@
       "semanticReview": "human-adopted"
     },
     "posts/ant-ai-coding-review.md": {
-      "sourceHash": "a685792ff49269c52ae486b800b97797b4e4e3a8cc99d9c08fdeab585d5caed2",
-      "targetHash": "5cf4e4ae646af16b01690e4b2b6aac7670db9c7c02d71893fcf473fba0debc59",
-      "translatedAt": "2026-10-25T07:25:34.309Z",
+      "sourceHash": "5679939820b15c0b3dd8d6b6a613a15e6c691bce11670924b74b734a537d1d97",
+      "targetHash": "9139a8c4fed5f92dca47972ea60380931e1b813a57d45741d76a6027d2acfc51",
+      "translatedAt": "2026-11-16T00:00:00.000Z",
       "provider": "existing-reviewed",
       "model": null,
       "promptVersion": null,
@@ -98,9 +98,9 @@
       "semanticReview": "human-adopted"
     },
     "topics/agent-engineering.md": {
-      "sourceHash": "8b13017b0690ef7141d92b87318d3089dc16a3bc96831419683b54e3c56b3ad8",
-      "targetHash": "0eb027d1c0bd124a38fb6353f2266805ccde8de8f48f550f21a3ca294a6e1fb9",
-      "translatedAt": "2026-10-25T07:25:34.312Z",
+      "sourceHash": "dbc11f13fdefc1d6a87ec2471a7625ca71756b27b5ccea7be80f183d81689a49",
+      "targetHash": "7b919ceb6eb17c65d74d1a41dcebf8a9494607528e8503ffabb2a319af8d1314",
+      "translatedAt": "2026-11-16T00:00:00.000Z",
       "provider": "existing-reviewed",
       "model": null,
       "promptVersion": null,

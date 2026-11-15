@@ -308,6 +308,70 @@ export function buildDefinedTermGraph(input: DefinedTermPageInput): JsonLdNode[]
   return [page, term, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
 }
 
+export interface AgentDatasetPageInput {
+  siteUrl: string;
+  canonicalUrl: string;
+  title: string;
+  description: string;
+  datasetName: string;
+  datasetDescription: string;
+  measurementTechnique: string;
+  dateModified?: string;
+  keywords?: string[];
+  breadcrumbs: BreadcrumbItem[];
+}
+
+export function buildAgentDatasetGraph(input: AgentDatasetPageInput): JsonLdNode[] {
+  const datasetId = `${input.canonicalUrl}#dataset`;
+  const dataset: JsonLdNode = {
+    "@type": "Dataset",
+    "@id": datasetId,
+    name: input.datasetName,
+    description: input.datasetDescription,
+    url: input.canonicalUrl,
+    inLanguage: "zh-CN",
+    isAccessibleForFree: true,
+    creator: { "@id": personId(input.siteUrl) },
+    isPartOf: { "@id": websiteId(input.siteUrl) },
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+    ...(input.keywords?.length ? { keywords: input.keywords } : {}),
+    measurementTechnique: input.measurementTechnique,
+    variableMeasured: [
+      "peakParallelTasks",
+      "humanMinutes",
+      "reworkMinutes",
+      "taskStatus",
+      "reviewedDeliveryStatus"
+    ],
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: abs("/agents/dataset.json", input.siteUrl)
+      },
+      {
+        "@type": "DataDownload",
+        encodingFormat: "text/csv",
+        contentUrl: abs("/agents/dataset.csv", input.siteUrl)
+      }
+    ]
+  };
+
+  const page: JsonLdNode = {
+    "@type": "CollectionPage",
+    "@id": `${input.canonicalUrl}#collectionpage`,
+    name: input.title,
+    url: input.canonicalUrl,
+    description: input.description,
+    inLanguage: "zh-CN",
+    mainEntity: { "@id": datasetId },
+    isPartOf: { "@id": websiteId(input.siteUrl) },
+    breadcrumb: { "@id": `${input.canonicalUrl}#breadcrumb` }
+  };
+
+  return [page, dataset, buildBreadcrumb(input.canonicalUrl, input.breadcrumbs)];
+}
+
 /**
  * Serialize a graph into a string safe to embed inside an inline
  * `<script type="application/ld+json">`. Escapes characters that could

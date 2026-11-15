@@ -54,6 +54,8 @@ interface Props {
   openGraphImageAlt?: string;
   /** Clean Markdown mirror path (e.g. `/posts/<slug>.md`) for GEO / LLM citation discovery. */
   markdownAlternate?: string;
+  /** Machine-readable BibTeX citation path (e.g. `/papers/<slug>.bib`) for reference managers. */
+  bibtexAlternate?: string;
   runtime: "discover" | "reading";
   bodyClass?: string;
   mainClass?: string;
@@ -82,6 +84,7 @@ const {
   openGraphImage,
   openGraphImageAlt,
   markdownAlternate,
+  bibtexAlternate,
   runtime,
   bodyClass,
   mainClass,
@@ -145,6 +148,9 @@ const llmsUrl = !noindex ? resolveAbsoluteUrl(localizePath("/llms.txt", locale))
 const markdownAlternateUrl = !noindex && markdownAlternate
   ? resolveAbsoluteUrl(localizePath(markdownAlternate, locale))
   : undefined;
+const bibtexAlternateUrl = !noindex && bibtexAlternate
+  ? resolveAbsoluteUrl(bibtexAlternate)
+  : undefined;
 const localizedOgPath = locale === "en" && openGraphImage?.startsWith("/og/") && !openGraphImage.startsWith("/og/en/")
   ? openGraphImage.replace("/og/", "/og/en/")
   : openGraphImage;
@@ -200,6 +206,7 @@ const themeInitScript = `(function () {
     {alternates.map(item => <link rel="alternate" hreflang={item.lang} href={resolveAbsoluteUrl(item.path)} />)}
     <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} RSS`} href={rssUrl ?? localizePath("/rss.xml", locale)} />
     {markdownAlternateUrl ? <link rel="alternate" type="text/markdown" title={`${title} (Markdown)`} href={markdownAlternateUrl} /> : null}
+    {bibtexAlternateUrl ? <link rel="alternate" type="application/x-bibtex" title={`${title} (BibTeX)`} href={bibtexAlternateUrl} /> : null}
     {llmsUrl ? <link rel="alternate" type="text/plain" title={`${SITE_NAME} LLMs Index`} href={llmsUrl} /> : null}
 
     <!-- Open Graph -->

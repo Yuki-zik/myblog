@@ -11,7 +11,7 @@ import DiscoverShell from "../components/discover/DiscoverShell.astro";
 import AgentInstrumentDesk from "../components/agents/AgentInstrumentDesk.astro";
 import { publicObservations, summary, evidenceRecords } from "../lib/agents/observatory";
 import { history, historySummary, historyDate } from "../lib/agents/history";
-import { buildCollectionPageGraph } from "../lib/seo/jsonLd";
+import { buildAgentDatasetGraph } from "../lib/seo/jsonLd";
 import "../styles/agent-observatory.css";
 
 const days = [...publicObservations.days].sort((a, b) => b.date.localeCompare(a.date));
@@ -21,13 +21,27 @@ const evidence = [...evidenceRecords].sort((a, b) => b.date.localeCompare(a.date
 const display = (value: number | null) => value === null ? t("未记录") : String(value);
 const agentsTitle = t("Agent 工作观察站");
 const agentsSeoDescription = t("通过四个可交互小挂件持续观察 Agent 独立任务并行、可靠交付、人工注意力投入与返工比例，汇总公开实证研究与真实交付回溯。");
+const datasetName = t("Agent 工作观察站公开数据集：实证研究索引、核对交付回溯与日常观测表");
+const datasetDescription = t("汇总多智能体与 AI 编程实证研究（METR 等）、经公开仓库记录核对的历史交付回溯，以及结构化日常并行度、人工注意力与返工时间观测表；未测量字段严格保留为空值（null）。");
+const datasetMeasurement = t("公开代码仓库变更核对与结构化每日任务/人工注意力日志；未测得数值保留 null，不跨任务折算生产力倍数。");
 const site = Astro.site;
 const structuredData = site
-  ? buildCollectionPageGraph({
+  ? buildAgentDatasetGraph({
       siteUrl: site.toString(),
       canonicalUrl: new URL("/agents", site).toString(),
       title: agentsTitle,
       description: agentsSeoDescription,
+      datasetName,
+      datasetDescription,
+      measurementTechnique: datasetMeasurement,
+      dateModified: history.reviewedAt,
+      keywords: [
+        "AI agents",
+        "agent engineering",
+        "human-agent collaboration",
+        "METR",
+        "software engineering empirical data"
+      ],
       breadcrumbs: [
         { name: t("首页"), url: new URL("/", site).toString() },
         { name: agentsTitle }
@@ -101,9 +115,40 @@ const structuredData = site
             <div><dt>{t("人工投入")}</dt><dd>{t("包含布置、补充上下文、审核、协调与返工。同一段注意力只计一次，返工属于总投入。")}</dd></div>
             <div><dt>{t("比较条件")}</dt><dd>{t("任务类型、范围和质量标准应相近。空缺留空，真实测得的零填写 0；保留失败、放弃及工具变化。")}</dd></div>
           </dl>
+          <div class="agent-observatory-table-wrap" role="region" aria-label={t("公开数据表结构，可横向滚动")} tabindex="0">
+            <table>
+              <caption>{t("公开数据集分层与空值契约")}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{t("数据子集")}</th>
+                  <th scope="col">{t("记录粒度")}</th>
+                  <th scope="col">{t("空值与方法边界")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">{t("每日观测与任务表")}</th>
+                  <td>{t("按自然日与独立验收目标记录")}</td>
+                  <td>{t("未测量的并发或工时保留 null，绝不填 0")}</td>
+                </tr>
+                <tr>
+                  <th scope="row">{t("公开交付历史回溯")}</th>
+                  <td>{t("按合并目标归并公开 PR 依据")}</td>
+                  <td>{t("仅代表部分项目回溯覆盖，不推算生产力倍数")}</td>
+                </tr>
+                <tr>
+                  <th scope="row">{t("外部实证研究索引")}</th>
+                  <td>{t("按原始论文或实验报告逐条收录")}</td>
+                  <td>{t("保留基准、随机实验与自报调查各自的适用条件")}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="agent-observatory-downloads">
             <a href={locale === "en" ? englishLogDownload : "/agent-observatory-log-template.md"} download={locale === "en" ? "agent-work-log-template.md" : ""}>{t("下载每日记录模板")} <span aria-hidden="true">↓</span></a>
             <a href={l("/agent-observatory-template.json")} download>{t("下载空数据文件")} <span aria-hidden="true">↓</span></a>
+            <a href="/agents/dataset.json" download="agent-observatory-dataset.json">{t("下载公开数据集 (JSON)")} <span aria-hidden="true">↓</span></a>
+            <a href="/agents/dataset.csv" download="agent-observatory-dataset.csv">{t("下载公开数据集 (CSV)")} <span aria-hidden="true">↓</span></a>
           </div>
           <p class="agent-observatory-meta">{t("每日记录包含并行峰值，未包含任务起止时间。挂件中的分钟轨道为交互示意；个人实测以经核对的记录为准。")}</p>
         </section>

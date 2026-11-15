@@ -106,3 +106,14 @@ Prepared two prompts: one to organize the feature documentation and another to e
 ### 110–120 minutes
 
 Ran those prompts, found that the requirements file was poorly written, and asked for improvements. I only just made the deadline.
+
+## Key takeaways: Ant Group AI coding exam checklist (CodeFuse)
+
+Across the 120-minute Ant Group AI coding assessment in the **CodeFuse** environment, the decisive bottlenecks were not prompt length or prompt injection, but **upfront architecture boundaries, single-session context control, `pytest` verification, and disciplined deliverable packaging**:
+
+| Exam pitfall | Root cause and engineering fix |
+| --- | --- |
+| CodeFuse session interruption | Opening a new session aborted the previous one and leaked context across `agents.md` runs; maintain a human-owned task board (`todo.md` / `timeline.md`) over a single primary session. |
+| Over-minimal two-file MVP | Skipping `src/` layout and interface planning prevented clean integration of end-to-end encryption; lock module boundaries in minutes 0–10 before coding. |
+| Ad hoc scripts instead of `pytest` | Unstructured scripts and missing dependency declarations could not prove correctness; enforce TDD with `pytest` suites and explicit `requirements.txt` manifests. |
+| Late documentation drift | Chasing optional features until the final minutes degraded requirements clarity; freeze feature scope in the final 20 minutes to align architecture, security notes, and test reports. |

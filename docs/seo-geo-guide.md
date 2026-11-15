@@ -25,6 +25,8 @@ This document describes the end-to-end **SEO** (Search Engine Optimization, Bili
 | `/en/llms-full.txt` | `en` | `X-Robots-Tag: noindex, follow` | Full-text English Markdown corpus for single-pass RAG/LLM ingestion. |
 | `/posts/<slug>.md`, `/en/posts/<slug>.md` | `zh-CN` / `en` | `X-Robots-Tag: noindex, follow` | Self-contained clean Markdown mirror per article with canonical URL, author, ISO dates, topics, concepts, summary, and full body. |
 | `/papers/<slug>.md`, `/en/papers/<slug>.md` | `zh-CN` / `en` | `X-Robots-Tag: noindex, follow` | Self-contained clean Markdown mirror per published/accepted/preprint paper with authors, venue, year, DOI, external links, abstract, body notes, and BibTeX. |
+| `/papers/<slug>.bib` | Language-neutral | `X-Robots-Tag: noindex, follow` | Direct `application/x-bibtex` citation download per published/accepted/preprint paper, paired with root `CITATION.cff`. |
+| `/agents/dataset.json`, `/agents/dataset.csv` | Language-neutral | `X-Robots-Tag: noindex, follow` | Google Dataset Search `DataDownload` distributions for `/agents` (preserving `null` / empty cells for unrecorded measurements). |
 | `/knowledge-graph.json` | Bilingual IDs | Static JSON | Validated topic–post–concept adjacency graph used by `/map` and machine readers. |
 | `/rss.xml`, `/en/rss.xml` | `zh-CN` / `en` | Feed XML | RSS 2.0 feeds with Dublin Core `<dc:creator>`, Atom `rel="self"` link, and deterministic `<lastBuildDate>`. |
 
@@ -33,6 +35,7 @@ Every indexable HTML page advertises machine-readable alternates in `<head>`:
 - `<link rel="alternate" type="application/rss+xml" href="https://a-znk.com/rss.xml">` (or `/en/rss.xml` on English pages)
 - `<link rel="alternate" type="text/plain" href="https://a-znk.com/llms.txt">` (or `/en/llms.txt` on English pages)
 - `<link rel="alternate" type="text/markdown" href="https://a-znk.com/posts/<slug>.md">` on all post and non-prototype paper detail pages (localized to `/en/...` on English pages)
+- `<link rel="alternate" type="application/x-bibtex" href="https://a-znk.com/papers/<slug>.bib">` on non-prototype paper detail pages
 
 ### AI Crawler Policy (`/robots.txt`)
 `src/pages/robots.txt.ts` explicitly permits mainstream search and AI citation/grounding crawlers (`OAI-SearchBot`, `ChatGPT-User`, `GPTBot`, `Claude-SearchBot`, `Claude-User`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `Applebot-Extended`, `Bytespider`, `DuckAssistBot`, plus `*`) on all public HTML, `.md`, and `llms*.txt` paths while disallowing internal UI search indexes (`/search-index.json`, `/en/search-index.json`) to avoid crawl budget waste.
@@ -51,7 +54,8 @@ Every indexable HTML page advertises machine-readable alternates in `<head>`:
   - `/posts/<slug>`, `/en/posts/<slug>` → `BlogPosting` (`headline`, `datePublished`, `dateModified`, `wordCount`, `timeRequired` ISO-8601 duration, `isAccessibleForFree: true`, `image`, `about`, `mentions`) + `BreadcrumbList`
   - `/papers/<slug>`, `/en/papers/<slug>` → `ScholarlyArticle` (ordered `author` list with co-author ORCID `sameAs`, `isPartOf` `PublicationIssue`, DOI `identifier` + `https://doi.org/...` `sameAs`, `isAccessibleForFree: true`, `image`) + `BreadcrumbList` (falls back to `WebPage` for `prototype` entries)
   - `/concepts/<slug>`, `/en/concepts/<slug>` → `DefinedTerm` (`inDefinedTermSet`) + `CollectionPage` + `BreadcrumbList`
-  - `/topics`, `/topics/<slug>`, `/papers`, `/archives`, `/agents` (and `/en/*`) → `CollectionPage` + `BreadcrumbList`
+  - `/agents`, `/en/agents` → `Dataset` (`DataDownload` JSON + CSV distributions, `measurementTechnique`, `variableMeasured`) + `CollectionPage` + `BreadcrumbList`
+  - `/topics`, `/topics/<slug>`, `/papers`, `/archives` (and `/en/*`) → `CollectionPage` + `BreadcrumbList`
   - `/privacy`, `/en/privacy` → `WebPage` + `BreadcrumbList`
 
 ---
@@ -72,12 +76,14 @@ Every indexable HTML page advertises machine-readable alternates in `<head>`:
 Run all build-time and E2E gates locally before pushing:
 
 ```bash
-pnpm seo:test              # IndexNow diff-to-URL mapping unit tests
-pnpm test                  # Vitest suite (JSON-LD, Highwire, Sitemap, llms.txt, i18n)
+pnpm seo:test              # IndexNow, GEO-SFE/BM25 probe, and Zhihu syndication unit tests
+pnpm test                  # Vitest suite (JSON-LD, Dataset exports, Highwire, Sitemap, llms.txt, i18n)
 pnpm build                 # Full Astro typecheck + static build
-pnpm seo:check-build       # Sitemap parity, 42-page canonical/description/OG/JSON-LD, and GEO .md/llms corpus audit
+pnpm seo:check-build       # Sitemap parity, 42-page canonical/description/OG/JSON-LD, Dataset/BibTeX, and GEO .md/llms corpus audit
+pnpm seo:geo-probe         # 24-query bilingual Meso-chunk BM25 Recall@1/@3/MRR & GEO-SFE structural benchmark
 pnpm i18n:check            # Reciprocal hreflang, English CJK leak check, marginalia & schema language check
 pnpm i18n:check-lifecycle  # Translation state hash integrity check
+pnpm seo:syndicate:zhihu -- --out-dir /tmp/zhihu-drafts  # Generate canonical-backlinked Zhihu Markdown drafts
 ```
 
 After deploying to `https://a-znk.com`:

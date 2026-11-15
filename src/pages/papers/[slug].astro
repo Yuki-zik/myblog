@@ -101,6 +101,7 @@ const resourceLabels = {
   openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : "/og/papers.png"}
   openGraphImageAlt={paper.data.cover?.alt ?? paper.data.title}
   markdownAlternate={paper.data.status !== "prototype" ? `/papers/${paper.id}.md` : undefined}
+  bibtexAlternate={paper.data.status !== "prototype" && paper.data.bibtex ? `/papers/${paper.id}.bib` : undefined}
   authorMeta={paper.data.authors.map((author) => author.name).join(", ")}
   canonical={canonicalPath}
   metaType="article"
@@ -146,6 +147,9 @@ const resourceLabels = {
                   </a>
                 ))}
                 <a href={l("#citation")}>Cite</a>
+                {paper.data.status !== "prototype" && paper.data.bibtex ? (
+                  <a href={`/papers/${paper.id}.bib`} download={`${paper.id}.bib`}>BibTeX ↓</a>
+                ) : null}
               </nav>
             </div>
           </header>
