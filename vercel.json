@@ -61,6 +61,24 @@
       ]
     },
     {
+      "source": "/llms-full.txt",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/en/llms-full.txt",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
       "source": "/_analytics/(.*)",
       "headers": [
         {

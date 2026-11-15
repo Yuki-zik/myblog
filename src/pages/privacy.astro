@@ -1,11 +1,30 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AnalyticsChoice from "../components/analytics/AnalyticsChoice.astro";
-import {getLocale} from "../lib/i18n/index";
-const en=getLocale(Astro.url.pathname)==="en";
+import {getLocale, createTranslator} from "../lib/i18n/index";
+import {buildWebPageGraph} from "../lib/seo/jsonLd";
+const locale=getLocale(Astro.url.pathname);
+const en=locale==="en";
+const t=createTranslator(locale);
 const title=en ? "Privacy & analytics" : "隐私与访问统计";
+const seoDescription=en
+  ? "How A-Znk Blog handles privacy-preserving, cookie-free aggregate visit statistics, what stays private, and how to opt out anytime on this browser."
+  : "说明 A-Znk的blog 的站内匿名聚合访问统计记录什么、不收集什么，以及如何随时关闭统计或通过 DNT / GPC 信号优先退出。";
+const site=Astro.site;
+const structuredData=site
+  ? buildWebPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL("/privacy", site).toString(),
+      title: t("隐私与访问统计"),
+      description: seoDescription,
+      breadcrumbs: [
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("隐私与访问统计") }
+      ]
+    })
+  : undefined;
 ---
-<BaseLayout title={title} description={en ? "What this blog measures, what it leaves private, and your choices." : "说明博客记录什么、不记录什么，以及如何控制匿名访问统计。"} runtime="discover" headerVariant="drawing">
+<BaseLayout title={title} description={seoDescription} canonical="/privacy" openGraphImage="/og/privacy.png" structuredData={structuredData} runtime="discover" headerVariant="drawing">
   <article class="privacy-page">
     <header><p class="privacy-kicker">PRIVACY · YOUR CHOICE</p><h1>{title}</h1><p class="privacy-intro">{en ? "Good measurement should improve the writing, not follow the reader." : "统计用于改进内容，阅读体验由你掌握。"}</p><p class="privacy-date">{en ? "Updated 6 November 2026" : "更新于 2026 年 11 月 6 日"}</p></header>
     <section class="privacy-preference" aria-labelledby="privacy-choice-heading">

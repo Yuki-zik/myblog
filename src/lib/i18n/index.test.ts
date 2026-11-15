@@ -20,9 +20,25 @@ describe("language-aware routes", () => {
     expect(localizeData({href:"/author", title:"研究方向"}, "en")).toEqual({href:"/en/author",title:"Research tracks"});
   });
   it("keeps shared schema identity stable while localizing page URLs", () => {
-    const result = localizeStructuredData({"@id":"https://a-znk.com/#website",inLanguage:"zh-CN",url:"https://a-znk.com/posts/test"}, "en", new URL("https://a-znk.com"));
+    const result = localizeStructuredData({
+      "@type":"WebSite",
+      "@id":"https://a-znk.com/#website",
+      name:"A-Znk的blog",
+      alternateName:["A-Znk Blog", "A-Znk的博客"],
+      inLanguage:"zh-CN",
+      url:"https://a-znk.com/posts/test",
+      image:"https://a-znk.com/og/posts/test.png"
+    }, "en", new URL("https://a-znk.com"));
     expect(result["@id"]).toBe("https://a-znk.com/#website");
+    expect(result.name).toBe("A-Znk Blog");
+    expect(result.alternateName).toEqual(["A-Znk的blog", "A-Znk的博客"]);
     expect(result.url).toBe("https://a-znk.com/en/posts/test");
+    expect(result.image).toBe("https://a-znk.com/og/en/posts/test.png");
     expect(result.inLanguage).toBe("en");
+  });
+  it("localizes GEO endpoints (llms.txt and llms-full.txt)", () => {
+    expect(localizePath("/llms.txt", "en")).toBe("/en/llms.txt");
+    expect(localizePath("/llms-full.txt", "en")).toBe("/en/llms-full.txt");
+    expect(localizePath("/en/llms.txt", "zh-CN")).toBe("/llms.txt");
   });
 });

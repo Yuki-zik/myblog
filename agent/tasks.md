@@ -26,6 +26,8 @@ Decision: use lightweight mature GoatCounter rather than Node/PostgreSQL Umami o
 
 | 优先级 | 任务 | 状态 | 负责人 | 截止 |
 |---|---|---|---|---|
+| 高 | 全站 SEO 与 GEO（生成式引擎优化）体系升级：补齐双语 `/llms.txt` + `/llms-full.txt` 全量知识语料、文章与论文结构化 `.md` 镜像及 `<head>` 发现链；完善 `Person`（ORCID/知乎 `sameAs`）、`ProfilePage`、`DefinedTerm`、`CollectionPage` 等全路由 JSON-LD 与英文 Highwire 学术元信息；补齐 8 个顶层双语路由 1200×630 OG 图、AI 搜索摘要指令（`max-snippet:-1` / `max-image-preview:large`）、RSS `atom:link`、AI 爬虫策略及构建期 SEO+GEO 自动化校验（零视觉/样式改动；202 单测 + 42 页 SEO/GEO 校验 + 35 E2E 全绿） | ✅ | Antigravity | 2026-11-15 |
+| 高 | 全站视觉艺术指导对比评审总集交付（完成 V4「苍穹构图」6 组真机 DOM 样图终版精修：修复全页 `[data-ux-reveal]` 折叠显影、暗色 `EN` 开关、`01` 章节徽标、`2026` 年份铭牌与 `/agents` 页头水印；并汇总 Baseline + V1–V4 全历史设计对比文档 `design_evolution_comparison.md`，`src/` 保持零改动待用户拍板） | ⏳ | Antigravity | 2026-11-13 |
 | 高 | 仓库分支与多工作树全面整合（PR #56 `5777313` 锁文件预检、PR #25 `dbabe31` VPS 静态镜像流量防护与 CN CIDR 更新器、PR #36 `85ce505` Highwire 学术论文引用元信息合入 `main`；清理 11 个二级 worktree、44 个本地分支与 59 个远端分支，仅保留 `main`、本地 WIP 归档 `483b89c` 及未合并草稿 PR #47） | ✅ | Antigravity Swarm | 2026-11-12 |
 | 高 | 会话/history回溯已上线（PR #57，e5c9c0c）：12份公开变更归并6项真实票据，中英翻阅/来源/无JS完整读取；工时与并发保持未知。Mac mini开发，179单测/390浏览器及生产回查通过 | ✅ | ChatGPT + 口径/文案/实现审阅 agents | 2026-10-25 |
 | 高 | 中文源自动英文同步正式启用；PR54修复+PR55真实自动发布完成，40页/20对语言、389浏览器测试与线上双引擎验收通过 | ✅ | ChatGPT + 三个实现Agent/独立审查 | 2026-10-25 |

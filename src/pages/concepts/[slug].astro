@@ -19,7 +19,7 @@ import { conceptFigures } from "../../lib/media/editorialFigures";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/discovery-polish.css";
 import "../../styles/reference-collections.css";
-import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
+import { buildDefinedTermGraph } from "../../lib/seo/jsonLd";
 
 interface Props {
   concept: CollectionEntry<"concepts">;
@@ -53,15 +53,16 @@ const relatedConcepts = (concept.data.related ?? [])
   .filter((entry): entry is CollectionEntry<"concepts"> => Boolean(entry));
 
 const primaryPost = referencedPosts[0] ?? null;
-const conceptDescription = t("{0} 从概念返回引用它的文章与主题网络。", [concept.data.summary]);
+const conceptDescription = t("{0} 从概念定义出发，串联引用它的技术文章、关联概念与主题知识网络。", [concept.data.summary]);
 
 const site = Astro.site;
 const structuredData = site
-  ? buildCollectionPageGraph({
+  ? buildDefinedTermGraph({
       siteUrl: site.toString(),
       canonicalUrl: new URL(`/concepts/${concept.id}`, site).toString(),
       title: concept.data.title,
       description: concept.data.summary,
+      tags: concept.data.tags,
       breadcrumbs: [
         { name: t("首页"), url: new URL("/", site).toString() },
         { name: concept.data.title }
@@ -73,6 +74,7 @@ const structuredData = site
 <BaseLayout
   title={concept.data.title}
   description={conceptDescription}
+  canonical={`/concepts/${concept.id}`}
   runtime="discover"
   headerVariant="drawing"
   openGraphImage={`/og/concepts/${concept.id}.png`}

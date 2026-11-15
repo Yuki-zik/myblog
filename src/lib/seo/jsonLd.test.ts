@@ -5,6 +5,8 @@ import {
   buildBlogPostingGraph,
   buildBreadcrumb,
   buildCollectionPageGraph,
+  buildDefinedTermGraph,
+  buildProfilePageGraph,
   buildScholarlyArticleGraph,
   personId,
   serializeJsonLd,
@@ -56,6 +58,23 @@ describe("buildBaseNodes", () => {
   it("omits sameAs when no socials are configured", () => {
     const [, person] = buildBaseNodes(SITE, { id: "x", name: "X" });
     expect(person.sameAs).toBeUndefined();
+  });
+
+  it("includes ORCID, Zhihu, jobTitle and knowsAbout on Person when provided", () => {
+    const [, person] = buildBaseNodes(SITE, {
+      ...author,
+      bioShort: "AI 安全 USTC 硕士",
+      blogScope: ["大模型系统与安全研究", "Agent 工程实践"],
+      socials: {
+        ...author.socials,
+        orcid: "0009-0005-2060-4172",
+        zhihu: "https://www.zhihu.com/people/A-Znk"
+      }
+    });
+    expect(person.sameAs).toContain("https://orcid.org/0009-0005-2060-4172");
+    expect(person.sameAs).toContain("https://www.zhihu.com/people/A-Znk");
+    expect(person.jobTitle).toBe("AI 安全 USTC 硕士");
+    expect(person.knowsAbout).toEqual(["大模型系统与安全研究", "Agent 工程实践"]);
   });
 });
 
@@ -221,5 +240,84 @@ describe("serializeJsonLd", () => {
     const parsed = JSON.parse(html);
     expect(parsed["@graph"]).toHaveLength(2);
     expect(parsed["@context"]).toBe("https://schema.org");
+  });
+});
+
+describe("buildProfilePageGraph and buildDefinedTermGraph", () => {
+  it("builds a ProfilePage whose mainEntity is the shared Person @id", () => {
+    const graph = buildProfilePageGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/author",
+      title: "A-Znk | 作者",
+      description: "研究者简介",
+      breadcrumbs: [
+        { name: "首页", url: "https://blog.example.com/" },
+        { name: "作者" }
+      ]
+    });
+    expect(graph[0]["@type"]).toBe("ProfilePage");
+    expect(graph[0].mainEntity).toEqual({ "@id": personId(SITE) });
+    expect(graph[0].isPartOf).toEqual({ "@id": websiteId(SITE) });
+    expect(graph[1]["@type"]).toBe("BreadcrumbList");
+  });
+
+  it("builds a DefinedTerm + CollectionPage graph for concept pages", () => {
+    const graph = buildDefinedTermGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/concepts/anchor-id",
+      title: "Anchor ID",
+      description: "段落在文章中的稳定定位符。",
+      tags: ["markdown", "comments"],
+      breadcrumbs: [
+        { name: "首页", url: "https://blog.example.com/" },
+        { name: "Anchor ID" }
+      ]
+    });
+    const term = graph.find((node) => node["@type"] === "DefinedTerm")!;
+    const page = graph.find((node) => node["@type"] === "CollectionPage")!;
+    expect(term).toBeDefined();
+    expect(term.name).toBe("Anchor ID");
+    expect(term.inDefinedTermSet).toBe("https://blog.example.com/map");
+    expect(page.mainEntity).toEqual({ "@id": "https://blog.example.com/concepts/anchor-id#definedterm" });
+  });
+
+  it("enriches BlogPosting with reading time/word count and ScholarlyArticle with co-author ORCID & DOI sameAs", () => {
+    const [post] = buildBlogPostingGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/posts/foo",
+      title: "Foo",
+      datePublished: "2026-01-01T00:00:00+08:00",
+      readingMinutes: 6,
+      wordCount: 1850,
+      breadcrumbs: [{ name: "Foo" }]
+    });
+    expect(post.isAccessibleForFree).toBe(true);
+    expect(post.timeRequired).toBe("PT6M");
+    expect(post.wordCount).toBe(1850);
+
+    const [paper] = buildScholarlyArticleGraph({
+      siteUrl: SITE,
+      canonicalUrl: "https://blog.example.com/papers/duap",
+      title: "DUAP",
+      description: "Abstract",
+      authors: [
+        { name: "Qianli Ma", self: true },
+        { name: "Wenjie Zhang", orcid: "0009-0004-4401-2385" }
+      ],
+      keywords: ["Whisper"],
+      doi: "10.1109/TIFS.2026.3671687",
+      imageUrl: "https://blog.example.com/og/papers/duap.png",
+      breadcrumbs: [{ name: "DUAP" }]
+    });
+    expect(paper.sameAs).toBe("https://doi.org/10.1109/TIFS.2026.3671687");
+    expect(paper.image).toBe("https://blog.example.com/og/papers/duap.png");
+    expect(paper.author).toEqual([
+      { "@id": personId(SITE) },
+      {
+        "@type": "Person",
+        name: "Wenjie Zhang",
+        sameAs: "https://orcid.org/0009-0004-4401-2385"
+      }
+    ]);
   });
 });

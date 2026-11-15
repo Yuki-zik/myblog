@@ -19,6 +19,7 @@ import PaperFigure from "../components/papers/PaperFigure.astro";
 import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE } from "../lib/site";
 import { researchFigures } from "../lib/media/editorialFigures";
 import { resolvePostAuthor } from "../lib/posts/author";
+import { buildProfilePageGraph } from "../lib/seo/jsonLd";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/author-atlas.css";
 import "../styles/author-dossiers.css";
@@ -71,12 +72,30 @@ const authorContactEntries = [
     external?: boolean;
   } => entry !== null
 );
+const authorTitle = t("{0} | 作者", [SITE_AUTHOR_PROFILE.name]);
+const authorDescription = SITE_AUTHOR_PROFILE.intro ?? SITE_AUTHOR_PROFILE.bioShort;
+const site = Astro.site;
+const structuredData = site
+  ? buildProfilePageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL("/author", site).toString(),
+      title: authorTitle,
+      description: authorDescription,
+      breadcrumbs: [
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("作者") }
+      ]
+    })
+  : undefined;
 ---
 
 <BaseLayout
-  title={t("{0} | 作者", [SITE_AUTHOR_PROFILE.name])}
-  description={SITE_AUTHOR_PROFILE.intro ?? SITE_AUTHOR_PROFILE.bioShort}
+  title={authorTitle}
+  description={authorDescription}
   authorMeta={SITE_AUTHOR_PROFILE.name}
+  canonical="/author"
+  openGraphImage="/og/author.png"
+  structuredData={structuredData}
   runtime="discover"
 >
   <DiscoverShell bodyClass="discover-editorial author-atlas">

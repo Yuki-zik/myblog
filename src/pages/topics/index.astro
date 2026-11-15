@@ -15,6 +15,7 @@ import ExploreGateway from "../../components/discover/ExploreGateway.astro";
 import EditorialFigure from "../../components/media/EditorialFigure.astro";
 import ImageViewer from "../../components/media/ImageViewer.astro";
 import { topicFigures } from "../../lib/media/editorialFigures";
+import { buildCollectionPageGraph } from "../../lib/seo/jsonLd";
 import "../../styles/topic-imagery.css";
 import {buildKnowledgeGraph} from "../../lib/knowledge/graph";
 
@@ -44,9 +45,22 @@ const topicsPageDescription =
   t("按主题查找研究笔记与工程实践，这里汇总每个主题的摘要与相关文章。");
 const topicsSeoDescription =
   t("浏览 A-Znk 的技术博客主题：AI Coding、Agent 工程、知识网络、段落锚点与技术笔试复盘。每个主题汇总相关文章、入门路径和相关概念。");
+const site = Astro.site;
+const structuredData = site
+  ? buildCollectionPageGraph({
+      siteUrl: site.toString(),
+      canonicalUrl: new URL("/topics", site).toString(),
+      title: t("主题列表"),
+      description: topicsSeoDescription,
+      breadcrumbs: [
+        { name: t("首页"), url: new URL("/", site).toString() },
+        { name: t("主题列表") }
+      ]
+    })
+  : undefined;
 ---
 
-<BaseLayout title={t("主题列表")} description={topicsSeoDescription} runtime="discover" headerVariant="drawing">
+<BaseLayout title={t("主题列表")} description={topicsSeoDescription} canonical="/topics" openGraphImage="/og/topics.png" structuredData={structuredData} runtime="discover" headerVariant="drawing">
   <DrawingIndexShell kind="topics">
     <DrawingPageHeader
       kicker="Topics"

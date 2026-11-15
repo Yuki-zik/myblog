@@ -17,6 +17,8 @@ export interface SiteAuthorProfile {
     x?: string;
     github?: string;
     scholar?: string;
+    orcid?: string;
+    zhihu?: string;
   };
   researchTracks?: {
     title: string;
@@ -60,7 +62,9 @@ export const SITE_AUTHOR_PROFILE: SiteAuthorProfile = {
   email: "I.OVE@outlook.com",
   socials: {
     github: "yuki-zik",
-    scholar: "https://scholar.google.com/citations?user=NTwrnCIAAAAJ"
+    scholar: "https://scholar.google.com/citations?user=NTwrnCIAAAAJ",
+    orcid: "0009-0005-2060-4172",
+    zhihu: "https://www.zhihu.com/people/A-Znk"
   },
   researchTracks: [
     {

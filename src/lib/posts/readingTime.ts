@@ -5,6 +5,12 @@ type PostReadingTimeSource = {
   };
 };
 
+export function countHybridWords(body: string): number {
+  const chineseChars = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const latinWords = (body.replace(/[\u4e00-\u9fff]/g, " ").match(/\b\w+\b/g) ?? []).length;
+  return chineseChars + latinWords;
+}
+
 export function estimateHybridReadingMinutes(body: string): number {
   const chineseChars = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
   const latinWords = (body.replace(/[\u4e00-\u9fff]/g, " ").match(/\b\w+\b/g) ?? []).length;

@@ -39,6 +39,7 @@ export default defineConfig({
         !page.endsWith(".md") &&
         !page.endsWith("/sitemap.xml") &&
         !page.endsWith("/llms.txt") &&
+        !page.endsWith("/llms-full.txt") &&
         !page.includes("/og/")
     })
   ],

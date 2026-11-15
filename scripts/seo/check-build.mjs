@@ -1,12 +1,19 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
+import { JSDOM } from "jsdom";
 
-const read = (file) => readFileSync(resolve("dist", file), "utf8");
+const root = resolve("dist");
+const read = (file) => readFileSync(resolve(root, file), "utf8");
+const assertNonEmptyFile = (relPath, label = relPath) => {
+  const abs = resolve(root, relPath);
+  assert(existsSync(abs), `missing built file: ${label} (${relPath})`);
+  assert(statSync(abs).size > 0, `empty built file: ${label} (${relPath})`);
+};
 const extract = (xml) =>
   [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1].replace(/&amp;/g, "&"));
 const normalize = (url) => url.replace(/\/$/, "");
 const assert = (condition, message) => {
-  if (!condition) throw new Error("SEO build validation: " + message);
+  if (!condition) throw new Error("SEO/GEO build validation: " + message);
 };
 
 const direct = read("sitemap.xml");
@@ -23,9 +30,125 @@ assert(
   "direct sitemap and Astro sitemap index must describe the same public URLs"
 );
 assert(new Set(directUrls).size === directUrls.length, "duplicate URLs");
-assert(directUrls.every((url) => url.startsWith(new URL(directUrls[0]).origin + "/")), "foreign URL");
-assert(!directUrls.some((url) => /\.(md|json|xml)(?:$|\?)/.test(url)), "non-HTML route");
-assert(robots.includes("Sitemap: " + new URL("/sitemap.xml", directUrls[0]).toString()), "robots sitemap mismatch");
-assert(read("index.html").includes('rel="canonical"'), "homepage canonical missing");
+const siteOrigin = new URL(directUrls[0]).origin;
+assert(directUrls.every((url) => url.startsWith(siteOrigin + "/")), "foreign URL");
+assert(!directUrls.some((url) => /\.(md|txt|json|xml)(?:$|\?)/.test(url)), "non-HTML route in sitemap");
 
-console.log("SEO build check passed: " + directUrls.length + " canonical pages.");
+// Crawl & AI agent directives
+assert(robots.includes("Sitemap: " + new URL("/sitemap.xml", siteOrigin).toString()), "robots sitemap mismatch");
+for (const agent of ["OAI-SearchBot", "Claude-SearchBot", "PerplexityBot", "GPTBot", "Google-Extended"]) {
+  assert(robots.includes(`User-agent: ${agent}`), `robots.txt missing ${agent}`);
+}
+assert(robots.includes("/llms.txt") && robots.includes("/llms-full.txt"), "robots.txt missing LLM corpus pointers");
+
+// GEO corpus endpoints & bilingual feeds
+for (const endpoint of ["llms.txt", "en/llms.txt", "llms-full.txt", "en/llms-full.txt", "rss.xml", "en/rss.xml"]) {
+  assertNonEmptyFile(endpoint);
+}
+const llmsZh = read("llms.txt");
+const llmsEn = read("en/llms.txt");
+for (const section of ["## Author", "## Papers", "## Topics", "## Posts", "## Optional"]) {
+  assert(llmsZh.includes(section), `llms.txt missing ${section}`);
+  assert(llmsEn.includes(section), `en/llms.txt missing ${section}`);
+}
+assert(llmsZh.includes("0009-0005-2060-4172"), "llms.txt missing author ORCID");
+assert(llmsEn.includes("/en/llms-full.txt"), "en/llms.txt missing English full corpus pointer");
+
+for (const feedFile of ["rss.xml", "en/rss.xml"]) {
+  const feed = read(feedFile);
+  assert(feed.includes('xmlns:atom="http://www.w3.org/2005/Atom"'), `${feedFile}: missing Atom namespace`);
+  assert(feed.includes('<atom:link ') && feed.includes('rel="self"'), `${feedFile}: missing atom:link self`);
+  assert(feed.includes("<lastBuildDate>"), `${feedFile}: missing lastBuildDate`);
+}
+
+let markdownMirrorCount = 0;
+let ogCardCount = 0;
+
+for (const rawUrl of directUrls) {
+  const parsed = new URL(rawUrl);
+  const pathname = parsed.pathname;
+  const isEn = pathname === "/en" || pathname.startsWith("/en/");
+  const htmlRel = pathname === "/" ? "index.html" : `${pathname.slice(1)}/index.html`;
+  assertNonEmptyFile(htmlRel, pathname);
+
+  const document = new JSDOM(read(htmlRel)).window.document;
+  const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href");
+  assert(canonical === parsed.href, `${pathname}: canonical mismatch (${canonical} vs ${parsed.href})`);
+
+  const description = document.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() ?? "";
+  assert(description.length >= 45, `${pathname}: meta description too short (${description.length} chars: "${description}")`);
+
+  const robotsMeta = document.querySelector('meta[name="robots"]')?.getAttribute("content") ?? "";
+  assert(!robotsMeta.includes("noindex"), `${pathname}: public sitemap route cannot be noindex`);
+  assert(robotsMeta.includes("max-snippet:-1") && robotsMeta.includes("max-image-preview:large"), `${pathname}: missing snippet/image preview robots directives`);
+
+  const ogImage = document.querySelector('meta[property="og:image"]')?.getAttribute("content");
+  assert(Boolean(ogImage), `${pathname}: missing og:image`);
+  const ogParsed = new URL(ogImage, parsed.origin);
+  if (ogParsed.origin === parsed.origin) {
+    assertNonEmptyFile(ogParsed.pathname.slice(1), `${pathname} og:image`);
+    ogCardCount++;
+  }
+  assert(Boolean(document.querySelector('meta[property="og:image:alt"]')?.getAttribute("content")?.trim()), `${pathname}: missing og:image:alt`);
+  assert(Boolean(document.querySelector('meta[name="twitter:image:alt"]')?.getAttribute("content")?.trim()), `${pathname}: missing twitter:image:alt`);
+
+  const llmsLink = document.querySelector('link[rel="alternate"][type="text/plain"]')?.getAttribute("href");
+  const expectedLlms = new URL(isEn ? "/en/llms.txt" : "/llms.txt", parsed.origin).href;
+  assert(llmsLink === expectedLlms, `${pathname}: text/plain LLMs alternate mismatch (${llmsLink})`);
+
+  const isPrototypePaper = Boolean(document.querySelector(".paper-status--prototype"));
+  const mdLink = document.querySelector('link[rel="alternate"][type="text/markdown"]')?.getAttribute("href");
+  const requiresMarkdown =
+    /^\/(?:en\/)?posts\/[^/]+$/.test(pathname) ||
+    (/^\/(?:en\/)?papers\/[^/]+$/.test(pathname) && !isPrototypePaper);
+  if (requiresMarkdown) {
+    assert(Boolean(mdLink), `${pathname}: missing text/markdown alternate link`);
+  }
+  if (mdLink) {
+    const mdPath = new URL(mdLink, parsed.origin).pathname.slice(1);
+    assertNonEmptyFile(mdPath, `${pathname} markdown mirror`);
+    assert(read(mdPath).startsWith("# "), `${pathname}: markdown mirror ${mdPath} must start with H1`);
+    markdownMirrorCount++;
+  }
+
+  const ldScripts = [...document.querySelectorAll('script[type="application/ld+json"]')];
+  assert(ldScripts.length >= 1, `${pathname}: missing JSON-LD script`);
+  const graphNodes = ldScripts.flatMap((node) => JSON.parse(node.textContent ?? "{}")["@graph"] ?? []);
+  const types = new Set(
+    graphNodes.flatMap((node) => (Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]]).filter(Boolean))
+  );
+  assert(types.has("WebSite") && types.has("Person"), `${pathname}: missing base WebSite/Person JSON-LD`);
+  const website = graphNodes.find((node) => node["@type"] === "WebSite");
+  assert(
+    new Set(website?.alternateName ?? []).size === (website?.alternateName ?? []).length &&
+    !(website?.alternateName ?? []).includes(website?.name),
+    `${pathname}: WebSite.alternateName duplicates or equals WebSite.name`
+  );
+  const person = graphNodes.find((node) => node["@type"] === "Person" && node["@id"]?.endsWith("#person-a-znk"));
+  assert(person?.sameAs?.includes("https://orcid.org/0009-0005-2060-4172"), `${pathname}: Person JSON-LD missing ORCID sameAs`);
+
+  if (pathname === "/author" || pathname === "/en/author") {
+    assert(types.has("ProfilePage"), `${pathname}: missing ProfilePage JSON-LD`);
+  }
+  if (/^\/(?:en\/)?concepts\/[^/]+$/.test(pathname)) {
+    assert(types.has("DefinedTerm"), `${pathname}: missing DefinedTerm JSON-LD`);
+  }
+  if (/^\/(?:en\/)?posts\/[^/]+$/.test(pathname)) {
+    assert(types.has("BlogPosting"), `${pathname}: missing BlogPosting JSON-LD`);
+  }
+  if (/^\/(?:en\/)?papers\/[^/]+$/.test(pathname)) {
+    if (isPrototypePaper) {
+      assert(!types.has("ScholarlyArticle"), `${pathname}: prototype paper cannot emit ScholarlyArticle JSON-LD`);
+    } else {
+      assert(types.has("ScholarlyArticle"), `${pathname}: missing ScholarlyArticle JSON-LD`);
+      const absUrl = document.querySelector('meta[name="citation_abstract_html_url"]')?.getAttribute("content");
+      const citLang = document.querySelector('meta[name="citation_language"]')?.getAttribute("content");
+      assert(absUrl === parsed.href, `${pathname}: citation_abstract_html_url mismatch (${absUrl})`);
+      assert(citLang === (isEn ? "en" : "zh"), `${pathname}: citation_language mismatch (${citLang})`);
+    }
+  }
+}
+
+console.log(
+  `SEO/GEO build check passed: ${directUrls.length} canonical pages, ${ogCardCount} verified OG cards, ${markdownMirrorCount} Markdown mirrors.`
+);

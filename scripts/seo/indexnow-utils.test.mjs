@@ -41,3 +41,27 @@ test("translated content submits its own canonical English URL", () => {
   assert.deepEqual(selectChangedUrls(bilingual, ["src/content/posts/covers/hello.svg"]), [bilingual[1], bilingual[3]]);
   assert.deepEqual(selectChangedUrls(bilingual, ["src/lib/i18n/en.json"]), bilingual);
 });
+
+test("paper covers and agent observatory data submit their affected bilingual routes", () => {
+  const extended = [
+    ...urls,
+    "https://a-znk.com/papers",
+    "https://a-znk.com/author",
+    "https://a-znk.com/en/papers/duap-multilingual-speech-privacy",
+    "https://a-znk.com/agents",
+    "https://a-znk.com/en/agents"
+  ];
+  assert.deepEqual(
+    selectChangedUrls(extended, ["src/content/papers/covers/duap-lfd-overview.png"]),
+    [
+      "https://a-znk.com/papers/x",
+      "https://a-znk.com/papers",
+      "https://a-znk.com/author",
+      "https://a-znk.com/en/papers/duap-multilingual-speech-privacy"
+    ]
+  );
+  assert.deepEqual(
+    selectChangedUrls(extended, ["src/data/agent-observatory.json"]),
+    ["https://a-znk.com/agents", "https://a-znk.com/en/agents"]
+  );
+});

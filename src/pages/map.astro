@@ -22,7 +22,7 @@ const seoDescription=t("探索 A-Znk 的技术知识网络，沿真实主题、�
 const site=Astro.site;
 const structuredData=site?buildCollectionPageGraph({siteUrl:site.toString(),canonicalUrl:new URL("/map",site).toString(),title:EXPLORE_LABEL,description:seoDescription,breadcrumbs:[{name:t("首页"),url:new URL("/",site).toString()},{name:EXPLORE_LABEL}]}):undefined;
 ---
-<BaseLayout title={t("漫游 · 想法之间的路径")} description={seoDescription} canonical="/map" runtime="discover" structuredData={structuredData}>
+<BaseLayout title={t("漫游 · 想法之间的路径")} description={seoDescription} canonical="/map" openGraphImage="/og/map.png" runtime="discover" structuredData={structuredData}>
   <DiscoverShell bodyClass="wander-page">
     <header class="wander-hero" data-discover-hero>
       <div class="wander-hero__title">

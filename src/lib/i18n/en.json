@@ -590,5 +590,8 @@
   "按内容角色调整标题、图文层次与留白，修正空图位置和手机断行，保留已有内容与原始图片。": "Revisions adjusted headings, image and text hierarchy, and spacing; corrected empty image slots and mobile wrapping; and retained existing material.",
   "评论区宽度": "Comment Section Width",
   "评论区与文章正文采用一致的阅读宽度，修复桌面编辑器明显收窄的问题，手机布局继续沿用。": "The comment section uses the article's reading width, correcting the narrow desktop editor while retaining the existing mobile layout.",
-  "恢复评论容器的完整宽度，保留既有最大版心和内部结构，并在五个视口检查实际渲染尺寸。": "The container's full width was restored while preserving its maximum measure and internal structure. Rendered dimensions were checked at five viewport sizes."
+  "恢复评论容器的完整宽度，保留既有最大版心和内部结构，并在五个视口检查实际渲染尺寸。": "The container's full width was restored while preserving its maximum measure and internal structure. Rendered dimensions were checked at five viewport sizes.",
+  "通过四个可交互小挂件持续观察 Agent 独立任务并行、可靠交付、人工注意力投入与返工比例，汇总公开实证研究与真实交付回溯。": "Observe independent agent task concurrency, reliable delivery, human attention investment, and rework through four interactive instruments, public empirical studies, and reviewed project history.",
+  "{0} 从概念定义出发，串联引用它的技术文章、关联概念与主题知识网络。": "{0} Follow this concept definition to the technical articles, related concepts, and topic knowledge networks that reference it.",
+  "隐私与访问统计": "Privacy & analytics"
 }
