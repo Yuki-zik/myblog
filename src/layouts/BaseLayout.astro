@@ -201,6 +201,7 @@ const themeInitScript = `(function () {
     <meta name="author" content={authorMeta} />
     {scholarlyMeta?.map((item) => <meta name={item.name} content={item.content} />)}
     {locale === "zh-CN" && pathname === "/" ? <meta name="baidu-site-verification" content="codeva-WhDD0PxDx9" /> : null}
+    {locale === "zh-CN" && pathname === "/" ? <meta name="msvalidate.01" content="F86BC8B5D8D6E5A53885C42EC256F234" /> : null}
     <link rel="icon" type="image/svg+xml" href={l("/favicon.svg")} />
     {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
     {alternates.map(item => <link rel="alternate" hreflang={item.lang} href={resolveAbsoluteUrl(item.path)} />)}

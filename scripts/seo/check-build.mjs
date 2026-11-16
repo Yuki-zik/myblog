@@ -50,7 +50,8 @@ for (const endpoint of [
   "rss.xml",
   "en/rss.xml",
   "agents/dataset.json",
-  "agents/dataset.csv"
+  "agents/dataset.csv",
+  "BingSiteAuth.xml"
 ]) {
   assertNonEmptyFile(endpoint);
 }
