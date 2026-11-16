@@ -170,6 +170,14 @@ for (const rawUrl of directUrls) {
       `${pathname}: Dataset description must be 50..5000 chars per Google Dataset Search (${dsDescLen})`
     );
     assert(
+      !("isPartOf" in (datasetNode ?? {})),
+      `${pathname}: Dataset.isPartOf must not reference WebSite per Google Dataset Search`
+    );
+    assert(
+      datasetNode?.license === "https://creativecommons.org/licenses/by/4.0/",
+      `${pathname}: Dataset missing CC BY 4.0 license URL`
+    );
+    assert(
       Array.isArray(datasetNode?.distribution) && datasetNode.distribution.length >= 2,
       `${pathname}: Dataset missing DataDownload distribution entries`
     );

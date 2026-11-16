@@ -15,6 +15,7 @@ import {
 export interface AgentObservatoryDatasetPackage {
   schemaVersion: 1;
   canonicalUrl: string;
+  license: string;
   reviewedAt: string;
   reportingTimezone: string;
   methodologyNote: string;
@@ -40,6 +41,7 @@ export function buildAgentObservatoryDataset(
   return {
     schemaVersion: 1,
     canonicalUrl: new URL("/agents", siteUrl).toString(),
+    license: "https://creativecommons.org/licenses/by/4.0/",
     reviewedAt: histData.reviewedAt,
     reportingTimezone: histData.reportingTimezone,
     methodologyNote:

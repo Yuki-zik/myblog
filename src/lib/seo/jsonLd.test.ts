@@ -344,7 +344,10 @@ describe("buildProfilePageGraph and buildDefinedTermGraph", () => {
     const page = graph.find((node) => node["@type"] === "CollectionPage")!;
     const dataset = graph.find((node) => node["@type"] === "Dataset")!;
     expect(page.mainEntity).toEqual({ "@id": "https://blog.example.com/agents#dataset" });
+    expect(page.isPartOf).toEqual({ "@id": websiteId(SITE) });
     expect(dataset.isAccessibleForFree).toBe(true);
+    expect(dataset.license).toBe("https://creativecommons.org/licenses/by/4.0/");
+    expect(dataset.isPartOf).toBeUndefined();
     expect(dataset.creator).toEqual({ "@id": personId(SITE) });
     expect(dataset.distribution).toEqual([
       {

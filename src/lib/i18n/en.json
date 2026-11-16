@@ -612,5 +612,7 @@
   "按原始论文或实验报告逐条收录": "Indexed per primary paper or field report",
   "保留基准、随机实验与自报调查各自的适用条件": "Preserves separate scopes across benchmarks, RCTs, and surveys",
   "下载公开数据集 (JSON)": "Download open dataset (JSON)",
-  "下载公开数据集 (CSV)": "Download open dataset (CSV)"
+  "下载公开数据集 (CSV)": "Download open dataset (CSV)",
+  "公开数据集采用": "Open dataset licensed under",
+  "知识共享署名协议发布。": "Creative Commons Attribution 4.0."
 }
