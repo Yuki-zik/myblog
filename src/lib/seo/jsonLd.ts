@@ -83,7 +83,8 @@ export function buildBaseNodes(siteUrl: string, author: SiteAuthorProfile): Json
     alternateName: SITE_ALTERNATE_NAMES,
     description: SITE_DESCRIPTION,
     inLanguage: "zh-CN",
-    publisher: { "@id": personId(siteUrl) }
+    publisher: { "@id": personId(siteUrl) },
+    copyrightHolder: { "@id": personId(siteUrl) }
   };
 
   return [website, person];
@@ -158,6 +159,10 @@ export function buildBlogPostingGraph(input: BlogPostingInput): JsonLdNode[] {
     mainEntityOfPage: input.canonicalUrl,
     author: { "@id": personId(input.siteUrl) },
     publisher: { "@id": personId(input.siteUrl) },
+    copyrightHolder: { "@id": personId(input.siteUrl) },
+    ...(/^\d{4}/.test(input.datePublished)
+      ? { copyrightYear: Number(input.datePublished.slice(0, 4)) }
+      : {}),
     isPartOf: { "@id": websiteId(input.siteUrl) },
     ...(input.imageUrl ? { image: input.imageUrl } : {}),
     ...(input.wordCount && input.wordCount > 0 ? { wordCount: input.wordCount } : {}),

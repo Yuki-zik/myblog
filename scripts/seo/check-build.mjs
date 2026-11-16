@@ -39,7 +39,11 @@ assert(robots.includes("Sitemap: " + new URL("/sitemap.xml", siteOrigin).toStrin
 for (const agent of ["OAI-SearchBot", "Claude-SearchBot", "PerplexityBot", "GPTBot", "Google-Extended"]) {
   assert(robots.includes(`User-agent: ${agent}`), `robots.txt missing ${agent}`);
 }
+for (const badBot of ["SemrushBot", "AhrefsBot", "MJ12bot", "Scrapy", "CensysInspect"]) {
+  assert(robots.includes(`User-agent: ${badBot}`), `robots.txt missing blocked scraper ${badBot}`);
+}
 assert(robots.includes("/llms.txt") && robots.includes("/llms-full.txt"), "robots.txt missing LLM corpus pointers");
+assertNonEmptyFile(".well-known/security.txt");
 
 // GEO corpus endpoints, open datasets & bilingual feeds
 for (const endpoint of [

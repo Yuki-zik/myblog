@@ -16,6 +16,23 @@ const AI_RETRIEVAL_AGENTS = [
   "DuckAssistBot"
 ] as const;
 
+const BLOCKED_SCRAPER_AGENTS = [
+  "SemrushBot",
+  "AhrefsBot",
+  "MJ12bot",
+  "BLEXBot",
+  "DotBot",
+  "DataForSeoBot",
+  "PetalBot",
+  "SeekportBot",
+  "ZoominfoBot",
+  "TurnitinBot",
+  "Omgilibot",
+  "Scrapy",
+  "CensysInspect",
+  "CyberConvoyScout"
+] as const;
+
 export const GET: APIRoute = (context) => {
   const site = context.site ?? new URL("http://localhost:4321/");
   const sitemapUrl = new URL("sitemap.xml", site).toString();
@@ -37,6 +54,10 @@ export const GET: APIRoute = (context) => {
     "Allow: /",
     "Disallow: /search-index.json",
     "Disallow: /en/search-index.json",
+    "",
+    "# Block parasitic commercial SEO crawlers, bulk scrapers & internet scanners.",
+    ...BLOCKED_SCRAPER_AGENTS.map((agent) => `User-agent: ${agent}`),
+    "Disallow: /",
     "",
     "# Raw .md mirrors (/design.md, /posts/<slug>.md, /papers/<slug>.md) and",
     "# /llms-full.txt stay crawlable so X-Robots-Tag: noindex is seen and applied.",
