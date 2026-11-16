@@ -89,14 +89,20 @@ for (const rawUrl of directUrls) {
   const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute("href");
   assert(canonical === parsed.href, `${pathname}: canonical mismatch (${canonical} vs ${parsed.href})`);
 
+  const docTitle = document.querySelector("title")?.textContent?.trim() ?? "";
+  assert(
+    docTitle.length >= 15 && docTitle.length <= 65,
+    `${pathname}: <title> length out of 15..65 char range (${docTitle.length}: "${docTitle}")`
+  );
+
   const description = document.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() ?? "";
   const effectiveDescLength = [...description].reduce(
     (sum, ch) => sum + (/[\u3400-\u9fff\uff00-\uffef]/.test(ch) ? 2 : 1),
     0
   );
   assert(
-    effectiveDescLength >= 45,
-    `${pathname}: meta description too short (${description.length} chars / ${effectiveDescLength} cols: "${description}")`
+    effectiveDescLength >= 45 && description.length <= 160,
+    `${pathname}: meta description out of bounds (${description.length} chars / ${effectiveDescLength} cols: "${description}")`
   );
 
   const robotsMeta = document.querySelector('meta[name="robots"]')?.getAttribute("content") ?? "";

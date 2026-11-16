@@ -29,14 +29,69 @@ export interface ScholarlyMetaTag {
   content: string;
 }
 
-/** Use a verified existing abbreviation, never fabricate a paper acronym. */
-export function paperSearchTitle(paper: PaperSeoSource): string {
-  if (!paper.subtitle) return paper.title;
+const MAX_EN_SEARCH_TITLE = 58;
+
+function trimAtWordBoundary(text: string, maxChars: number): string {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxChars) return normalized;
+  const slice = normalized.slice(0, maxChars - 1);
+  const lastSpace = slice.lastIndexOf(" ");
+  const cut = lastSpace >= 24 ? slice.slice(0, lastSpace) : slice;
+  return cut.replace(/[,;:–—-]+$/, "").trim() + "…";
+}
+
+/**
+ * Compacts long meta descriptions to fit search-engine snippet linters (<= 158 chars
+ * for Bing/Google SERPs) while keeping complete sentences whenever possible and
+ * leaving short/Chinese descriptions untouched.
+ */
+export function compactMetaDescription(text: string, maxChars = 158): string {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxChars) return normalized;
+
+  const window = normalized.slice(0, maxChars + 1);
+  const sentenceEnd = Math.max(window.lastIndexOf(". "), window.lastIndexOf("。"));
+  if (sentenceEnd >= 60) {
+    return window.slice(0, sentenceEnd + 1).trim();
+  }
+  return trimAtWordBoundary(normalized, maxChars);
+}
+
+/** Use a verified existing abbreviation or verbatim title clause; never fabricate a paper acronym. */
+export function paperSearchTitle(
+  paper: PaperSeoSource,
+  locale: "zh-CN" | "en" = "zh-CN"
+): string {
   const acronym = /^([A-Z][A-Z0-9-]{2,12}):\s/.exec(paper.title)?.[1];
+  if (locale === "en") {
+    if (paper.title.length <= MAX_EN_SEARCH_TITLE) return paper.title;
+    const prepMatch = /^(.+?)\s+(?:for|via|through|with|using)\s+(.+)$/i.exec(paper.title);
+    if (prepMatch) {
+      const [, leftClause, rightClause] = prepMatch;
+      if (leftClause.length >= 24 && leftClause.length <= MAX_EN_SEARCH_TITLE) {
+        return leftClause;
+      }
+      if (acronym) {
+        const acronymGoal = `${acronym}: ${rightClause}`;
+        if (acronymGoal.length >= 24 && acronymGoal.length <= MAX_EN_SEARCH_TITLE) {
+          return acronymGoal;
+        }
+      }
+    }
+    return trimAtWordBoundary(paper.title, MAX_EN_SEARCH_TITLE);
+  }
+
+  if (!paper.subtitle) return paper.title;
   return paper.subtitle + " · " + (acronym ?? paper.venue?.short ?? String(paper.year));
 }
 
-export function paperSearchDescription(paper: PaperSeoSource): string {
+export function paperSearchDescription(
+  paper: PaperSeoSource,
+  locale: "zh-CN" | "en" = "zh-CN"
+): string {
+  if (locale === "en") {
+    return compactMetaDescription(paper.summary ?? paper.abstract);
+  }
   if (!paper.summary) return paper.abstract;
   return paper.summary + "（" + (paper.venue?.name ?? "研究论文") + "，" + paper.year + "）";
 }

@@ -95,8 +95,8 @@ const resourceLabels = {
 ---
 
 <BaseLayout
-  title={locale === "zh-CN" ? paperSearchTitle(paper.data) : paper.data.title}
-  description={locale === "zh-CN" ? paperSearchDescription(paper.data) : paper.data.abstract}
+  title={paperSearchTitle(paper.data, locale)}
+  description={paperSearchDescription(paper.data, locale)}
   scholarlyMeta={scholarlyMeta}
   openGraphImage={paper.data.status !== "prototype" ? `/og/papers/${paper.id}.png` : "/og/papers.png"}
   openGraphImageAlt={paper.data.cover?.alt ?? paper.data.title}

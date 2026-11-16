@@ -40,6 +40,7 @@ import HeaderSearch from "../components/search/HeaderSearch.astro";
 import UiControllers from "../components/UiControllers.astro";
 import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE, SITE_NAME as SOURCE_SITE_NAME, SITE_DESCRIPTION as SOURCE_SITE_DESCRIPTION } from "../lib/site";
 import { buildBaseNodes, serializeJsonLd, type JsonLdNode } from "../lib/seo/jsonLd";
+import { compactMetaDescription } from "../lib/seo/highwire";
 
 interface Props {
   title: string;
@@ -95,7 +96,10 @@ const {
   scholarlyMeta
 } = Astro.props;
 
-const documentTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+const candidateTitle = `${title} | ${SITE_NAME}`;
+const documentTitle =
+  title.includes(SITE_NAME) || candidateTitle.length > 60 ? title : candidateTitle;
+const metaDescription = compactMetaDescription(description, 158);
 
 const footerVariant = hideFooter
   ? "none"
@@ -193,7 +197,7 @@ const themeInitScript = `(function () {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{documentTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <meta
       name="robots"
       content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"}
@@ -213,7 +217,7 @@ const themeInitScript = `(function () {
     <!-- Open Graph -->
     <meta property="og:title" content={documentTitle} />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={metaDescription} />
     <meta property="og:type" content={metaType} />
     <meta property="og:locale" content={locale === "en" ? "en_US" : "zh_CN"} />
     {otherLanguage ? <meta property="og:locale:alternate" content={otherLanguage.lang === "en" ? "en_US" : "zh_CN"} /> : null}
@@ -237,7 +241,7 @@ const themeInitScript = `(function () {
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content={twitterCard} />
     <meta name="twitter:title" content={documentTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={metaDescription} />
     {openGraphImageUrl ? <meta name="twitter:image" content={openGraphImageUrl} /> : null}
     {openGraphImageUrl ? <meta name="twitter:image:alt" content={resolvedOgAlt} /> : null}
 

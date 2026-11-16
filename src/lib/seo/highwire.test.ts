@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildHighwireMetadata,
+  compactMetaDescription,
   paperSearchDescription,
   paperSearchTitle,
   type PaperSeoSource
@@ -71,5 +72,23 @@ describe("scholarly discovery metadata", () => {
 
     const zhMeta = buildHighwireMetadata(paper, "https://a-znk.com/papers/duap", { locale: "zh-CN" });
     expect(zhMeta).toContainEqual({ name: "citation_language", content: "zh" });
+  });
+
+  it("keeps English paper search titles <= 58 chars and descriptions <= 158 chars without fabrication", () => {
+    const enDuap: PaperSeoSource = {
+      ...paper,
+      title: "DUAP: Disentanglement-Based Universal Adversarial Perturbations for Robust Multilingual Speech Privacy Protection",
+      summary: "Language feature disentanglement and gradient optimization produce transferable perturbations that reduce Whisper’s ability to transcribe sensitive speech.",
+      abstract: "Long 400+ char abstract ".repeat(20)
+    };
+    const title = paperSearchTitle(enDuap, "en");
+    const desc = paperSearchDescription(enDuap, "en");
+    expect(title).toBe("DUAP: Robust Multilingual Speech Privacy Protection");
+    expect(title.length).toBeLessThanOrEqual(58);
+    expect(desc).toBe(enDuap.summary);
+    expect(desc.length).toBeLessThanOrEqual(158);
+    expect(compactMetaDescription("First complete sentence over sixty characters for clean SERP snippet display. Second long sentence that exceeds the 158 character limit easily when appended to the first one.")).toBe(
+      "First complete sentence over sixty characters for clean SERP snippet display."
+    );
   });
 });
