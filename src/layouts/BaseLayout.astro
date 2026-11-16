@@ -40,7 +40,7 @@ import HeaderSearch from "../components/search/HeaderSearch.astro";
 import UiControllers from "../components/UiControllers.astro";
 import { SITE_AUTHOR_PROFILE as SOURCE_SITE_AUTHOR_PROFILE, SITE_NAME as SOURCE_SITE_NAME, SITE_DESCRIPTION as SOURCE_SITE_DESCRIPTION } from "../lib/site";
 import { buildBaseNodes, serializeJsonLd, type JsonLdNode } from "../lib/seo/jsonLd";
-import { compactMetaDescription } from "../lib/seo/highwire";
+import { compactMetaDescription, formatDocumentTitle } from "../lib/seo/highwire";
 
 interface Props {
   title: string;
@@ -96,9 +96,7 @@ const {
   scholarlyMeta
 } = Astro.props;
 
-const candidateTitle = `${title} | ${SITE_NAME}`;
-const documentTitle =
-  title.includes(SITE_NAME) || candidateTitle.length > 60 ? title : candidateTitle;
+const documentTitle = formatDocumentTitle(title, SITE_NAME, 65);
 const metaDescription = compactMetaDescription(description, 158);
 
 const footerVariant = hideFooter

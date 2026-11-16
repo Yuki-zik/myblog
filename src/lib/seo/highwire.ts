@@ -29,15 +29,39 @@ export interface ScholarlyMetaTag {
   content: string;
 }
 
-const MAX_EN_SEARCH_TITLE = 58;
+const MAX_EN_SEARCH_TITLE = 52;
 
 function trimAtWordBoundary(text: string, maxChars: number): string {
   const normalized = text.replace(/\s+/g, " ").trim();
   if (normalized.length <= maxChars) return normalized;
   const slice = normalized.slice(0, maxChars - 1);
   const lastSpace = slice.lastIndexOf(" ");
-  const cut = lastSpace >= 24 ? slice.slice(0, lastSpace) : slice;
-  return cut.replace(/[,;:–—-]+$/, "").trim() + "…";
+  let cut = (lastSpace >= 20 ? slice.slice(0, lastSpace) : slice)
+    .replace(/[,;:–—-]+$/, "")
+    .trim();
+  cut = cut.replace(/\s+(?:of|and|for|via|with|in|to|on|by|the|a|an)$/i, "").trim();
+  return cut + "…";
+}
+
+/**
+ * Formats `<title>` so it ALWAYS preserves the site brand (`A-Znk的blog` / `A-Znk Blog`)
+ * required by site-identity contracts while staying within search-engine title limits (<= 65 chars).
+ */
+export function formatDocumentTitle(
+  title: string,
+  siteName: string,
+  maxChars = 65
+): string {
+  const normalized = title.replace(/\s+/g, " ").trim();
+  if (normalized.includes(siteName)) {
+    return normalized;
+  }
+  const suffix = ` | ${siteName}`;
+  if (normalized.length + suffix.length <= maxChars) {
+    return `${normalized}${suffix}`;
+  }
+  const budget = Math.max(24, maxChars - suffix.length);
+  return `${trimAtWordBoundary(normalized, budget)}${suffix}`;
 }
 
 /**

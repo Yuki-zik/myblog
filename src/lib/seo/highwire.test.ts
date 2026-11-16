@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildHighwireMetadata,
   compactMetaDescription,
+  formatDocumentTitle,
   paperSearchDescription,
   paperSearchTitle,
   type PaperSeoSource
@@ -82,9 +83,14 @@ describe("scholarly discovery metadata", () => {
       abstract: "Long 400+ char abstract ".repeat(20)
     };
     const title = paperSearchTitle(enDuap, "en");
+    const docTitle = formatDocumentTitle(title, "A-Znk Blog", 65);
     const desc = paperSearchDescription(enDuap, "en");
     expect(title).toBe("DUAP: Robust Multilingual Speech Privacy Protection");
-    expect(title.length).toBeLessThanOrEqual(58);
+    expect(docTitle).toBe("DUAP: Robust Multilingual Speech Privacy Protection | A-Znk Blog");
+    expect(docTitle.length).toBeLessThanOrEqual(65);
+    expect(
+      formatDocumentTitle("Ratiometric Determination and Discrimination of Oxicams", "A-Znk Blog", 65)
+    ).toBe("Ratiometric Determination and Discrimination… | A-Znk Blog");
     expect(desc).toBe(enDuap.summary);
     expect(desc.length).toBeLessThanOrEqual(158);
     expect(compactMetaDescription("First complete sentence over sixty characters for clean SERP snippet display. Second long sentence that exceeds the 158 character limit easily when appended to the first one.")).toBe(

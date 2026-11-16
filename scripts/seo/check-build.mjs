@@ -94,9 +94,10 @@ for (const rawUrl of directUrls) {
   assert(canonical === parsed.href, `${pathname}: canonical mismatch (${canonical} vs ${parsed.href})`);
 
   const docTitle = document.querySelector("title")?.textContent?.trim() ?? "";
+  const expectedBrand = isEn ? "A-Znk Blog" : "A-Znk的blog";
   assert(
-    docTitle.length >= 15 && docTitle.length <= 65,
-    `${pathname}: <title> length out of 15..65 char range (${docTitle.length}: "${docTitle}")`
+    docTitle.length >= 15 && docTitle.length <= 65 && docTitle.includes(expectedBrand),
+    `${pathname}: <title> must be 15..65 chars and include "${expectedBrand}" (${docTitle.length}: "${docTitle}")`
   );
 
   const description = document.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() ?? "";
